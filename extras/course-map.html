@@ -63,9 +63,8 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 @media print{
   body{background:#fff!important;color:#000!important}
   .hero{padding:12px!important;background:#333!important;-webkit-print-color-adjust:exact}
-  .sidebar,.cm-sidebar{display:none}
-  .app,.cm-layout{grid-template-columns:1fr!important}
-  .cm-main{max-height:none!important;overflow:visible!important}
+  .sidebar{display:none}
+  .app{grid-template-columns:1fr!important}
 }
 </style>
 </head>
@@ -230,17 +229,6 @@ TOPICS.forEach(t => {
 
 updateProgress();
 </script>
-<footer style="border-top:3px solid #000;padding:16px 24px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-<strong>🔗 כלים נוספים:</strong>
-<a href="practice-bank.html" style="color:#7c3aed;font-weight:700">💪 בנק תרגול</a>
-<a href="simulations.html" style="color:#7c3aed;font-weight:700">🎮 סימולציות</a>
-<a href="exam-strategy.html" style="color:#7c3aed;font-weight:700">🎯 אסטרטגיה</a>
-<a href="exam-knowledge.html" style="color:#7c3aed;font-weight:700">📚 מרכז ידע</a>
-<a href="debug-walkthrough.html" style="color:#7c3aed;font-weight:700">🔍 Debug</a>
-<a href="data-flow.html" style="color:#7c3aed;font-weight:700">📦 Data Flow</a>
-<a href="flow-canvas.html" style="color:#7c3aed;font-weight:700">🗺 מפת זרימה</a>
-<a href="code-browser.html" style="color:#7c3aed;font-weight:700">💻 קוד מקור</a>
-<a href="progress-dashboard.html" style="color:#7c3aed;font-weight:700">📊 דשבורד</a>
-</footer>
+<script src="nav-tree.js"></script>
 </body>
 </html>

@@ -1096,60 +1096,6 @@ body {
 }
 
 /* ==========================================================================
-   FOOTER
-   ========================================================================== */
-.footer {
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  border-top: 3px solid #000;
-  padding: 30px;
-  text-align: center;
-}
-
-.footer-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #94a3b8;
-  margin-bottom: 14px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.footer-links a {
-  color: #e2e8f0;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 7px 16px;
-  border: 2px solid #475569;
-  border-radius: var(--radius-xs);
-  transition: var(--transition-fast);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.footer-links a:hover {
-  background: var(--brand);
-  border-color: var(--brand);
-  color: #fff;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-}
-
-.footer-copy {
-  color: #64748b;
-  font-size: 12px;
-  margin-top: 12px;
-}
-
 /* ==========================================================================
    MOBILE RESPONSIVE
    ========================================================================== */
@@ -1337,14 +1283,6 @@ body {
     font-size: 20px;
   }
 
-  .footer-links {
-    gap: 8px;
-  }
-
-  .footer-links a {
-    font-size: 12px;
-    padding: 6px 12px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -1403,10 +1341,6 @@ body {
   .section-title {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-  }
-
-  .footer {
-    display: none;
   }
 
   .back-to-top {
@@ -1592,11 +1526,6 @@ body {
     border-bottom-color: #334155;
   }
 
-  .footer {
-    background: linear-gradient(135deg, #020617, #0f172a);
-    border-top-color: #475569;
-  }
-
   .search-results {
     background: #1e293b;
     border-color: #475569;
@@ -1756,24 +1685,7 @@ body {
 </div>
 
 <!-- ============================================================
-     FOOTER
-     ============================================================ -->
-<div class="footer">
-  <div class="footer-title">כלים נוספים לפורטל</div>
-  <div class="footer-links">
-    <a href="exam-strategy.html">🎯 אסטרטגיית מבחן</a>
-    <a href="practice-bank.html">📝 בנק תרגול</a>
-    <a href="exam-master-v3.html">🏆 Exam Master</a>
-    <a href="simulations.html">🎮 סימולציות</a>
-    <a href="progress-dashboard.html">📊 דשבורד התקדמות</a>
-    <a href="react-patterns.html">⚛ React Patterns</a>
-    <a href="express-js-patterns.html">🟢 Express Patterns</a>
-    <a href="mongo-cheatsheet.html">🍃 Mongo Cheatsheet</a>
-    <a href="ts-cheatsheet.html">📘 TypeScript</a>
-    <a href="sequence-diagrams.html">📐 Sequence Diagrams</a>
-  </div>
-  <div class="footer-copy">📚 מרכז ידע למבחן — נבנה עבור תלמידי הקורס &copy; 2025</div>
-</div>
+<!-- footer injected by nav-tree.js -->
 
 <!-- ============================================================
      JAVASCRIPT APPLICATION
@@ -2969,5 +2881,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+<script src="nav-tree.js"></script>
 </body>
 </html>

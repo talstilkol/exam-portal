@@ -599,52 +599,6 @@ body {
   font-size: 0.9rem;
 }
 
-/* ===== FOOTER ===== */
-.app-footer {
-  background: #1a1a2e;
-  border-top: 4px solid #000;
-  padding: 30px 40px;
-  text-align: center;
-}
-
-.footer-title {
-  color: #FFD700;
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 15px;
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.footer-link {
-  background: rgba(255,255,255,0.08);
-  color: #e0e0e0;
-  text-decoration: none;
-  padding: 8px 16px;
-  border: 2px solid rgba(255,215,0,0.3);
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.footer-link:hover {
-  background: rgba(255,215,0,0.15);
-  border-color: #FFD700;
-  color: #FFD700;
-}
-
-.footer-copy {
-  color: #888;
-  font-size: 0.8rem;
-  margin-top: 15px;
-}
-
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .app-layout {
@@ -784,20 +738,6 @@ body {
 </div>
 
 <!-- ===== FOOTER ===== -->
-<footer class="app-footer">
-  <div class="footer-title">&#x1F6E0;&#xFE0F; כלים נוספים בפורטל</div>
-  <div class="footer-links">
-    <a href="practice-bank.html" class="footer-link">&#x1F4DD; בנק תרגול</a>
-    <a href="simulations.html" class="footer-link">&#x1F3AE; סימולציות</a>
-    <a href="exam-strategy.html" class="footer-link">&#x1F3AF; אסטרטגיית מבחן</a>
-    <a href="course-map.html" class="footer-link">&#x1F5FA;&#xFE0F; מפת קורס</a>
-    <a href="progress-dashboard.html" class="footer-link">&#x1F4CA; דשבורד התקדמות</a>
-    <a href="code-browser.html" class="footer-link">&#x1F4BB; דפדפן קוד</a>
-    <a href="react-patterns.html" class="footer-link">&#x269B;&#xFE0F; React Patterns</a>
-    <a href="express-js-patterns.html" class="footer-link">&#x1F5A5;&#xFE0F; Express Patterns</a>
-  </div>
-  <p class="footer-copy">פורטל למידה — Debug Walkthrough Tool &copy; 2025</p>
-</footer>
 
 <!-- ===== JAVASCRIPT ===== -->
 <script>
@@ -1255,5 +1195,6 @@ function init() {
 
 init();
 </script>
+<script src="nav-tree.js"></script>
 </body>
 </html>

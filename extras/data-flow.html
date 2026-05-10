@@ -578,45 +578,6 @@ body {
 }
 
 /* ═══════════════════════════════════════
-   FOOTER
-   ═══════════════════════════════════════ */
-.footer {
-  background: var(--black);
-  color: var(--white);
-  padding: 40px 24px;
-  text-align: center;
-}
-
-.footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.footer-links a {
-  color: var(--white);
-  text-decoration: none;
-  padding: 8px 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.footer-links a:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.6);
-}
-
-.footer-copy {
-  font-size: 0.8rem;
-  opacity: 0.6;
-  margin-top: 12px;
-}
-
 /* ═══════════════════════════════════════
    MOBILE RESPONSIVE
    ═══════════════════════════════════════ */
@@ -835,17 +796,6 @@ body {
 <!-- ═══════════════════════════════════════
      FOOTER
      ═══════════════════════════════════════ -->
-<footer class="footer">
-  <div class="footer-links">
-    <a href="sequence-diagrams.html">🔀 Sequence Diagrams</a>
-    <a href="file-tree-master.html">🌳 File Tree</a>
-    <a href="code-browser.html">🔍 Code Browser</a>
-    <a href="flow-canvas.html">🎨 Flow Canvas</a>
-    <a href="express-js-patterns.html">⚡ Express Patterns</a>
-    <a href="progress-dashboard.html">📊 Dashboard</a>
-  </div>
-  <p class="footer-copy">Data Flow Visualizer — כלי עזר ללמידת Full-Stack</p>
-</footer>
 
 <!-- ═══════════════════════════════════════
      JAVASCRIPT
@@ -1259,5 +1209,6 @@ function init() {
 
 init();
 </script>
+<script src="nav-tree.js"></script>
 </body>
 </html>

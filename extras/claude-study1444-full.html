@@ -1555,8 +1555,10 @@ code:[
  x:{'<div':'מיכל גנרי — כמו ארגז ריק שאפשר לשים בו דברים','id':'מזהה ייחודי — תעודת זהות לאלמנט','"app"':'שם המזהה — נשתמש בו ב־JS','</div>':'סגירת המיכל'}},
 {c:'  <script src="app.js"><\/script>',e:'🔗 טוען את app.js',
  x:{'<script':'תגית של קוד JavaScript','src':'מאיפה לטעון — Source','"app.js"':'שם הקובץ שיש בו את הקוד','<\/script>':'סגירת תגית ה־script'}},
-{c:'</body>',e:'סוגר את הגוף',
- x:{'</body>':'סגירת גוף הדף'}},
+{c:'<script src="nav-tree.js"></script>
+</body>',e:'סוגר את הגוף',
+ x:{'<script src="nav-tree.js"></script>
+</body>':'סגירת גוף הדף'}},
 {c:'</html>',e:'סוגר את התגית הראשית',
  x:{'</html>':'סגירת המסמך כולו'}}
 ]},
@@ -4330,5 +4332,6 @@ document.querySelectorAll('.tree-folder').forEach(folder => {
 });
 
 </script>
+<script src="nav-tree.js"></script>
 </body>
 </html>

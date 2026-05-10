@@ -108,9 +108,8 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 @media print{
   body{background:#fff!important;color:#000!important}
   .hero{padding:12px!important;background:#333!important;-webkit-print-color-adjust:exact}
-  .sidebar,.pb-sidebar{display:none}
-  .app,.pb-layout{grid-template-columns:1fr!important}
-  .pb-main{max-height:none!important;overflow:visible!important}
+  .sidebar{display:none}
+  .app{grid-template-columns:1fr!important}
 }
 </style>
 </head>
@@ -1212,17 +1211,6 @@ document.addEventListener('keydown', function(e){
 <div style="position:fixed;bottom:12px;left:12px;background:#1e1b4b;color:#e2e8f0;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;opacity:.85;z-index:9999;direction:ltr;box-shadow:2px 2px 6px rgba(0,0,0,.3)">
   <span style="color:#facc15">Shortcuts:</span> ← → prev/next exercise | ESC close panels
 </div>
-<footer style="border-top:3px solid #000;padding:16px 24px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-<strong>🔗 כלים נוספים:</strong>
-<a href="simulations.html" style="color:#7c3aed;font-weight:700">🎮 סימולציות</a>
-<a href="exam-strategy.html" style="color:#7c3aed;font-weight:700">🎯 אסטרטגיה</a>
-<a href="exam-knowledge.html" style="color:#7c3aed;font-weight:700">📚 מרכז ידע</a>
-<a href="debug-walkthrough.html" style="color:#7c3aed;font-weight:700">🔍 Debug</a>
-<a href="data-flow.html" style="color:#7c3aed;font-weight:700">📦 Data Flow</a>
-<a href="flow-canvas.html" style="color:#7c3aed;font-weight:700">🗺 מפת זרימה</a>
-<a href="course-map.html" style="color:#7c3aed;font-weight:700">🗂 Course Map</a>
-<a href="code-browser.html" style="color:#7c3aed;font-weight:700">💻 קוד מקור</a>
-<a href="progress-dashboard.html" style="color:#7c3aed;font-weight:700">📊 דשבורד</a>
-</footer>
+<script src="nav-tree.js"></script>
 </body>
 </html>

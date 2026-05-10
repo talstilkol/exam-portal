@@ -82,8 +82,8 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
   .hero{padding:12px!important;background:#333!important;-webkit-print-color-adjust:exact}
   .sidebar{display:none}
   .sim-controls button{display:none}
-  .app,.sim-layout{grid-template-columns:1fr!important}
-  main,.sim-main{max-height:none!important;overflow:visible!important}
+  .app{grid-template-columns:1fr!important}
+  main{max-height:none!important;overflow:visible!important}
 }
 </style>
 </head>
@@ -525,15 +525,6 @@ document.addEventListener('keydown',function(e){
 <div style="position:fixed;bottom:12px;left:12px;background:#1e1b4b;color:#e2e8f0;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;opacity:.85;z-index:9999;direction:ltr;box-shadow:2px 2px 6px rgba(0,0,0,.3)">
   <span style="color:#facc15">Shortcuts:</span> ← → prev/next step | ESC back to list | / search
 </div>
-<footer style="border-top:3px solid #000;padding:16px 24px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-<strong>🔗 כלים נוספים:</strong>
-<a href="flow-canvas.html" style="color:#7c3aed;font-weight:700">🗺 מפת זרימה</a>
-<a href="file-graph.html" style="color:#7c3aed;font-weight:700">📂 File Graph</a>
-<a href="sequence-diagrams.html" style="color:#7c3aed;font-weight:700">🔄 Sequence Diagrams</a>
-<a href="practice-bank.html" style="color:#7c3aed;font-weight:700">💪 בנק תרגול</a>
-<a href="course-map.html" style="color:#7c3aed;font-weight:700">🗂 Course Map</a>
-<a href="code-browser.html" style="color:#7c3aed;font-weight:700">💻 קוד מקור</a>
-<a href="progress-dashboard.html" style="color:#7c3aed;font-weight:700">📊 דשבורד</a>
-</footer>
+<script src="nav-tree.js"></script>
 </body>
 </html>
