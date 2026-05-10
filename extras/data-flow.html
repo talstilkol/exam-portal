@@ -306,7 +306,7 @@ body {
   overflow-x: auto;
   padding: 20px 0 30px;
   scrollbar-width: thin;
-  scrollbar-color: #94a3b8 transparent;
+  scrollbar-color:#64748b transparent;
 }
 
 .flow-strip-wrapper::-webkit-scrollbar {
@@ -338,7 +338,7 @@ body {
 .flow-arrow {
   font-size: 2rem;
   font-weight: 900;
-  color: #94a3b8;
+  #64748b;
   padding: 0 8px;
   flex-shrink: 0;
   display: flex;
@@ -690,7 +690,7 @@ body {
 .scroll-hint {
   text-align: center;
   font-size: 0.8rem;
-  color: #94a3b8;
+  #64748b;
   margin-top: -10px;
   margin-bottom: 10px;
   display: none;
@@ -700,6 +700,21 @@ body {
   .scroll-hint {
     display: block;
   }
+}
+@media(prefers-color-scheme:dark){
+  body{background:#0f172a;color:#e2e8f0}
+  .sidebar{background:#1e293b;border-color:#334155}
+  .scenario-btn{background:#1e293b;color:#e2e8f0;border-color:#475569}
+  .scenario-btn:hover{background:#334155}
+  .scenario-btn.active{border-color:#7c3aed}
+  .viz-container{background:#1e293b;border-color:#334155}
+  .info-panel{background:#1e293b;border-color:#334155;color:#e2e8f0}
+  .step-item{background:#0f172a;border-color:#334155}
+}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  .hero{padding:12px!important;background:#333!important;-webkit-print-color-adjust:exact}
+  .sidebar{display:none}
 }
 </style>
 </head>

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🎯 אסטרטגיית מבחן — Quick Card</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--gold:#facc15;--green:#16a34a;--red:#dc2626;--orange:#f97316;--blue:#2563eb;--purple:#7c3aed;--shadow:4px 4px 0 #0f172a}
 *{box-sizing:border-box;margin:0}
@@ -42,7 +43,7 @@ li{margin-bottom:8px;font-size:14px}
 .checklist{list-style:none;padding:0}
 .checklist li{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid #e2e8f0;font-size:14px;font-weight:700;cursor:pointer;border-radius:8px;transition:.15s}
 .checklist li:hover{background:#f1f5f9}
-.checklist li::before{content:'☐';font-size:18px;color:#94a3b8;transition:.15s}
+.checklist li::before{content:'☐';font-size:18px;color:#64748b;transition:.15s}
 .checklist li.checked{opacity:.6;text-decoration:line-through}
 .checklist li.checked::before{content:'✓';color:var(--green)}
 .check-progress{display:flex;align-items:center;gap:10px;margin:12px 0;font-size:13px;font-weight:700;color:#64748b}
@@ -62,6 +63,10 @@ li{margin-bottom:8px;font-size:14px}
   .tip{background:#422006;color:#fde68a}
   .mini-card{background:#0f172a;border-color:#475569}
   .checklist li{border-color:#334155}
+}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  .hero{padding:12px!important;background:#333!important;-webkit-print-color-adjust:exact}
 }
 </style>
 </head>
@@ -236,11 +241,12 @@ li{margin-bottom:8px;font-size:14px}
   </div>
 </div>
 <script>
+function _lsGet(k,fb){try{var v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch(e){return fb}}
 document.querySelectorAll('.card-head').forEach(h=>{h.style.cursor='pointer';});
 
 // Clickable checklist with localStorage
 const STORAGE_KEY='es-checklist';
-function getChecked(){return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');}
+function getChecked(){return _lsGet(STORAGE_KEY,[]);}
 function saveChecked(arr){localStorage.setItem(STORAGE_KEY,JSON.stringify(arr));}
 
 const allItems=document.querySelectorAll('.checklist li');

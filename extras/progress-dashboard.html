@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>📊 דשבורד התקדמות</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--brand:#7c3aed;--gold:#facc15;--green:#16a34a;--blue:#2563eb;--red:#dc2626;--shadow:4px 4px 0 #0f172a}
 *{box-sizing:border-box;margin:0}
@@ -37,7 +38,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 .card-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 8px;border-radius:6px;background:#f8fafc}
 .card-item.done{background:#dcfce7}
 .card-item.done::before{content:'✓';color:var(--green);font-weight:900}
-.card-item.pending::before{content:'○';color:#94a3b8}
+.card-item.pending::before{content:'○';color:#64748b}
 .card-link{display:inline-block;margin-top:10px;padding:6px 14px;background:var(--brand);color:#fff;border:2px solid #000;border-radius:8px;font-weight:800;font-size:12px;text-decoration:none;transition:.15s}
 .card-link:hover{transform:translateY(-1px);box-shadow:2px 2px 0 #000}
 
@@ -46,6 +47,18 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 .reset-btn{padding:8px 20px;background:#fee2e2;color:#991b1b;border:2px solid #000;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer;transition:.15s}
 .reset-btn:hover{background:#fecaca;transform:translateY(-1px);box-shadow:2px 2px 0 #000}
 
+@media(prefers-color-scheme:dark){
+:root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--shadow:4px 4px 0 #000}
+body{background:var(--bg);color:var(--ink)}
+.card{background:#1e293b;border-color:#334155}
+.card-head{border-color:#334155}
+.card-bar{background:#334155;border-color:#475569}
+.card-stat{color:#94a3b8}
+.card-stat b{color:#e2e8f0}
+.card-item{background:#0f172a}
+.card-item.done{background:#064e3b}
+.reset-btn{background:#3b0764;color:#e9d5ff;border-color:#475569}
+}
 @media print{body{background:#fff}.hero{padding:12px;background:#333!important;-webkit-print-color-adjust:exact}.reset-bar{display:none}}
 </style>
 </head>
@@ -68,7 +81,7 @@ const TOOLS = [
     color: '#7c3aed',
     link: 'course-map.html',
     getProgress() {
-      const data = JSON.parse(localStorage.getItem('cm-checked') || '{}');
+      const data = _lsGet('cm-checked',{});
       const total = 16;
       const done = Object.keys(data).length;
       return { done, total, items: null };
@@ -81,7 +94,7 @@ const TOOLS = [
     color: '#2563eb',
     link: 'practice-bank.html',
     getProgress() {
-      const data = JSON.parse(localStorage.getItem('pb-solved') || '{}');
+      const data = _lsGet('pb-solved',{});
       const done = Object.keys(data).length;
       const total = 38;
       return { done, total, items: null };
@@ -94,7 +107,7 @@ const TOOLS = [
     color: '#16a34a',
     link: 'simulations.html',
     getProgress() {
-      const data = JSON.parse(localStorage.getItem('sim-progress') || '{}');
+      const data = _lsGet('sim-progress',{});
       const total = 9;
       const done = Object.keys(data).filter(k => data[k] === 'completed').length;
       return { done, total, items: null };
@@ -107,7 +120,7 @@ const TOOLS = [
     color: '#f97316',
     link: 'flow-canvas.html',
     getProgress() {
-      const data = JSON.parse(localStorage.getItem('fc-visited') || '[]');
+      const data = _lsGet('fc-visited',[]);
       const total = 27;
       const done = Array.isArray(data) ? data.length : 0;
       return { done, total, items: null };
@@ -120,7 +133,7 @@ const TOOLS = [
     color: '#06b6d4',
     link: 'code-browser.html',
     getProgress() {
-      const data = JSON.parse(localStorage.getItem('cb-viewed') || '[]');
+      const data = _lsGet('cb-viewed',[]);
       const total = 27;
       const done = Array.isArray(data) ? data.length : 0;
       return { done, total, items: null };
@@ -133,7 +146,7 @@ const TOOLS = [
     color: '#dc2626',
     link: 'file-graph.html',
     getProgress() {
-      const data = JSON.parse(localStorage.getItem('fg-visited') || '[]');
+      const data = _lsGet('fg-visited',[]);
       const total = 9;
       const done = Array.isArray(data) ? data.length : 0;
       return { done, total, items: null };
@@ -146,7 +159,7 @@ const TOOLS = [
     color: '#8b5cf6',
     link: 'sequence-diagrams.html',
     getProgress() {
-      const data = JSON.parse(localStorage.getItem('sd-viewed') || '[]');
+      const data = _lsGet('sd-viewed',[]);
       const total = 12;
       const done = Array.isArray(data) ? data.length : 0;
       return { done, total, items: null };
@@ -159,7 +172,7 @@ const TOOLS = [
     color: '#ec4899',
     link: 'exam-strategy.html',
     getProgress() {
-      const data = JSON.parse(localStorage.getItem('es-checklist') || '[]');
+      const data = _lsGet('es-checklist',[]);
       const total = 18;
       const done = Array.isArray(data) ? data.length : 0;
       return { done, total, items: null };
@@ -172,7 +185,7 @@ const TOOLS = [
     color: '#0891b2',
     link: 'exam-knowledge.html',
     getProgress() {
-      const data = JSON.parse(localStorage.getItem('ek-viewed') || '[]');
+      const data = _lsGet('ek-viewed',[]);
       const total = 10;
       const done = Array.isArray(data) ? data.length : 0;
       return { done, total, items: null };
@@ -185,7 +198,7 @@ const TOOLS = [
     color: '#b45309',
     link: 'debug-walkthrough.html',
     getProgress() {
-      const data = JSON.parse(localStorage.getItem('dw-completed') || '[]');
+      const data = _lsGet('dw-completed',[]);
       const total = 5;
       const done = Array.isArray(data) ? data.length : 0;
       return { done, total, items: null };
@@ -198,7 +211,7 @@ const TOOLS = [
     color: '#059669',
     link: 'data-flow.html',
     getProgress() {
-      const data = JSON.parse(localStorage.getItem('df-viewed') || '[]');
+      const data = _lsGet('df-viewed',[]);
       const total = 5;
       const done = Array.isArray(data) ? data.length : 0;
       return { done, total, items: null };

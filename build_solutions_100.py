@@ -890,7 +890,7 @@ PAGE_TEMPLATE = """<!doctype html>
   .code-line{{display:flex;gap:10px;padding:1px 4px;border-radius:4px;cursor:help;color:#e2e8f0}}
   .code-line:hover{{background:rgba(250,204,21,.1)}}
   .code-line:focus{{outline:2px solid #facc15;outline-offset:-2px}}
-  .code-line.is-comment .src{{color:#94a3b8;font-style:italic}}
+  .code-line.is-comment .src{{color:#64748b;font-style:italic}}
   .code-line.is-fix{{background:rgba(16,185,129,.18)}}
   .code-line.is-fix .src{{color:#86efac}}
   .ln{{color:#64748b;min-width:36px;text-align:left;user-select:none;flex:0 0 auto}}

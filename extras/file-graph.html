@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>📂 File Dependency Graph — תלות בין קבצים</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--shadow:4px 4px 0 #000}
 *{box-sizing:border-box;margin:0}
@@ -103,6 +104,7 @@ footer{display:none}
 </main>
 </div>
 <script>
+function _lsGet(k,fb){try{var v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch(e){return fb}}
 const PROJECTS = {
 "football": {
   title: "⚽ Football Club — ניהול קבוצות",
@@ -311,7 +313,7 @@ function selectProject(key){
   activeProject = key;
   activeNode = null;
   document.querySelectorAll('.sb-btn').forEach(b => b.classList.toggle('active', b.dataset.key === key));
-  const visited=JSON.parse(localStorage.getItem('fg-visited')||'[]');
+  const visited=_lsGet('fg-visited',[]);
   if(!visited.includes(key)){visited.push(key);localStorage.setItem('fg-visited',JSON.stringify(visited));}
   renderGraph(PROJECTS[key]);
   document.getElementById('detail-panel').classList.remove('show');

@@ -673,6 +673,24 @@ body {
   .section-block { box-shadow: none; break-inside: avoid; }
   .step-code { border: 1px solid #999; }
 }
+@media(prefers-color-scheme:dark){
+  body{background:#0f172a;color:#e2e8f0}
+  .sidebar{background:#1e293b;border-color:#334155}
+  .sidebar-header{background:#1e1b4b;border-color:#334155;color:#e2e8f0}
+  .sidebar-header .progress-text{color:#94a3b8}
+  .question-item{background:#1e293b;color:#e2e8f0;border-color:#475569;box-shadow:3px 3px 0 #000}
+  .question-item:hover{background:#334155}
+  .question-item.active{background:#1e3a5f;border-color:#2563eb}
+  .question-item .q-desc{color:#94a3b8}
+  .main-content{background:#0f172a}
+  .section-block{background:#1e293b;border-color:#475569;box-shadow:4px 4px 0 #000}
+  .question-header .q-description{background:#1e293b;border-color:#475569;box-shadow:3px 3px 0 #000;color:#e2e8f0}
+  .empty-state{color:#94a3b8}
+  .empty-state h2{color:#e2e8f0}
+  .topic-tab{background:#1e293b;color:#e2e8f0;border-color:#334155}
+  .topic-tab:hover{background:#334155}
+  .progress-bar-container{background:#334155;border-color:#475569}
+}
 </style>
 </head>
 <body>
@@ -962,7 +980,7 @@ const QUESTIONS = {
 // ============================================================
 let currentTopic = 'frontend';
 let currentQuestionId = null;
-let completedQuestions = JSON.parse(localStorage.getItem('dw-completed') || '[]');
+let completedQuestions = _lsGet('dw-completed',[]);
 
 // ============================================================
 // DOM REFERENCES

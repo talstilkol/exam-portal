@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🗂 Course Map — מפת הקורס</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--shadow:3px 3px 0 #0f172a}
 *{box-sizing:border-box;margin:0}
@@ -55,7 +56,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
   body{background:var(--bg)}
   .topic-body{border-color:#334155}
   .topic-concepts li{border-color:#334155}
-  .topic-sub,.topic-exam{color:#94a3b8}
+  .topic-sub,.topic-exam{color:#64748b}
   .compare-table tr:nth-child(even){background:#0f172a}
   .compare-table td{border-color:#334155}
 }
@@ -187,7 +188,7 @@ const TOPICS = [
    exams:"הכנת סביבת עבודה",qids:[]}
 ];
 
-const checked = JSON.parse(localStorage.getItem('cm-checked') || '{}');
+const checked = _lsGet('cm-checked',{});
 
 function updateProgress() {
   const count = Object.keys(checked).length;

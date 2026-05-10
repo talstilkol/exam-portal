@@ -88,11 +88,13 @@ const SITE_MAP = {
             ]},
             { id: "logistics", label: "מחסן לוגיסטי", icon: "📦", children: [
               { id: "logistics-q1", label: "Q1 React (75)", href: "solutions100/logistics-q1.html" },
-              { id: "logistics-q2", label: "Q2 JS (25)", href: "solutions100/logistics-q2.html" }
+              { id: "logistics-q2", label: "Q2 JS (25)", href: "solutions100/logistics-q2.html" },
+              { id: "logistics-q3", label: "Q3 Express", href: "solutions100/logistics-q3.html" }
             ]},
             { id: "currency", label: "מחשבון המרה", icon: "💱", children: [
               { id: "currency-q1", label: "Q1 React (80)", href: "solutions100/currency-q1.html" },
-              { id: "currency-q2", label: "Q2 JS (20)", href: "solutions100/currency-q2.html" }
+              { id: "currency-q2", label: "Q2 JS (20)", href: "solutions100/currency-q2.html" },
+              { id: "currency-q3", label: "Q3 Express", href: "solutions100/currency-q3.html" }
             ]},
             { id: "willing", label: "Willing", icon: "🤝", children: [
               { id: "willing-q1", label: "Q1 React (40)", href: "solutions100/willing-q1.html" },
@@ -115,9 +117,11 @@ const SITE_MAP = {
       children: [
         { id: "study-5-levels", label: "5 רמות לימוד", icon: "📚", href: "study-5-levels.html" },
         { id: "claude-study123", label: "Claude Study 123", icon: "🤖", href: "claude-study123-full.html" },
+        { id: "claude-study1444", label: "Claude Study 1444", icon: "🤖", href: "claude-study1444-full.html" },
         { id: "combined-claude", label: "חומר משולב מלא", icon: "📜", href: "combined-claude-full.html" },
         { id: "fullstack-illustrated", label: "Full Stack מאויר", icon: "🎨", href: "fullstack-illustrated.html" },
         { id: "fullstack-colorful", label: "Full Stack צבעוני v2", icon: "🌈", href: "fullstack-colorful-illustrated.html" },
+        { id: "file-tree-master", label: "עץ קבצים", icon: "🌳", href: "file-tree-master.html" },
         { id: "master-kit", label: "Master Kit", icon: "🧰", href: "master-kit-index.html" },
         { id: "homework-index", label: "שיעורי בית", icon: "📝", href: "homework-index.html" }
       ]
@@ -149,7 +153,9 @@ const SITE_MAP = {
       children: [
         { id: "progress-dashboard", label: "דשבורד התקדמות", icon: "📊", href: "progress-dashboard.html", meta: "11 כלים" },
         { id: "master-plan", label: "Master Plan", icon: "🗺", href: "master-plan.html" },
-        { id: "round4-report", label: "דוח QA Round 4", icon: "📋", href: "round4-grade-report.html" }
+        { id: "round4-report", label: "דוח QA Round 4", icon: "📋", href: "round4-grade-report.html" },
+        { id: "print-all-r3", label: "הדפסה — Round 3", icon: "🖨", href: "print-all-r3.html" },
+        { id: "print-all-r4", label: "הדפסה — Round 4", icon: "🖨", href: "print-all-r4.html" }
       ]
     }
   ]
@@ -252,7 +258,7 @@ function injectStyles() {
     .nt-link:hover{color:#7c3aed;text-decoration:underline}
     .nt-label{font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .nt-here{background:#dcfce7;padding:2px 8px;border-radius:6px;border:1.5px solid #16a34a;color:#166534}
-    .nt-meta{font-size:10px;color:#94a3b8;font-weight:600;margin-right:auto;white-space:nowrap}
+    .nt-meta{font-size:10px;color:#64748b;font-weight:600;margin-right:auto;white-space:nowrap}
     .nt-active>.nt-label,.nt-active>.nt-link{color:#7c3aed}
     .nt-children{transition:none}
     .nt-collapsed{display:none}
@@ -268,7 +274,7 @@ function injectStyles() {
       .nt-here{background:#1a2e1a;border-color:#16a34a;color:#86efac}
       .nt-toggle{color:#94a3b8}
       .nt-toggle:hover{background:#334155;color:#e2e8f0}
-      .nt-meta{color:#64748b}
+      .nt-meta{color:#94a3b8}
       .nt-breadcrumb{background:#0f172a;border-color:#334155;color:#94a3b8}
       .nt-current{background:#1a2e1a}
     }

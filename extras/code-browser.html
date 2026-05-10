@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>💻 דפדפן קוד מקור — כל 25 השאלות</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--shadow:5px 5px 0 #0f172a}
 *{box-sizing:border-box;margin:0}
@@ -23,7 +24,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 .sb-btn:hover{background:#f1f5f9;border-color:#cbd5e1}
 .sb-btn.active{background:var(--gold);border-color:#000;box-shadow:2px 2px 0 #000}
 .sb-icon{font-size:14px;min-width:18px;text-align:center}
-.sb-type{margin-right:auto;font-size:10px;color:#64748b;font-weight:800;padding:2px 6px;background:#f1f5f9;border-radius:4px}
+.sb-type{margin-right:auto;font-size:10px;color:#94a3b8;font-weight:800;padding:2px 6px;background:#f1f5f9;border-radius:4px}
 .main{padding:20px;overflow-y:auto;max-height:calc(100vh - 160px)}
 .file-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px;padding:8px;background:#020617;border:2.5px solid #000;border-radius:12px}
 .file-tab{padding:6px 12px;background:#1e293b;color:#94a3b8;border:2px solid #334155;border-radius:8px;cursor:pointer;font:inherit;font-weight:800;font-size:11px;transition:.15s;direction:ltr}
@@ -54,13 +55,25 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 .link-btn{padding:5px 12px;background:var(--brand);color:#fff;border:2px solid #000;border-radius:8px;font-weight:800;font-size:11px;text-decoration:none;transition:.15s;display:inline-flex;align-items:center;gap:4px}
 .link-btn:hover{transform:translateY(-1px);box-shadow:2px 2px 0 #000}
 /* syntax highlighting basics */
-.kw{color:#c084fc}.str{color:#86efac}.num{color:#fbbf24}.cm{color:#64748b;font-style:italic}.fn{color:#38bdf8}.op{color:#f472b6}.tag{color:#fb923c}.attr{color:#a78bfa}
+.kw{color:#c084fc}.str{color:#86efac}.num{color:#fbbf24}.cm{color:#94a3b8;font-style:italic}.fn{color:#38bdf8}.op{color:#f472b6}.tag{color:#fb923c}.attr{color:#a78bfa}
 .search-bar{display:flex;gap:6px;align-items:center;padding:6px 10px;background:#f1f5f9;border-bottom:2px solid #e2e8f0}
 .search-bar input{flex:1;border:2px solid #cbd5e1;border-radius:8px;padding:5px 10px;font:inherit;font-size:12px;font-weight:600;outline:none;transition:.15s}
 .search-bar input:focus{border-color:var(--brand);box-shadow:0 0 0 2px rgba(124,58,237,.15)}
-.search-bar .s-count{font-size:11px;font-weight:800;color:#64748b;white-space:nowrap}
+.search-bar .s-count{font-size:11px;font-weight:800;color:#94a3b8;white-space:nowrap}
 .search-bar button{border:2px solid #000;border-radius:6px;padding:3px 8px;font-weight:800;font-size:11px;cursor:pointer;background:var(--brand);color:#fff}
 .code-body .line.hl{background:rgba(250,204,21,.25)!important}
+@media(prefers-color-scheme:dark){
+:root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155;--shadow:5px 5px 0 #000}
+body{background:var(--bg)}
+.sidebar{background:#1e293b;border-color:#334155}
+.sb-btn:hover{background:#334155}
+.sb-btn.active{background:var(--gold);color:#000}
+.code-body{background:#0f172a;color:#e2e8f0}
+.code-head{border-color:#334155}
+.code-head span{color:#94a3b8}
+.search-bar input{background:#0f172a;color:#e2e8f0;border-color:#475569}
+.search-bar .s-count{color:#94a3b8}
+}
 @media print{.sidebar{display:none}.app{grid-template-columns:1fr}.hero{padding:12px}.code-body{max-height:none;overflow:visible}}
 </style>
 </head>
@@ -81,6 +94,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 </main>
 </div>
 <script>
+function _lsGet(k,fb){try{var v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch(e){return fb}}
 const SYSTEMS=[
 {name:'Football Club',icon:'⚽',questions:[
 {id:'football-q1',label:'React App',type:'react',pts:50,desc:'Login, Register, Team, EditPlayer',files:[
@@ -252,7 +266,7 @@ function selectQ(qid){
   activeQid=qid;
   activeFileIdx=0;
   document.querySelectorAll('.sb-btn').forEach(b=>b.classList.toggle('active',b.dataset.qid===qid));
-  const viewed=JSON.parse(localStorage.getItem('cb-viewed')||'[]');
+  const viewed=_lsGet('cb-viewed',[]);
   if(!viewed.includes(qid)){viewed.push(qid);localStorage.setItem('cb-viewed',JSON.stringify(viewed));}
   loadFile();
 }

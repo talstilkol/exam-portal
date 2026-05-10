@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🎮 סימולציות — בנה צעד אחר צעד</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--shadow:5px 5px 0 #0f172a}
 *{box-sizing:border-box;margin:0}
@@ -29,7 +30,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 .sim-back{background:none;border:2px solid var(--border);border-radius:8px;padding:6px 14px;font-weight:900;cursor:pointer;font-size:13px;margin-bottom:16px;transition:.15s}
 .sim-back:hover{background:#f1f5f9}
 .sim-progress{display:flex;align-items:center;gap:4px;margin-bottom:16px;flex-wrap:wrap}
-.sim-dot{width:32px;height:32px;border-radius:50%;border:2px solid #cbd5e1;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#94a3b8;transition:.3s;cursor:pointer}
+.sim-dot{width:32px;height:32px;border-radius:50%;border:2px solid #cbd5e1;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#64748b;transition:.3s;cursor:pointer}
 .sim-dot.done{background:var(--green);color:#fff;border-color:var(--green)}
 .sim-dot.current{background:var(--brand);color:#fff;border-color:var(--brand);transform:scale(1.15)}
 .sim-dot-line{width:16px;height:2px;background:#cbd5e1;transition:.3s}
@@ -107,6 +108,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 <div class="sim-active" id="sim-active"></div>
 
 <script>
+function _lsGet(k,fb){try{var v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch(e){return fb}}
 const SIMS = [
 {
   id:"react-app",title:"בנה אפליקציית React מאפס",icon:"⚛️",

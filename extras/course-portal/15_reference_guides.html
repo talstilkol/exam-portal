@@ -46,7 +46,7 @@
       padding: 15px 20px;
       border: none;
       background: transparent;
-      color: #94a3b8;
+      #64748b;
       text-align: right;
       font-size: 1rem;
       cursor: pointer;
@@ -179,7 +179,7 @@
   <div class="main-content" id="main-content">
     <div style="text-align: center; margin-top: 20vh;">
       <h1 style="color: var(--primary); font-size: 3rem;">Reference Guides</h1>
-      <p style="color: #94a3b8; font-size: 1.2rem;">בחר פרק לימוד מהתפריט הימני כדי לצפות בסיכומים המעמיקים.</p>
+      <p style="#64748b; font-size: 1.2rem;">בחר פרק לימוד מהתפריט הימני כדי לצפות בסיכומים המעמיקים.</p>
     </div>
   </div>
 
@@ -233,7 +233,7 @@
 
     if (lessons.length === 0) {
       mainContent.innerHTML = `
-        <div style="text-align:center; margin-top:15vh; color:#94a3b8;">
+        <div style="text-align:center; margin-top:15vh; #64748b;">
           <h2 style="color:var(--primary); font-size:2rem;">⚠️ לא נמצאו שיעורים</h2>
           <p style="margin-top:10px;">הקבצים ב-materials/raw-data/ לא נטענו.</p>
           <p style="margin-top:10px;"><a href="01_master_theory.html" style="color:var(--primary)">← עבור למדריך המאסטר</a></p>
@@ -290,16 +290,13 @@
           `;
         });
       } else {
-        html += `<p style="color: #94a3b8;">לא נמצאו מושגים בפרק זה.</p>`;
+        html += `<p style="#64748b;">לא נמצאו מושגים בפרק זה.</p>`;
       }
 
       mainContent.innerHTML = html;
       mainContent.scrollTo(0, 0);
     }
   </script>
-<script src="sidebar.js"></script>
-<script src="progress-engine.js"></script>
-<script src="theme-toggle.js"></script>
 <script src="../nav-tree.js"></script>
 </body>
 </html>

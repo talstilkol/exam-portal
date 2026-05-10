@@ -938,7 +938,6 @@
       <button onclick="resetProgress()" style="background:rgba(255,107,107,0.15); border:1px solid rgba(255,107,107,0.3); padding:8px 15px; border-radius:20px; color:#ff6b6b; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.background='rgba(255,107,107,0.25)'" onmouseout="this.style.background='rgba(255,107,107,0.15)'">🗑️ איפוס הכל</button>
     </div>
 
-    <script src="quiz_data.js"></script>
     <script>
       // Fuzzy Search & Keyboard Shortcuts
       let searchData = [
@@ -1420,7 +1419,7 @@
   <!-- === MIND MAP NAVIGATION === -->
   <section class="mindmap-section" style="background:transparent; border:none; box-shadow:none; padding:0; text-align:center;">
     <h2 style="justify-content:center; border:none; margin-bottom:10px; font-size:2.5em; text-shadow:0 0 20px rgba(56,189,248,0.5);">🚀 מסע הנתונים מקצה לקצה</h2>
-    <p style="color:#94a3b8; font-size:1.1em; margin-bottom:40px;">לחץ על תחנה כדי לראות את הטכנולוגיות המרכיבות אותה</p>
+    <p style="#64748b; font-size:1.1em; margin-bottom:40px;">לחץ על תחנה כדי לראות את הטכנולוגיות המרכיבות אותה</p>
     
     <div class="journey-container">
       
@@ -1591,7 +1590,7 @@
 
     .station-icon { font-size: 3.5em; margin-bottom: 10px; }
     .station-title { font-weight: 900; font-size: 1.5em; color: #f8fafc; margin-bottom: 5px; }
-    .station-subtitle { font-size: 1em; color: #94a3b8; font-weight: bold; margin-bottom: 15px; }
+    .station-subtitle { font-size: 1em; #64748b; font-weight: bold; margin-bottom: 15px; }
 
     .station-details {
       display: none; /* Hidden by default */
@@ -1631,7 +1630,7 @@
     .station-db .tech-pill:hover { background: rgba(192,132,252,0.15); border-color: #c084fc; }
 
     .tech-pill strong { font-size: 1.1em; color: white; margin-bottom: 2px; }
-    .tech-pill span { font-size: 0.85em; color: #94a3b8; }
+    .tech-pill span { font-size: 0.85em; #64748b; }
 
     /* Mobile Responsive Journey */
     @media (max-width: 1000px) {
@@ -1965,7 +1964,7 @@
     }
     .mm-subtitle {
       font-size: 0.85em;
-      color: #94a3b8;
+      #64748b;
       margin-top: 5px;
     }
 
@@ -2188,8 +2187,6 @@
     </div>
   </div>
 
-  <script src="progress-engine.js"></script>
-  <script src="gamification.js"></script>
   <script>
     // ===== Export / Import Progress =====
     function exportProgress() {
@@ -2328,8 +2325,6 @@
     document.addEventListener('DOMContentLoaded', updateExamCountdown);
     
   </script>
-<script src="focus_timer.js"></script>
-<script src="sidebar.js"></script>
 <script src="../nav-tree.js"></script>
 </body>
 </html>

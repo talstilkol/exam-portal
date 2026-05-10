@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🔄 Sequence Diagrams — תרחישי זרימה</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--shadow:5px 5px 0 #0f172a}
 *{box-sizing:border-box;margin:0}
@@ -19,7 +20,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 .sb-btn.active{background:var(--gold);border-color:#000;box-shadow:2px 2px 0 #000}
 .sb-num{background:#111827;color:var(--gold);min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900}
 .main{padding:28px;overflow-y:auto;max-height:calc(100vh - 120px)}
-.placeholder{text-align:center;padding:80px 20px;color:#94a3b8}
+.placeholder{text-align:center;padding:80px 20px;color:#64748b}
 .placeholder .big{font-size:60px;display:block;margin-bottom:12px}
 
 /* Scenario header */
@@ -255,7 +256,7 @@ const SCENARIOS = [
      code:"// App component mounts"},
     {from:1,to:3,label:"getItem('data')",type:"req",
      detail:"בטעינה ראשונית — useState מאותחל עם הערך מ-localStorage.",
-     code:"const [items, setItems] = useState(\n  JSON.parse(localStorage.getItem('items')) || []\n);",
+     code:"const [items, setItems] = useState(\n  _lsGet('items',null) || []\n);",
      tip:"תמיד || [] (או || {} או || '') כ-fallback — getItem מחזיר null אם אין נתונים"},
     {from:3,to:2,label:"stored JSON / null",type:"res",
      detail:"localStorage מחזיר את ה-string שנשמר, או null אם אין. JSON.parse הופך לאובייקט."},
@@ -491,7 +492,7 @@ function selectScenario(id) {
   stopPlay();
   _currentStep = -1;
   document.querySelectorAll('.sb-btn').forEach(b => b.classList.toggle('active', b.dataset.sid === id));
-  const viewed=JSON.parse(localStorage.getItem('sd-viewed')||'[]');
+  const viewed=_lsGet('sd-viewed',[]);
   if(!viewed.includes(id)){viewed.push(id);localStorage.setItem('sd-viewed',JSON.stringify(viewed));}
   renderScenario(_activeSc);
 }

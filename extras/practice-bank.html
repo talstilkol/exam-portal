@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🏋️ Practice Bank — תרגול אינטראקטיבי</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--shadow:5px 5px 0 #0f172a}
 *{box-sizing:border-box;margin:0}
@@ -34,7 +35,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 .filter-chip.active{background:var(--gold);border-color:#000;box-shadow:2px 2px 0 #000}
 .sb-btn.hidden{display:none}
 .main{padding:24px;overflow-y:auto;max-height:calc(100vh - 140px)}
-.placeholder{text-align:center;padding:80px 20px;color:#94a3b8}
+.placeholder{text-align:center;padding:80px 20px;color:#64748b}
 .placeholder .big{font-size:60px;display:block;margin-bottom:12px}
 
 /* Exercise */
@@ -51,7 +52,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 .editor-bar{display:flex;align-items:center;padding:8px 12px;background:#1e293b;border-bottom:2px solid #334155;gap:8px}
 .editor-bar .dot{width:10px;height:10px;border-radius:50%;border:1px solid #475569}
 .dot-r{background:#ef4444}.dot-y{background:#facc15}.dot-g{background:#22c55e}
-.editor-bar .fname{color:#94a3b8;font-size:12px;font-weight:700;margin-right:auto}
+.editor-bar .fname{color:#64748b;font-size:12px;font-weight:700;margin-right:auto}
 .editor-area{min-height:200px;padding:14px;font-family:Consolas,'Courier New',monospace;font-size:14px;color:#e2e8f0;line-height:1.6;direction:ltr;text-align:left;outline:none;white-space:pre-wrap;tab-size:2;background:#0f172a}
 .editor-area:focus{box-shadow:inset 0 0 0 2px var(--brand)}
 
@@ -369,7 +370,7 @@ const EXERCISES = [
     results.push({pass: hasGetItem, message: hasGetItem ? "useState initializes from localStorage" : "useState should be initialized with a value from localStorage.getItem(...)"});
     // Test 2: uses JSON.parse for reading
     const hasParse = /JSON\.parse\s*\(\s*localStorage\.getItem/.test(code);
-    results.push({pass: hasParse, message: hasParse ? "uses JSON.parse for reading" : "should use JSON.parse(localStorage.getItem('items')) to read stored data"});
+    results.push({pass: hasParse, message: hasParse ? "uses JSON.parse for reading" : "should use _lsGet('items',null) to read stored data"});
     // Test 3: useEffect calls localStorage.setItem
     const hasSetItem = /useEffect\s*\(/.test(code) && /localStorage\.setItem/.test(code);
     results.push({pass: hasSetItem, message: hasSetItem ? "useEffect calls localStorage.setItem" : "useEffect should call localStorage.setItem to save items on change"});
@@ -381,8 +382,8 @@ const EXERCISES = [
     results.push({pass: hasDep, message: hasDep ? "dependency array includes [items]" : "useEffect dependency array should be [items] so it runs on every change"});
     return results;
   },
-  hint:"useState: JSON.parse(localStorage.getItem('items')) || []. useEffect: localStorage.setItem('items', JSON.stringify(items)), dependency: [items].",
-  solution:"const [items, setItems] = useState(\n  JSON.parse(localStorage.getItem('items')) || []\n);\n\nuseEffect(() => {\n  localStorage.setItem('items', JSON.stringify(items));\n}, [items]);",
+  hint:"useState: _lsGet('items',null) || []. useEffect: localStorage.setItem('items', JSON.stringify(items)), dependency: [items].",
+  solution:"const [items, setItems] = useState(\n  _lsGet('items',null) || []\n);\n\nuseEffect(() => {\n  localStorage.setItem('items', JSON.stringify(items));\n}, [items]);",
   explain:"useState מאותחל עם הערך מ-localStorage (|| [] כ-fallback). useEffect עם [items] שומר בכל שינוי."
 },
 {
@@ -706,7 +707,7 @@ const EXERCISES = [
     results.push({pass:hasDep, message: hasDep?'dependency array includes items':'useEffect needs [items] in dependency array'});
     return results;
   },
-  hint:"useState(() => JSON.parse(localStorage.getItem('items') || '[]'));\nuseEffect(() => { localStorage.setItem('items', JSON.stringify(items)); }, [items]);",
+  hint:"useState(() => _lsGet('items',[]));\nuseEffect(() => { localStorage.setItem('items', JSON.stringify(items)); }, [items]);",
   solution:"import { useState, useEffect } from 'react';\n\nfunction ItemList() {\n  const [items, setItems] = useState(() => {\n    const saved = localStorage.getItem('items');\n    return saved ? JSON.parse(saved) : [];\n  });\n\n  useEffect(() => {\n    localStorage.setItem('items', JSON.stringify(items));\n  }, [items]);\n\n  function addItem(text) {\n    setItems([...items, { id: Date.now(), text }]);\n  }\n\n  return (\n    <div>\n      <button onClick={() => addItem('New Item')}>Add</button>\n      <ul>{items.map(i => <li key={i.id}>{i.text}</li>)}</ul>\n    </div>\n  );\n}",
   explain:"Lazy initializer ב-useState (פונקציה) רץ רק פעם אחת. useEffect עם [items] רץ בכל שינוי. JSON.parse/stringify הכרחיים כי localStorage שומר רק strings."
 },
@@ -980,7 +981,7 @@ const EXERCISES = [
 ];
 
 // Track solved
-let solved = JSON.parse(localStorage.getItem('pb-solved') || '{}');
+let solved = _lsGet('pb-solved',{});
 let streak = 0;
 
 function updateStats() {
