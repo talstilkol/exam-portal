@@ -772,8 +772,8 @@ function renderTheory(f,el){
 function renderBugs(bugs){
   if(!bugs||!bugs.length) return '';
   let html=`<div class="flow-section"><div class="flow-head bug-h">⚠️ באגים נפוצים — מה לא לשכוח</div><div class="flow-body"><div class="bug-chips">`;
-  bugs.forEach(b=>{
-    html+=`<span class="bug-chip ${b.severity}">${b.severity==='critical'?'🔴':b.severity==='high'?'🟠':b.severity==='medium'?'🟡':'🟢'} ${b.text}</span>`;
+  bugs.forEach((b,bi)=>{
+    html+=`<span class="bug-chip ${b.severity} crosslink" data-link="bug-${bi}" onclick="crossHighlight('bug-${bi}')">${b.severity==='critical'?'🔴':b.severity==='high'?'🟠':b.severity==='medium'?'🟡':'🟢'} ${b.text}</span>`;
   });
   html+=`</div></div></div>`;
   return html;
@@ -848,6 +848,57 @@ function buildCrossLinks(f){
         if(low.includes(l.label.toLowerCase())||low.includes(l.id)) links.push('task-'+ti);
       });
       links.forEach(lnk=>{_crossMap[lnk]=_crossMap[lnk]||new Set();links.forEach(l2=>{if(lnk!==l2)_crossMap[lnk].add(l2);});});
+    });
+  }
+  if(f.type==='theory' && f.steps){
+    f.steps.forEach((s,i)=>{
+      const links=['step-'+i];
+      (f.tasks||[]).forEach((t,ti)=>{
+        const low=t.toLowerCase();
+        if(low.includes(s.label.toLowerCase())) links.push('task-'+ti);
+      });
+      if(f.tasks && f.tasks[i]) links.push('task-'+i);
+      links.forEach(l=>{_crossMap[l]=_crossMap[l]||new Set();links.forEach(l2=>{if(l!==l2)_crossMap[l].add(l2);});});
+    });
+  }
+  // Link validations to related components and tasks
+  if(f.type==='react' && f.validations){
+    f.validations.forEach((v,vi)=>{
+      const links=['valid-'+vi];
+      const low=v.toLowerCase();
+      (f.components||[]).forEach(c=>{
+        if(low.includes(c.label.toLowerCase())||low.includes(c.id.toLowerCase())) links.push('comp-'+c.id);
+      });
+      (f.tasks||[]).forEach((t,ti)=>{
+        if(t.toLowerCase().includes('ולידצ')||t.toLowerCase().includes('valid')||t.toLowerCase().includes(low.split(':')[0].trim().toLowerCase())) links.push('task-'+ti);
+      });
+      if(links.length>1) links.forEach(l=>{_crossMap[l]=_crossMap[l]||new Set();links.forEach(l2=>{if(l!==l2)_crossMap[l].add(l2);});});
+    });
+  }
+  // Link bug chips to related components, tasks, and validations
+  if(f.bugs){
+    f.bugs.forEach((b,bi)=>{
+      const links=['bug-'+bi];
+      const low=b.text.toLowerCase();
+      if(f.type==='react'){
+        (f.components||[]).forEach(c=>{
+          if(low.includes(c.label.toLowerCase())||low.includes(c.id.toLowerCase())) links.push('comp-'+c.id);
+        });
+        (f.state||[]).forEach(s=>{
+          if(low.includes(s.label.toLowerCase())||low.includes(s.id.toLowerCase())) links.push('state-'+s.id);
+        });
+      }
+      if(f.type==='express' && f.layers){
+        f.layers.forEach(l=>{
+          if(low.includes(l.label.toLowerCase())||low.includes(l.id)) links.push('layer-'+l.id);
+        });
+      }
+      (f.tasks||[]).forEach((t,ti)=>{
+        const tlow=t.toLowerCase();
+        const bugWords=low.split(/[\s—,]+/).filter(w=>w.length>3);
+        if(bugWords.some(w=>tlow.includes(w))) links.push('task-'+ti);
+      });
+      if(links.length>1) links.forEach(l=>{_crossMap[l]=_crossMap[l]||new Set();links.forEach(l2=>{if(l!==l2)_crossMap[l].add(l2);});});
     });
   }
   // Link tree items to file names mentioned in tasks/components

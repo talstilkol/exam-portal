@@ -248,6 +248,13 @@
   .roadmap-step.r-do{background:linear-gradient(135deg,#fef3c7,#fde68a); border-style:dashed}
   body.dark .roadmap-step.r-do{background:linear-gradient(135deg,#451a03,#78350f)}
 
+  /* Flow map shortcut */
+  .flow-map-shortcut{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px auto 0;max-width:1100px}
+  .flow-map-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:3px solid #000;border-radius:14px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;box-shadow:4px 4px 0 #000;transition:.15s;text-decoration:none}
+  .flow-map-btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #000}
+  .flow-map-btn .fmb-ico{font-size:22px}
+  body.dark .flow-map-btn{background:linear-gradient(135deg,#5b21b6,#1d4ed8)}
+
   /* === Universal tooltip / popover === */
   .viz-tooltip{
     position:fixed; z-index:10000; max-width:520px; min-width:240px;
@@ -1270,10 +1277,26 @@
         if (lvl) {
           window.__portalGoToLevel(parseInt(lvl,10));
         } else if (examFirst) {
-          // Open the first exam question (Football Q1)
           window.__portalGoToQ('football-q1');
         }
       });
+    });
+    // Flow map shortcut button
+    home.insertAdjacentHTML('beforeend', `
+      <div class="flow-map-shortcut">
+        <button class="flow-map-btn" id="flow-map-btn">
+          <span class="fmb-ico">🗺</span>
+          מפת זרימה מלאה — כל 25 השאלות
+          <span style="font-size:12px;opacity:.8">→</span>
+        </button>
+      </div>
+    `);
+    document.getElementById('flow-map-btn').addEventListener('click', () => {
+      document.querySelector('[data-tab="extras"]').click();
+      setTimeout(() => {
+        const card = document.querySelector('[data-extra="flow-canvas.html"]');
+        if (card) card.click();
+      }, 150);
     });
   }
   renderLearningRoadmap();
