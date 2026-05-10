@@ -2,6 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>סיכום פיתוח אתרים - 5 רמות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1872,7 +1873,8 @@ code:[
  x:{'<html':'התגית שעוטפת את כל הדף — כמו עטיפה של מתנה','lang':'שפת העמוד — חשוב ל־SEO ולנגישות','"he"':'קוד שפה — he זה עברית','dir':'כיוון הקריאה','"rtl"':'right-to-left — מימין לשמאל, לעברית'}},
 {c:'<head>',e:'פותח אזור מטא־דאטה (לא נראה למשתמש)',
  x:{'<head>':'אזור הראש של הדף — כמו ההכרזות בתחילת ספר. לא בתוכן הראשי'}},
-{c:'  <meta charset="UTF-8">',e:'קידוד תווים — תומך בעברית ובאמוג׳ים',
+{c:'  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">',e:'קידוד תווים — תומך בעברית ובאמוג׳ים',
  x:{'<meta':'תגית מטא — מידע על הדף עצמו','charset':'איזה קידוד תווים','"UTF-8"':'תקן עולמי — תומך בכל השפות והאמוג׳ים'}},
 {c:'  <title>האתר שלי</title>',e:'כותרת הלשונית בדפדפן',
  x:{'<title>':'הכותרת — מה שיופיע בלשונית של הדפדפן ובחיפוש בגוגל','</title>':'סגירת תגית הכותרת'}},
@@ -2541,9 +2543,11 @@ const EXAM_DATA = {
         {opt:'<html lang="he">',when:'אם dir בגוף',pros:'מינימלי',cons:'אין RTL גלובלי'},
         {opt:'<html>',when:'אסור',pros:'—',cons:'❌ אין שפה — נגישות נפגעת'}
       ]},
-    3:{title:'<meta charset="UTF-8">',tag:'קידוד תווים',
+    3:{title:'<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">',tag:'קידוד תווים',
       rows:[
-        {opt:'<meta charset="UTF-8">',when:'תמיד',pros:'תומך בכל השפות + אמוג׳ים',cons:'—',recommended:true},
+        {opt:'<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">',when:'תמיד',pros:'תומך בכל השפות + אמוג׳ים',cons:'—',recommended:true},
         {opt:'<meta charset="windows-1255">',when:'מערכות ישנות',pros:'עברית',cons:'❌ לא תומך באמוג׳ים'},
         {opt:'בלי charset',when:'אסור',pros:'—',cons:'❌ עברית עלולה להישבר'}
       ]},
