@@ -1,0 +1,5366 @@
+{
+  "generatedAt": "2026-05-09T08:48:58.261Z",
+  "mode": "copy-export",
+  "sourceRoot": "/Users/tal/Desktop/חומרים לשיעור",
+  "counts": {
+    "files": 324,
+    "lessons": 29,
+    "topics": 5,
+    "unclassified": 1,
+    "indexDataScripts": 118
+  },
+  "indexDataScripts": [
+    "data/ai_development.js",
+    "data/animations.js",
+    "data/anti_patterns.js",
+    "data/bug_quests.js",
+    "data/capstones.js",
+    "data/cluster_index.js",
+    "data/code_blocks.js",
+    "data/comparisons.js",
+    "data/concept_comics.js",
+    "data/concept_enrichment.js",
+    "data/concept_videos.js",
+    "data/concise_definitions.js",
+    "data/counterfactuals.js",
+    "data/course_blueprints.js",
+    "data/exam_manual_review_promotions.js",
+    "data/exam_practice_extras.js",
+    "data/exam_tasks_tree.js",
+    "data/extended_explanations.js",
+    "data/flashcards.js",
+    "data/glossary.js",
+    "data/grandma_knowledge.js",
+    "data/grandma_visuals.js",
+    "data/guided_builds.js",
+    "data/homework_exam_mode.js",
+    "data/interview_prep.js",
+    "data/lesson_ai_engineering.js",
+    "data/lesson_auth_security.js",
+    "data/lesson_closures.js",
+    "data/lesson_design_systems.js",
+    "data/lesson_devops_deploy.js",
+    "data/lesson_html_css_foundations.js",
+    "data/lesson_nestjs.js",
+    "data/lesson_nextjs.js",
+    "data/lesson_quiz_keys.js",
+    "data/lesson_sql_orm.js",
+    "data/lesson_tooling_git.js",
+    "data/lesson11.js",
+    "data/lesson12.js",
+    "data/lesson13.js",
+    "data/lesson15.js",
+    "data/lesson16.js",
+    "data/lesson17.js",
+    "data/lesson18.js",
+    "data/lesson19.js",
+    "data/lesson20.js",
+    "data/lesson21.js",
+    "data/lesson22.js",
+    "data/lesson23.js",
+    "data/lesson24.js",
+    "data/lesson25.js",
+    "data/lesson26.js",
+    "data/lesson27.js",
+    "data/level100_release_gates.js",
+    "data/memory_palaces.js",
+    "data/metaphors.js",
+    "data/mnemonics.js",
+    "data/option_feedback.js",
+    "data/pair_match.js",
+    "data/pathways.js",
+    "data/portal_decision_aids.js",
+    "data/prerequisites.js",
+    "data/problem_first.js",
+    "data/questions_bank.js",
+    "data/questions_bug.js",
+    "data/questions_build.js",
+    "data/questions_trace.js",
+    "data/quick_guide.js",
+    "data/react_blueprint.js",
+    "data/scenarios.js",
+    "data/site_navigation_tree.js",
+    "data/solution_guide_drills.js",
+    "data/stage_zero.js",
+    "data/svcollege_builds_ai_engineering.js",
+    "data/svcollege_builds_auth.js",
+    "data/svcollege_builds_bridge.js",
+    "data/svcollege_builds_design_systems.js",
+    "data/svcollege_builds_devops.js",
+    "data/svcollege_builds_nestjs.js",
+    "data/svcollege_builds_nextjs.js",
+    "data/svcollege_builds_sql_orm.js",
+    "data/svcollege_code_blocks.js",
+    "data/svcollege_prerequisites_ai_engineering.js",
+    "data/svcollege_prerequisites_auth.js",
+    "data/svcollege_prerequisites_design_systems.js",
+    "data/svcollege_prerequisites_devops.js",
+    "data/svcollege_prerequisites_nestjs.js",
+    "data/svcollege_prerequisites_nextjs.js",
+    "data/svcollege_prerequisites_sql_orm.js",
+    "data/svcollege_questions_ai_engineering.js",
+    "data/svcollege_questions_auth.js",
+    "data/svcollege_questions_bridge.js",
+    "data/svcollege_questions_design_systems.js",
+    "data/svcollege_questions_devops.js",
+    "data/svcollege_questions_nestjs.js",
+    "data/svcollege_questions_nextjs.js",
+    "data/svcollege_questions_sql_orm.js",
+    "data/svcollege_traces_ai_engineering.js",
+    "data/svcollege_traces_auth.js",
+    "data/svcollege_traces_bridge.js",
+    "data/svcollege_traces_design_systems.js",
+    "data/svcollege_traces_devops.js",
+    "data/svcollege_traces_foundation_tooling_activity.js",
+    "data/svcollege_traces_lesson11_activity.js",
+    "data/svcollege_traces_lesson12_activity.js",
+    "data/svcollege_traces_lesson13_activity.js",
+    "data/svcollege_traces_lesson15_activity.js",
+    "data/svcollege_traces_lesson16_activity.js",
+    "data/svcollege_traces_lesson17_activity.js",
+    "data/svcollege_traces_nestjs.js",
+    "data/svcollege_traces_nextjs.js",
+    "data/svcollege_traces_sql_orm.js",
+    "data/war_stories.js",
+    "data/what_if.js",
+    "data/workbook_taskmanager.js",
+    "data/zz_questions_bug_phase2.js",
+    "data/zz_questions_build_phase2.js",
+    "data/zz_questions_trace_phase2.js",
+    "data/zz_questions_trace_phase3.js"
+  ],
+  "lessons": [
+    {
+      "id": "ai_development",
+      "title": "שימוש נכון ב-AI בפיתוח",
+      "description": "כיצד מפתח־ת מודרני־ת משלב/ת מודלים ושירותי AI בעבודה היומיומית — כלי IDE, prompts, code review, ומגבלות.",
+      "dir": "materials/by-lesson/ai_development",
+      "rawFiles": [
+        "materials/raw-data/ai_development.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [],
+      "concepts": [
+        "AI",
+        "Cursor",
+        "Windsurf",
+        "Claude Code",
+        "ChatGPT",
+        "Copilot",
+        "Prompt Engineering",
+        "AI Pair Programming",
+        "AI Code Review",
+        "AI Limitations",
+        "Hallucinations",
+        "Context Window"
+      ]
+    },
+    {
+      "id": "lesson_11",
+      "title": "שיעור 11 - Arrays, Functions, and Scope",
+      "description": "מערכים, פונקציות חץ, ההבדל בין משתנים לפי ערך והפניה (Value vs Reference), ומתודות מערך מתקדמות ב-JavaScript להפעלה על אוספי נתונים.",
+      "dir": "materials/by-lesson/lesson_11",
+      "rawFiles": [
+        "materials/raw-data/lesson11.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/Lesson 11.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/Lesson 11.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_traces_lesson11_activity.js"
+      ],
+      "concepts": [
+        "Array",
+        "Index",
+        "By Value",
+        "By Reference",
+        "Pointer",
+        "undefined",
+        "boolean",
+        "number",
+        "string",
+        "function",
+        "object",
+        "let",
+        "var",
+        "scope",
+        "arrow function",
+        "forEach",
+        "filter",
+        "map",
+        "find",
+        "reduce",
+        "spread",
+        "push",
+        "pop",
+        "shift",
+        "unshift",
+        "sort",
+        "splice",
+        "toString"
+      ]
+    },
+    {
+      "id": "lesson_12",
+      "title": "שיעור 12 - תרגול מתודות מערך",
+      "description": "צלילה לעומק מתודות המערך החזקות ביותר ב-JavaScript: map, forEach, filter ו-spread. נלמד לשנות, לסנן וליצור מערכים חדשים בצורה אלגנטית תוך שליטה מלאה באינדקסים, ערכים ותנאים.",
+      "dir": "materials/by-lesson/lesson_12",
+      "rawFiles": [
+        "materials/raw-data/lesson12.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_traces_lesson12_activity.js"
+      ],
+      "concepts": [
+        "map",
+        "forEach",
+        "filter",
+        "spread",
+        "uppercase",
+        "lowercase",
+        "index",
+        "array",
+        "יצירת מערך חדש (new array)",
+        "סינון לפי תנאי",
+        "יצירת מערך חדש מתוך קיים",
+        "עבודה עם ערכים לפי אינדקס"
+      ]
+    },
+    {
+      "id": "lesson_13",
+      "title": "שיעור 13 - Objects, DOM, Classes & Storage",
+      "description": "נלמד על מבני נתונים מתקדמים באובייקטים, רתימת כוח ה-DOM לשליטה ושינוי ממשק המשתמש, יבוא פרדיגמת המחלקות (Classes), ושמירת נתונים מקומית בדפדפן.",
+      "dir": "materials/by-lesson/lesson_13",
+      "rawFiles": [
+        "materials/raw-data/lesson13.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/Lesson 13.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/Lesson 13.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_traces_lesson13_activity.js"
+      ],
+      "concepts": [
+        "Object",
+        "Property",
+        "Value",
+        "Method",
+        "DOM",
+        "Document Object Model",
+        "document",
+        "getElementById",
+        "getElementsByTagName",
+        "getElementsByClassName",
+        "innerHTML",
+        "attribute",
+        "setAttribute",
+        "style",
+        "createElement",
+        "appendChild",
+        "removeChild",
+        "replaceChild",
+        "class",
+        "constructor",
+        "instance",
+        "new",
+        "method",
+        "inheritance",
+        "extends",
+        "super",
+        "localStorage",
+        "sessionStorage",
+        "setItem",
+        "getItem",
+        "querySelector",
+        "querySelectorAll"
+      ]
+    },
+    {
+      "id": "lesson_15",
+      "title": "שיעור 15 - Errors, Closure, Async, Promise, Fetch",
+      "description": "שיעור מתקדם שמכניס את התלמיד לעולם הטיפול בשגיאות, הבנת Closures, והקפיצה הגדולה לאסינכרוניות ב-JavaScript.",
+      "dir": "materials/by-lesson/lesson_15",
+      "rawFiles": [
+        "materials/raw-data/lesson15.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/lesson 15.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/lesson 15.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_traces_lesson15_activity.js"
+      ],
+      "concepts": [
+        "Error",
+        "Exception",
+        "try",
+        "catch",
+        "throw",
+        "Error Object",
+        "Closure",
+        "Scope",
+        "Synchronous",
+        "Asynchronous",
+        "setTimeout",
+        "anonymous function",
+        "Promise",
+        "resolve",
+        "reject",
+        "fetch",
+        "then",
+        "catch (Promise)"
+      ]
+    },
+    {
+      "id": "lesson_16",
+      "title": "שיעור 16 - Node.js, npm, Modules, File System",
+      "description": "הכניסה לעולם הבקנד! נלמד להריץ JavaScript מחוץ לדפדפן, להשתמש בחבילות חיצוניות, לחלק קוד למודולים, ולעבוד עם מערכת הקבצים של מערכת ההפעלה.",
+      "dir": "materials/by-lesson/lesson_16",
+      "rawFiles": [
+        "materials/raw-data/lesson16.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/Lesson 16.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/Lesson 16.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_traces_lesson16_activity.js"
+      ],
+      "concepts": [
+        "Node.js",
+        "V8",
+        "CLI",
+        "Command Line Interface",
+        "node file.js",
+        "npm",
+        "npm init",
+        "npm install",
+        "npm start",
+        "package.json",
+        "dependencies",
+        "module",
+        "require",
+        "module.exports",
+        "JSON",
+        "dir",
+        "cd",
+        "mkdir",
+        "type nul",
+        "fs",
+        "fs.open",
+        "fs.writeFile",
+        "fs.appendFile",
+        "fs.readFile",
+        "fs.unlink",
+        "fs.rename",
+        "File System"
+      ]
+    },
+    {
+      "id": "lesson_17",
+      "title": "שיעור 17 - HTTP, Express, REST API",
+      "description": "הצעד הגדול לעולם הרשת! נבין איך דפדפנים ושרתים מדברים זה עם זה דרך פרוטוקול HTTP, נבנה שרת ראשון עם Express, ונלמד לתכנן API מסודר לפי עקרונות REST.",
+      "dir": "materials/by-lesson/lesson_17",
+      "rawFiles": [
+        "materials/raw-data/lesson17.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/Lesson 17.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/Lesson 17.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_traces_lesson17_activity.js"
+      ],
+      "concepts": [
+        "HTTP",
+        "URL",
+        "Protocol",
+        "Domain",
+        "Path",
+        "Client",
+        "Server",
+        "Request",
+        "Response",
+        "headers",
+        "REST API",
+        "CRUD",
+        "Create",
+        "Read",
+        "Update",
+        "Delete",
+        "method",
+        "body",
+        "Express",
+        "app",
+        "port",
+        "app.get",
+        "app.post",
+        "app.listen",
+        "middleware",
+        "app.use",
+        "static files",
+        "body-parser",
+        "Route",
+        "JSON",
+        "form",
+        "POST",
+        "GET",
+        "event.preventDefault",
+        "Query Parameters",
+        "Status Codes",
+        "1xx-2xx-3xx",
+        "4xx-5xx"
+      ]
+    },
+    {
+      "id": "lesson_18",
+      "title": "שיעור 18 - שיעורי בית Node/Express: טפסים, ולידציה ואחסון",
+      "description": "תרגול מעשי של בניית שרת Express מלא עם טיפול בטפסי הרשמה, ולידציה בצד שרת, ואחסון נתונים. מחברים את כל החלקים שלמדנו לאפליקציה עובדת.",
+      "dir": "materials/by-lesson/lesson_18",
+      "rawFiles": [
+        "materials/raw-data/lesson18.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [],
+      "concepts": [
+        "Node.js",
+        "Express",
+        "server",
+        "route",
+        "GET",
+        "POST",
+        "form",
+        "validation",
+        "username",
+        "email",
+        "password",
+        "server-side storage"
+      ]
+    },
+    {
+      "id": "lesson_19",
+      "title": "lesson_19",
+      "description": "",
+      "dir": "materials/by-lesson/lesson_19",
+      "rawFiles": [
+        "materials/raw-data/lesson19.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/lesson 19.pdf",
+          "targetPath": "materials/source-assets/lessons/lesson 19.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [],
+      "concepts": []
+    },
+    {
+      "id": "lesson_20",
+      "title": "lesson_20",
+      "description": "",
+      "dir": "materials/by-lesson/lesson_20",
+      "rawFiles": [
+        "materials/raw-data/lesson20.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/Lesson 20.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/Lesson 20.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [],
+      "concepts": []
+    },
+    {
+      "id": "lesson_21",
+      "title": "שיעור 21 — React בסיסי",
+      "description": "מבוא ל-React: יצירת פרויקט עם Vite, מבנה הקבצים, קומפוננטות פונקציונליות, JSX, props, ועיבוד רשימות. הבסיס לכל אפליקציית React.",
+      "dir": "materials/by-lesson/lesson_21",
+      "rawFiles": [
+        "materials/raw-data/lesson21.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/Lesson 21.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/Lesson 21.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [],
+      "concepts": [
+        "React",
+        "Client Side",
+        "React Native",
+        "Vite",
+        "npm create vite@latest",
+        "npm install",
+        "npm run dev",
+        "index.html",
+        "main.jsx",
+        "App.jsx",
+        "App.css",
+        "Component",
+        "RFC",
+        "JSX",
+        "className",
+        "{}",
+        "props",
+        "import",
+        "export default",
+        "inline style",
+        "CSS import",
+        "map",
+        "rendering"
+      ]
+    },
+    {
+      "id": "lesson_22",
+      "title": "שיעור 22 — useState, Immutable State",
+      "description": "ניהול state ב-React באמצעות useState, ההבדל בין mutable ל-immutable, וכיצד עוברים נתונים מקומפוננטה לאב לבן באמצעות props.",
+      "dir": "materials/by-lesson/lesson_22",
+      "rawFiles": [
+        "materials/raw-data/lesson22.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/Lesson 22.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/Lesson 22.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [],
+      "concepts": [
+        "Hook",
+        "useState",
+        "state",
+        "setState",
+        "re-render",
+        "mutable",
+        "immutable",
+        "reference",
+        "array reference",
+        "object reference",
+        "onChange",
+        "controlled input",
+        "props",
+        "parent component",
+        "child component",
+        "passing function as prop",
+        "addPost",
+        "deletePost"
+      ]
+    },
+    {
+      "id": "lesson_23",
+      "title": "שיעור 23 — Router, Context API",
+      "description": "ניווט ב-React Router (Routes, Link, useNavigate, useParams), וניהול state גלובלי עם Context API (createContext, Provider, useContext). הימנעות מ-prop drilling.",
+      "dir": "materials/by-lesson/lesson_23",
+      "rawFiles": [
+        "materials/raw-data/lesson23.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/LESSON 23.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/LESSON 23.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [],
+      "concepts": [
+        "Router",
+        "URL",
+        "Route",
+        "Path",
+        "BrowserRouter",
+        "Routes",
+        "element",
+        "Link",
+        "to",
+        "useNavigate",
+        "dynamic route",
+        "useParams",
+        "Context API",
+        "createContext",
+        "Provider",
+        "value",
+        "useContext",
+        "Prop Drilling",
+        "MainScreen",
+        "AddPost",
+        "PostList"
+      ]
+    },
+    {
+      "id": "lesson_24",
+      "title": "שיעור 24 — useEffect, useMemo, useRef",
+      "description": "Hooks מתקדמים: useEffect לתופעות לוואי, useMemo למטמון חישובים יקרים, ו-useRef לגישה ישירה ל-DOM ולשמירת ערכים בלי לגרום ל-re-render.",
+      "dir": "materials/by-lesson/lesson_24",
+      "rawFiles": [
+        "materials/raw-data/lesson24.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/lesson24.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/lesson24.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [],
+      "concepts": [
+        "useEffect",
+        "side effect",
+        "dependency array",
+        "fetching data",
+        "fetch",
+        "state update",
+        "infinite loop",
+        "useMemo",
+        "expensive calculation",
+        "memoization",
+        "useRef",
+        "ref",
+        "ref.current",
+        "DOM element",
+        "focus",
+        "cleanup"
+      ]
+    },
+    {
+      "id": "lesson_25",
+      "title": "שיעור 25 — Tailwind CSS + פרויקט סרטים",
+      "description": "Tailwind CSS לעיצוב מהיר עם utility classes; flex/grid לפריסה; פרויקט מעשי של אפליקציית סרטים עם search, rating, ו-CRUD.",
+      "dir": "materials/by-lesson/lesson_25",
+      "rawFiles": [
+        "materials/raw-data/lesson25.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/Lesson 25.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/Lesson 25.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [],
+      "concepts": [
+        "Tailwind CSS",
+        "utility classes",
+        "responsive design",
+        "flex",
+        "grid",
+        "padding",
+        "bg color",
+        "rounded",
+        "Tailwind installation",
+        "rating",
+        "search",
+        "add/delete movie",
+        "validation",
+        "navbar"
+      ]
+    },
+    {
+      "id": "lesson_26",
+      "title": "שיעור 26 — TypeScript + React+TS",
+      "description": "TypeScript: type annotations, interface, type alias, union, generics, ושילוב React עם TS — Typing Props, State, Functions. Type safety בזמן compile.",
+      "dir": "materials/by-lesson/lesson_26",
+      "rawFiles": [
+        "materials/raw-data/lesson26.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/Lesson 26 part 2.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/Lesson 26 part 2.pptx.pdf",
+          "status": "copied"
+        },
+        {
+          "sourcePath": "lessons/Lesson 26.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/Lesson 26.pptx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [],
+      "concepts": [
+        "TypeScript",
+        "Strongly Typed",
+        "Compiler",
+        "tsc",
+        ".ts",
+        ".js",
+        "tsconfig.json",
+        "type annotation",
+        "string",
+        "number",
+        "boolean",
+        "array type",
+        "tuple",
+        "enum",
+        "void",
+        "readonly",
+        "optional field",
+        "type alias",
+        "React + TypeScript",
+        "Type Safety",
+        "Typing Props",
+        "Typing State",
+        "Function Prop Type",
+        "models folder",
+        "Todo.ts",
+        "interface",
+        "interface vs type",
+        "union",
+        "never",
+        "any"
+      ]
+    },
+    {
+      "id": "lesson_27",
+      "title": "שיעור 27 — שיעורי בית TS + Budget Manager",
+      "description": "פרויקט מעשי ב-TypeScript: ניהול תקציב עם types/interfaces, union types, type narrowing, ו-CRUD מלא. שילוב כל כלי TS שלמדנו.",
+      "dir": "materials/by-lesson/lesson_27",
+      "rawFiles": [
+        "materials/raw-data/lesson27.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/lesson 27_homwork.docx.pdf",
+          "targetPath": "materials/source-assets/lessons/lesson 27_homwork.docx.pdf",
+          "status": "copied"
+        },
+        {
+          "sourcePath": "lessons/שיעורי בת lesson 27_homwork.pdf",
+          "targetPath": "materials/source-assets/lessons/שיעורי בת lesson 27_homwork.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [],
+      "concepts": [
+        "type",
+        "enum",
+        "interface",
+        "extends interface",
+        "Union Type",
+        "Type Narrowing",
+        "Book",
+        "Genre",
+        "BaseUser",
+        "GuestUser",
+        "RegisteredUser",
+        "User",
+        "Transaction",
+        "Income",
+        "Expense",
+        "Category",
+        "Amount",
+        "CRUD",
+        "Budget Summary",
+        "Category Breakdown"
+      ]
+    },
+    {
+      "id": "lesson_ai_engineering",
+      "title": "AI Engineering - OpenAI, Vercel AI SDK, RAG ו-Agents",
+      "description": "איך בונים פיצ'ר AI אמיתי באפליקציית Full Stack: בחירת מודל, prompt, streaming, structured output, embeddings, RAG, tools, agents, guardrails ו-evaluation.",
+      "dir": "materials/by-lesson/lesson_ai_engineering",
+      "rawFiles": [
+        "materials/raw-data/lesson_ai_engineering.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_builds_ai_engineering.js",
+        "materials/raw-data/svcollege_prerequisites_ai_engineering.js",
+        "materials/raw-data/svcollege_questions_ai_engineering.js",
+        "materials/raw-data/svcollege_traces_ai_engineering.js"
+      ],
+      "concepts": [
+        "OpenAI API",
+        "Vercel AI SDK",
+        "LangChain",
+        "model selection",
+        "prompt messages",
+        "structured output",
+        "streaming response",
+        "token budget",
+        "embeddings",
+        "vector store",
+        "RAG",
+        "chunking",
+        "retrieval ranking",
+        "tool calling",
+        "agent loop",
+        "guardrails",
+        "hallucination check",
+        "evaluation",
+        "fine-tuning boundary"
+      ]
+    },
+    {
+      "id": "lesson_auth_security",
+      "title": "Auth & Security - אימות, הרשאות וגבולות אבטחה",
+      "description": "איך מערכת Full Stack מזהה משתמש, מחליטה מה מותר לו לעשות, שומרת session בטוח, ומחברת provider auth בלי לחשוף secrets בצד הלקוח.",
+      "dir": "materials/by-lesson/lesson_auth_security",
+      "rawFiles": [
+        "materials/raw-data/lesson_auth_security.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_builds_auth.js",
+        "materials/raw-data/svcollege_prerequisites_auth.js",
+        "materials/raw-data/svcollege_questions_auth.js",
+        "materials/raw-data/svcollege_traces_auth.js"
+      ],
+      "concepts": [
+        "authentication",
+        "authorization",
+        "session",
+        "cookie",
+        "secure cookie",
+        "JWT",
+        "access token",
+        "refresh token",
+        "OAuth",
+        "provider auth",
+        "password hashing",
+        "bcrypt",
+        "CSRF",
+        "XSS boundary",
+        "CORS",
+        "middleware guard",
+        "Supabase Auth",
+        "Firebase Auth",
+        "Kinde/Appwrite"
+      ]
+    },
+    {
+      "id": "lesson_closures",
+      "title": "Closures — סגירות (הגורם השכיח לבאגים ב-React)",
+      "description": "Closures הם המנגנון החשוב ביותר ב-JavaScript ובו-זמנית הגורם השכיח לבאגים ב-React. השיעור עובר משרשרת ה-scope ועד stale closures ב-useEffect, ומראה איך לזהות, להבין, ולתקן.",
+      "dir": "materials/by-lesson/lesson_closures",
+      "rawFiles": [
+        "materials/raw-data/lesson_closures.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [],
+      "concepts": [
+        "scope chain",
+        "lexical scope",
+        "closure",
+        "closure variables",
+        "stale closure",
+        "closure in event handlers",
+        "closure in useEffect",
+        "closure in setTimeout"
+      ]
+    },
+    {
+      "id": "lesson_design_systems",
+      "title": "Design Systems - Tailwind, shadcn/UI ו-Accessible Primitives",
+      "description": "איך בונים UI מודרני בלי לאבד שליטה: Tailwind utilities, shadcn/UI, Radix primitives, variants, design tokens, composition ונגישות.",
+      "dir": "materials/by-lesson/lesson_design_systems",
+      "rawFiles": [
+        "materials/raw-data/lesson_design_systems.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_builds_design_systems.js",
+        "materials/raw-data/svcollege_prerequisites_design_systems.js",
+        "materials/raw-data/svcollege_questions_design_systems.js",
+        "materials/raw-data/svcollege_traces_design_systems.js"
+      ],
+      "concepts": [
+        "shadcn/UI",
+        "Radix primitives",
+        "accessible primitive",
+        "design tokens",
+        "component variants",
+        "cn helper",
+        "cva",
+        "asChild slot",
+        "form field composition",
+        "theme tokens",
+        "component registry",
+        "design system testing"
+      ]
+    },
+    {
+      "id": "lesson_devops_deploy",
+      "title": "DevOps Foundations - Vercel, Docker, CI/CD ו-Testing",
+      "description": "איך מעבירים אפליקציית Full Stack ממחשב אישי לסביבה שאפשר לבנות, לבדוק, לפרוס ולתחזק.",
+      "dir": "materials/by-lesson/lesson_devops_deploy",
+      "rawFiles": [
+        "materials/raw-data/lesson_devops_deploy.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_builds_devops.js",
+        "materials/raw-data/svcollege_prerequisites_devops.js",
+        "materials/raw-data/svcollege_questions_devops.js",
+        "materials/raw-data/svcollege_traces_devops.js"
+      ],
+      "concepts": [
+        "production readiness",
+        "environment variables",
+        "Vercel deploy",
+        "preview deployment",
+        "build command",
+        "Docker",
+        "Dockerfile",
+        "image",
+        "container",
+        "Docker Compose",
+        "service",
+        "volume",
+        "health check",
+        "CI",
+        "CD",
+        "smoke test",
+        "release checklist"
+      ]
+    },
+    {
+      "id": "lesson_html_css_foundations",
+      "title": "HTML/CSS Foundations — יסודות HTML ו-CSS",
+      "description": "השכבה הראשונה של כל אתר: מבנה HTML סמנטי, טפסים, בחירת אלמנטים עם CSS, מודל הקופסה, והנגשה בסיסית לפני React או Tailwind.",
+      "dir": "materials/by-lesson/lesson_html_css_foundations",
+      "rawFiles": [
+        "materials/raw-data/lesson_html_css_foundations.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/Lesson 25.pptx.pdf",
+          "targetPath": "materials/source-assets/lessons/Lesson 25.pptx.pdf",
+          "status": "copied"
+        },
+        {
+          "sourcePath": "lessons/פרוייקט 25.docx.pdf",
+          "targetPath": "materials/source-assets/lessons/פרוייקט 25.docx.pdf",
+          "status": "copied"
+        }
+      ],
+      "relatedFiles": [],
+      "concepts": [
+        "HTML document",
+        "semantic HTML",
+        "HTML form",
+        "label",
+        "CSS selector",
+        "cascade and specificity",
+        "box model",
+        "accessibility basics"
+      ]
+    },
+    {
+      "id": "lesson_nestjs",
+      "title": "Nest.js Bridge - Modules, Controllers, Providers ו-DI",
+      "description": "איך Nest.js בונה שרת Node מסודר מעל Express/Fastify: modules, controllers, services, dependency injection ו-validation.",
+      "dir": "materials/by-lesson/lesson_nestjs",
+      "rawFiles": [
+        "materials/raw-data/lesson_nestjs.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_builds_nestjs.js",
+        "materials/raw-data/svcollege_prerequisites_nestjs.js",
+        "materials/raw-data/svcollege_questions_nestjs.js",
+        "materials/raw-data/svcollege_traces_nestjs.js"
+      ],
+      "concepts": [
+        "Nest.js",
+        "module",
+        "controller",
+        "provider",
+        "service",
+        "dependency injection",
+        "decorator",
+        "DTO",
+        "validation pipe",
+        "guard",
+        "pipe",
+        "middleware",
+        "interceptor",
+        "exception filter",
+        "repository pattern",
+        "testing module"
+      ]
+    },
+    {
+      "id": "lesson_nextjs",
+      "title": "Next.js Full-Stack - Routing, SSR, API ו-SEO",
+      "description": "איך Next.js מחבר React, routing, שרת, data fetching, SEO ו-deploy לאפליקציית Full Stack אחת.",
+      "dir": "materials/by-lesson/lesson_nextjs",
+      "rawFiles": [
+        "materials/raw-data/lesson_nextjs.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_builds_nextjs.js",
+        "materials/raw-data/svcollege_prerequisites_nextjs.js",
+        "materials/raw-data/svcollege_questions_nextjs.js",
+        "materials/raw-data/svcollege_traces_nextjs.js"
+      ],
+      "concepts": [
+        "Next.js",
+        "App Router",
+        "file-system routing",
+        "dynamic route",
+        "layout",
+        "page",
+        "server component",
+        "client component",
+        "route handler",
+        "API route",
+        "server action",
+        "SSR",
+        "SSG",
+        "ISR",
+        "metadata API",
+        "SEO",
+        "image optimization",
+        "Vercel deploy"
+      ]
+    },
+    {
+      "id": "lesson_sql_orm",
+      "title": "SQL/PostgreSQL/ORM - בסיסי נתונים רלציוניים",
+      "description": "שכבת הנתונים של אפליקציית Full Stack: SQL, PostgreSQL, טבלאות, קשרים, JOIN, migrations, CRUD, transaction, וכלי ORM כמו Prisma ו-Drizzle מעל SQL.",
+      "dir": "materials/by-lesson/lesson_sql_orm",
+      "rawFiles": [
+        "materials/raw-data/lesson_sql_orm.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_builds_sql_orm.js",
+        "materials/raw-data/svcollege_prerequisites_sql_orm.js",
+        "materials/raw-data/svcollege_questions_sql_orm.js",
+        "materials/raw-data/svcollege_traces_sql_orm.js"
+      ],
+      "concepts": [
+        "SQL",
+        "PostgreSQL",
+        "database",
+        "table",
+        "row",
+        "column",
+        "primary key",
+        "foreign key",
+        "relation",
+        "JOIN",
+        "schema",
+        "migration",
+        "ORM",
+        "Prisma",
+        "Drizzle",
+        "CRUD",
+        "transaction"
+      ]
+    },
+    {
+      "id": "lesson_tooling_git",
+      "title": "Tooling & Git — כלי פיתוח, Git וזרימת עבודה",
+      "description": "איך שינוי קוד עובר ממחשב אישי לעבודה צוותית: repository, commit, branch, pull request, npm scripts, ESLint, Prettier ו-format-on-save.",
+      "dir": "materials/by-lesson/lesson_tooling_git",
+      "rawFiles": [
+        "materials/raw-data/lesson_tooling_git.js"
+      ],
+      "sourceAssets": [
+        {
+          "sourcePath": "lessons/React_Architect_Blueprint.pdf",
+          "targetPath": "materials/source-assets/lessons/React_Architect_Blueprint.pdf",
+          "status": "copied"
+        },
+        {
+          "sourcePath": "lessons/הסיור_הגדול_ב-GitHub.mp4",
+          "targetPath": null,
+          "status": "missing"
+        }
+      ],
+      "relatedFiles": [
+        "materials/raw-data/svcollege_traces_foundation_tooling_activity.js"
+      ],
+      "concepts": [
+        "Git",
+        "repository",
+        "working tree",
+        "staging area",
+        "commit",
+        "branch",
+        "pull request",
+        "GitHub workflow",
+        "npm scripts",
+        "ESLint",
+        "Prettier"
+      ]
+    },
+    {
+      "id": "react_blueprint",
+      "title": "React Architect Blueprint",
+      "description": "ארכיטקטורה של אפליקציות React גדולות — איך לפרק מערכת לרכיבים, לנהל state, לזרום נתונים, ולשמור על ביצועים.",
+      "dir": "materials/by-lesson/react_blueprint",
+      "rawFiles": [
+        "materials/raw-data/react_blueprint.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [],
+      "concepts": [
+        "Component Architecture",
+        "State Management",
+        "Data Flow",
+        "Composition vs Inheritance",
+        "Container vs Presentational",
+        "Lifting State Up",
+        "Code Splitting",
+        "Performance Optimization",
+        "Error Boundaries",
+        "Testing Strategies"
+      ]
+    },
+    {
+      "id": "workbook_taskmanager",
+      "title": "חוברת תרגול JavaScript — Task Manager",
+      "description": "פרויקט מעשי שבו בונים אפליקציית Task Manager בסיסית מ-A' ועד ת'. כל מושג בחוברת מדגים שלב בבניית המערכת — מהצהרת משתנה ראשון ועד שמירת המשימות בשרת באמצעות fetch ו-async/await.",
+      "dir": "materials/by-lesson/workbook_taskmanager",
+      "rawFiles": [
+        "materials/raw-data/workbook_taskmanager.js"
+      ],
+      "sourceAssets": [],
+      "relatedFiles": [],
+      "concepts": [
+        "Task Manager",
+        "variables",
+        "conditions",
+        "arrays",
+        "functions",
+        "DOM",
+        "events",
+        "localStorage",
+        "objects",
+        "try/catch",
+        "fetch",
+        "async/await"
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "id": "exam100",
+      "title": "Exam100",
+      "subtopics": [
+        {
+          "id": "exam-mode",
+          "title": "Exam Mode",
+          "dir": "materials/by-topic/exam100/exam-mode",
+          "lessonIds": [],
+          "files": [
+            "materials/exam100/data/homework_exam_mode.js",
+            "materials/raw-data/homework_exam_mode.js"
+          ]
+        },
+        {
+          "id": "exam-prep",
+          "title": "Exam Prep",
+          "dir": "materials/by-topic/exam100/exam-prep",
+          "lessonIds": [],
+          "files": [
+            "materials/exam100/data/exam_edition_release_freeze.js",
+            "materials/exam100/data/exam_practice_extras.js",
+            "materials/exam100/data/lesson_quiz_keys.js",
+            "materials/raw-data/exam_edition_release_freeze.js",
+            "materials/raw-data/exam_practice_extras.js",
+            "materials/raw-data/lesson_quiz_keys.js"
+          ]
+        },
+        {
+          "id": "exam-prep-docs",
+          "title": "Exam Prep Docs",
+          "dir": "materials/by-topic/exam100/exam-prep-docs",
+          "lessonIds": [],
+          "files": [
+            "materials/exam100/docs/CODE_WRITING_PRACTICE.md",
+            "materials/exam100/docs/COMMON_PITFALLS.md",
+            "materials/exam100/docs/COMPARISON_TABLES_DEEP.md",
+            "materials/exam100/docs/CONCEPT_DEPENDENCIES.md",
+            "materials/exam100/docs/FINAL_WEEK_PLAN.md",
+            "materials/exam100/docs/HEBREW_ENGLISH_GLOSSARY.md",
+            "materials/exam100/docs/MOCK_EXAMS_README.md",
+            "materials/exam100/docs/PRE_EXAM_CHECKLIST.md",
+            "materials/exam100/docs/README.md",
+            "materials/exam100/docs/TIME_PRESSURE_DRILLS.md",
+            "materials/exam100/docs/cheatsheet_lesson_ai_engineering.md",
+            "materials/exam100/docs/cheatsheet_lesson_auth_security.md",
+            "materials/exam100/docs/cheatsheet_lesson_closures.md",
+            "materials/exam100/docs/cheatsheet_lesson_design_systems.md",
+            "materials/exam100/docs/cheatsheet_lesson_devops_deploy.md",
+            "materials/exam100/docs/cheatsheet_lesson_html_css_foundations.md",
+            "materials/exam100/docs/cheatsheet_lesson_nestjs.md",
+            "materials/exam100/docs/cheatsheet_lesson_nextjs.md",
+            "materials/exam100/docs/cheatsheet_lesson_sql_orm.md",
+            "materials/exam100/docs/cheatsheet_lesson_tooling_git.md",
+            "materials/exam100/docs/mock_exam_1.md",
+            "materials/exam100/docs/mock_exam_2.md",
+            "materials/exam100/docs/mock_exam_3.md",
+            "materials/exam100/docs/mock_exam_4.md",
+            "materials/exam100/docs/mock_exam_5.md"
+          ]
+        },
+        {
+          "id": "gates",
+          "title": "Gates",
+          "dir": "materials/by-topic/exam100/gates",
+          "lessonIds": [],
+          "files": [
+            "materials/exam100/data/level100_release_gates.js",
+            "materials/raw-data/level100_release_gates.js"
+          ]
+        },
+        {
+          "id": "manual-review",
+          "title": "Manual Review",
+          "dir": "materials/by-topic/exam100/manual-review",
+          "lessonIds": [],
+          "files": [
+            "materials/exam100/data/exam_manual_review_promotions.js",
+            "materials/raw-data/exam_manual_review_promotions.js"
+          ]
+        },
+        {
+          "id": "quality-review",
+          "title": "Quality Review",
+          "dir": "materials/by-topic/exam100/quality-review",
+          "lessonIds": [],
+          "files": [
+            "materials/exam100/data/question_quality_reviews.js",
+            "materials/raw-data/question_quality_reviews.js"
+          ]
+        },
+        {
+          "id": "solution-guide",
+          "title": "Solution Guide",
+          "dir": "materials/by-topic/exam100/solution-guide",
+          "lessonIds": [],
+          "files": [
+            "materials/exam100/data/solution_guide_drills.js",
+            "materials/raw-data/solution_guide_drills.js"
+          ]
+        },
+        {
+          "id": "task-tree",
+          "title": "Task Tree",
+          "dir": "materials/by-topic/exam100/task-tree",
+          "lessonIds": [],
+          "files": [
+            "materials/exam100/data/exam_tasks_tree.js",
+            "materials/raw-data/exam_tasks_tree.js"
+          ]
+        }
+      ],
+      "lessonIds": [],
+      "files": [
+        "materials/exam100/data/exam_edition_release_freeze.js",
+        "materials/exam100/data/exam_manual_review_promotions.js",
+        "materials/exam100/data/exam_practice_extras.js",
+        "materials/exam100/data/exam_tasks_tree.js",
+        "materials/exam100/data/homework_exam_mode.js",
+        "materials/exam100/data/lesson_quiz_keys.js",
+        "materials/exam100/data/level100_release_gates.js",
+        "materials/exam100/data/question_quality_reviews.js",
+        "materials/exam100/data/solution_guide_drills.js",
+        "materials/exam100/docs/CODE_WRITING_PRACTICE.md",
+        "materials/exam100/docs/COMMON_PITFALLS.md",
+        "materials/exam100/docs/COMPARISON_TABLES_DEEP.md",
+        "materials/exam100/docs/CONCEPT_DEPENDENCIES.md",
+        "materials/exam100/docs/FINAL_WEEK_PLAN.md",
+        "materials/exam100/docs/HEBREW_ENGLISH_GLOSSARY.md",
+        "materials/exam100/docs/MOCK_EXAMS_README.md",
+        "materials/exam100/docs/PRE_EXAM_CHECKLIST.md",
+        "materials/exam100/docs/README.md",
+        "materials/exam100/docs/TIME_PRESSURE_DRILLS.md",
+        "materials/exam100/docs/cheatsheet_lesson_ai_engineering.md",
+        "materials/exam100/docs/cheatsheet_lesson_auth_security.md",
+        "materials/exam100/docs/cheatsheet_lesson_closures.md",
+        "materials/exam100/docs/cheatsheet_lesson_design_systems.md",
+        "materials/exam100/docs/cheatsheet_lesson_devops_deploy.md",
+        "materials/exam100/docs/cheatsheet_lesson_html_css_foundations.md",
+        "materials/exam100/docs/cheatsheet_lesson_nestjs.md",
+        "materials/exam100/docs/cheatsheet_lesson_nextjs.md",
+        "materials/exam100/docs/cheatsheet_lesson_sql_orm.md",
+        "materials/exam100/docs/cheatsheet_lesson_tooling_git.md",
+        "materials/exam100/docs/mock_exam_1.md",
+        "materials/exam100/docs/mock_exam_2.md",
+        "materials/exam100/docs/mock_exam_3.md",
+        "materials/exam100/docs/mock_exam_4.md",
+        "materials/exam100/docs/mock_exam_5.md",
+        "materials/raw-data/exam_edition_release_freeze.js",
+        "materials/raw-data/exam_manual_review_promotions.js",
+        "materials/raw-data/exam_practice_extras.js",
+        "materials/raw-data/exam_tasks_tree.js",
+        "materials/raw-data/homework_exam_mode.js",
+        "materials/raw-data/lesson_quiz_keys.js",
+        "materials/raw-data/level100_release_gates.js",
+        "materials/raw-data/question_quality_reviews.js",
+        "materials/raw-data/solution_guide_drills.js"
+      ]
+    },
+    {
+      "id": "lessons",
+      "title": "Lessons",
+      "subtopics": [
+        {
+          "id": "ai_development",
+          "title": "Ai Development",
+          "dir": "materials/by-topic/lessons/ai_development",
+          "lessonIds": [
+            "ai_development"
+          ],
+          "files": [
+            "materials/by-lesson/ai_development/README.md",
+            "materials/raw-data/ai_development.js"
+          ]
+        },
+        {
+          "id": "lesson_11",
+          "title": "Lesson 11",
+          "dir": "materials/by-topic/lessons/lesson_11",
+          "lessonIds": [
+            "lesson_11"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_11/README.md",
+            "materials/raw-data/lesson11.js"
+          ]
+        },
+        {
+          "id": "lesson_12",
+          "title": "Lesson 12",
+          "dir": "materials/by-topic/lessons/lesson_12",
+          "lessonIds": [
+            "lesson_12"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_12/README.md",
+            "materials/raw-data/lesson12.js"
+          ]
+        },
+        {
+          "id": "lesson_13",
+          "title": "Lesson 13",
+          "dir": "materials/by-topic/lessons/lesson_13",
+          "lessonIds": [
+            "lesson_13"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_13/README.md",
+            "materials/raw-data/lesson13.js"
+          ]
+        },
+        {
+          "id": "lesson_15",
+          "title": "Lesson 15",
+          "dir": "materials/by-topic/lessons/lesson_15",
+          "lessonIds": [
+            "lesson_15"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_15/README.md",
+            "materials/raw-data/lesson15.js"
+          ]
+        },
+        {
+          "id": "lesson_16",
+          "title": "Lesson 16",
+          "dir": "materials/by-topic/lessons/lesson_16",
+          "lessonIds": [
+            "lesson_16"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_16/README.md",
+            "materials/raw-data/lesson16.js"
+          ]
+        },
+        {
+          "id": "lesson_17",
+          "title": "Lesson 17",
+          "dir": "materials/by-topic/lessons/lesson_17",
+          "lessonIds": [
+            "lesson_17"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_17/README.md",
+            "materials/raw-data/lesson17.js"
+          ]
+        },
+        {
+          "id": "lesson_18",
+          "title": "Lesson 18",
+          "dir": "materials/by-topic/lessons/lesson_18",
+          "lessonIds": [
+            "lesson_18"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_18/README.md",
+            "materials/raw-data/lesson18.js"
+          ]
+        },
+        {
+          "id": "lesson_19",
+          "title": "Lesson 19",
+          "dir": "materials/by-topic/lessons/lesson_19",
+          "lessonIds": [
+            "lesson_19"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_19/README.md",
+            "materials/raw-data/lesson19.js"
+          ]
+        },
+        {
+          "id": "lesson_20",
+          "title": "Lesson 20",
+          "dir": "materials/by-topic/lessons/lesson_20",
+          "lessonIds": [
+            "lesson_20"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_20/README.md",
+            "materials/raw-data/lesson20.js"
+          ]
+        },
+        {
+          "id": "lesson_21",
+          "title": "Lesson 21",
+          "dir": "materials/by-topic/lessons/lesson_21",
+          "lessonIds": [
+            "lesson_21"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_21/README.md",
+            "materials/raw-data/lesson21.js"
+          ]
+        },
+        {
+          "id": "lesson_22",
+          "title": "Lesson 22",
+          "dir": "materials/by-topic/lessons/lesson_22",
+          "lessonIds": [
+            "lesson_22"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_22/README.md",
+            "materials/raw-data/lesson22.js"
+          ]
+        },
+        {
+          "id": "lesson_23",
+          "title": "Lesson 23",
+          "dir": "materials/by-topic/lessons/lesson_23",
+          "lessonIds": [
+            "lesson_23"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_23/README.md",
+            "materials/raw-data/lesson23.js"
+          ]
+        },
+        {
+          "id": "lesson_24",
+          "title": "Lesson 24",
+          "dir": "materials/by-topic/lessons/lesson_24",
+          "lessonIds": [
+            "lesson_24"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_24/README.md",
+            "materials/raw-data/lesson24.js"
+          ]
+        },
+        {
+          "id": "lesson_25",
+          "title": "Lesson 25",
+          "dir": "materials/by-topic/lessons/lesson_25",
+          "lessonIds": [
+            "lesson_25"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_25/README.md",
+            "materials/raw-data/lesson25.js"
+          ]
+        },
+        {
+          "id": "lesson_26",
+          "title": "Lesson 26",
+          "dir": "materials/by-topic/lessons/lesson_26",
+          "lessonIds": [
+            "lesson_26"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_26/README.md",
+            "materials/raw-data/lesson26.js"
+          ]
+        },
+        {
+          "id": "lesson_27",
+          "title": "Lesson 27",
+          "dir": "materials/by-topic/lessons/lesson_27",
+          "lessonIds": [
+            "lesson_27"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_27/README.md",
+            "materials/raw-data/lesson27.js"
+          ]
+        },
+        {
+          "id": "lesson_ai_engineering",
+          "title": "Lesson Ai Engineering",
+          "dir": "materials/by-topic/lessons/lesson_ai_engineering",
+          "lessonIds": [
+            "lesson_ai_engineering"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_ai_engineering/README.md",
+            "materials/raw-data/lesson_ai_engineering.js"
+          ]
+        },
+        {
+          "id": "lesson_auth_security",
+          "title": "Lesson Auth Security",
+          "dir": "materials/by-topic/lessons/lesson_auth_security",
+          "lessonIds": [
+            "lesson_auth_security"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_auth_security/README.md",
+            "materials/raw-data/lesson_auth_security.js"
+          ]
+        },
+        {
+          "id": "lesson_closures",
+          "title": "Lesson Closures",
+          "dir": "materials/by-topic/lessons/lesson_closures",
+          "lessonIds": [
+            "lesson_closures"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_closures/README.md",
+            "materials/raw-data/lesson_closures.js"
+          ]
+        },
+        {
+          "id": "lesson_design_systems",
+          "title": "Lesson Design Systems",
+          "dir": "materials/by-topic/lessons/lesson_design_systems",
+          "lessonIds": [
+            "lesson_design_systems"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_design_systems/README.md",
+            "materials/raw-data/lesson_design_systems.js"
+          ]
+        },
+        {
+          "id": "lesson_devops_deploy",
+          "title": "Lesson Devops Deploy",
+          "dir": "materials/by-topic/lessons/lesson_devops_deploy",
+          "lessonIds": [
+            "lesson_devops_deploy"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_devops_deploy/README.md",
+            "materials/raw-data/lesson_devops_deploy.js"
+          ]
+        },
+        {
+          "id": "lesson_html_css_foundations",
+          "title": "Lesson Html Css Foundations",
+          "dir": "materials/by-topic/lessons/lesson_html_css_foundations",
+          "lessonIds": [
+            "lesson_html_css_foundations"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_html_css_foundations/README.md",
+            "materials/raw-data/lesson_html_css_foundations.js"
+          ]
+        },
+        {
+          "id": "lesson_nestjs",
+          "title": "Lesson Nestjs",
+          "dir": "materials/by-topic/lessons/lesson_nestjs",
+          "lessonIds": [
+            "lesson_nestjs"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_nestjs/README.md",
+            "materials/raw-data/lesson_nestjs.js"
+          ]
+        },
+        {
+          "id": "lesson_nextjs",
+          "title": "Lesson Nextjs",
+          "dir": "materials/by-topic/lessons/lesson_nextjs",
+          "lessonIds": [
+            "lesson_nextjs"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_nextjs/README.md",
+            "materials/raw-data/lesson_nextjs.js"
+          ]
+        },
+        {
+          "id": "lesson_sql_orm",
+          "title": "Lesson Sql Orm",
+          "dir": "materials/by-topic/lessons/lesson_sql_orm",
+          "lessonIds": [
+            "lesson_sql_orm"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_sql_orm/README.md",
+            "materials/raw-data/lesson_sql_orm.js"
+          ]
+        },
+        {
+          "id": "lesson_tooling_git",
+          "title": "Lesson Tooling Git",
+          "dir": "materials/by-topic/lessons/lesson_tooling_git",
+          "lessonIds": [
+            "lesson_tooling_git"
+          ],
+          "files": [
+            "materials/by-lesson/lesson_tooling_git/README.md",
+            "materials/raw-data/lesson_tooling_git.js"
+          ]
+        },
+        {
+          "id": "react_blueprint",
+          "title": "React Blueprint",
+          "dir": "materials/by-topic/lessons/react_blueprint",
+          "lessonIds": [
+            "react_blueprint"
+          ],
+          "files": [
+            "materials/by-lesson/react_blueprint/README.md",
+            "materials/raw-data/react_blueprint.js"
+          ]
+        },
+        {
+          "id": "source-assets",
+          "title": "Source Assets",
+          "dir": "materials/by-topic/lessons/source-assets",
+          "lessonIds": [
+            "lesson_11",
+            "lesson_13",
+            "lesson_15",
+            "lesson_16",
+            "lesson_17",
+            "lesson_19",
+            "lesson_20",
+            "lesson_21",
+            "lesson_22",
+            "lesson_23",
+            "lesson_24",
+            "lesson_25",
+            "lesson_26",
+            "lesson_27"
+          ],
+          "files": [
+            "materials/source-assets/lessons/LESSON 23.pptx.pdf",
+            "materials/source-assets/lessons/Lesson 11.pptx.pdf",
+            "materials/source-assets/lessons/Lesson 13.pptx.pdf",
+            "materials/source-assets/lessons/Lesson 16.pptx.pdf",
+            "materials/source-assets/lessons/Lesson 17.pptx.pdf",
+            "materials/source-assets/lessons/Lesson 20.pptx.pdf",
+            "materials/source-assets/lessons/Lesson 21.pptx.pdf",
+            "materials/source-assets/lessons/Lesson 22.pptx.pdf",
+            "materials/source-assets/lessons/Lesson 25.pptx.pdf",
+            "materials/source-assets/lessons/Lesson 26 part 2.pptx.pdf",
+            "materials/source-assets/lessons/Lesson 26.pptx.pdf",
+            "materials/source-assets/lessons/React_Architect_Blueprint.pdf",
+            "materials/source-assets/lessons/lesson 15.pptx.pdf",
+            "materials/source-assets/lessons/lesson 19.pdf",
+            "materials/source-assets/lessons/lesson 27_homwork.docx.pdf",
+            "materials/source-assets/lessons/lesson24.pptx.pdf",
+            "materials/source-assets/lessons/manifest.json",
+            "materials/source-assets/lessons/svcollege_full_lesson_summaries.docx",
+            "materials/source-assets/lessons/svcollege_full_lesson_summaries.pdf",
+            "materials/source-assets/lessons/חוברת תרגול JavaScript.pdf",
+            "materials/source-assets/lessons/פרוייקט 25.docx.pdf",
+            "materials/source-assets/lessons/שימוש בAI בצורה נכונה בפיתוח.pdf",
+            "materials/source-assets/lessons/שיעורי בית 11.docx.pdf",
+            "materials/source-assets/lessons/שיעורי בית 12.docx.pdf",
+            "materials/source-assets/lessons/שיעורי בית 13.docx.pdf",
+            "materials/source-assets/lessons/שיעורי בית 18.docx.pdf",
+            "materials/source-assets/lessons/שיעורי בית 22.docx.pdf",
+            "materials/source-assets/lessons/שיעורי בית 23.docx.pdf",
+            "materials/source-assets/lessons/שיעורי בית 24.docx.pdf",
+            "materials/source-assets/lessons/שיעורי בת lesson 27_homwork.pdf"
+          ]
+        },
+        {
+          "id": "workbook_taskmanager",
+          "title": "Workbook Taskmanager",
+          "dir": "materials/by-topic/lessons/workbook_taskmanager",
+          "lessonIds": [
+            "workbook_taskmanager"
+          ],
+          "files": [
+            "materials/by-lesson/workbook_taskmanager/README.md",
+            "materials/raw-data/workbook_taskmanager.js"
+          ]
+        }
+      ],
+      "lessonIds": [
+        "ai_development",
+        "lesson_11",
+        "lesson_12",
+        "lesson_13",
+        "lesson_15",
+        "lesson_16",
+        "lesson_17",
+        "lesson_18",
+        "lesson_19",
+        "lesson_20",
+        "lesson_21",
+        "lesson_22",
+        "lesson_23",
+        "lesson_24",
+        "lesson_25",
+        "lesson_26",
+        "lesson_27",
+        "lesson_ai_engineering",
+        "lesson_auth_security",
+        "lesson_closures",
+        "lesson_design_systems",
+        "lesson_devops_deploy",
+        "lesson_html_css_foundations",
+        "lesson_nestjs",
+        "lesson_nextjs",
+        "lesson_sql_orm",
+        "lesson_tooling_git",
+        "react_blueprint",
+        "workbook_taskmanager"
+      ],
+      "files": [
+        "materials/by-lesson/ai_development/README.md",
+        "materials/by-lesson/lesson_11/README.md",
+        "materials/by-lesson/lesson_12/README.md",
+        "materials/by-lesson/lesson_13/README.md",
+        "materials/by-lesson/lesson_15/README.md",
+        "materials/by-lesson/lesson_16/README.md",
+        "materials/by-lesson/lesson_17/README.md",
+        "materials/by-lesson/lesson_18/README.md",
+        "materials/by-lesson/lesson_19/README.md",
+        "materials/by-lesson/lesson_20/README.md",
+        "materials/by-lesson/lesson_21/README.md",
+        "materials/by-lesson/lesson_22/README.md",
+        "materials/by-lesson/lesson_23/README.md",
+        "materials/by-lesson/lesson_24/README.md",
+        "materials/by-lesson/lesson_25/README.md",
+        "materials/by-lesson/lesson_26/README.md",
+        "materials/by-lesson/lesson_27/README.md",
+        "materials/by-lesson/lesson_ai_engineering/README.md",
+        "materials/by-lesson/lesson_auth_security/README.md",
+        "materials/by-lesson/lesson_closures/README.md",
+        "materials/by-lesson/lesson_design_systems/README.md",
+        "materials/by-lesson/lesson_devops_deploy/README.md",
+        "materials/by-lesson/lesson_html_css_foundations/README.md",
+        "materials/by-lesson/lesson_nestjs/README.md",
+        "materials/by-lesson/lesson_nextjs/README.md",
+        "materials/by-lesson/lesson_sql_orm/README.md",
+        "materials/by-lesson/lesson_tooling_git/README.md",
+        "materials/by-lesson/react_blueprint/README.md",
+        "materials/by-lesson/workbook_taskmanager/README.md",
+        "materials/raw-data/ai_development.js",
+        "materials/raw-data/lesson11.js",
+        "materials/raw-data/lesson12.js",
+        "materials/raw-data/lesson13.js",
+        "materials/raw-data/lesson15.js",
+        "materials/raw-data/lesson16.js",
+        "materials/raw-data/lesson17.js",
+        "materials/raw-data/lesson18.js",
+        "materials/raw-data/lesson19.js",
+        "materials/raw-data/lesson20.js",
+        "materials/raw-data/lesson21.js",
+        "materials/raw-data/lesson22.js",
+        "materials/raw-data/lesson23.js",
+        "materials/raw-data/lesson24.js",
+        "materials/raw-data/lesson25.js",
+        "materials/raw-data/lesson26.js",
+        "materials/raw-data/lesson27.js",
+        "materials/raw-data/lesson_ai_engineering.js",
+        "materials/raw-data/lesson_auth_security.js",
+        "materials/raw-data/lesson_closures.js",
+        "materials/raw-data/lesson_design_systems.js",
+        "materials/raw-data/lesson_devops_deploy.js",
+        "materials/raw-data/lesson_html_css_foundations.js",
+        "materials/raw-data/lesson_nestjs.js",
+        "materials/raw-data/lesson_nextjs.js",
+        "materials/raw-data/lesson_sql_orm.js",
+        "materials/raw-data/lesson_tooling_git.js",
+        "materials/raw-data/react_blueprint.js",
+        "materials/raw-data/workbook_taskmanager.js",
+        "materials/source-assets/lessons/LESSON 23.pptx.pdf",
+        "materials/source-assets/lessons/Lesson 11.pptx.pdf",
+        "materials/source-assets/lessons/Lesson 13.pptx.pdf",
+        "materials/source-assets/lessons/Lesson 16.pptx.pdf",
+        "materials/source-assets/lessons/Lesson 17.pptx.pdf",
+        "materials/source-assets/lessons/Lesson 20.pptx.pdf",
+        "materials/source-assets/lessons/Lesson 21.pptx.pdf",
+        "materials/source-assets/lessons/Lesson 22.pptx.pdf",
+        "materials/source-assets/lessons/Lesson 25.pptx.pdf",
+        "materials/source-assets/lessons/Lesson 26 part 2.pptx.pdf",
+        "materials/source-assets/lessons/Lesson 26.pptx.pdf",
+        "materials/source-assets/lessons/React_Architect_Blueprint.pdf",
+        "materials/source-assets/lessons/lesson 15.pptx.pdf",
+        "materials/source-assets/lessons/lesson 19.pdf",
+        "materials/source-assets/lessons/lesson 27_homwork.docx.pdf",
+        "materials/source-assets/lessons/lesson24.pptx.pdf",
+        "materials/source-assets/lessons/manifest.json",
+        "materials/source-assets/lessons/svcollege_full_lesson_summaries.docx",
+        "materials/source-assets/lessons/svcollege_full_lesson_summaries.pdf",
+        "materials/source-assets/lessons/חוברת תרגול JavaScript.pdf",
+        "materials/source-assets/lessons/פרוייקט 25.docx.pdf",
+        "materials/source-assets/lessons/שימוש בAI בצורה נכונה בפיתוח.pdf",
+        "materials/source-assets/lessons/שיעורי בית 11.docx.pdf",
+        "materials/source-assets/lessons/שיעורי בית 12.docx.pdf",
+        "materials/source-assets/lessons/שיעורי בית 13.docx.pdf",
+        "materials/source-assets/lessons/שיעורי בית 18.docx.pdf",
+        "materials/source-assets/lessons/שיעורי בית 22.docx.pdf",
+        "materials/source-assets/lessons/שיעורי בית 23.docx.pdf",
+        "materials/source-assets/lessons/שיעורי בית 24.docx.pdf",
+        "materials/source-assets/lessons/שיעורי בת lesson 27_homwork.pdf"
+      ]
+    },
+    {
+      "id": "practice",
+      "title": "Practice",
+      "subtopics": [
+        {
+          "id": "activities",
+          "title": "Activities",
+          "dir": "materials/by-topic/practice/activities",
+          "lessonIds": [],
+          "files": [
+            "materials/raw-data/animations.js",
+            "materials/raw-data/bug_quests.js",
+            "materials/raw-data/capstones.js",
+            "materials/raw-data/counterfactuals.js",
+            "materials/raw-data/guided_builds.js",
+            "materials/raw-data/memory_palaces.js",
+            "materials/raw-data/metaphors.js",
+            "materials/raw-data/pair_match.js",
+            "materials/raw-data/pathways.js",
+            "materials/raw-data/problem_first.js",
+            "materials/raw-data/scenarios.js",
+            "materials/raw-data/stage_zero.js",
+            "materials/raw-data/what_if.js"
+          ]
+        },
+        {
+          "id": "builds",
+          "title": "Builds",
+          "dir": "materials/by-topic/practice/builds",
+          "lessonIds": [
+            "lesson_ai_engineering",
+            "lesson_auth_security",
+            "lesson_design_systems",
+            "lesson_devops_deploy",
+            "lesson_nestjs",
+            "lesson_nextjs",
+            "lesson_sql_orm",
+            "svcollege_bridge"
+          ],
+          "files": [
+            "materials/raw-data/svcollege_builds_ai_engineering.js",
+            "materials/raw-data/svcollege_builds_auth.js",
+            "materials/raw-data/svcollege_builds_bridge.js",
+            "materials/raw-data/svcollege_builds_design_systems.js",
+            "materials/raw-data/svcollege_builds_devops.js",
+            "materials/raw-data/svcollege_builds_nestjs.js",
+            "materials/raw-data/svcollege_builds_nextjs.js",
+            "materials/raw-data/svcollege_builds_sql_orm.js",
+            "materials/raw-data/zz_questions_build_phase2.js"
+          ]
+        },
+        {
+          "id": "prerequisites",
+          "title": "Prerequisites",
+          "dir": "materials/by-topic/practice/prerequisites",
+          "lessonIds": [
+            "lesson_ai_engineering",
+            "lesson_auth_security",
+            "lesson_design_systems",
+            "lesson_devops_deploy",
+            "lesson_nestjs",
+            "lesson_nextjs",
+            "lesson_sql_orm"
+          ],
+          "files": [
+            "materials/raw-data/prerequisites.js",
+            "materials/raw-data/svcollege_prerequisites_ai_engineering.js",
+            "materials/raw-data/svcollege_prerequisites_auth.js",
+            "materials/raw-data/svcollege_prerequisites_design_systems.js",
+            "materials/raw-data/svcollege_prerequisites_devops.js",
+            "materials/raw-data/svcollege_prerequisites_nestjs.js",
+            "materials/raw-data/svcollege_prerequisites_nextjs.js",
+            "materials/raw-data/svcollege_prerequisites_sql_orm.js"
+          ]
+        },
+        {
+          "id": "questions",
+          "title": "Questions",
+          "dir": "materials/by-topic/practice/questions",
+          "lessonIds": [
+            "lesson_ai_engineering",
+            "lesson_auth_security",
+            "lesson_design_systems",
+            "lesson_devops_deploy",
+            "lesson_nestjs",
+            "lesson_nextjs",
+            "lesson_sql_orm",
+            "svcollege_bridge"
+          ],
+          "files": [
+            "materials/raw-data/questions_bank.js",
+            "materials/raw-data/questions_bank_seeded.js",
+            "materials/raw-data/questions_bug.js",
+            "materials/raw-data/questions_build.js",
+            "materials/raw-data/questions_trace.js",
+            "materials/raw-data/shards/questions_session_EEE.js",
+            "materials/raw-data/svcollege_questions_ai_engineering.js",
+            "materials/raw-data/svcollege_questions_auth.js",
+            "materials/raw-data/svcollege_questions_bridge.js",
+            "materials/raw-data/svcollege_questions_design_systems.js",
+            "materials/raw-data/svcollege_questions_devops.js",
+            "materials/raw-data/svcollege_questions_nestjs.js",
+            "materials/raw-data/svcollege_questions_nextjs.js",
+            "materials/raw-data/svcollege_questions_sql_orm.js"
+          ]
+        },
+        {
+          "id": "traces",
+          "title": "Traces",
+          "dir": "materials/by-topic/practice/traces",
+          "lessonIds": [
+            "lesson_11",
+            "lesson_12",
+            "lesson_13",
+            "lesson_15",
+            "lesson_16",
+            "lesson_17",
+            "lesson_ai_engineering",
+            "lesson_auth_security",
+            "lesson_design_systems",
+            "lesson_devops_deploy",
+            "lesson_nestjs",
+            "lesson_nextjs",
+            "lesson_sql_orm",
+            "lesson_tooling_git",
+            "svcollege_bridge"
+          ],
+          "files": [
+            "materials/raw-data/svcollege_traces_ai_engineering.js",
+            "materials/raw-data/svcollege_traces_auth.js",
+            "materials/raw-data/svcollege_traces_bridge.js",
+            "materials/raw-data/svcollege_traces_design_systems.js",
+            "materials/raw-data/svcollege_traces_devops.js",
+            "materials/raw-data/svcollege_traces_foundation_tooling_activity.js",
+            "materials/raw-data/svcollege_traces_lesson11_activity.js",
+            "materials/raw-data/svcollege_traces_lesson12_activity.js",
+            "materials/raw-data/svcollege_traces_lesson13_activity.js",
+            "materials/raw-data/svcollege_traces_lesson15_activity.js",
+            "materials/raw-data/svcollege_traces_lesson16_activity.js",
+            "materials/raw-data/svcollege_traces_lesson17_activity.js",
+            "materials/raw-data/svcollege_traces_nestjs.js",
+            "materials/raw-data/svcollege_traces_nextjs.js",
+            "materials/raw-data/svcollege_traces_sql_orm.js",
+            "materials/raw-data/zz_questions_trace_phase2.js",
+            "materials/raw-data/zz_questions_trace_phase3.js"
+          ]
+        }
+      ],
+      "lessonIds": [
+        "lesson_11",
+        "lesson_12",
+        "lesson_13",
+        "lesson_15",
+        "lesson_16",
+        "lesson_17",
+        "lesson_ai_engineering",
+        "lesson_auth_security",
+        "lesson_design_systems",
+        "lesson_devops_deploy",
+        "lesson_nestjs",
+        "lesson_nextjs",
+        "lesson_sql_orm",
+        "lesson_tooling_git",
+        "svcollege_bridge"
+      ],
+      "files": [
+        "materials/raw-data/animations.js",
+        "materials/raw-data/bug_quests.js",
+        "materials/raw-data/capstones.js",
+        "materials/raw-data/counterfactuals.js",
+        "materials/raw-data/guided_builds.js",
+        "materials/raw-data/memory_palaces.js",
+        "materials/raw-data/metaphors.js",
+        "materials/raw-data/pair_match.js",
+        "materials/raw-data/pathways.js",
+        "materials/raw-data/prerequisites.js",
+        "materials/raw-data/problem_first.js",
+        "materials/raw-data/questions_bank.js",
+        "materials/raw-data/questions_bank_seeded.js",
+        "materials/raw-data/questions_bug.js",
+        "materials/raw-data/questions_build.js",
+        "materials/raw-data/questions_trace.js",
+        "materials/raw-data/scenarios.js",
+        "materials/raw-data/shards/questions_session_EEE.js",
+        "materials/raw-data/stage_zero.js",
+        "materials/raw-data/svcollege_builds_ai_engineering.js",
+        "materials/raw-data/svcollege_builds_auth.js",
+        "materials/raw-data/svcollege_builds_bridge.js",
+        "materials/raw-data/svcollege_builds_design_systems.js",
+        "materials/raw-data/svcollege_builds_devops.js",
+        "materials/raw-data/svcollege_builds_nestjs.js",
+        "materials/raw-data/svcollege_builds_nextjs.js",
+        "materials/raw-data/svcollege_builds_sql_orm.js",
+        "materials/raw-data/svcollege_prerequisites_ai_engineering.js",
+        "materials/raw-data/svcollege_prerequisites_auth.js",
+        "materials/raw-data/svcollege_prerequisites_design_systems.js",
+        "materials/raw-data/svcollege_prerequisites_devops.js",
+        "materials/raw-data/svcollege_prerequisites_nestjs.js",
+        "materials/raw-data/svcollege_prerequisites_nextjs.js",
+        "materials/raw-data/svcollege_prerequisites_sql_orm.js",
+        "materials/raw-data/svcollege_questions_ai_engineering.js",
+        "materials/raw-data/svcollege_questions_auth.js",
+        "materials/raw-data/svcollege_questions_bridge.js",
+        "materials/raw-data/svcollege_questions_design_systems.js",
+        "materials/raw-data/svcollege_questions_devops.js",
+        "materials/raw-data/svcollege_questions_nestjs.js",
+        "materials/raw-data/svcollege_questions_nextjs.js",
+        "materials/raw-data/svcollege_questions_sql_orm.js",
+        "materials/raw-data/svcollege_traces_ai_engineering.js",
+        "materials/raw-data/svcollege_traces_auth.js",
+        "materials/raw-data/svcollege_traces_bridge.js",
+        "materials/raw-data/svcollege_traces_design_systems.js",
+        "materials/raw-data/svcollege_traces_devops.js",
+        "materials/raw-data/svcollege_traces_foundation_tooling_activity.js",
+        "materials/raw-data/svcollege_traces_lesson11_activity.js",
+        "materials/raw-data/svcollege_traces_lesson12_activity.js",
+        "materials/raw-data/svcollege_traces_lesson13_activity.js",
+        "materials/raw-data/svcollege_traces_lesson15_activity.js",
+        "materials/raw-data/svcollege_traces_lesson16_activity.js",
+        "materials/raw-data/svcollege_traces_lesson17_activity.js",
+        "materials/raw-data/svcollege_traces_nestjs.js",
+        "materials/raw-data/svcollege_traces_nextjs.js",
+        "materials/raw-data/svcollege_traces_sql_orm.js",
+        "materials/raw-data/what_if.js",
+        "materials/raw-data/zz_questions_build_phase2.js",
+        "materials/raw-data/zz_questions_trace_phase2.js",
+        "materials/raw-data/zz_questions_trace_phase3.js"
+      ]
+    },
+    {
+      "id": "reference-guides",
+      "title": "Reference Guides",
+      "subtopics": [
+        {
+          "id": "code-blocks",
+          "title": "Code Blocks",
+          "dir": "materials/by-topic/reference-guides/code-blocks",
+          "lessonIds": [],
+          "files": [
+            "materials/raw-data/code_blocks.js",
+            "materials/raw-data/svcollege_code_blocks.js",
+            "materials/reference-guides/data/code_blocks.js",
+            "materials/reference-guides/data/svcollege_code_blocks.js"
+          ]
+        },
+        {
+          "id": "exam-prep-docs",
+          "title": "Exam Prep Docs",
+          "dir": "materials/by-topic/reference-guides/exam-prep-docs",
+          "lessonIds": [],
+          "files": [
+            "materials/reference-guides/docs/exam-prep/CODE_WRITING_PRACTICE.md",
+            "materials/reference-guides/docs/exam-prep/COMMON_PITFALLS.md",
+            "materials/reference-guides/docs/exam-prep/COMPARISON_TABLES_DEEP.md",
+            "materials/reference-guides/docs/exam-prep/CONCEPT_DEPENDENCIES.md",
+            "materials/reference-guides/docs/exam-prep/FINAL_WEEK_PLAN.md",
+            "materials/reference-guides/docs/exam-prep/HEBREW_ENGLISH_GLOSSARY.md",
+            "materials/reference-guides/docs/exam-prep/MOCK_EXAMS_README.md",
+            "materials/reference-guides/docs/exam-prep/PRE_EXAM_CHECKLIST.md",
+            "materials/reference-guides/docs/exam-prep/README.md",
+            "materials/reference-guides/docs/exam-prep/TIME_PRESSURE_DRILLS.md",
+            "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_ai_engineering.md",
+            "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_auth_security.md",
+            "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_closures.md",
+            "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_design_systems.md",
+            "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_devops_deploy.md",
+            "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_html_css_foundations.md",
+            "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_nestjs.md",
+            "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_nextjs.md",
+            "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_sql_orm.md",
+            "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_tooling_git.md",
+            "materials/reference-guides/docs/exam-prep/mock_exam_1.md",
+            "materials/reference-guides/docs/exam-prep/mock_exam_2.md",
+            "materials/reference-guides/docs/exam-prep/mock_exam_3.md",
+            "materials/reference-guides/docs/exam-prep/mock_exam_4.md",
+            "materials/reference-guides/docs/exam-prep/mock_exam_5.md"
+          ]
+        },
+        {
+          "id": "flashcards",
+          "title": "Flashcards",
+          "dir": "materials/by-topic/reference-guides/flashcards",
+          "lessonIds": [],
+          "files": [
+            "materials/raw-data/flashcards.js",
+            "materials/reference-guides/data/flashcards.js"
+          ]
+        },
+        {
+          "id": "glossary",
+          "title": "Glossary",
+          "dir": "materials/by-topic/reference-guides/glossary",
+          "lessonIds": [],
+          "files": [
+            "materials/raw-data/concise_definitions.js",
+            "materials/raw-data/glossary.js",
+            "materials/reference-guides/data/concise_definitions.js",
+            "materials/reference-guides/data/glossary.js"
+          ]
+        },
+        {
+          "id": "grandma-knowledge",
+          "title": "Grandma Knowledge",
+          "dir": "materials/by-topic/reference-guides/grandma-knowledge",
+          "lessonIds": [],
+          "files": [
+            "materials/raw-data/grandma_knowledge.js",
+            "materials/raw-data/grandma_visuals.js",
+            "materials/reference-guides/data/grandma_knowledge.js",
+            "materials/reference-guides/data/grandma_visuals.js"
+          ]
+        },
+        {
+          "id": "interview-prep",
+          "title": "Interview Prep",
+          "dir": "materials/by-topic/reference-guides/interview-prep",
+          "lessonIds": [],
+          "files": [
+            "materials/raw-data/interview_prep.js",
+            "materials/reference-guides/data/interview_prep.js"
+          ]
+        },
+        {
+          "id": "portal-navigation",
+          "title": "Portal Navigation",
+          "dir": "materials/by-topic/reference-guides/portal-navigation",
+          "lessonIds": [],
+          "files": [
+            "materials/raw-data/portal_decision_aids.js",
+            "materials/raw-data/site_navigation_tree.js",
+            "materials/reference-guides/data/portal_decision_aids.js",
+            "materials/reference-guides/data/site_navigation_tree.js"
+          ]
+        },
+        {
+          "id": "quick-guide",
+          "title": "Quick Guide",
+          "dir": "materials/by-topic/reference-guides/quick-guide",
+          "lessonIds": [],
+          "files": [
+            "materials/raw-data/quick_guide.js",
+            "materials/reference-guides/data/quick_guide.js"
+          ]
+        },
+        {
+          "id": "session-integration-docs",
+          "title": "Session Integration Docs",
+          "dir": "materials/by-topic/reference-guides/session-integration-docs",
+          "lessonIds": [],
+          "files": [
+            "materials/reference-guides/docs/session-integration/auth.md",
+            "materials/reference-guides/docs/session-integration/nextjs.md",
+            "materials/reference-guides/docs/session-integration/sql-orm.md",
+            "materials/reference-guides/docs/session-integration/term-clarity.md"
+          ]
+        },
+        {
+          "id": "study-guides",
+          "title": "Study Guides",
+          "dir": "materials/by-topic/reference-guides/study-guides",
+          "lessonIds": [],
+          "files": [
+            "materials/raw-data/anti_patterns.js",
+            "materials/raw-data/cluster_index.js",
+            "materials/raw-data/comparisons.js",
+            "materials/raw-data/concept_comics.js",
+            "materials/raw-data/concept_enrichment.js",
+            "materials/raw-data/concept_videos.js",
+            "materials/raw-data/course_blueprints.js",
+            "materials/raw-data/extended_explanations.js",
+            "materials/raw-data/mnemonics.js",
+            "materials/raw-data/option_feedback.js",
+            "materials/raw-data/war_stories.js",
+            "materials/reference-guides/data/anti_patterns.js",
+            "materials/reference-guides/data/cluster_index.js",
+            "materials/reference-guides/data/comparisons.js",
+            "materials/reference-guides/data/concept_comics.js",
+            "materials/reference-guides/data/concept_enrichment.js",
+            "materials/reference-guides/data/concept_videos.js",
+            "materials/reference-guides/data/course_blueprints.js",
+            "materials/reference-guides/data/extended_explanations.js",
+            "materials/reference-guides/data/mnemonics.js",
+            "materials/reference-guides/data/option_feedback.js",
+            "materials/reference-guides/data/war_stories.js"
+          ]
+        }
+      ],
+      "lessonIds": [],
+      "files": [
+        "materials/raw-data/anti_patterns.js",
+        "materials/raw-data/cluster_index.js",
+        "materials/raw-data/code_blocks.js",
+        "materials/raw-data/comparisons.js",
+        "materials/raw-data/concept_comics.js",
+        "materials/raw-data/concept_enrichment.js",
+        "materials/raw-data/concept_videos.js",
+        "materials/raw-data/concise_definitions.js",
+        "materials/raw-data/course_blueprints.js",
+        "materials/raw-data/extended_explanations.js",
+        "materials/raw-data/flashcards.js",
+        "materials/raw-data/glossary.js",
+        "materials/raw-data/grandma_knowledge.js",
+        "materials/raw-data/grandma_visuals.js",
+        "materials/raw-data/interview_prep.js",
+        "materials/raw-data/mnemonics.js",
+        "materials/raw-data/option_feedback.js",
+        "materials/raw-data/portal_decision_aids.js",
+        "materials/raw-data/quick_guide.js",
+        "materials/raw-data/site_navigation_tree.js",
+        "materials/raw-data/svcollege_code_blocks.js",
+        "materials/raw-data/war_stories.js",
+        "materials/reference-guides/data/anti_patterns.js",
+        "materials/reference-guides/data/cluster_index.js",
+        "materials/reference-guides/data/code_blocks.js",
+        "materials/reference-guides/data/comparisons.js",
+        "materials/reference-guides/data/concept_comics.js",
+        "materials/reference-guides/data/concept_enrichment.js",
+        "materials/reference-guides/data/concept_videos.js",
+        "materials/reference-guides/data/concise_definitions.js",
+        "materials/reference-guides/data/course_blueprints.js",
+        "materials/reference-guides/data/extended_explanations.js",
+        "materials/reference-guides/data/flashcards.js",
+        "materials/reference-guides/data/glossary.js",
+        "materials/reference-guides/data/grandma_knowledge.js",
+        "materials/reference-guides/data/grandma_visuals.js",
+        "materials/reference-guides/data/interview_prep.js",
+        "materials/reference-guides/data/mnemonics.js",
+        "materials/reference-guides/data/option_feedback.js",
+        "materials/reference-guides/data/portal_decision_aids.js",
+        "materials/reference-guides/data/quick_guide.js",
+        "materials/reference-guides/data/site_navigation_tree.js",
+        "materials/reference-guides/data/svcollege_code_blocks.js",
+        "materials/reference-guides/data/war_stories.js",
+        "materials/reference-guides/docs/exam-prep/CODE_WRITING_PRACTICE.md",
+        "materials/reference-guides/docs/exam-prep/COMMON_PITFALLS.md",
+        "materials/reference-guides/docs/exam-prep/COMPARISON_TABLES_DEEP.md",
+        "materials/reference-guides/docs/exam-prep/CONCEPT_DEPENDENCIES.md",
+        "materials/reference-guides/docs/exam-prep/FINAL_WEEK_PLAN.md",
+        "materials/reference-guides/docs/exam-prep/HEBREW_ENGLISH_GLOSSARY.md",
+        "materials/reference-guides/docs/exam-prep/MOCK_EXAMS_README.md",
+        "materials/reference-guides/docs/exam-prep/PRE_EXAM_CHECKLIST.md",
+        "materials/reference-guides/docs/exam-prep/README.md",
+        "materials/reference-guides/docs/exam-prep/TIME_PRESSURE_DRILLS.md",
+        "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_ai_engineering.md",
+        "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_auth_security.md",
+        "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_closures.md",
+        "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_design_systems.md",
+        "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_devops_deploy.md",
+        "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_html_css_foundations.md",
+        "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_nestjs.md",
+        "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_nextjs.md",
+        "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_sql_orm.md",
+        "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_tooling_git.md",
+        "materials/reference-guides/docs/exam-prep/mock_exam_1.md",
+        "materials/reference-guides/docs/exam-prep/mock_exam_2.md",
+        "materials/reference-guides/docs/exam-prep/mock_exam_3.md",
+        "materials/reference-guides/docs/exam-prep/mock_exam_4.md",
+        "materials/reference-guides/docs/exam-prep/mock_exam_5.md",
+        "materials/reference-guides/docs/session-integration/auth.md",
+        "materials/reference-guides/docs/session-integration/nextjs.md",
+        "materials/reference-guides/docs/session-integration/sql-orm.md",
+        "materials/reference-guides/docs/session-integration/term-clarity.md"
+      ]
+    },
+    {
+      "id": "unclassified-runtime-data",
+      "title": "Unclassified Runtime Data",
+      "subtopics": [
+        {
+          "id": "misc",
+          "title": "Misc",
+          "dir": "materials/by-topic/unclassified-runtime-data/misc",
+          "lessonIds": [],
+          "files": [
+            "materials/raw-data/zz_questions_bug_phase2.js",
+            "materials/unclassified-runtime-data/zz_questions_bug_phase2.js"
+          ]
+        }
+      ],
+      "lessonIds": [],
+      "files": [
+        "materials/raw-data/zz_questions_bug_phase2.js",
+        "materials/unclassified-runtime-data/zz_questions_bug_phase2.js"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "sourcePath": "data/ai_development.js",
+      "targetPath": "materials/raw-data/ai_development.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "ai_development",
+      "topicId": "lessons",
+      "subtopicId": "ai_development",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/animations.js",
+      "targetPath": "materials/raw-data/animations.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/anti_patterns.js",
+      "targetPath": "materials/raw-data/anti_patterns.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/bug_quests.js",
+      "targetPath": "materials/raw-data/bug_quests.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/capstones.js",
+      "targetPath": "materials/raw-data/capstones.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/cluster_index.js",
+      "targetPath": "materials/raw-data/cluster_index.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/code_blocks.js",
+      "targetPath": "materials/raw-data/code_blocks.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "code-blocks",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/comparisons.js",
+      "targetPath": "materials/raw-data/comparisons.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/concept_comics.js",
+      "targetPath": "materials/raw-data/concept_comics.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/concept_enrichment.js",
+      "targetPath": "materials/raw-data/concept_enrichment.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/concept_videos.js",
+      "targetPath": "materials/raw-data/concept_videos.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/concise_definitions.js",
+      "targetPath": "materials/raw-data/concise_definitions.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "glossary",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/counterfactuals.js",
+      "targetPath": "materials/raw-data/counterfactuals.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/course_blueprints.js",
+      "targetPath": "materials/raw-data/course_blueprints.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/exam_edition_release_freeze.js",
+      "targetPath": "materials/raw-data/exam_edition_release_freeze.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/exam_manual_review_promotions.js",
+      "targetPath": "materials/raw-data/exam_manual_review_promotions.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "manual-review",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/exam_practice_extras.js",
+      "targetPath": "materials/raw-data/exam_practice_extras.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/exam_tasks_tree.js",
+      "targetPath": "materials/raw-data/exam_tasks_tree.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "task-tree",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/extended_explanations.js",
+      "targetPath": "materials/raw-data/extended_explanations.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/flashcards.js",
+      "targetPath": "materials/raw-data/flashcards.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "flashcards",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/glossary.js",
+      "targetPath": "materials/raw-data/glossary.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "glossary",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/grandma_knowledge.js",
+      "targetPath": "materials/raw-data/grandma_knowledge.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "grandma-knowledge",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/grandma_visuals.js",
+      "targetPath": "materials/raw-data/grandma_visuals.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "grandma-knowledge",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/guided_builds.js",
+      "targetPath": "materials/raw-data/guided_builds.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/homework_exam_mode.js",
+      "targetPath": "materials/raw-data/homework_exam_mode.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-mode",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/interview_prep.js",
+      "targetPath": "materials/raw-data/interview_prep.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "interview-prep",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_ai_engineering.js",
+      "targetPath": "materials/raw-data/lesson_ai_engineering.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_ai_engineering",
+      "topicId": "lessons",
+      "subtopicId": "lesson_ai_engineering",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_auth_security.js",
+      "targetPath": "materials/raw-data/lesson_auth_security.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_auth_security",
+      "topicId": "lessons",
+      "subtopicId": "lesson_auth_security",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_closures.js",
+      "targetPath": "materials/raw-data/lesson_closures.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_closures",
+      "topicId": "lessons",
+      "subtopicId": "lesson_closures",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_design_systems.js",
+      "targetPath": "materials/raw-data/lesson_design_systems.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_design_systems",
+      "topicId": "lessons",
+      "subtopicId": "lesson_design_systems",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_devops_deploy.js",
+      "targetPath": "materials/raw-data/lesson_devops_deploy.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_devops_deploy",
+      "topicId": "lessons",
+      "subtopicId": "lesson_devops_deploy",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_html_css_foundations.js",
+      "targetPath": "materials/raw-data/lesson_html_css_foundations.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_html_css_foundations",
+      "topicId": "lessons",
+      "subtopicId": "lesson_html_css_foundations",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_nestjs.js",
+      "targetPath": "materials/raw-data/lesson_nestjs.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_nestjs",
+      "topicId": "lessons",
+      "subtopicId": "lesson_nestjs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_nextjs.js",
+      "targetPath": "materials/raw-data/lesson_nextjs.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_nextjs",
+      "topicId": "lessons",
+      "subtopicId": "lesson_nextjs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_quiz_keys.js",
+      "targetPath": "materials/raw-data/lesson_quiz_keys.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_sql_orm.js",
+      "targetPath": "materials/raw-data/lesson_sql_orm.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_sql_orm",
+      "topicId": "lessons",
+      "subtopicId": "lesson_sql_orm",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_tooling_git.js",
+      "targetPath": "materials/raw-data/lesson_tooling_git.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_tooling_git",
+      "topicId": "lessons",
+      "subtopicId": "lesson_tooling_git",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson11.js",
+      "targetPath": "materials/raw-data/lesson11.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_11",
+      "topicId": "lessons",
+      "subtopicId": "lesson_11",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson12.js",
+      "targetPath": "materials/raw-data/lesson12.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_12",
+      "topicId": "lessons",
+      "subtopicId": "lesson_12",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson13.js",
+      "targetPath": "materials/raw-data/lesson13.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_13",
+      "topicId": "lessons",
+      "subtopicId": "lesson_13",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson15.js",
+      "targetPath": "materials/raw-data/lesson15.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_15",
+      "topicId": "lessons",
+      "subtopicId": "lesson_15",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson16.js",
+      "targetPath": "materials/raw-data/lesson16.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_16",
+      "topicId": "lessons",
+      "subtopicId": "lesson_16",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson17.js",
+      "targetPath": "materials/raw-data/lesson17.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_17",
+      "topicId": "lessons",
+      "subtopicId": "lesson_17",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson18.js",
+      "targetPath": "materials/raw-data/lesson18.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_18",
+      "topicId": "lessons",
+      "subtopicId": "lesson_18",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson19.js",
+      "targetPath": "materials/raw-data/lesson19.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_19",
+      "topicId": "lessons",
+      "subtopicId": "lesson_19",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson20.js",
+      "targetPath": "materials/raw-data/lesson20.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_20",
+      "topicId": "lessons",
+      "subtopicId": "lesson_20",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson21.js",
+      "targetPath": "materials/raw-data/lesson21.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_21",
+      "topicId": "lessons",
+      "subtopicId": "lesson_21",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson22.js",
+      "targetPath": "materials/raw-data/lesson22.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_22",
+      "topicId": "lessons",
+      "subtopicId": "lesson_22",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson23.js",
+      "targetPath": "materials/raw-data/lesson23.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_23",
+      "topicId": "lessons",
+      "subtopicId": "lesson_23",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson24.js",
+      "targetPath": "materials/raw-data/lesson24.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_24",
+      "topicId": "lessons",
+      "subtopicId": "lesson_24",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson25.js",
+      "targetPath": "materials/raw-data/lesson25.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_25",
+      "topicId": "lessons",
+      "subtopicId": "lesson_25",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson26.js",
+      "targetPath": "materials/raw-data/lesson26.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_26",
+      "topicId": "lessons",
+      "subtopicId": "lesson_26",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson27.js",
+      "targetPath": "materials/raw-data/lesson27.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "lesson_27",
+      "topicId": "lessons",
+      "subtopicId": "lesson_27",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/level100_release_gates.js",
+      "targetPath": "materials/raw-data/level100_release_gates.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "gates",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/memory_palaces.js",
+      "targetPath": "materials/raw-data/memory_palaces.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/metaphors.js",
+      "targetPath": "materials/raw-data/metaphors.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/mnemonics.js",
+      "targetPath": "materials/raw-data/mnemonics.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/option_feedback.js",
+      "targetPath": "materials/raw-data/option_feedback.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/pair_match.js",
+      "targetPath": "materials/raw-data/pair_match.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/pathways.js",
+      "targetPath": "materials/raw-data/pathways.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/portal_decision_aids.js",
+      "targetPath": "materials/raw-data/portal_decision_aids.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "portal-navigation",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/prerequisites.js",
+      "targetPath": "materials/raw-data/prerequisites.js",
+      "kind": "runtime-data",
+      "category": "prerequisite",
+      "topicId": "practice",
+      "subtopicId": "prerequisites",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/problem_first.js",
+      "targetPath": "materials/raw-data/problem_first.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/question_quality_reviews.js",
+      "targetPath": "materials/raw-data/question_quality_reviews.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "quality-review",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/questions_bank_seeded.js",
+      "targetPath": "materials/raw-data/questions_bank_seeded.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/questions_bank.js",
+      "targetPath": "materials/raw-data/questions_bank.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/questions_bug.js",
+      "targetPath": "materials/raw-data/questions_bug.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/questions_build.js",
+      "targetPath": "materials/raw-data/questions_build.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/questions_trace.js",
+      "targetPath": "materials/raw-data/questions_trace.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/quick_guide.js",
+      "targetPath": "materials/raw-data/quick_guide.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "quick-guide",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/react_blueprint.js",
+      "targetPath": "materials/raw-data/react_blueprint.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "react_blueprint",
+      "topicId": "lessons",
+      "subtopicId": "react_blueprint",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/scenarios.js",
+      "targetPath": "materials/raw-data/scenarios.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/shards/questions_session_EEE.js",
+      "targetPath": "materials/raw-data/shards/questions_session_EEE.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/site_navigation_tree.js",
+      "targetPath": "materials/raw-data/site_navigation_tree.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "portal-navigation",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/solution_guide_drills.js",
+      "targetPath": "materials/raw-data/solution_guide_drills.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "solution-guide",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/stage_zero.js",
+      "targetPath": "materials/raw-data/stage_zero.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_builds_ai_engineering.js",
+      "targetPath": "materials/raw-data/svcollege_builds_ai_engineering.js",
+      "kind": "runtime-data",
+      "category": "build",
+      "lessonId": "lesson_ai_engineering",
+      "topicId": "practice",
+      "subtopicId": "builds",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_builds_auth.js",
+      "targetPath": "materials/raw-data/svcollege_builds_auth.js",
+      "kind": "runtime-data",
+      "category": "build",
+      "lessonId": "lesson_auth_security",
+      "topicId": "practice",
+      "subtopicId": "builds",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_builds_bridge.js",
+      "targetPath": "materials/raw-data/svcollege_builds_bridge.js",
+      "kind": "runtime-data",
+      "category": "build",
+      "lessonId": "svcollege_bridge",
+      "topicId": "practice",
+      "subtopicId": "builds",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_builds_design_systems.js",
+      "targetPath": "materials/raw-data/svcollege_builds_design_systems.js",
+      "kind": "runtime-data",
+      "category": "build",
+      "lessonId": "lesson_design_systems",
+      "topicId": "practice",
+      "subtopicId": "builds",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_builds_devops.js",
+      "targetPath": "materials/raw-data/svcollege_builds_devops.js",
+      "kind": "runtime-data",
+      "category": "build",
+      "lessonId": "lesson_devops_deploy",
+      "topicId": "practice",
+      "subtopicId": "builds",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_builds_nestjs.js",
+      "targetPath": "materials/raw-data/svcollege_builds_nestjs.js",
+      "kind": "runtime-data",
+      "category": "build",
+      "lessonId": "lesson_nestjs",
+      "topicId": "practice",
+      "subtopicId": "builds",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_builds_nextjs.js",
+      "targetPath": "materials/raw-data/svcollege_builds_nextjs.js",
+      "kind": "runtime-data",
+      "category": "build",
+      "lessonId": "lesson_nextjs",
+      "topicId": "practice",
+      "subtopicId": "builds",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_builds_sql_orm.js",
+      "targetPath": "materials/raw-data/svcollege_builds_sql_orm.js",
+      "kind": "runtime-data",
+      "category": "build",
+      "lessonId": "lesson_sql_orm",
+      "topicId": "practice",
+      "subtopicId": "builds",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_code_blocks.js",
+      "targetPath": "materials/raw-data/svcollege_code_blocks.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "code-blocks",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_prerequisites_ai_engineering.js",
+      "targetPath": "materials/raw-data/svcollege_prerequisites_ai_engineering.js",
+      "kind": "runtime-data",
+      "category": "prerequisite",
+      "lessonId": "lesson_ai_engineering",
+      "topicId": "practice",
+      "subtopicId": "prerequisites",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_prerequisites_auth.js",
+      "targetPath": "materials/raw-data/svcollege_prerequisites_auth.js",
+      "kind": "runtime-data",
+      "category": "prerequisite",
+      "lessonId": "lesson_auth_security",
+      "topicId": "practice",
+      "subtopicId": "prerequisites",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_prerequisites_design_systems.js",
+      "targetPath": "materials/raw-data/svcollege_prerequisites_design_systems.js",
+      "kind": "runtime-data",
+      "category": "prerequisite",
+      "lessonId": "lesson_design_systems",
+      "topicId": "practice",
+      "subtopicId": "prerequisites",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_prerequisites_devops.js",
+      "targetPath": "materials/raw-data/svcollege_prerequisites_devops.js",
+      "kind": "runtime-data",
+      "category": "prerequisite",
+      "lessonId": "lesson_devops_deploy",
+      "topicId": "practice",
+      "subtopicId": "prerequisites",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_prerequisites_nestjs.js",
+      "targetPath": "materials/raw-data/svcollege_prerequisites_nestjs.js",
+      "kind": "runtime-data",
+      "category": "prerequisite",
+      "lessonId": "lesson_nestjs",
+      "topicId": "practice",
+      "subtopicId": "prerequisites",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_prerequisites_nextjs.js",
+      "targetPath": "materials/raw-data/svcollege_prerequisites_nextjs.js",
+      "kind": "runtime-data",
+      "category": "prerequisite",
+      "lessonId": "lesson_nextjs",
+      "topicId": "practice",
+      "subtopicId": "prerequisites",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_prerequisites_sql_orm.js",
+      "targetPath": "materials/raw-data/svcollege_prerequisites_sql_orm.js",
+      "kind": "runtime-data",
+      "category": "prerequisite",
+      "lessonId": "lesson_sql_orm",
+      "topicId": "practice",
+      "subtopicId": "prerequisites",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_questions_ai_engineering.js",
+      "targetPath": "materials/raw-data/svcollege_questions_ai_engineering.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "lessonId": "lesson_ai_engineering",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_questions_auth.js",
+      "targetPath": "materials/raw-data/svcollege_questions_auth.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "lessonId": "lesson_auth_security",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_questions_bridge.js",
+      "targetPath": "materials/raw-data/svcollege_questions_bridge.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "lessonId": "svcollege_bridge",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_questions_design_systems.js",
+      "targetPath": "materials/raw-data/svcollege_questions_design_systems.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "lessonId": "lesson_design_systems",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_questions_devops.js",
+      "targetPath": "materials/raw-data/svcollege_questions_devops.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "lessonId": "lesson_devops_deploy",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_questions_nestjs.js",
+      "targetPath": "materials/raw-data/svcollege_questions_nestjs.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "lessonId": "lesson_nestjs",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_questions_nextjs.js",
+      "targetPath": "materials/raw-data/svcollege_questions_nextjs.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "lessonId": "lesson_nextjs",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_questions_sql_orm.js",
+      "targetPath": "materials/raw-data/svcollege_questions_sql_orm.js",
+      "kind": "runtime-data",
+      "category": "questions",
+      "lessonId": "lesson_sql_orm",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_ai_engineering.js",
+      "targetPath": "materials/raw-data/svcollege_traces_ai_engineering.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_ai_engineering",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_auth.js",
+      "targetPath": "materials/raw-data/svcollege_traces_auth.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_auth_security",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_bridge.js",
+      "targetPath": "materials/raw-data/svcollege_traces_bridge.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "svcollege_bridge",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_design_systems.js",
+      "targetPath": "materials/raw-data/svcollege_traces_design_systems.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_design_systems",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_devops.js",
+      "targetPath": "materials/raw-data/svcollege_traces_devops.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_devops_deploy",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_foundation_tooling_activity.js",
+      "targetPath": "materials/raw-data/svcollege_traces_foundation_tooling_activity.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_tooling_git",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_lesson11_activity.js",
+      "targetPath": "materials/raw-data/svcollege_traces_lesson11_activity.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_11",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_lesson12_activity.js",
+      "targetPath": "materials/raw-data/svcollege_traces_lesson12_activity.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_12",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_lesson13_activity.js",
+      "targetPath": "materials/raw-data/svcollege_traces_lesson13_activity.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_13",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_lesson15_activity.js",
+      "targetPath": "materials/raw-data/svcollege_traces_lesson15_activity.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_15",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_lesson16_activity.js",
+      "targetPath": "materials/raw-data/svcollege_traces_lesson16_activity.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_16",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_lesson17_activity.js",
+      "targetPath": "materials/raw-data/svcollege_traces_lesson17_activity.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_17",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_nestjs.js",
+      "targetPath": "materials/raw-data/svcollege_traces_nestjs.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_nestjs",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_nextjs.js",
+      "targetPath": "materials/raw-data/svcollege_traces_nextjs.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_nextjs",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_traces_sql_orm.js",
+      "targetPath": "materials/raw-data/svcollege_traces_sql_orm.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "lessonId": "lesson_sql_orm",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/war_stories.js",
+      "targetPath": "materials/raw-data/war_stories.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/what_if.js",
+      "targetPath": "materials/raw-data/what_if.js",
+      "kind": "runtime-data",
+      "category": "activity",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/workbook_taskmanager.js",
+      "targetPath": "materials/raw-data/workbook_taskmanager.js",
+      "kind": "runtime-data",
+      "category": "lesson",
+      "lessonId": "workbook_taskmanager",
+      "topicId": "lessons",
+      "subtopicId": "workbook_taskmanager",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/zz_questions_bug_phase2.js",
+      "targetPath": "materials/raw-data/zz_questions_bug_phase2.js",
+      "kind": "runtime-data",
+      "category": "unclassified-runtime-data",
+      "topicId": "unclassified-runtime-data",
+      "subtopicId": "misc",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/zz_questions_build_phase2.js",
+      "targetPath": "materials/raw-data/zz_questions_build_phase2.js",
+      "kind": "runtime-data",
+      "category": "build",
+      "topicId": "practice",
+      "subtopicId": "builds",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/zz_questions_trace_phase2.js",
+      "targetPath": "materials/raw-data/zz_questions_trace_phase2.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/zz_questions_trace_phase3.js",
+      "targetPath": "materials/raw-data/zz_questions_trace_phase3.js",
+      "kind": "runtime-data",
+      "category": "trace",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/Lesson 11.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/Lesson 11.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_11",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/Lesson 13.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/Lesson 13.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_13",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/lesson 15.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/lesson 15.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_15",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/Lesson 16.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/Lesson 16.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_16",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/Lesson 17.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/Lesson 17.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_17",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/lesson 19.pdf",
+      "targetPath": "materials/source-assets/lessons/lesson 19.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_19",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/Lesson 20.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/Lesson 20.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_20",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/Lesson 21.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/Lesson 21.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_21",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/Lesson 22.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/Lesson 22.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_22",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/LESSON 23.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/LESSON 23.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_23",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/Lesson 25.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/Lesson 25.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_25",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/Lesson 26 part 2.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/Lesson 26 part 2.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_26",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/Lesson 26.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/Lesson 26.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_26",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/lesson 27_homwork.docx.pdf",
+      "targetPath": "materials/source-assets/lessons/lesson 27_homwork.docx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_27",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/lesson24.pptx.pdf",
+      "targetPath": "materials/source-assets/lessons/lesson24.pptx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_24",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/manifest.json",
+      "targetPath": "materials/source-assets/lessons/manifest.json",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/React_Architect_Blueprint.pdf",
+      "targetPath": "materials/source-assets/lessons/React_Architect_Blueprint.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/svcollege_full_lesson_summaries.docx",
+      "targetPath": "materials/source-assets/lessons/svcollege_full_lesson_summaries.docx",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/svcollege_full_lesson_summaries.pdf",
+      "targetPath": "materials/source-assets/lessons/svcollege_full_lesson_summaries.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/חוברת תרגול JavaScript.pdf",
+      "targetPath": "materials/source-assets/lessons/חוברת תרגול JavaScript.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/פרוייקט 25.docx.pdf",
+      "targetPath": "materials/source-assets/lessons/פרוייקט 25.docx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/שימוש בAI בצורה נכונה בפיתוח.pdf",
+      "targetPath": "materials/source-assets/lessons/שימוש בAI בצורה נכונה בפיתוח.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/שיעורי בית 11.docx.pdf",
+      "targetPath": "materials/source-assets/lessons/שיעורי בית 11.docx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/שיעורי בית 12.docx.pdf",
+      "targetPath": "materials/source-assets/lessons/שיעורי בית 12.docx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/שיעורי בית 13.docx.pdf",
+      "targetPath": "materials/source-assets/lessons/שיעורי בית 13.docx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/שיעורי בית 18.docx.pdf",
+      "targetPath": "materials/source-assets/lessons/שיעורי בית 18.docx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/שיעורי בית 22.docx.pdf",
+      "targetPath": "materials/source-assets/lessons/שיעורי בית 22.docx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/שיעורי בית 23.docx.pdf",
+      "targetPath": "materials/source-assets/lessons/שיעורי בית 23.docx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/שיעורי בית 24.docx.pdf",
+      "targetPath": "materials/source-assets/lessons/שיעורי בית 24.docx.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "lessons/שיעורי בת lesson 27_homwork.pdf",
+      "targetPath": "materials/source-assets/lessons/שיעורי בת lesson 27_homwork.pdf",
+      "kind": "source-asset",
+      "category": "lesson-source-asset",
+      "lessonId": "lesson_27",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_ai_engineering.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_ai_engineering.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_auth_security.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_auth_security.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_closures.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_closures.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_design_systems.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_design_systems.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_devops_deploy.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_devops_deploy.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_html_css_foundations.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_html_css_foundations.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_nestjs.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_nestjs.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_nextjs.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_nextjs.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_sql_orm.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_sql_orm.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_tooling_git.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/cheatsheet_lesson_tooling_git.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/CODE_WRITING_PRACTICE.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/CODE_WRITING_PRACTICE.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/COMMON_PITFALLS.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/COMMON_PITFALLS.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/COMPARISON_TABLES_DEEP.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/COMPARISON_TABLES_DEEP.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/CONCEPT_DEPENDENCIES.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/CONCEPT_DEPENDENCIES.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/FINAL_WEEK_PLAN.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/FINAL_WEEK_PLAN.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/HEBREW_ENGLISH_GLOSSARY.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/HEBREW_ENGLISH_GLOSSARY.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/mock_exam_1.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/mock_exam_1.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/mock_exam_2.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/mock_exam_2.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/mock_exam_3.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/mock_exam_3.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/mock_exam_4.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/mock_exam_4.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/mock_exam_5.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/mock_exam_5.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/MOCK_EXAMS_README.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/MOCK_EXAMS_README.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/PRE_EXAM_CHECKLIST.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/PRE_EXAM_CHECKLIST.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/README.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/README.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/TIME_PRESSURE_DRILLS.md",
+      "targetPath": "materials/reference-guides/docs/exam-prep/TIME_PRESSURE_DRILLS.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/session-integration/auth.md",
+      "targetPath": "materials/reference-guides/docs/session-integration/auth.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "session-integration-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/session-integration/nextjs.md",
+      "targetPath": "materials/reference-guides/docs/session-integration/nextjs.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "session-integration-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/session-integration/sql-orm.md",
+      "targetPath": "materials/reference-guides/docs/session-integration/sql-orm.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "session-integration-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/session-integration/term-clarity.md",
+      "targetPath": "materials/reference-guides/docs/session-integration/term-clarity.md",
+      "kind": "reference-doc",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "session-integration-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/exam_edition_release_freeze.js",
+      "targetPath": "materials/exam100/data/exam_edition_release_freeze.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/exam_manual_review_promotions.js",
+      "targetPath": "materials/exam100/data/exam_manual_review_promotions.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "manual-review",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/exam_practice_extras.js",
+      "targetPath": "materials/exam100/data/exam_practice_extras.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/exam_tasks_tree.js",
+      "targetPath": "materials/exam100/data/exam_tasks_tree.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "task-tree",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/homework_exam_mode.js",
+      "targetPath": "materials/exam100/data/homework_exam_mode.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-mode",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/lesson_quiz_keys.js",
+      "targetPath": "materials/exam100/data/lesson_quiz_keys.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/level100_release_gates.js",
+      "targetPath": "materials/exam100/data/level100_release_gates.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "gates",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/question_quality_reviews.js",
+      "targetPath": "materials/exam100/data/question_quality_reviews.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "quality-review",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/solution_guide_drills.js",
+      "targetPath": "materials/exam100/data/solution_guide_drills.js",
+      "kind": "runtime-data",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "solution-guide",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_ai_engineering.md",
+      "targetPath": "materials/exam100/docs/cheatsheet_lesson_ai_engineering.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_auth_security.md",
+      "targetPath": "materials/exam100/docs/cheatsheet_lesson_auth_security.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_closures.md",
+      "targetPath": "materials/exam100/docs/cheatsheet_lesson_closures.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_design_systems.md",
+      "targetPath": "materials/exam100/docs/cheatsheet_lesson_design_systems.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_devops_deploy.md",
+      "targetPath": "materials/exam100/docs/cheatsheet_lesson_devops_deploy.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_html_css_foundations.md",
+      "targetPath": "materials/exam100/docs/cheatsheet_lesson_html_css_foundations.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_nestjs.md",
+      "targetPath": "materials/exam100/docs/cheatsheet_lesson_nestjs.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_nextjs.md",
+      "targetPath": "materials/exam100/docs/cheatsheet_lesson_nextjs.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_sql_orm.md",
+      "targetPath": "materials/exam100/docs/cheatsheet_lesson_sql_orm.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/cheatsheet_lesson_tooling_git.md",
+      "targetPath": "materials/exam100/docs/cheatsheet_lesson_tooling_git.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/CODE_WRITING_PRACTICE.md",
+      "targetPath": "materials/exam100/docs/CODE_WRITING_PRACTICE.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/COMMON_PITFALLS.md",
+      "targetPath": "materials/exam100/docs/COMMON_PITFALLS.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/COMPARISON_TABLES_DEEP.md",
+      "targetPath": "materials/exam100/docs/COMPARISON_TABLES_DEEP.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/CONCEPT_DEPENDENCIES.md",
+      "targetPath": "materials/exam100/docs/CONCEPT_DEPENDENCIES.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/FINAL_WEEK_PLAN.md",
+      "targetPath": "materials/exam100/docs/FINAL_WEEK_PLAN.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/HEBREW_ENGLISH_GLOSSARY.md",
+      "targetPath": "materials/exam100/docs/HEBREW_ENGLISH_GLOSSARY.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/mock_exam_1.md",
+      "targetPath": "materials/exam100/docs/mock_exam_1.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/mock_exam_2.md",
+      "targetPath": "materials/exam100/docs/mock_exam_2.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/mock_exam_3.md",
+      "targetPath": "materials/exam100/docs/mock_exam_3.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/mock_exam_4.md",
+      "targetPath": "materials/exam100/docs/mock_exam_4.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/mock_exam_5.md",
+      "targetPath": "materials/exam100/docs/mock_exam_5.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/MOCK_EXAMS_README.md",
+      "targetPath": "materials/exam100/docs/MOCK_EXAMS_README.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/PRE_EXAM_CHECKLIST.md",
+      "targetPath": "materials/exam100/docs/PRE_EXAM_CHECKLIST.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/README.md",
+      "targetPath": "materials/exam100/docs/README.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "docs/exam-prep/TIME_PRESSURE_DRILLS.md",
+      "targetPath": "materials/exam100/docs/TIME_PRESSURE_DRILLS.md",
+      "kind": "reference-doc",
+      "category": "exam100",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/anti_patterns.js",
+      "targetPath": "materials/reference-guides/data/anti_patterns.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/cluster_index.js",
+      "targetPath": "materials/reference-guides/data/cluster_index.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/code_blocks.js",
+      "targetPath": "materials/reference-guides/data/code_blocks.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "code-blocks",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/comparisons.js",
+      "targetPath": "materials/reference-guides/data/comparisons.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/concept_comics.js",
+      "targetPath": "materials/reference-guides/data/concept_comics.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/concept_enrichment.js",
+      "targetPath": "materials/reference-guides/data/concept_enrichment.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/concept_videos.js",
+      "targetPath": "materials/reference-guides/data/concept_videos.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/concise_definitions.js",
+      "targetPath": "materials/reference-guides/data/concise_definitions.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "glossary",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/course_blueprints.js",
+      "targetPath": "materials/reference-guides/data/course_blueprints.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/extended_explanations.js",
+      "targetPath": "materials/reference-guides/data/extended_explanations.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/flashcards.js",
+      "targetPath": "materials/reference-guides/data/flashcards.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "flashcards",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/glossary.js",
+      "targetPath": "materials/reference-guides/data/glossary.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "glossary",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/grandma_knowledge.js",
+      "targetPath": "materials/reference-guides/data/grandma_knowledge.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "grandma-knowledge",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/grandma_visuals.js",
+      "targetPath": "materials/reference-guides/data/grandma_visuals.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "grandma-knowledge",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/interview_prep.js",
+      "targetPath": "materials/reference-guides/data/interview_prep.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "interview-prep",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/mnemonics.js",
+      "targetPath": "materials/reference-guides/data/mnemonics.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/option_feedback.js",
+      "targetPath": "materials/reference-guides/data/option_feedback.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/portal_decision_aids.js",
+      "targetPath": "materials/reference-guides/data/portal_decision_aids.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "portal-navigation",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/quick_guide.js",
+      "targetPath": "materials/reference-guides/data/quick_guide.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "quick-guide",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/site_navigation_tree.js",
+      "targetPath": "materials/reference-guides/data/site_navigation_tree.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "portal-navigation",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/svcollege_code_blocks.js",
+      "targetPath": "materials/reference-guides/data/svcollege_code_blocks.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "code-blocks",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/war_stories.js",
+      "targetPath": "materials/reference-guides/data/war_stories.js",
+      "kind": "runtime-data",
+      "category": "reference-guide",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "copied"
+    },
+    {
+      "sourcePath": "data/zz_questions_bug_phase2.js",
+      "targetPath": "materials/unclassified-runtime-data/zz_questions_bug_phase2.js",
+      "kind": "runtime-data",
+      "category": "unclassified-runtime-data",
+      "topicId": "unclassified-runtime-data",
+      "subtopicId": "misc",
+      "status": "copied"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/ai_development/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "ai_development",
+      "topicId": "lessons",
+      "subtopicId": "ai_development",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_11/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_11",
+      "topicId": "lessons",
+      "subtopicId": "lesson_11",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_12/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_12",
+      "topicId": "lessons",
+      "subtopicId": "lesson_12",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_13/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_13",
+      "topicId": "lessons",
+      "subtopicId": "lesson_13",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_15/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_15",
+      "topicId": "lessons",
+      "subtopicId": "lesson_15",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_16/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_16",
+      "topicId": "lessons",
+      "subtopicId": "lesson_16",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_17/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_17",
+      "topicId": "lessons",
+      "subtopicId": "lesson_17",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_18/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_18",
+      "topicId": "lessons",
+      "subtopicId": "lesson_18",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_19/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_19",
+      "topicId": "lessons",
+      "subtopicId": "lesson_19",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_20/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_20",
+      "topicId": "lessons",
+      "subtopicId": "lesson_20",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_21/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_21",
+      "topicId": "lessons",
+      "subtopicId": "lesson_21",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_22/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_22",
+      "topicId": "lessons",
+      "subtopicId": "lesson_22",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_23/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_23",
+      "topicId": "lessons",
+      "subtopicId": "lesson_23",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_24/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_24",
+      "topicId": "lessons",
+      "subtopicId": "lesson_24",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_25/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_25",
+      "topicId": "lessons",
+      "subtopicId": "lesson_25",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_26/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_26",
+      "topicId": "lessons",
+      "subtopicId": "lesson_26",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_27/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_27",
+      "topicId": "lessons",
+      "subtopicId": "lesson_27",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_ai_engineering/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_ai_engineering",
+      "topicId": "lessons",
+      "subtopicId": "lesson_ai_engineering",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_auth_security/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_auth_security",
+      "topicId": "lessons",
+      "subtopicId": "lesson_auth_security",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_closures/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_closures",
+      "topicId": "lessons",
+      "subtopicId": "lesson_closures",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_design_systems/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_design_systems",
+      "topicId": "lessons",
+      "subtopicId": "lesson_design_systems",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_devops_deploy/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_devops_deploy",
+      "topicId": "lessons",
+      "subtopicId": "lesson_devops_deploy",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_html_css_foundations/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_html_css_foundations",
+      "topicId": "lessons",
+      "subtopicId": "lesson_html_css_foundations",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_nestjs/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_nestjs",
+      "topicId": "lessons",
+      "subtopicId": "lesson_nestjs",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_nextjs/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_nextjs",
+      "topicId": "lessons",
+      "subtopicId": "lesson_nextjs",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_sql_orm/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_sql_orm",
+      "topicId": "lessons",
+      "subtopicId": "lesson_sql_orm",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/lesson_tooling_git/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "lesson_tooling_git",
+      "topicId": "lessons",
+      "subtopicId": "lesson_tooling_git",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/react_blueprint/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "react_blueprint",
+      "topicId": "lessons",
+      "subtopicId": "react_blueprint",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-lesson/workbook_taskmanager/README.md",
+      "kind": "lesson-index",
+      "category": "lesson",
+      "lessonId": "workbook_taskmanager",
+      "topicId": "lessons",
+      "subtopicId": "workbook_taskmanager",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/exam100/exam-mode/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "exam100",
+      "subtopicId": "exam-mode",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/exam100/exam-prep/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/exam100/exam-prep-docs/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "exam100",
+      "subtopicId": "exam-prep-docs",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/exam100/gates/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "exam100",
+      "subtopicId": "gates",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/exam100/manual-review/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "exam100",
+      "subtopicId": "manual-review",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/exam100/quality-review/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "exam100",
+      "subtopicId": "quality-review",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/exam100/solution-guide/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "exam100",
+      "subtopicId": "solution-guide",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/exam100/task-tree/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "exam100",
+      "subtopicId": "task-tree",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/ai_development/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "ai_development",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_11/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_11",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_12/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_12",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_13/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_13",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_15/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_15",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_16/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_16",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_17/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_17",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_18/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_18",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_19/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_19",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_20/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_20",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_21/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_21",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_22/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_22",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_23/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_23",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_24/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_24",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_25/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_25",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_26/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_26",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_27/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_27",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_ai_engineering/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_ai_engineering",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_auth_security/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_auth_security",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_closures/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_closures",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_design_systems/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_design_systems",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_devops_deploy/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_devops_deploy",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_html_css_foundations/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_html_css_foundations",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_nestjs/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_nestjs",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_nextjs/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_nextjs",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_sql_orm/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_sql_orm",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/lesson_tooling_git/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "lesson_tooling_git",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/react_blueprint/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "react_blueprint",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/source-assets/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "source-assets",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/lessons/workbook_taskmanager/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "lessons",
+      "subtopicId": "workbook_taskmanager",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/practice/activities/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "practice",
+      "subtopicId": "activities",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/practice/builds/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "practice",
+      "subtopicId": "builds",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/practice/prerequisites/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "practice",
+      "subtopicId": "prerequisites",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/practice/questions/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "practice",
+      "subtopicId": "questions",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/practice/traces/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "practice",
+      "subtopicId": "traces",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/reference-guides/code-blocks/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "reference-guides",
+      "subtopicId": "code-blocks",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/reference-guides/exam-prep-docs/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "reference-guides",
+      "subtopicId": "exam-prep-docs",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/reference-guides/flashcards/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "reference-guides",
+      "subtopicId": "flashcards",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/reference-guides/glossary/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "reference-guides",
+      "subtopicId": "glossary",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/reference-guides/grandma-knowledge/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "reference-guides",
+      "subtopicId": "grandma-knowledge",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/reference-guides/interview-prep/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "reference-guides",
+      "subtopicId": "interview-prep",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/reference-guides/portal-navigation/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "reference-guides",
+      "subtopicId": "portal-navigation",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/reference-guides/quick-guide/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "reference-guides",
+      "subtopicId": "quick-guide",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/reference-guides/session-integration-docs/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "reference-guides",
+      "subtopicId": "session-integration-docs",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/reference-guides/study-guides/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "reference-guides",
+      "subtopicId": "study-guides",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/by-topic/unclassified-runtime-data/misc/README.md",
+      "kind": "topic-index",
+      "category": "topic-index",
+      "topicId": "unclassified-runtime-data",
+      "subtopicId": "misc",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/README.md",
+      "kind": "readme",
+      "category": "root",
+      "topicId": "root",
+      "subtopicId": "overview",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/.portal-materials-export-managed",
+      "kind": "marker",
+      "category": "root",
+      "topicId": "root",
+      "subtopicId": "metadata",
+      "status": "generated"
+    },
+    {
+      "sourcePath": null,
+      "targetPath": "materials/MANIFEST.json",
+      "kind": "manifest",
+      "category": "root",
+      "topicId": "root",
+      "subtopicId": "metadata",
+      "status": "generated"
+    }
+  ]
+}

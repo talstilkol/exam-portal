@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📊 עמוד אנליטיקה וסטטיסטיקות</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); background-attachment: fixed; color: #e0e0e0; min-height: 100vh; padding: 20px; }
+  .container { max-width: 1000px; margin: 0 auto; }
+  header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%); border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+  header h1 { font-size: 2.5em; color: white; margin-bottom: 10px; }
+  
+  .card { background: rgba(0,0,0,0.3); border: 2px solid rgba(14,165,233,0.3); border-radius: 15px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+  .card h2 { color: #38bdf8; margin-bottom: 20px; border-bottom: 2px solid rgba(56,189,248,0.2); padding-bottom: 10px; }
+  
+  /* Heatmap */
+  .heatmap { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+  .day-box { aspect-ratio: 1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7em; font-weight: bold; color: rgba(255,255,255,0.8); cursor: pointer; transition: transform 0.2s; }
+  .day-box:hover { transform: scale(1.1); z-index: 2; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+  .level-0 { background: rgba(255,255,255,0.05); }
+  .level-1 { background: #166534; }
+  .level-2 { background: #22c55e; }
+  .level-3 { background: #4ade80; }
+  
+  /* Recommendations */
+  .rec-item { padding: 15px; border-left: 4px solid #ffc107; background: rgba(255,193,7,0.1); margin-bottom: 10px; border-radius: 0 8px 8px 0; }
+  .rec-item.good { border-color: #28a745; background: rgba(40,167,69,0.1); }
+  .rec-item.bad { border-color: #ff6b6b; background: rgba(255,107,107,0.1); }
+</style>
+<link rel="stylesheet" href="print-mobile.css">
+<link rel="stylesheet" href="light-mode.css">
+</head>
+<body>
+
+<div class="container">
+  <a href="00_dashboard.html" style="display:inline-block; margin-bottom:20px; color:#38bdf8; text-decoration:none; padding:10px 20px; background:rgba(56,189,248,0.1); border-radius:8px;">← חזרה לדשבורד</a>
+
+  <header>
+    <h1>📊 ניתוח ביצועים מלא (Analytics)</h1>
+    <p style="color:rgba(255,255,255,0.9); font-size:1.2em;">זיהוי דפוסי הלמידה שלך והמלצות אישיות למבחן.</p>
+  </header>
+
+  <div class="card">
+    <h2>🗺️ מפת חום (זמן למידה — 28 הימים האחרונים)</h2>
+    <div class="heatmap" id="heatmap"></div>
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px; font-size:0.85em; color:#aaa;">
+      <span>פחות זמן</span>
+      <div style="width:15px;height:15px;" class="day-box level-0"></div>
+      <div style="width:15px;height:15px;" class="day-box level-1"></div>
+      <div style="width:15px;height:15px;" class="day-box level-2"></div>
+      <div style="width:15px;height:15px;" class="day-box level-3"></div>
+      <span>יותר זמן</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔥 שגיאות לפי נושא (מהקוויזים)</h2>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+      <button onclick="loadDemoData()" style="padding:8px 16px; background:#1d4ed8; color:white; border:none; border-radius:8px; cursor:pointer; font-size:0.9em;">🎭 טען נתוני Demo</button>
+      <button onclick="resetStats()" style="padding:8px 16px; background:#dc2626; color:white; border:none; border-radius:8px; cursor:pointer; font-size:0.9em;">🗑️ אפס סטטיסטיקות</button>
+      <span id="stats-timestamp" style="color:#888; font-size:0.82em; align-self:center;"></span>
+    </div>
+    <div id="mistakes-chart" style="margin-top:10px;"></div>
+    <p id="mistakes-empty" style="color:#aaa; text-align:center; display:none;">עדיין אין נתוני שגיאות — עשה קוויז כדי לראות נתונים כאן.</p>
+  </div>
+
+  <div class="card">
+    <h2>💡 המלצות המערכת לפי הביצועים שלך</h2>
+    <div id="recommendations"></div>
+  </div>
+
+</div>
+
+<script>
+  function renderHeatmap() {
+    const dbStr = localStorage.getItem('FullStackStudyProgressDB');
+    let db = { history: {}, mistakes: {} };
+    if (dbStr) { try { db = JSON.parse(dbStr); } catch {} }
+
+    const heatmap = document.getElementById('heatmap');
+    const today = new Date();
+    
+    // Generate last 28 days
+    let html = '';
+    for(let i=27; i>=0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const dateStr = d.toLocaleDateString('he-IL');
+      
+      const seconds = db.history[dateStr] ? db.history[dateStr].timeSpent : 0;
+      const hours = seconds / 3600;
+      
+      let level = 0;
+      if(hours > 0) level = 1;
+      if(hours > 2) level = 2;
+      if(hours >= 4) level = 3;
+      
+      html += `<div class="day-box level-${level}" title="${dateStr}: ${hours.toFixed(1)} שעות">${d.getDate()}</div>`;
+    }
+    heatmap.innerHTML = html;
+  }
+
+  function generateRecommendations() {
+    const recs = document.getElementById('recommendations');
+    let html = '';
+    
+    // Check Quiz
+    const bestQuiz = parseInt(localStorage.getItem('exam-prep-quiz-best') || '0');
+    if (bestQuiz >= 85) {
+      html += '<div class="rec-item good"><strong>🎯 סימולטור מעולה:</strong> הציון שלך בסימולטור גבוה מאוד. אתה שולט היטב במלכודות!</div>';
+    } else if (bestQuiz > 0) {
+      html += '<div class="rec-item bad"><strong>⚠️ שים לב למלכודות:</strong> הציון בסימולטור עדיין נמוך מ-85. חזור ל"שאלות המלכודת" ול-JS Core.</div>';
+    } else {
+      html += '<div class="rec-item"><strong>📌 סימולטור:</strong> עוד לא עשית את מבחן הסימולציה. אל תגיע למבחן בלי לעבור אותו!</div>';
+    }
+
+    // Check Difficult Concepts
+    let notes = [];
+    try { notes = JSON.parse(localStorage.getItem('exam-prep-notes') || '[]'); } catch {}
+    const hardUnlearned = notes.filter(n => n.difficulty >= 4 && !n.learned);
+    
+    if (hardUnlearned.length > 0) {
+      html += `<div class="rec-item bad"><strong>🔥 הצטברות נושאים קשים:</strong> יש לך ${hardUnlearned.length} מושגים ברמת קושי גבוהה שעוד לא טיפלת בהם. המלצה: תקדיש שעה רק להם היום.</div>`;
+    } else if (notes.length > 5) {
+      html += `<div class="rec-item good"><strong>✅ טיפול טוב בפערים:</strong> רוב המושגים שהוספת נלמדו בהצלחה. המשך כך!</div>`;
+    }
+
+    // Check Marathon
+    if (localStorage.getItem('marathon-mode') === 'true') {
+      html += '<div class="rec-item warning" style="border-color:#ff416c; background:rgba(255,65,108,0.1);"><strong>🏃 מרתון פעיל:</strong> זכור ללמוד לפחות 4 שעות היום ולהימנע מהסחות דעת!</div>';
+    }
+
+    if(html === '') {
+      html = '<div class="rec-item">המערכת אוספת עליך נתונים. התחל ללמוד ולסמן משימות כדי לקבל המלצות.</div>';
+    }
+
+    recs.innerHTML = html;
+  }
+
+  function renderMistakesChart() {
+    const dbStr = localStorage.getItem('FullStackStudyProgressDB');
+    let db = { mistakes: {} };
+    if (dbStr) { try { db = JSON.parse(dbStr); } catch {} }
+
+    const TAG_LABELS = {
+      'js-core':      'JS Core',
+      'async':        'Async / Event Loop',
+      'typescript':   'TypeScript',
+      'react':        'React',
+      'node-express': 'Node / Express',
+      'database':     'מסדי נתונים',
+      'auth-security':'Auth / Security',
+      'devops':       'DevOps / Docker',
+      'algorithms':   'אלגוריתמים',
+      'html-css':     'HTML / CSS',
+      'General':      'כללי'
+    };
+
+    const mistakes = db.mistakes || {};
+    const entries = Object.entries(mistakes).sort((a,b) => b[1] - a[1]);
+
+    const chart = document.getElementById('mistakes-chart');
+    const empty = document.getElementById('mistakes-empty');
+
+    if (entries.length === 0) {
+      chart.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+
+    const maxVal = Math.max(...entries.map(e => e[1]), 1);
+    let html = '<div style="display:flex; flex-direction:column; gap:8px;">';
+    entries.forEach(([tag, count]) => {
+      const label = TAG_LABELS[tag] || tag;
+      const pct = Math.round((count / maxVal) * 100);
+      const color = pct > 66 ? '#ff6b6b' : pct > 33 ? '#ffc107' : '#22c55e';
+      html += `
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:140px; text-align:right; color:#ccc; font-size:0.85em; flex-shrink:0;">${label}</div>
+          <div style="flex:1; background:rgba(255,255,255,0.1); border-radius:6px; height:22px; overflow:hidden;">
+            <div style="width:${pct}%; background:${color}; height:100%; border-radius:6px; transition:width 0.6s ease; display:flex; align-items:center; justify-content:flex-end; padding-right:6px;">
+              <span style="font-size:0.78em; font-weight:bold; color:#000;">${count}</span>
+            </div>
+          </div>
+        </div>`;
+    });
+    html += '</div>';
+    chart.innerHTML = html;
+  }
+
+  function loadDemoData() {
+    const dbStr = localStorage.getItem('FullStackStudyProgressDB');
+    let db = { mistakes: {}, history: {} };
+    try { if (dbStr) db = JSON.parse(dbStr); } catch {}
+    const demo = { 'react': 8, 'async': 6, 'typescript': 5, 'js-core': 4, 'auth-security': 3, 'database': 2, 'node-express': 1 };
+    Object.entries(demo).forEach(([k, v]) => { db.mistakes[k] = (db.mistakes[k] || 0) + v; });
+    db.lastUpdated = new Date().toISOString();
+    localStorage.setItem('FullStackStudyProgressDB', JSON.stringify(db));
+    renderMistakesChart();
+    generateRecommendations();
+    updateTimestamp();
+    alert('נטענו נתוני Demo! עשה קוויז אמיתי כדי לראות את הנתונים שלך.');
+  }
+
+  function resetStats() {
+    if (!confirm('בטוח שרוצה לאפס את כל הסטטיסטיקות?')) return;
+    const dbStr = localStorage.getItem('FullStackStudyProgressDB');
+    let db = {};
+    try { if (dbStr) db = JSON.parse(dbStr); } catch {}
+    db.mistakes = {};
+    db.history = {};
+    db.lastUpdated = new Date().toISOString();
+    localStorage.setItem('FullStackStudyProgressDB', JSON.stringify(db));
+    renderHeatmap();
+    renderMistakesChart();
+    generateRecommendations();
+    updateTimestamp();
+  }
+
+  function updateTimestamp() {
+    const dbStr = localStorage.getItem('FullStackStudyProgressDB');
+    const ts = document.getElementById('stats-timestamp');
+    if (!ts) return;
+    try {
+      const db = JSON.parse(dbStr || '{}');
+      if (db.lastUpdated) {
+        const d = new Date(db.lastUpdated);
+        ts.textContent = 'עודכן: ' + d.toLocaleDateString('he-IL') + ' ' + d.toLocaleTimeString('he-IL', {hour:'2-digit',minute:'2-digit'});
+      }
+    } catch {}
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderHeatmap();
+    renderMistakesChart();
+    generateRecommendations();
+    updateTimestamp();
+  });
+</script>
+<script src="progress-engine.js"></script>
+<script src="breadcrumbs.js"></script>
+<script src="theme-toggle.js"></script>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

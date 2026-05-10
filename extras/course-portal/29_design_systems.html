@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Design Systems — Tailwind, shadcn/UI, Radix | Full-Stack Portal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',sans-serif;line-height:1.8}
+header{background:#161b22;border-bottom:1px solid #30363d;padding:1rem 2rem;display:flex;align-items:center;gap:1rem}
+header h1{font-size:1.3rem;color:#a78bfa}
+.back-btn{background:#21262d;border:1px solid #30363d;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;text-decoration:none;font-size:.85rem}
+.container{max-width:960px;margin:0 auto;padding:1.5rem}
+.concept{background:#161b22;border:1px solid #30363d;border-radius:12px;margin-bottom:1.2rem;overflow:hidden}
+.concept-header{background:#21262d;padding:.9rem 1.3rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.concept-header:hover{background:#30363d}
+.concept-header h2{font-size:.98rem;color:#e6edf3}
+.concept-body{padding:1.3rem;display:none}
+.concept.open .concept-body{display:block}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.7rem;margin:.7rem 0}
+.level{background:#0d1117;border-radius:8px;padding:.7rem;border:1px solid #21262d;font-size:.85rem}
+.level-label{font-size:.7rem;color:#8b949e;font-weight:700;text-transform:uppercase;margin-bottom:.2rem}
+.code-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:.9rem;margin:.7rem 0;font-family:'Courier New',monospace;font-size:.8rem;overflow-x:auto;white-space:pre}
+.mistake{background:#1f1117;border-left:3px solid #f85149;padding:.6rem .9rem;border-radius:0 8px 8px 0;margin:.4rem 0;font-size:.85rem}
+.why{background:#112316;border-left:3px solid #3fb950;padding:.6rem .9rem;border-radius:0 8px 8px 0;margin:.4rem 0;font-size:.85rem}
+table{width:100%;border-collapse:collapse;margin:.7rem 0;font-size:.82rem}
+th{background:#21262d;color:#79c0ff;padding:.5rem .7rem;text-align:right;border:1px solid #30363d}
+td{padding:.45rem .7rem;border:1px solid #30363d;vertical-align:top}
+tr:nth-child(even) td{background:#0d1117}
+td:first-child{font-weight:600}
+.demo-row{display:flex;gap:.8rem;flex-wrap:wrap;margin:.8rem 0}
+.demo-btn{padding:.5rem 1.2rem;border-radius:6px;border:none;cursor:pointer;font-size:.85rem;font-weight:500}
+.demo-btn.primary{background:#7c3aed;color:#fff}
+.demo-btn.secondary{background:#21262d;color:#e6edf3;border:1px solid #30363d}
+.demo-btn.destructive{background:#dc2626;color:#fff}
+.demo-btn.ghost{background:transparent;color:#a78bfa;border:1px solid #a78bfa}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-btn" href="00_dashboard.html">← דשבורד</a>
+  <h1>🎨 Design Systems — Tailwind CSS, shadcn/UI, Radix UI</h1>
+</header>
+<div class="container">
+
+<div class="concept open">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🌊 Tailwind CSS — Utility-First</h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">👵 סבתא</div>במקום לכתוב "כחול כהה, גדול, עם רווח" בקובץ נפרד — כותבים ישירות על האובייקט: "blue-900 text-xl p-4".</div>
+      <div class="level"><div class="level-label">🪖 חייל</div>Utility classes: <code>bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600</code>. בנוי על design tokens — spacing, colors, typography.</div>
+      <div class="level"><div class="level-label">🎓 סטודנט</div>JIT compiler: רק classes בשימוש ב-bundle. Config: tailwind.config.js לcustom tokens. Dark mode: class strategy / media.</div>
+    </div>
+    <div class="code-block">&lt;!-- Tailwind component --&gt;
+&lt;button class="bg-violet-600 hover:bg-violet-700 text-white font-medium
+               px-4 py-2 rounded-lg transition-colors duration-200
+               focus:outline-none focus:ring-2 focus:ring-violet-500"&gt;
+  שמור
+&lt;/button&gt;
+
+&lt;!-- Dark mode --&gt;
+&lt;div class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white"&gt;</div>
+    <div class="mistake">hex/px ידניים בכל מקום — חוסר עקביות. השתמש ב-design tokens של Tailwind.</div>
+    <div class="mistake">className ארוכות ad-hoc לכל שימוש — עדיף cva/cn לvariants.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🧩 shadcn/UI — Copy-Paste Components</h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">🪖 חייל</div>shadcn/UI = לא npm package. <code>npx shadcn-ui add button</code> מעתיק קוד לפרויקט. קומפוננטות שלך, שולטות בהן במלואן.</div>
+      <div class="level"><div class="level-label">🎓 סטודנט</div>בנוי על Radix UI (behavior) + Tailwind (styling) + cva (variants). כל קומפוננטה = קובץ בתיקיית components/ui.</div>
+    </div>
+    <div class="code-block"># התקנה:
+npx shadcn-ui@latest init
+npx shadcn-ui@latest add button dialog form
+
+# שימוש:
+import { Button } from "@/components/ui/button"
+
+&lt;Button variant="destructive" size="sm"&gt;מחק&lt;/Button&gt;
+&lt;Button variant="outline"&gt;ביטול&lt;/Button&gt;</div>
+    <div class="demo-row">
+      <button class="demo-btn primary">Primary</button>
+      <button class="demo-btn secondary">Secondary</button>
+      <button class="demo-btn destructive">Destructive</button>
+      <button class="demo-btn ghost">Ghost</button>
+    </div>
+    <div class="mistake">shadcn = npm package שמגיע מחוץ — זה קוד שמועתק לתוך הפרויקט שלך.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>⬡ Radix UI — Accessible Primitives</h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">🪖 חייל</div>Radix = בלוקי בנייה unstyled לUI: Dialog, DropdownMenu, Tooltip, Select. מטפל ב-focus trap, keyboard nav, ARIA.</div>
+      <div class="level"><div class="level-label">🎓 סטודנט</div>Headless components: behavior ללא styling. מחבר: Radix behavior + Tailwind styling = shadcn/UI.</div>
+    </div>
+    <div class="code-block">import * as Dialog from "@radix-ui/react-dialog";
+
+function Modal() {
+  return (
+    &lt;Dialog.Root&gt;
+      &lt;Dialog.Trigger asChild&gt;
+        &lt;button&gt;פתח&lt;/button&gt;
+      &lt;/Dialog.Trigger&gt;
+      &lt;Dialog.Portal&gt;
+        &lt;Dialog.Overlay className="fixed inset-0 bg-black/50" /&gt;
+        &lt;Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                                   bg-white rounded-lg p-6 shadow-xl"&gt;
+          &lt;Dialog.Title&gt;כותרת&lt;/Dialog.Title&gt;
+          &lt;Dialog.Close&gt;✕&lt;/Dialog.Close&gt;
+        &lt;/Dialog.Content&gt;
+      &lt;/Dialog.Portal&gt;
+    &lt;/Dialog.Root&gt;
+  );
+}</div>
+    <div class="mistake">modal מ-div פשוט — ללא focus trap, Esc key, ARIA. השתמש ב-Radix Dialog.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🎯 cva — Class Variance Authority</h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">מה זה</div>כלי להגדיר variants לקומפוננטה: size, color, state — בצורה type-safe ועקבית.</div>
+    </div>
+    <div class="code-block">import { cva } from "class-variance-authority";
+
+const buttonVariants = cva(
+  "inline-flex items-center rounded-md font-medium transition-colors", // base
+  {
+    variants: {
+      variant: {
+        default: "bg-violet-600 text-white hover:bg-violet-700",
+        outline: "border border-gray-300 bg-transparent hover:bg-gray-100",
+        destructive: "bg-red-600 text-white hover:bg-red-700",
+      },
+      size: {
+        sm: "h-8 px-3 text-sm",
+        md: "h-10 px-4",
+        lg: "h-12 px-6 text-lg",
+      },
+    },
+    defaultVariants: { variant: "default", size: "md" },
+  }
+);
+
+// שימוש:
+&lt;button className={buttonVariants({ variant: "outline", size: "sm" })}&gt;</div>
+    <div class="mistake">variant ללא defaultVariants — קומפוננטה לא צפויה כשלא מעבירים prop.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🛠️ cn() + Design Tokens + Patterns</h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="code-block">// cn() — כלי לחיבור classNames עם override
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
+
+// שימוש:
+&lt;div className={cn("px-4 py-2 bg-white", isActive && "bg-violet-600", className)} /&gt;
+
+// asChild pattern — Radix
+&lt;Button asChild&gt;
+  &lt;Link href="/dashboard"&gt;Dashboard&lt;/Link&gt;  {/* Button wraps Link */}
+&lt;/Button&gt;</div>
+
+    <h3 style="color:#79c0ff;margin:.8rem 0 .4rem">טבלת השוואה: Tailwind vs CSS Modules vs Styled Components</h3>
+    <table>
+      <tr><th>ציר</th><th>Tailwind</th><th>CSS Modules</th><th>Styled Components</th></tr>
+      <tr><td>DX</td><td>מהיר, inline</td><td>קלאסי, נפרד</td><td>JS-in-CSS</td></tr>
+      <tr><td>Bundle</td><td>קטן (JIT)</td><td>בינוני</td><td>runtime overhead</td></tr>
+      <tr><td>Type safety</td><td>ללא</td><td>ללא</td><td>Props typed</td></tr>
+      <tr><td>RSC support</td><td>✅</td><td>✅</td><td>❌ (client-side)</td></tr>
+      <tr><td>SVCollege</td><td>✅ נדרש</td><td>ניתן</td><td>נדרש לפעמים</td></tr>
+    </table>
+
+    <div class="mistake">button → div clickable — מאבד semantic, keyboard nav, ARIA. השתמש ב-button תמיד.</div>
+    <div class="mistake">placeholder במקום label — נגישות פגועה. label תמיד עם htmlFor.</div>
+    <div class="why">Design System = שפה משותפת בין מפתחים ומעצבים — מונע "Button חדש בכל feature".</div>
+  </div>
+</div>
+
+</div>
+<script>
+document.querySelectorAll('.concept-header').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
+</script>
+</body>
+</html>

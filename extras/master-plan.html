@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📋 Master Plan — פערים + משימות למבחן</title>
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--gold:#facc15;--green:#16a34a;--red:#dc2626;--orange:#f97316;--blue:#2563eb;--purple:#7c3aed;--shadow:4px 4px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;display:flex;min-height:100vh}
+
+/* ========== LAYOUT ========== */
+.main{flex:1;overflow-y:auto;padding:20px 28px;max-height:100vh}
+.sidebar{width:340px;min-width:340px;background:#111827;color:#e2e8f0;border-right:4px solid #000;overflow-y:auto;max-height:100vh;padding:16px;position:sticky;top:0}
+
+/* ========== HERO ========== */
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:24px;border:3px solid #000;border-radius:18px;margin-bottom:20px;box-shadow:var(--shadow);text-align:center}
+.hero h1{font-size:clamp(22px,4vw,34px)}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:14px}
+
+/* ========== STATS BAR ========== */
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.stat{flex:1;min-width:130px;background:var(--card);border:2.5px solid #000;border-radius:14px;padding:14px;text-align:center;box-shadow:var(--shadow)}
+.stat-num{font-size:28px;font-weight:900;line-height:1}
+.stat-lbl{font-size:12px;color:#64748b;font-weight:700;margin-top:4px}
+.stat.done .stat-num{color:var(--green)}
+.stat.gap .stat-num{color:var(--red)}
+.stat.time .stat-num{color:var(--purple)}
+
+/* ========== SECTIONS ========== */
+.section{background:var(--card);border:2.5px solid #000;border-radius:16px;margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow)}
+.section-head{padding:12px 16px;background:linear-gradient(135deg,#111827,#1e3a8a);color:#fff;border-bottom:2.5px solid #000;cursor:pointer;display:flex;align-items:center;gap:8px}
+.section-head h2{font-size:18px;flex:1}
+.section-head .chevron{transition:.2s;font-size:12px}
+.section.collapsed .section-body{display:none}
+.section.collapsed .chevron{transform:rotate(-90deg)}
+.section-body{padding:16px}
+
+/* ========== GAP CARDS ========== */
+.gap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.gap-card{border:2.5px solid #000;border-radius:12px;padding:14px;box-shadow:3px 3px 0 #0f172a;transition:.15s}
+.gap-card:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #0f172a}
+.gap-card.critical{background:#fef2f2;border-color:var(--red)}
+.gap-card.high{background:#fff7ed;border-color:var(--orange)}
+.gap-card.medium{background:#fefce8;border-color:#ca8a04}
+.gap-card.low{background:#f0fdf4;border-color:var(--green)}
+.gap-card.done{background:#f0fdf4;border-color:var(--green);opacity:.7}
+.gap-title{font-weight:900;font-size:15px;display:flex;align-items:center;gap:6px}
+.gap-desc{font-size:13px;color:#475569;margin:6px 0 0}
+.gap-sev{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:900;color:#fff}
+.gap-sev.critical{background:var(--red)}
+.gap-sev.high{background:var(--orange)}
+.gap-sev.medium{background:#ca8a04}
+.gap-sev.low{background:var(--green)}
+
+/* ========== TASK LIST ========== */
+.task-list{list-style:none;padding:0}
+.task{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-bottom:1px solid #e2e8f0}
+.task:last-child{border:none}
+.task-check{min-width:22px;height:22px;border-radius:6px;border:2.5px solid #000;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;background:#fff;flex-shrink:0;margin-top:2px}
+.task-check.done{background:var(--green);color:#fff;border-color:var(--green)}
+.task-body{flex:1}
+.task-title{font-weight:800;font-size:14px}
+.task-meta{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.task-tag{padding:1px 7px;border-radius:4px;font-size:11px;font-weight:800;border:1.5px solid #000}
+.task-tag.react{background:#dbeafe;color:#1e40af}
+.task-tag.js{background:#fef9c3;color:#854d0e}
+.task-tag.express{background:#d1fae5;color:#065f46}
+.task-tag.ts{background:#ede9fe;color:#5b21b6}
+.task-tag.mongo{background:#e0f2fe;color:#0c4a6e}
+.task-tag.general{background:#f1f5f9;color:#334155}
+.task-time{font-size:11px;color:#64748b;font-weight:700;margin-right:auto;white-space:nowrap}
+.task.done .task-title{text-decoration:line-through;color:#94a3b8}
+
+/* ========== SIDEBAR ========== */
+.sb-title{font-weight:900;font-size:16px;color:var(--gold);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #334155}
+.sb-section{margin-bottom:18px}
+.sb-section h3{font-size:13px;color:#94a3b8;font-weight:800;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
+.sb-item:hover{background:#1e293b}
+.sb-item.active{background:var(--gold);color:#000;border-radius:8px}
+.sb-check{width:18px;height:18px;border-radius:4px;border:2px solid #475569;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.sb-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.sb-time{margin-right:auto;font-size:11px;color:#64748b}
+.sb-progress{background:#1e293b;border:2px solid #334155;border-radius:10px;padding:12px;margin-bottom:14px}
+.sb-progress-title{font-size:13px;color:#94a3b8;margin-bottom:6px}
+.sb-progress-bar{height:12px;background:#334155;border-radius:6px;overflow:hidden;border:1px solid #475569}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--green),#4ade80);border-radius:6px;transition:.3s}
+.sb-progress-text{font-size:14px;font-weight:900;color:var(--gold);text-align:center;margin-top:6px}
+.sb-total{background:linear-gradient(135deg,#312e81,#1e1b4b);border:2px solid var(--gold);border-radius:12px;padding:14px;text-align:center;margin-top:14px}
+.sb-total-num{font-size:32px;font-weight:900;color:var(--gold)}
+.sb-total-lbl{font-size:12px;color:#94a3b8}
+
+/* ========== EXISTING CONTENT TABLE ========== */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#111827;color:var(--gold);text-align:right;padding:8px 10px;font-size:12px}
+td{border:1px solid #e2e8f0;padding:8px 10px;vertical-align:top}
+tr:nth-child(even) td{background:#f8fafc}
+.check-yes{color:var(--green);font-weight:900}
+.check-no{color:var(--red);font-weight:900}
+
+/* ========== DARK MODE ========== */
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155}
+  td{border-color:#334155}
+  tr:nth-child(even) td{background:#0f172a}
+  .gap-card.critical{background:#450a0a;border-color:#991b1b}
+  .gap-card.high{background:#431407;border-color:#9a3412}
+  .gap-card.medium{background:#422006;border-color:#a16207}
+  .gap-card.low{background:#052e16;border-color:#166534}
+  .gap-desc{color:#94a3b8}
+  .task{border-color:#334155}
+  .task-time{color:#94a3b8}
+}
+@media(max-width:900px){
+  body{flex-direction:column}
+  .sidebar{width:100%;min-width:auto;max-height:none;position:static;border-right:none;border-bottom:4px solid #000}
+  .main{max-height:none}
+}
+</style>
+</head>
+<body>
+
+<main class="main" id="main-content">
+  <div class="hero">
+    <h1>📋 Master Plan — פערים ומשימות למבחן</h1>
+    <p>ניתוח מקיף של כל החומרים הקיימים, פערים שנותרו, ותוכנית עבודה מלאה עם הערכת זמן</p>
+  </div>
+
+  <div class="stats" id="stats-bar">
+    <div class="stat done"><div class="stat-num" id="st-done">0</div><div class="stat-lbl">משימות הושלמו</div></div>
+    <div class="stat gap"><div class="stat-num" id="st-gap">0</div><div class="stat-lbl">פערים פתוחים</div></div>
+    <div class="stat"><div class="stat-num" id="st-total">0</div><div class="stat-lbl">סה״כ משימות</div></div>
+    <div class="stat time"><div class="stat-num" id="st-time">0</div><div class="stat-lbl">דקות נותרו (הערכה)</div></div>
+  </div>
+
+  <!-- ===== SECTION 1: מה כבר קיים ===== -->
+  <div class="section" id="sec-existing">
+    <div class="section-head" onclick="toggleSection(this)">
+      <span class="chevron">▼</span>
+      <h2>✅ מה כבר קיים — סטטוס נוכחי</h2>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead><tr><th>רכיב</th><th>סטטוס</th><th>פירוט</th></tr></thead>
+        <tbody>
+          <tr><td><strong>25 שאלות מבחן</strong></td><td class="check-yes">✓ מלא</td><td>9 מערכות × 2-3 שאלות. כל שאלה: טקסט, פתרון, באגים, code tips</td></tr>
+          <tr><td><strong>פתרונות 100/100</strong></td><td class="check-yes">✓ מלא</td><td>25 קבצי JSX/JS/Express מתוקנים עם hover-tips</td></tr>
+          <tr><td><strong>QA Bundle R3</strong></td><td class="check-yes">✓ מלא</td><td>25 עמודים עם טבלת דרישות, file sequence, transitions</td></tr>
+          <tr><td><strong>מפת זרימה אינטראקטיבית</strong></td><td class="check-yes">✓ מלא</td><td>25 שאלות עם flow nodes, cross-highlighting, live player, עץ קבצים</td></tr>
+          <tr><td><strong>חומר לימוד 5/9 רמות</strong></td><td class="check-yes">✓ מלא</td><td>מסבתא ועד מומחים, 16 שיעורים</td></tr>
+          <tr><td><strong>פורטל 30+ מודולים</strong></td><td class="check-yes">✓ מלא</td><td>תיאוריה, אלגוריתמים, snippets, mock exams, flashcards</td></tr>
+          <tr><td><strong>63 באגים מתועדים</strong></td><td class="check-yes">✓ מתוקן</td><td>כל באג עם before/after code, 4 סבבי QA</td></tr>
+          <tr><td><strong>עץ קבצים 112+</strong></td><td class="check-yes">✓ מלא</td><td>React + Next.js, hover details, SVG flow</td></tr>
+          <tr><td><strong>שיעורי בית checklist</strong></td><td class="check-yes">✓ מלא</td><td>11 מטלות + 14 שיעורים עם localStorage</td></tr>
+          <tr><td><strong>TypeScript חומר ייעודי</strong></td><td class="check-no">✗ חסר</td><td>אין דף TS ייעודי — רק אזכור בשיעורי בית</td></tr>
+          <tr><td><strong>MongoDB/Mongoose ריכוז</strong></td><td class="check-no">✗ חסר</td><td>רק בתוך פתרונות Express, אין חומר מרוכז</td></tr>
+          <tr><td><strong>React Hooks דף ייעודי</strong></td><td class="check-no">✗ חסר</td><td>אין cheatsheet מרוכז לכל ה-hooks</td></tr>
+          <tr><td><strong>Validation patterns ריכוז</strong></td><td class="check-no">✗ חסר</td><td>regex ו-validations מפוזרים — אין דף מאוחד</td></tr>
+          <tr><td><strong>דפוסים חוצי-שאלות</strong></td><td class="check-no">✗ חסר</td><td>אין סיכום של patterns שחוזרים בין כל 9 המבחנים</td></tr>
+          <tr><td><strong>Express middleware ריכוז</strong></td><td class="check-no">✗ חלקי</td><td>נושא middleware + error handling מפוזר</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2: פערים שזוהו ===== -->
+  <div class="section" id="sec-gaps">
+    <div class="section-head" onclick="toggleSection(this)">
+      <span class="chevron">▼</span>
+      <h2>🔴 פערים שזוהו — מה חסר למבחן</h2>
+    </div>
+    <div class="section-body">
+      <div class="gap-grid" id="gap-grid"></div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3: תוכנית עבודה ===== -->
+  <div class="section" id="sec-tasks">
+    <div class="section-head" onclick="toggleSection(this)">
+      <span class="chevron">▼</span>
+      <h2>📝 תוכנית עבודה — משימות מלאות</h2>
+    </div>
+    <div class="section-body">
+      <ul class="task-list" id="task-list"></ul>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4: לוח זמנים ===== -->
+  <div class="section" id="sec-timeline">
+    <div class="section-head" onclick="toggleSection(this)">
+      <span class="chevron">▼</span>
+      <h2>⏱ לוח זמנים — הערכה לסיום</h2>
+    </div>
+    <div class="section-body" id="timeline-body"></div>
+  </div>
+</main>
+
+<!-- ========== SIDEBAR ========== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-title">📋 Master Plan</div>
+
+  <div class="sb-progress">
+    <div class="sb-progress-title">התקדמות כללית</div>
+    <div class="sb-progress-bar"><div class="sb-progress-fill" id="sb-fill" style="width:0%"></div></div>
+    <div class="sb-progress-text" id="sb-progress-text">0%</div>
+  </div>
+
+  <div class="sb-total">
+    <div class="sb-total-num" id="sb-remaining-time">—</div>
+    <div class="sb-total-lbl">דקות נותרות (הערכה)</div>
+  </div>
+
+  <div class="sb-section" id="sb-tasks"></div>
+</aside>
+
+<script>
+const GAPS = [
+  {id:'g1',title:'TypeScript Cheatsheet + תרגול',severity:'critical',desc:'אין חומר TS ייעודי בכלל. המבחן כולל שאלות TS: types, enum, tuple, functions, objects, React+TS typed props/state. חובה ליצור דף ריכוז.'},
+  {id:'g2',title:'MongoDB/Mongoose ריכוז תיאוריה',severity:'critical',desc:'ב-4 שאלות Express יש MongoDB (parking-q3, flights-q3, willing-q3, helpme-q3 theory). חסר: Schema, Model, CRUD operations, aggregation, connection patterns.'},
+  {id:'g3',title:'React Hooks Cheatsheet',severity:'high',desc:'useState, useEffect, useRef, useMemo — מפוזרים. חסר דף מרוכז עם patterns, dependencies, cleanup, pitfalls, custom hooks.'},
+  {id:'g4',title:'Validation Patterns Cheatsheet',severity:'high',desc:'כל 9 שאלות React דורשות ולידציות (email, password, phone, carNumber, teamName). חסר ריכוז של כל ה-regex patterns + inline error display patterns.'},
+  {id:'g5',title:'Common Patterns — חוצה שאלות',severity:'high',desc:'דפוסים שחוזרים ב-9 מבחנים: Login/Register flow, CRUD table, search/filter, localStorage persistence, form validation. חסר סיכום מאוחד.'},
+  {id:'g6',title:'Express Middleware + Error Handling',severity:'medium',desc:'express.json(), cors(), error middleware, try/catch — מפוזרים בפתרונות. חסר דף ריכוז עם best practices.'},
+  {id:'g7',title:'localStorage Patterns ריכוז',severity:'medium',desc:'כל 9 שאלות React משתמשות ב-localStorage. חסר ריכוז: serialize/parse, key naming, useEffect sync, initial state from storage.'},
+  {id:'g8',title:'React Router Patterns',severity:'medium',desc:'BrowserRouter, Routes, Route, Link, useNavigate, useParams, dynamic routes — מפוזרים. חסר ריכוז דפוסים + protected routes.'},
+  {id:'g9',title:'Algorithm Patterns — JS Q2',severity:'medium',desc:'8 שאלות JS אלגוריתמיות. חסר סיכום של patterns חוזרים: accumulator, sliding window, digit manipulation, array traversal.'},
+  {id:'g10',title:'Quick Exam Strategy Card',severity:'low',desc:'כרטיס אסטרטגיה מהירה: סדר עבודה במבחן, חלוקת זמן, מה לעשות ראשון, פינות שמפסידות נקודות.'}
+];
+
+const TASKS = [
+  // TypeScript
+  {id:'t1',title:'TypeScript Cheatsheet — types, enum, tuple, functions, objects, generics',tags:['ts'],time:25,gap:'g1',done:false},
+  {id:'t2',title:'TypeScript + React — typed props, typed state, typed event handlers, models',tags:['ts','react'],time:20,gap:'g1',done:false},
+  {id:'t3',title:'TS Practice: Book type, enum genres, User unions/interfaces (מתוך שיעורי בית)',tags:['ts'],time:15,gap:'g1',done:false},
+  {id:'t4',title:'TS Practice: Budget Manager — transactions, summary, categories (מתוך HW)',tags:['ts','react'],time:15,gap:'g1',done:false},
+  // MongoDB
+  {id:'t5',title:'MongoDB/Mongoose Theory — Schema, Model, connection, CRUD operations',tags:['mongo'],time:20,gap:'g2',done:false},
+  {id:'t6',title:'Mongoose Patterns — upsert, aggregation, populate, indexing, validators',tags:['mongo'],time:15,gap:'g2',done:false},
+  {id:'t7',title:'MongoDB from exam questions — parking-q3, flights-q3, willing-q3 patterns extraction',tags:['mongo','express'],time:15,gap:'g2',done:false},
+  // React Hooks
+  {id:'t8',title:'React Hooks Cheatsheet — useState, useEffect, useRef, useMemo, useCallback',tags:['react'],time:20,gap:'g3',done:false},
+  {id:'t9',title:'Hooks Pitfalls — infinite loops, stale closures, missing deps, cleanup',tags:['react'],time:15,gap:'g3',done:false},
+  // Validation
+  {id:'t10',title:'Validation Regex Patterns — email, password, phone, carNumber, English name',tags:['general'],time:15,gap:'g4',done:false},
+  {id:'t11',title:'Form Validation UI — inline errors, per-field display, real-time validation',tags:['react'],time:10,gap:'g4',done:false},
+  // Common Patterns
+  {id:'t12',title:'Login/Register Pattern — flow, state, validation, navigation, localStorage',tags:['react'],time:15,gap:'g5',done:false},
+  {id:'t13',title:'CRUD Table Pattern — add, edit, delete, search, filter, sort',tags:['react'],time:15,gap:'g5',done:false},
+  {id:'t14',title:'State Architecture — lifting state, prop drilling, context, persist to storage',tags:['react'],time:10,gap:'g5',done:false},
+  // Express
+  {id:'t15',title:'Express Middleware Chain — json, cors, auth, error, static, custom',tags:['express'],time:15,gap:'g6',done:false},
+  {id:'t16',title:'Error Handling Patterns — try/catch, status codes, error middleware, async errors',tags:['express'],time:10,gap:'g6',done:false},
+  // localStorage
+  {id:'t17',title:'localStorage Patterns — serialize, parse, useEffect sync, initial state, key naming',tags:['react','js'],time:10,gap:'g7',done:false},
+  // Router
+  {id:'t18',title:'React Router Cheatsheet — BrowserRouter, Routes, Link, useNavigate, useParams, dynamic',tags:['react'],time:12,gap:'g8',done:false},
+  // Algorithm
+  {id:'t19',title:'JS Algorithm Patterns — accumulator, digit ops, sliding window, matrix traversal',tags:['js'],time:15,gap:'g9',done:false},
+  {id:'t20',title:'JS Edge Cases — negative numbers, empty arrays, NaN, 0 vs -0, type coercion',tags:['js'],time:10,gap:'g9',done:false},
+  // Strategy
+  {id:'t21',title:'Exam Strategy Card — סדר עבודה, חלוקת זמן, checklist בזמן המבחן',tags:['general'],time:10,gap:'g10',done:false},
+  // Integration into portal
+  {id:'t22',title:'שילוב כל הדפים החדשים בפורטל — כרטיסים + ניווט',tags:['general'],time:10,gap:null,done:false},
+  {id:'t23',title:'בדיקה סופית — כל הלינקים עובדים, responsive, dark mode',tags:['general'],time:10,gap:null,done:false}
+];
+
+const TAG_LABELS = {react:'React',js:'JavaScript',express:'Express',ts:'TypeScript',mongo:'MongoDB',general:'כללי'};
+const SEV_LABELS = {critical:'קריטי',high:'גבוה',medium:'בינוני',low:'נמוך'};
+
+// Load saved state
+function loadState(){
+  const saved = localStorage.getItem('master-plan-state');
+  if(!saved) return;
+  try{
+    const state = JSON.parse(saved);
+    TASKS.forEach(t=>{ if(state[t.id]) t.done=true; });
+  }catch(e){}
+}
+function saveState(){
+  const state={};
+  TASKS.forEach(t=>{ if(t.done) state[t.id]=true; });
+  localStorage.setItem('master-plan-state', JSON.stringify(state));
+}
+loadState();
+
+// Render gaps
+function renderGaps(){
+  const grid=document.getElementById('gap-grid');
+  grid.innerHTML=GAPS.map(g=>{
+    const relatedTasks=TASKS.filter(t=>t.gap===g.id);
+    const allDone=relatedTasks.length>0 && relatedTasks.every(t=>t.done);
+    return `<div class="gap-card ${allDone?'done':g.severity}" data-gap="${g.id}">
+      <div class="gap-title"><span class="gap-sev ${g.severity}">${SEV_LABELS[g.severity]}</span> ${g.title}</div>
+      <div class="gap-desc">${g.desc}</div>
+      <div style="margin-top:8px;font-size:12px;color:#64748b;font-weight:700">${relatedTasks.filter(t=>t.done).length}/${relatedTasks.length} משימות</div>
+    </div>`;
+  }).join('');
+}
+
+// Render tasks
+function renderTasks(){
+  const list=document.getElementById('task-list');
+  list.innerHTML=TASKS.map(t=>`
+    <li class="task ${t.done?'done':''}" data-task="${t.id}">
+      <div class="task-check ${t.done?'done':''}" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</div>
+      <div class="task-body">
+        <div class="task-title">${t.title}</div>
+        <div class="task-meta">
+          ${t.tags.map(tag=>`<span class="task-tag ${tag}">${TAG_LABELS[tag]}</span>`).join('')}
+          <span class="task-time">⏱ ${t.time} דק׳</span>
+        </div>
+      </div>
+    </li>`).join('');
+}
+
+// Render sidebar
+function renderSidebar(){
+  const sb=document.getElementById('sb-tasks');
+  const byGap={};
+  TASKS.forEach(t=>{
+    const key=t.gap||'other';
+    if(!byGap[key]) byGap[key]=[];
+    byGap[key].push(t);
+  });
+  let html='';
+  GAPS.forEach(g=>{
+    const tasks=byGap[g.id]||[];
+    if(!tasks.length) return;
+    const done=tasks.filter(t=>t.done).length;
+    const icon=done===tasks.length?'✅':done>0?'🔶':'🔴';
+    html+=`<div class="sb-section"><h3>${icon} ${g.title}</h3>`;
+    tasks.forEach(t=>{
+      html+=`<div class="sb-item" onclick="scrollToTask('${t.id}')">
+        <div class="sb-check ${t.done?'done':''}">${t.done?'✓':''}</div>
+        <span style="flex:1;font-size:12px">${t.title.substring(0,35)}${t.title.length>35?'…':''}</span>
+        <span class="sb-time">${t.time}׳</span>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  // Other tasks (no gap)
+  const other=byGap['other']||[];
+  if(other.length){
+    html+=`<div class="sb-section"><h3>🔧 שילוב ובדיקות</h3>`;
+    other.forEach(t=>{
+      html+=`<div class="sb-item" onclick="scrollToTask('${t.id}')">
+        <div class="sb-check ${t.done?'done':''}">${t.done?'✓':''}</div>
+        <span style="flex:1;font-size:12px">${t.title.substring(0,35)}${t.title.length>35?'…':''}</span>
+        <span class="sb-time">${t.time}׳</span>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+  sb.innerHTML=html;
+}
+
+// Render timeline
+function renderTimeline(){
+  const body=document.getElementById('timeline-body');
+  const groups=[
+    {label:'🟣 TypeScript (קריטי)',ids:['t1','t2','t3','t4'],color:'#7c3aed'},
+    {label:'🟢 MongoDB (קריטי)',ids:['t5','t6','t7'],color:'#16a34a'},
+    {label:'⚛️ React Hooks + Patterns',ids:['t8','t9','t12','t13','t14','t17','t18'],color:'#2563eb'},
+    {label:'🛡 Validation + Forms',ids:['t10','t11'],color:'#f97316'},
+    {label:'🖥 Express + Server',ids:['t15','t16'],color:'#06b6d4'},
+    {label:'📐 JS Algorithms',ids:['t19','t20'],color:'#ca8a04'},
+    {label:'📋 Strategy + Integration',ids:['t21','t22','t23'],color:'#64748b'}
+  ];
+  let html='<div style="display:grid;gap:12px">';
+  groups.forEach(g=>{
+    const tasks=g.ids.map(id=>TASKS.find(t=>t.id===id)).filter(Boolean);
+    const totalMin=tasks.reduce((s,t)=>s+t.time,0);
+    const doneMin=tasks.filter(t=>t.done).reduce((s,t)=>s+t.time,0);
+    const pct=totalMin?Math.round(doneMin/totalMin*100):0;
+    html+=`<div style="background:var(--card);border:2px solid ${g.color};border-radius:12px;padding:12px 14px;box-shadow:2px 2px 0 #0f172a">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <strong style="font-size:14px">${g.label}</strong>
+        <span style="margin-right:auto;font-size:12px;color:#64748b;font-weight:800">${totalMin} דק׳</span>
+        <span style="font-size:13px;font-weight:900;color:${pct===100?'var(--green)':'var(--ink)'};">${pct}%</span>
+      </div>
+      <div style="height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${g.color};border-radius:4px;transition:.3s"></div>
+      </div>
+      <div style="margin-top:6px;font-size:12px;color:#64748b">${tasks.map(t=>`<span style="display:inline-block;margin-left:6px;${t.done?'text-decoration:line-through;opacity:.5':''}">${t.title.split('—')[0].trim()}</span>`).join(' · ')}</div>
+    </div>`;
+  });
+  html+=`</div>`;
+  body.innerHTML=html;
+}
+
+// Update stats
+function updateStats(){
+  const done=TASKS.filter(t=>t.done).length;
+  const total=TASKS.length;
+  const remaining=TASKS.filter(t=>!t.done).reduce((s,t)=>s+t.time,0);
+  const totalTime=TASKS.reduce((s,t)=>s+t.time,0);
+  const pct=Math.round(done/total*100);
+
+  document.getElementById('st-done').textContent=done;
+  document.getElementById('st-gap').textContent=GAPS.filter(g=>{
+    const tasks=TASKS.filter(t=>t.gap===g.id);
+    return tasks.length>0 && !tasks.every(t=>t.done);
+  }).length;
+  document.getElementById('st-total').textContent=total;
+  document.getElementById('st-time').textContent=remaining;
+
+  document.getElementById('sb-fill').style.width=pct+'%';
+  document.getElementById('sb-progress-text').textContent=done===total?'🎉 הושלם!':pct+'% ('+done+'/'+total+')';
+  document.getElementById('sb-remaining-time').textContent=remaining;
+}
+
+// Toggle task
+function toggleTask(id){
+  const t=TASKS.find(t=>t.id===id);
+  if(!t) return;
+  t.done=!t.done;
+  saveState();
+  renderAll();
+}
+
+function scrollToTask(id){
+  const el=document.querySelector(`[data-task="${id}"]`);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function toggleSection(head){
+  head.parentElement.classList.toggle('collapsed');
+}
+
+function renderAll(){
+  renderGaps();
+  renderTasks();
+  renderSidebar();
+  renderTimeline();
+  updateStats();
+}
+renderAll();
+</script>
+</body>
+</html>

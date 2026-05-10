@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>טבלאות השוואה עמוקות | Full-Stack Portal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',sans-serif;line-height:1.7}
+header{background:linear-gradient(135deg,#1a1f2e,#0d1117);border-bottom:1px solid #30363d;padding:1rem 2rem;display:flex;align-items:center;gap:1rem}
+header h1{font-size:1.4rem;color:#58a6ff}
+.back-btn{background:#21262d;border:1px solid #30363d;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;text-decoration:none;font-size:.85rem}
+.back-btn:hover{color:#e6edf3;border-color:#58a6ff}
+.container{max-width:1100px;margin:0 auto;padding:2rem}
+.toc{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:1.5rem;margin-bottom:2rem}
+.toc h2{color:#58a6ff;margin-bottom:1rem;font-size:1.1rem}
+.toc a{color:#8b949e;text-decoration:none;display:block;padding:.25rem 0;font-size:.9rem}
+.toc a:hover{color:#58a6ff}
+.cluster{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:1.8rem;margin-bottom:2rem}
+.cluster h2{color:#f78166;font-size:1.2rem;margin-bottom:.5rem;border-bottom:1px solid #30363d;padding-bottom:.5rem}
+.cluster h3{color:#79c0ff;font-size:1rem;margin:1.2rem 0 .6rem}
+.story-box{background:#0d1117;border-left:3px solid #58a6ff;padding:1rem;margin:.8rem 0;border-radius:0 8px 8px 0;font-size:.9rem}
+table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.82rem}
+th{background:#21262d;color:#79c0ff;padding:.6rem .8rem;text-align:right;border:1px solid #30363d}
+td{padding:.5rem .8rem;border:1px solid #30363d;vertical-align:top}
+tr:nth-child(even) td{background:#0d1117}
+tr:nth-child(odd) td{background:#161b22}
+td:first-child{font-weight:600;color:#e6edf3;width:22%}
+.code-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:1rem;margin:.8rem 0;font-family:'Courier New',monospace;font-size:.8rem;overflow-x:auto;white-space:pre}
+.keyword{color:#ff7b72}
+.string{color:#a5d6ff}
+.comment{color:#6e7681;font-style:italic}
+.anti{background:#1f1117;border:1px solid #f85149;border-radius:8px;padding:1rem;margin:.8rem 0}
+.anti h4{color:#f85149;margin-bottom:.5rem;font-size:.9rem}
+.mnemonic{background:#112316;border:1px solid #3fb950;border-radius:8px;padding:1rem;margin:.8rem 0}
+.mnemonic h4{color:#3fb950;margin-bottom:.5rem;font-size:.9rem}
+.exam-q{background:#131520;border:1px solid #bc8cff;border-radius:8px;padding:1rem;margin:.5rem 0;font-size:.88rem}
+.exam-q .q{color:#e6edf3;font-weight:600}
+.exam-q .a{color:#a5d6ff;margin-top:.3rem}
+.badge{display:inline-block;background:#21262d;border:1px solid #30363d;border-radius:20px;padding:.15rem .6rem;font-size:.75rem;margin:.2rem}
+.badge.hard{border-color:#f85149;color:#f85149}
+.badge.med{border-color:#f0883e;color:#f0883e}
+.badge.ok{border-color:#3fb950;color:#3fb950}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-btn" href="00_dashboard.html">← דשבורד</a>
+  <h1>📐 טבלאות השוואה עמוקות — JavaScript Full-Stack</h1>
+</header>
+<div class="container">
+
+<div class="toc">
+  <h2>📋 תוכן עניינים — קלסטרים</h2>
+  <a href="#cluster1">קלסטר 1 — זיכרון: var/let/const + By Value/Reference + Pointer</a>
+  <a href="#cluster2">קלסטר 2 — Object vs Array vs Function</a>
+  <a href="#cluster3">קלסטר 3 — Arrow Function vs Regular Function</a>
+  <a href="#cluster4">קלסטר 4 — Event Loop: Microtask vs Macrotask</a>
+  <a href="#cluster5">קלסטר 5 — Promise Combinators: all/race/allSettled/any</a>
+  <a href="#cluster6">קלסטר 6 — Callback / Promise.then / async-await</a>
+  <a href="#cluster7">קלסטר 7 — useEffect Dependency Array (React)</a>
+  <a href="#cluster8">קלסטר 8 — useMemo / useCallback / React.memo</a>
+  <a href="#cluster9">קלסטר 9 — Set vs Map vs Object</a>
+</div>
+
+<!-- CLUSTER 1 -->
+<div class="cluster" id="cluster1">
+  <h2>🧠 קלסטר 1 — זיכרון, משתנים ומצביעים <span class="badge hard">קושי 8</span></h2>
+  <div class="story-box">
+    <strong>הסיפור ב-45 שניות:</strong> ב-JS יש שני אזורי זיכרון: <strong>Stack</strong> (קטן, מסודר, מהיר — לערכים פשוטים) ו-<strong>Heap</strong> (גדול, אקראי — ל-objects). כל משתנה גר ב-Stack. האם הוא מחזיק ערך? → By Value. האם הוא מחזיק כתובת? → By Reference.
+  </div>
+
+  <h3>📊 טבלת var / let / const — 11 צירים</h3>
+  <table>
+    <tr><th>ציר</th><th>var</th><th>let</th><th>const</th></tr>
+    <tr><td>Scope</td><td>Function</td><td>Block</td><td>Block</td></tr>
+    <tr><td>Hoisting</td><td>✓ (undefined)</td><td>✓ TDZ</td><td>✓ TDZ</td></tr>
+    <tr><td>Re-declare</td><td>✓</td><td>✗ SyntaxError</td><td>✗</td></tr>
+    <tr><td>Re-assign</td><td>✓</td><td>✓</td><td>✗ TypeError</td></tr>
+    <tr><td>Mutate object</td><td>n/a</td><td>✓</td><td>✓ ⚠️</td></tr>
+    <tr><td>window property</td><td>✓</td><td>✗</td><td>✗</td></tr>
+    <tr><td>Loop closure</td><td>shared (bug!)</td><td>per-iteration</td><td>per-iteration</td></tr>
+    <tr><td>ES גרסה</td><td>ES1 (1997)</td><td>ES6 (2015)</td><td>ES6 (2015)</td></tr>
+    <tr><td>המלצה 2025</td><td>❌ אסור</td><td>✅ אם ישתנה</td><td>✅ ברירת מחדל</td></tr>
+  </table>
+
+  <h3>📊 By Value vs By Reference</h3>
+  <table>
+    <tr><th>ציר</th><th>By Value (primitives)</th><th>By Reference (objects)</th></tr>
+    <tr><td>חל על</td><td>number, string, boolean, null, undefined, symbol, bigint</td><td>Object, Array, Function, Map, Set</td></tr>
+    <tr><td>מה ב-Stack</td><td>הערך עצמו</td><td>pointer לכתובת ב-Heap</td></tr>
+    <tr><td>העתקה עם =</td><td>bytes copy — עצמאי לגמרי</td><td>pointer copy — שניהם לאותו object</td></tr>
+    <tr><td>a === b בודק</td><td>value equality</td><td>reference equality (pointer)</td></tr>
+    <tr><td>mutation</td><td>לא אפשרי (immutable)</td><td>אפשרי — משפיע על כולם</td></tr>
+    <tr><td>deep copy</td><td>לא נחוץ</td><td>structuredClone() / JSON roundtrip</td></tr>
+  </table>
+
+  <h3>💻 קוד מוכיח — Loop Closure</h3>
+  <div class="code-block"><span class="comment">// var — כולם רואים i הסופי</span>
+<span class="keyword">for</span> (<span class="keyword">var</span> i = 0; i &lt; 3; i++) setTimeout(() =&gt; console.log(i), 0);
+<span class="comment">// Output: 3, 3, 3  ← BUG</span>
+
+<span class="comment">// let — per-iteration scope</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 0; i &lt; 3; i++) setTimeout(() =&gt; console.log(i), 0);
+<span class="comment">// Output: 0, 1, 2  ✅</span></div>
+
+  <div class="anti">
+    <h4>🚫 Anti-patterns נפוצים</h4>
+    <div class="exam-q"><span class="q">בעיה:</span> <code>const arr = []; arr = [1,2]</code> → TypeError<br><span class="a">למה: const נועל pointer, לא תוכן. <code>arr.push(1)</code> OK — שינית Heap.</span></div>
+    <div class="exam-q"><span class="q">בעיה:</span> <code>let copy = obj;</code> — זה pointer copy!<br><span class="a">תיקון: <code>let copy = {...obj}</code> (shallow) / <code>structuredClone(obj)</code> (deep)</span></div>
+  </div>
+
+  <div class="mnemonic">
+    <h4>🧠 Mnemonic</h4>
+    Stack = שולחן הפתקיות שלך. Heap = המחסן. var = רוח רפאים מ-1995. const = שומר מפתח, לא מה שיש בכספת.
+  </div>
+
+  <h3>📝 שאלות מבחן צפויות</h3>
+  <div class="exam-q"><span class="q">מה יודפס? <code>var x=1; {var x=2;} console.log(x)</code></span><span class="a">→ 2 (var לא כפוף ל-block)</span></div>
+  <div class="exam-q"><span class="q">מה יודפס? <code>let x=1; {let x=2;} console.log(x)</code></span><span class="a">→ 1 (let block-scoped)</span></div>
+  <div class="exam-q"><span class="q">למה <code>const arr=[]; arr.push(3)</code> עובד?</span><span class="a">→ const נועל pointer ב-Stack, לא תוכן ה-Heap</span></div>
+</div>
+
+<!-- CLUSTER 2 -->
+<div class="cluster" id="cluster2">
+  <h2>🏗️ קלסטר 2 — Object vs Array vs Function <span class="badge med">קושי 6</span></h2>
+  <table>
+    <tr><th>ציר</th><th>Object</th><th>Array</th><th>Function</th></tr>
+    <tr><td>typeof</td><td>"object"</td><td>"object"</td><td>"function"</td></tr>
+    <tr><td>Array.isArray</td><td>false</td><td>true</td><td>false</td></tr>
+    <tr><td>גישה</td><td>obj.key / obj['key']</td><td>arr[index]</td><td>fn() / fn.prop</td></tr>
+    <tr><td>iteration</td><td>for...in, Object.entries</td><td>for...of, forEach, map</td><td>callable — לא iterable</td></tr>
+    <tr><td>length</td><td>אין auto</td><td>auto-tracked</td><td>arity (params count)</td></tr>
+    <tr><td>JSON</td><td>{...}</td><td>[...]</td><td>undefined (לא serializable)</td></tr>
+    <tr><td>=== בודק</td><td>reference</td><td>reference</td><td>reference</td></tr>
+  </table>
+  <div class="code-block"><span class="comment">// Array הוא Object — אפשר להוסיף properties</span>
+<span class="keyword">const</span> arr = [1,2,3];
+arr.foo = <span class="string">'bar'</span>;  <span class="comment">// legal!</span>
+arr.length;       <span class="comment">// 3 (לא סופר foo)</span>
+
+<span class="comment">// Function הוא Object</span>
+<span class="keyword">function</span> greet() {}
+greet.author = <span class="string">'Tal'</span>; <span class="comment">// legal!</span>
+greet.length;         <span class="comment">// 0 (params count)</span></div>
+  <div class="exam-q"><span class="q">למה <code>[] === []</code> הוא false?</span><span class="a">→ שני Arrays שונים ב-Heap = שני pointers שונים</span></div>
+</div>
+
+<!-- CLUSTER 3 -->
+<div class="cluster" id="cluster3">
+  <h2>🏹 קלסטר 3 — Arrow Function vs Regular Function <span class="badge hard">קושי 8</span></h2>
+  <table>
+    <tr><th>ציר</th><th>Regular Function</th><th>Arrow Function</th></tr>
+    <tr><td>this binding</td><td>dynamic — נקבע לפי אופן הקריאה</td><td>lexical — מהמיקום שהוגדרה</td></tr>
+    <tr><td>arguments</td><td>✓ (special object)</td><td>✗ — השתמש ב-...rest</td></tr>
+    <tr><td>new constructor</td><td>✓</td><td>✗ TypeError</td></tr>
+    <tr><td>prototype</td><td>יש</td><td>אין</td></tr>
+    <tr><td>generator</td><td>function* OK</td><td>✗ אסור</td></tr>
+    <tr><td>super</td><td>✓</td><td>✗</td></tr>
+    <tr><td>bind/call/apply</td><td>משנה this</td><td>לא משנה! Arrow לא bindable</td></tr>
+    <tr><td>implicit return</td><td>תמיד צריך return</td><td>בלי {}: אוטומטי</td></tr>
+  </table>
+
+  <div class="code-block"><span class="comment">// this binding — ההבדל הקריטי</span>
+<span class="keyword">const</span> obj = {
+  name: <span class="string">'Tal'</span>,
+  greetRegular: <span class="keyword">function</span>() { <span class="keyword">return</span> <span class="keyword">this</span>.name; }, <span class="comment">// this = obj ✅</span>
+  greetArrow: () =&gt; <span class="keyword">this</span>.name,               <span class="comment">// this = outer (undefined) ❌</span>
+};
+
+<span class="comment">// setTimeout — arrow מנצח</span>
+<span class="keyword">class</span> Timer {
+  constructor() {
+    <span class="keyword">this</span>.seconds = 0;
+    setInterval(() =&gt; { <span class="keyword">this</span>.seconds++; }, 1000); <span class="comment">// ✅ this = Timer</span>
+  }
+}</span></div>
+
+  <div class="mnemonic">
+    <h4>🧠 כלל זהב</h4>
+    Default: Arrow. Switch to Regular כש: צריך this dynamic, arguments, new, או generator.
+  </div>
+  <div class="exam-q"><span class="q">מה יוחזר? <code>const f = () => {}; new f()</code></span><span class="a">→ TypeError: f is not a constructor</span></div>
+  <div class="exam-q"><span class="q">מה הפלט? <code>const a = () => {}; a.call({x:1}); this.x</code></span><span class="a">→ undefined — Arrow מתעלמת מ-bind/call/apply</span></div>
+</div>
+
+<!-- CLUSTER 4 -->
+<div class="cluster" id="cluster4">
+  <h2>⚡ קלסטר 4 — Event Loop: Microtask vs Macrotask <span class="badge hard">קושי 9</span></h2>
+  <table>
+    <tr><th>ציר</th><th>Microtask</th><th>Macrotask</th></tr>
+    <tr><td>מקורות</td><td>Promise.then, await, queueMicrotask, MutationObserver</td><td>setTimeout, setInterval, I/O, click events</td></tr>
+    <tr><td>מתי רץ</td><td>מיד אחרי קוד סינכרוני, לפני הסבב הבא</td><td>בסבב הבא של event loop</td></tr>
+    <tr><td>כמה בסבב</td><td>כל התור (עלול לחנוק!)</td><td>אחד בלבד</td></tr>
+    <tr><td>starvation</td><td>כן — microtasks אינסופיים קופאים UI</td><td>לא — UI מקבל זמן</td></tr>
+  </table>
+  <div class="code-block">console.log(<span class="string">"1"</span>);
+setTimeout(() =&gt; console.log(<span class="string">"2"</span>), 0);   <span class="comment">// macrotask</span>
+Promise.resolve().then(() =&gt; console.log(<span class="string">"3"</span>)); <span class="comment">// microtask</span>
+console.log(<span class="string">"4"</span>);
+<span class="comment">// סדר: 1, 4, 3, 2</span></div>
+  <div class="exam-q"><span class="q">למה microtask (3) לפני macrotask (2)?</span><span class="a">→ Engine רוקן כל microtasks לפני מעבר ל-macrotask הבא</span></div>
+</div>
+
+<!-- CLUSTER 5 -->
+<div class="cluster" id="cluster5">
+  <h2>🤝 קלסטר 5 — Promise Combinators <span class="badge hard">קושי 8</span></h2>
+  <table>
+    <tr><th>Combinator</th><th>מחזיר כש...</th><th>נדחה כש...</th><th>שימוש טיפוסי</th></tr>
+    <tr><td>Promise.all</td><td>כולם הצליחו</td><td>אחד נכשל (fail-fast)</td><td>parallel APIs שצריכים הכל</td></tr>
+    <tr><td>Promise.race</td><td>הראשון שסיים</td><td>הראשון שנכשל</td><td>timeout, "first wins"</td></tr>
+    <tr><td>Promise.allSettled</td><td>כולם סיימו (✓ או ✗)</td><td>אף פעם לא נדחה</td><td>סטטיסטיקה — רוצים הכל</td></tr>
+    <tr><td>Promise.any</td><td>הראשון שהצליח</td><td>כולם נכשלו</td><td>מספיק שאחד יענה</td></tr>
+  </table>
+  <div class="mnemonic"><h4>🧠 Mnemonic</h4>all = AND · race = first · allSettled = sum · any = OR</div>
+</div>
+
+<!-- CLUSTER 6 -->
+<div class="cluster" id="cluster6">
+  <h2>⏳ קלסטר 6 — 3 דורות Async <span class="badge med">קושי 7</span></h2>
+  <table>
+    <tr><th>ציר</th><th>Callback (1995)</th><th>Promise.then (2015)</th><th>async/await (2017)</th></tr>
+    <tr><td>תחביר</td><td>fn(args, cb)</td><td>.then(...).catch(...)</td><td>await בתוך async</td></tr>
+    <tr><td>Pyramid of doom</td><td>כן</td><td>chain</td><td>קוד נראה סינכרוני</td></tr>
+    <tr><td>שגיאות</td><td>err param ראשון</td><td>.catch()</td><td>try/catch</td></tr>
+    <tr><td>Debug stack</td><td>רעוע</td><td>טוב</td><td>מצוין</td></tr>
+  </table>
+</div>
+
+<!-- CLUSTER 7 -->
+<div class="cluster" id="cluster7">
+  <h2>⚛️ קלסטר 7 — useEffect Dependency Array <span class="badge hard">קושי 9</span></h2>
+  <table>
+    <tr><th>תחביר</th><th>מתי רץ</th><th>אזהרה</th></tr>
+    <tr><td>useEffect(fn)</td><td>כל render</td><td>⚠️ infinite loops</td></tr>
+    <tr><td>useEffect(fn, [])</td><td>פעם אחת — mount</td><td>⚠️ stale closure</td></tr>
+    <tr><td>useEffect(fn, [x])</td><td>כשx משתנה</td><td>בדוק dependency</td></tr>
+  </table>
+  <div class="code-block"><span class="comment">// ❌ stale closure bug</span>
+useEffect(() =&gt; {
+  setInterval(() =&gt; setCount(count + 1), 1000); <span class="comment">// count תמיד 0!</span>
+}, []);
+
+<span class="comment">// ✅ functional update — אין צורך ב-count בdeps</span>
+useEffect(() =&gt; {
+  <span class="keyword">const</span> id = setInterval(() =&gt; setCount(c =&gt; c + 1), 1000);
+  <span class="keyword">return</span> () =&gt; clearInterval(id);
+}, []);</div>
+</div>
+
+<!-- CLUSTER 8 -->
+<div class="cluster" id="cluster8">
+  <h2>🔧 קלסטר 8 — useMemo / useCallback / React.memo <span class="badge hard">קושי 8</span></h2>
+  <table>
+    <tr><th>כלי</th><th>מחזיר</th><th>מטרה</th><th>מתי לא</th></tr>
+    <tr><td>useMemo(fn, deps)</td><td>התוצאה (cached)</td><td>חישוב יקר</td><td>חישוב זול</td></tr>
+    <tr><td>useCallback(fn, deps)</td><td>הפונקציה (cached)</td><td>פונקציה יציבה כ-prop</td><td>ילד לא ב-React.memo</td></tr>
+    <tr><td>React.memo(Comp)</td><td>component מוגן</td><td>מנע re-render ילד</td><td>props תמיד שונים</td></tr>
+  </table>
+  <div class="mnemonic"><h4>🧠 חוק זהב</h4>3 הכלים עובדים יחד: React.memo + useCallback לפונקציות + useMemo לחישובים. בודד — שום אחד לא עוזר.</div>
+</div>
+
+<!-- CLUSTER 9 -->
+<div class="cluster" id="cluster9">
+  <h2>📦 קלסטר 9 — Set vs Map vs Object <span class="badge med">קושי 7</span></h2>
+  <table>
+    <tr><th>ציר</th><th>Object</th><th>Map</th><th>Set</th></tr>
+    <tr><td>מטרה</td><td>key→value (string keys)</td><td>key→value (any keys)</td><td>unique values only</td></tr>
+    <tr><td>Key types</td><td>string / Symbol</td><td>כל סוג — object, function</td><td>n/a</td></tr>
+    <tr><td>Size</td><td>Object.keys(o).length O(n)</td><td>m.size O(1)</td><td>s.size O(1)</td></tr>
+    <tr><td>JSON serialize</td><td>✅</td><td>❌</td><td>❌</td></tr>
+    <tr><td>שימוש מומלץ</td><td>data צפוי, JSON</td><td>keys דינמיים / object keys</td><td>ייחודיות, dedup</td></tr>
+  </table>
+  <div class="code-block"><span class="comment">// Object — keys תמיד strings</span>
+<span class="keyword">const</span> obj = { 1: <span class="string">'a'</span> }; obj[<span class="string">'1'</span>] === obj[1]; <span class="comment">// true</span>
+
+<span class="comment">// Map — keys כל דבר</span>
+<span class="keyword">const</span> m = <span class="keyword">new</span> Map();
+m.set(document.getElementById(<span class="string">'btn'</span>), <span class="string">'click handler'</span>); <span class="comment">// object as key!</span>
+
+<span class="comment">// Set — dedup</span>
+<span class="keyword">const</span> unique = [...<span class="keyword">new</span> Set([1,2,2,3,3])]; <span class="comment">// [1,2,3]</span></div>
+</div>
+
+</div><!-- /container -->
+<script>
+document.querySelectorAll('.toc a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>

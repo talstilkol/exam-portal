@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ מילון שגיאות — מה עושים כשהקוד לא עובד</title>
+  <link rel="stylesheet" href="light-mode.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:'Segoe UI','Arial Hebrew',system-ui,sans-serif;
+    background:linear-gradient(180deg,#0a0e27 0%,#16213e 50%,#1a1a2e 100%);
+    background-attachment:fixed;
+    color:#e8e8e8;
+    line-height:1.7;
+    padding:20px;
+    min-height:100vh;
+  }
+  .container { max-width:1400px; margin:0 auto; }
+  a { color:inherit; text-decoration:none; }
+
+  /* Top nav */
+  .topnav { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+  .topnav a {
+    padding:10px 22px;
+    border-radius:30px;
+    border:1px solid;
+    transition:all .2s;
+    font-size:0.95em;
+  }
+  .topnav a.dash { background:rgba(78,205,196,0.15); border-color:rgba(78,205,196,0.4); color:#4ecdc4; }
+  .topnav a.ide { background:rgba(88,166,255,0.15); border-color:rgba(88,166,255,0.4); color:#79c0ff; }
+  .topnav a.map { background:rgba(255,217,61,0.15); border-color:rgba(255,217,61,0.4); color:#ffd93d; }
+  .topnav a:hover { transform:translateY(-2px); }
+
+  header {
+    text-align:center;
+    padding:50px 20px 35px;
+    background:radial-gradient(ellipse at center,rgba(239,68,68,0.18),transparent 60%);
+    border-radius:24px;
+    margin-bottom:30px;
+    border:2px solid rgba(239,68,68,0.25);
+  }
+  header h1 { font-size:3em; color:#fca5a5; margin-bottom:14px; text-shadow:0 4px 20px rgba(239,68,68,0.4); }
+  header p { color:#cbd5e1; font-size:1.2em; max-width:800px; margin:0 auto; }
+  header .stats { display:flex; gap:20px; justify-content:center; margin-top:20px; flex-wrap:wrap; }
+  header .stats span { padding:6px 16px; background:rgba(255,255,255,0.05); border-radius:20px; font-size:0.95em; }
+
+  /* Filter pills */
+  .filter-bar {
+    display:flex;
+    gap:10px;
+    padding:14px 18px;
+    background:rgba(255,255,255,0.04);
+    border-radius:14px;
+    margin-bottom:24px;
+    border:1px solid rgba(255,255,255,0.08);
+    flex-wrap:wrap;
+    position:sticky;
+    top:10px;
+    z-index:50;
+    backdrop-filter:blur(10px);
+  }
+  .filter-bar .label { font-size:0.85em; color:#7d8590; align-self:center; margin-left:4px; }
+  .pill {
+    padding:6px 14px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:20px;
+    cursor:pointer;
+    font-size:0.85em;
+    transition:all .2s;
+    color:#cbd5e1;
+  }
+  .pill:hover { background:rgba(255,255,255,0.1); }
+  .pill.active { background:rgba(78,205,196,0.2); border-color:#4ecdc4; color:#4ecdc4; font-weight:600; }
+  .search-input {
+    flex:1;
+    min-width:200px;
+    padding:7px 14px;
+    background:rgba(0,0,0,0.3);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:20px;
+    color:#fff;
+    font-size:0.9em;
+    font-family:inherit;
+    direction:rtl;
+  }
+  .search-input:focus { outline:none; border-color:#4ecdc4; }
+
+  /* Category sections */
+  .category {
+    background:rgba(255,255,255,0.03);
+    border-radius:18px;
+    padding:28px;
+    margin-bottom:24px;
+    border:1px solid rgba(255,255,255,0.08);
+  }
+  .category h2 {
+    color:#fff;
+    font-size:1.6em;
+    margin-bottom:6px;
+    padding-bottom:12px;
+    border-bottom:2px solid rgba(78,205,196,0.3);
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .category .cat-sub { color:#7d8590; font-size:0.95em; margin-bottom:20px; }
+  .errors-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
+    gap:16px;
+  }
+
+  /* Error card */
+  .error-card {
+    background:#1e293b;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid #334155;
+    transition:all .2s;
+  }
+  .error-card.hidden { display:none; }
+  .error-card:hover { border-color:#4ecdc4; box-shadow:0 8px 24px rgba(0,0,0,0.4); }
+  .error-card summary {
+    padding:14px 18px;
+    cursor:pointer;
+    list-style:none;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#0f172a;
+    border-bottom:1px solid transparent;
+    transition:background .15s;
+    user-select:none;
+  }
+  .error-card summary:hover { background:#1e293b; }
+  .error-card details[open] summary { border-bottom-color:#334155; }
+  .error-card summary::-webkit-details-marker { display:none; }
+  .error-card .err-tag {
+    padding:3px 10px;
+    border-radius:4px;
+    font-size:0.7em;
+    font-weight:bold;
+    color:#fff;
+    flex-shrink:0;
+    font-family:monospace;
+  }
+  .err-tag.front { background:#0ea5e9; }
+  .err-tag.back { background:#22c55e; }
+  .err-tag.db { background:#a855f7; }
+  .err-tag.auth { background:#ef4444; }
+  .err-tag.cors { background:#f59e0b; }
+  .err-tag.deploy { background:#ec4899; }
+  .err-tag.git { background:#7f8c8d; }
+
+  .error-card .err-msg {
+    flex:1;
+    color:#fff;
+    font-family:'SF Mono','Consolas',monospace;
+    font-size:0.88em;
+    word-break:break-word;
+    direction:ltr;
+    text-align:left;
+  }
+  .error-card .err-arrow { color:#7d8590; transition:transform 0.2s; flex-shrink:0; }
+  .error-card details[open] .err-arrow { transform:rotate(90deg); color:#4ecdc4; }
+  .error-card .err-body { padding:18px; }
+  .error-card .err-section { margin-bottom:14px; }
+  .error-card .err-section:last-child { margin-bottom:0; }
+  .error-card .err-section-title {
+    color:#79c0ff;
+    font-size:0.78em;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .error-card .err-cause { color:#cbd5e1; font-size:0.92em; line-height:1.55; }
+  .error-card pre {
+    background:#0d1117;
+    color:#a7f3d0;
+    padding:12px 14px;
+    border-radius:8px;
+    font-size:0.83em;
+    overflow-x:auto;
+    line-height:1.55;
+    font-family:'SF Mono','Consolas',monospace;
+    direction:ltr;
+    text-align:left;
+    border:1px solid #21262d;
+  }
+  .error-card pre.bad { border-right:4px solid #ef4444; }
+  .error-card pre.good { border-right:4px solid #22c55e; }
+  .error-card pre .k { color:#ff7b72; }
+  .error-card pre .s { color:#a5d6ff; }
+  .error-card pre .c { color:#8b949e; font-style:italic; }
+  .error-card pre .v { color:#79c0ff; }
+  .error-card pre .e { color:#fca5a5; text-decoration:line-through; }
+  .error-card .related-links {
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:8px;
+  }
+  .error-card .related-links a {
+    padding:5px 12px;
+    background:rgba(88,166,255,0.1);
+    border:1px solid rgba(88,166,255,0.3);
+    color:#79c0ff;
+    border-radius:6px;
+    font-size:0.82em;
+    transition:all .2s;
+  }
+  .error-card .related-links a:hover { background:rgba(88,166,255,0.25); }
+
+  .empty-message {
+    text-align:center;
+    color:#7d8590;
+    padding:40px;
+    font-size:1.1em;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="topnav">
+    <a href="00_dashboard.html" class="dash">← דשבורד</a>
+    <a href="IDE_project.html" class="ide">💻 פתח IDE</a>
+    <a href="MAP_master.html" class="map">🗺️ המפה הגדולה</a>
+    <a href="BUILD_walkthrough.html" class="dash" style="background:rgba(132,204,22,0.15);border-color:rgba(132,204,22,0.4);color:#bef264;">🛠️ בנה מאפס</a>
+  </div>
+
+  <header>
+    <h1>🛠️ מילון השגיאות</h1>
+    <p>השגיאות הכי נפוצות במבחן ובחיים האמיתיים — עם הסיבה האמיתית והתיקון. כשנתקעת — חפש כאן לפני שאתה משתגע.</p>
+    <div class="stats">
+      <span>🔥 25 שגיאות נפוצות</span>
+      <span>⚡ פתרון מיידי לכל אחת</span>
+      <span>🎯 מקושר לחומר הלימוד</span>
+    </div>
+  </header>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <span class="label">🔍 סנן לפי קטגוריה:</span>
+    <span class="pill active" data-filter="all">הכל</span>
+    <span class="pill" data-filter="front">⚛️ Frontend</span>
+    <span class="pill" data-filter="back">🚂 Backend</span>
+    <span class="pill" data-filter="db">📦 DB</span>
+    <span class="pill" data-filter="auth">🔐 Auth</span>
+    <span class="pill" data-filter="cors">🌐 CORS</span>
+    <span class="pill" data-filter="deploy">🚀 Deploy</span>
+    <span class="pill" data-filter="git">📝 Git</span>
+    <input class="search-input" type="search" placeholder="חפש שגיאה..." id="searchBox">
+  </div>
+
+  <!-- ============= FRONTEND ERRORS ============= -->
+  <section class="category" data-cat="front">
+    <h2>⚛️ שגיאות Frontend (React + JS)</h2>
+    <p class="cat-sub">מה שרואים ב-Console של הדפדפן — DevTools (F12).</p>
+
+    <div class="errors-grid">
+
+      <div class="error-card" data-tag="front" data-keywords="undefined property cannot read">
+        <details>
+          <summary>
+            <span class="err-tag front">RUNTIME</span>
+            <span class="err-msg">TypeError: Cannot read property 'X' of undefined</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">ניסית לגשת ל-property של אובייקט שעדיין לא הוגדר. בדרך כלל קורה כשהקוד רץ לפני שה-fetch הסתיים, או שה-API החזיר null.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">❌ הבעיה</div>
+<pre class="bad"><span class="k">const</span> [user, setUser] = <span class="v">useState</span>();
+<span class="c">// user = undefined בהתחלה</span>
+<span class="k">return</span> &lt;div&gt;{user.name}&lt;/div&gt;; <span class="c">// 💥</span></pre>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="c">// 1. Optional chaining</span>
+<span class="k">return</span> &lt;div&gt;{user?.name}&lt;/div&gt;;
+
+<span class="c">// 2. Conditional render</span>
+<span class="k">if</span> (!user) <span class="k">return</span> &lt;p&gt;Loading...&lt;/p&gt;;
+<span class="k">return</span> &lt;div&gt;{user.name}&lt;/div&gt;;
+
+<span class="c">// 3. Default state</span>
+<span class="v">useState</span>({ name: <span class="s">''</span> });</pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#hooks">→ useState</a>
+              <a href="12_tricky_questions.html">→ מלכודות JS</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="front" data-keywords="key warning each child unique">
+        <details>
+          <summary>
+            <span class="err-tag front">REACT</span>
+            <span class="err-msg">Warning: Each child should have unique "key" prop</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">React משתמש ב-key כדי לזהות אילו items השתנו. בלי key (או עם index!) הוא יבלבל ויעדכן את הפריט הלא נכון.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">❌ הבעיה</div>
+<pre class="bad">{items.<span class="v">map</span>(item =&gt; (
+  &lt;li&gt;{item.name}&lt;/li&gt;     <span class="c">// אין key</span>
+))}
+
+{items.<span class="v">map</span>((item, i) =&gt; (
+  &lt;li key={i}&gt;{item.name}&lt;/li&gt;  <span class="c">// ❌ index!</span>
+))}</pre>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good">{items.<span class="v">map</span>(item =&gt; (
+  &lt;li key={item._id}&gt;
+    {item.name}
+  &lt;/li&gt;
+))}</pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#react">→ React Lists</a>
+              <a href="06_strategy.html#golden">→ כללי זהב</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="front" data-keywords="state mutation push render react">
+        <details>
+          <summary>
+            <span class="err-tag front">REACT</span>
+            <span class="err-msg">setState לא גורם לרינדור (mutation)</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">שינית state ישירות (push/splice) במקום ליצור עותק חדש. React משווה לפי reference — אותה כתובת = "לא השתנה" = אין רינדור.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">❌ הבעיה</div>
+<pre class="bad">items.<span class="v">push</span>(newItem);   <span class="c">// mutation!</span>
+setItems(items);          <span class="c">// אין רינדור 💥</span></pre>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="c">// יצירת מערך חדש</span>
+setItems([...items, newItem]);
+
+<span class="c">// או functional update (הכי בטוח)</span>
+setItems(prev =&gt; [...prev, newItem]);</pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#react">→ Immutability</a>
+              <a href="02_missing_topics.html#loops">→ slice vs splice</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="front" data-keywords="useeffect infinite loop maximum update">
+        <details>
+          <summary>
+            <span class="err-tag front">REACT</span>
+            <span class="err-msg">Maximum update depth exceeded (לולאה אינסופית)</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">setState נקרא ב-render או ב-useEffect ללא dependencies → רינדור → setState → רינדור → ∞.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">❌ הבעיה</div>
+<pre class="bad"><span class="v">useEffect</span>(() =&gt; {
+  setCount(count + 1);
+});  <span class="c">// 💥 אין deps - רץ בכל רינדור</span></pre>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="v">useEffect</span>(() =&gt; {
+  setCount(c =&gt; c + 1);
+}, []);  <span class="c">// פעם אחת בלבד</span>
+
+<span class="c">// או: deps נכון</span>
+<span class="v">useEffect</span>(() =&gt; {
+  load(id);
+}, [id]);  <span class="c">// רק כש-id משתנה</span></pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#hooks">→ useEffect</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="front" data-keywords="fetch is not defined json undefined">
+        <details>
+          <summary>
+            <span class="err-tag front">JS</span>
+            <span class="err-msg">SyntaxError: Unexpected token &lt; in JSON at position 0</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">ניסית לעשות <code>res.json()</code> על תשובה שהיא לא JSON — לרוב HTML של 404 או דף שגיאה. ה-< הוא הסוגריים הראשונים של <code>&lt;!DOCTYPE&gt;</code>.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="k">const</span> res = <span class="k">await</span> <span class="v">fetch</span>(url);
+<span class="k">if</span> (!res.ok) {
+  <span class="k">throw</span> <span class="k">new</span> <span class="v">Error</span>(<span class="s">`HTTP </span><span class="v">${</span>res.status<span class="v">}</span><span class="s">`</span>);
+}
+<span class="k">const</span> data = <span class="k">await</span> res.<span class="v">json</span>();</pre>
+              <div class="err-cause" style="margin-top:8px;">לרוב הסיבה: URL שגוי (חסר /api), השרת לא רץ, או CORS.</div>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#async">→ fetch + Promises</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="front" data-keywords="hook called function component conditional">
+        <details>
+          <summary>
+            <span class="err-tag front">REACT</span>
+            <span class="err-msg">Invalid hook call. Hooks can only be called inside...</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">קראת ל-Hook (useState/useEffect) במקום אסור: בתוך if, לולאה, פונקציה רגילה, או event handler.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">❌ הבעיה</div>
+<pre class="bad"><span class="k">function</span> Component() {
+  <span class="k">if</span> (loading) {
+    <span class="k">const</span> [x, setX] = <span class="v">useState</span>(); <span class="c">// ❌</span>
+  }
+  <span class="k">function</span> handleClick() {
+    <span class="v">useState</span>();  <span class="c">// ❌</span>
+  }
+}</pre>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="k">function</span> Component() {
+  <span class="c">// ✅ תמיד ברמה העליונה</span>
+  <span class="k">const</span> [x, setX] = <span class="v">useState</span>();
+
+  <span class="k">if</span> (loading) <span class="k">return</span> &lt;Loading /&gt;;
+  <span class="k">return</span> &lt;div&gt;{x}&lt;/div&gt;;
+}</pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#hooks">→ Hooks Rules</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============= BACKEND ERRORS ============= -->
+  <section class="category" data-cat="back">
+    <h2>🚂 שגיאות Backend (Express + Node)</h2>
+    <p class="cat-sub">מה שרואים ב-terminal של השרת.</p>
+
+    <div class="errors-grid">
+
+      <div class="error-card" data-tag="back" data-keywords="cannot find module npm install">
+        <details>
+          <summary>
+            <span class="err-tag back">NODE</span>
+            <span class="err-msg">Error: Cannot find module 'X'</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">ייבאת חבילה שלא הותקנה (לא ב-node_modules), או שה-import path שגוי.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="c"># התקן את החבילה</span>
+npm install express mongoose
+
+<span class="c"># אם זה קובץ פנימי:</span>
+<span class="c"># בדוק שהנתיב נכון (./ או ../)</span>
+<span class="c"># ב-ESM צריך .js גם ל-TS!</span>
+<span class="k">import</span> X <span class="k">from</span> <span class="s">'./utils.js'</span>;</pre>
+            </div>
+            <div class="related-links">
+              <a href="02_missing_topics.html#pkg-json">→ package.json</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="back" data-keywords="port already in use eaddrinuse 3000">
+        <details>
+          <summary>
+            <span class="err-tag back">NODE</span>
+            <span class="err-msg">Error: listen EADDRINUSE: address already in use :::3000</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">ה-port כבר תפוס — הפעלת את השרת פעמיים, או יש תהליך זומבי שלא נסגר.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון (Mac/Linux)</div>
+<pre class="good"><span class="c"># מצא איזה process תופס</span>
+lsof -i :3000
+
+<span class="c"># הרוג אותו (החלף PID)</span>
+kill -9 12345
+
+<span class="c"># או one-liner:</span>
+lsof -ti :3000 | xargs kill -9</pre>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ Windows</div>
+<pre class="good">netstat -ano | findstr :3000
+taskkill /PID 12345 /F</pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#express">→ Express setup</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="back" data-keywords="req body undefined parser json">
+        <details>
+          <summary>
+            <span class="err-tag back">EXPRESS</span>
+            <span class="err-msg">req.body is undefined</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">לא הפעלת את ה-body parser. Express לא קורא בקשות JSON אוטומטית — צריך להגיד לו.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="k">const</span> app = <span class="v">express</span>();
+
+<span class="c">// ⚠️ חייב לפני ה-routes!</span>
+app.<span class="v">use</span>(express.<span class="v">json</span>());
+app.<span class="v">use</span>(express.<span class="v">urlencoded</span>({
+  extended: <span class="k">true</span>
+}));
+
+app.<span class="v">use</span>(<span class="s">'/api'</span>, routes);</pre>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">בנוסף — בצד הלקוח:</div>
+<pre class="good"><span class="v">fetch</span>(url, {
+  method: <span class="s">'POST'</span>,
+  headers: {
+    <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>
+  },
+  body: <span class="v">JSON</span>.stringify(data)
+});</pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#express">→ Express Middleware</a>
+              <a href="IDE_project.html">→ ראה ב-IDE: server.ts</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="back" data-keywords="unhandled promise rejection async">
+        <details>
+          <summary>
+            <span class="err-tag back">NODE</span>
+            <span class="err-msg">UnhandledPromiseRejectionWarning</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">async function זרקה שגיאה ולא היה <code>try/catch</code> שיתפוס. ב-Node מודרני זה קורסים.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">❌ הבעיה</div>
+<pre class="bad">app.<span class="v">get</span>(<span class="s">'/users'</span>, <span class="k">async</span> (req, res) =&gt; {
+  <span class="k">const</span> users = <span class="k">await</span> User.<span class="v">find</span>();
+  res.<span class="v">json</span>(users);
+});  <span class="c">// 💥 אם find() נכשל</span></pre>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good">app.<span class="v">get</span>(<span class="s">'/users'</span>, <span class="k">async</span> (req, res) =&gt; {
+  <span class="k">try</span> {
+    <span class="k">const</span> users = <span class="k">await</span> User.<span class="v">find</span>();
+    res.<span class="v">json</span>(users);
+  } <span class="k">catch</span> (err) {
+    res.<span class="v">status</span>(500).<span class="v">json</span>({
+      error: err.message
+    });
+  }
+});</pre>
+            </div>
+            <div class="related-links">
+              <a href="02_missing_topics.html#errors">→ try/catch</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============= DATABASE ERRORS ============= -->
+  <section class="category" data-cat="db">
+    <h2>📦 שגיאות Database (MongoDB + Mongoose)</h2>
+    <p class="cat-sub">בעיות חיבור ל-DB ושמירת נתונים.</p>
+
+    <div class="errors-grid">
+
+      <div class="error-card" data-tag="db" data-keywords="mongoserver selection mongodb connect">
+        <details>
+          <summary>
+            <span class="err-tag db">MONGO</span>
+            <span class="err-msg">MongooseServerSelectionError: connect ECONNREFUSED ::1:27017</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">MongoDB לא רץ במחשב שלך, או שה-URI שגוי.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון 1: הפעל MongoDB</div>
+<pre class="good"><span class="c"># Mac (Homebrew)</span>
+brew services start mongodb-community
+
+<span class="c"># Linux (systemd)</span>
+sudo systemctl start mongod
+
+<span class="c"># Windows</span>
+net start MongoDB</pre>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון 2: בדוק URI</div>
+<pre class="good"><span class="c"># .env</span>
+<span class="v">MONGO_URI</span>=<span class="s">mongodb://localhost:27017/myapp</span>
+
+<span class="c"># או Atlas (cloud):</span>
+<span class="v">MONGO_URI</span>=<span class="s">mongodb+srv://user:pass@cluster.mongodb.net/myapp</span></pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#database">→ MongoDB Setup</a>
+              <a href="IDE_project.html">→ db.ts ב-IDE</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="db" data-keywords="validation error required path">
+        <details>
+          <summary>
+            <span class="err-tag db">MONGOOSE</span>
+            <span class="err-msg">ValidationError: Path 'X' is required</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">ניסית לשמור מסמך בלי שדה חובה. ה-Schema קבע שהשדה <code>required:true</code>.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="c">// ולידציה לפני save:</span>
+<span class="k">if</span> (!body.name || !body.email) {
+  <span class="k">return</span> res.<span class="v">status</span>(400).<span class="v">json</span>({
+    error: <span class="s">'Missing required fields'</span>
+  });
+}
+
+<span class="c">// או טפל ב-catch:</span>
+<span class="k">try</span> {
+  <span class="k">await</span> User.<span class="v">create</span>(body);
+} <span class="k">catch</span> (err: <span class="k">any</span>) {
+  <span class="k">if</span> (err.name === <span class="s">'ValidationError'</span>) {
+    <span class="k">return</span> res.<span class="v">status</span>(400).<span class="v">json</span>({
+      error: err.message
+    });
+  }
+}</pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#database">→ Mongoose Schema</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="db" data-keywords="cast object id invalid format">
+        <details>
+          <summary>
+            <span class="err-tag db">MONGOOSE</span>
+            <span class="err-msg">CastError: Cast to ObjectId failed</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">שלחת ID ב-URL שאינו ObjectId תקין של MongoDB (24 hex chars). למשל "abc" במקום "507f1f77bcf86cd799439011".</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="k">import</span> mongoose <span class="k">from</span> <span class="s">'mongoose'</span>;
+
+<span class="c">// בדוק לפני query:</span>
+<span class="k">if</span> (!mongoose.<span class="v">isValidObjectId</span>(req.params.id)) {
+  <span class="k">return</span> res.<span class="v">status</span>(400).<span class="v">json</span>({
+    error: <span class="s">'Invalid ID format'</span>
+  });
+}
+
+<span class="k">const</span> doc = <span class="k">await</span> Model.<span class="v">findById</span>(req.params.id);</pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#database">→ MongoDB Queries</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============= AUTH ERRORS ============= -->
+  <section class="category" data-cat="auth">
+    <h2>🔐 שגיאות Authentication (JWT)</h2>
+    <p class="cat-sub">401, 403, ובעיות סיסמה.</p>
+
+    <div class="errors-grid">
+
+      <div class="error-card" data-tag="auth" data-keywords="401 unauthorized token jwt">
+        <details>
+          <summary>
+            <span class="err-tag auth">AUTH</span>
+            <span class="err-msg">401 Unauthorized — JsonWebTokenError</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">ה-token חסר/פגום/פג תוקף. או שה-JWT_SECRET שונה בין השרת ובין מי שחתם את ה-token.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ דברים לבדוק</div>
+<pre class="good"><span class="c">// 1. הפורמט של ה-header:</span>
+headers: {
+  <span class="v">Authorization</span>: <span class="s">`Bearer </span><span class="v">${</span>token<span class="v">}</span><span class="s">`</span>
+}
+
+<span class="c">// 2. בשרת — לאחזר נכון:</span>
+<span class="k">const</span> token = req.headers.authorization
+  ?.<span class="v">slice</span>(7);  <span class="c">// בלי "Bearer "</span>
+
+<span class="c">// 3. אותו secret בכל מקום:</span>
+<span class="v">jwt</span>.<span class="v">verify</span>(token, process.env.<span class="v">JWT_SECRET</span>!);
+
+<span class="c">// 4. ה-token פג תוקף? בדוק ב-jwt.io</span></pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#auth">→ JWT Flow</a>
+              <a href="IDE_project.html">→ middleware/auth.ts</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="auth" data-keywords="bcrypt compare password hash">
+        <details>
+          <summary>
+            <span class="err-tag auth">AUTH</span>
+            <span class="err-msg">Login נכשל למרות סיסמה נכונה</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">בדרך כלל: שמרת סיסמה ב-DB <strong>בלי לעבור hash</strong>, או עשית hash פעמיים.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון — pre-save hook</div>
+<pre class="good">userSchema.<span class="v">pre</span>(<span class="s">'save'</span>, <span class="k">async</span> <span class="k">function</span>(next) {
+  <span class="c">// רק אם הסיסמה השתנתה</span>
+  <span class="k">if</span> (!<span class="k">this</span>.<span class="v">isModified</span>(<span class="s">'password'</span>)) {
+    <span class="k">return</span> next();
+  }
+  <span class="k">this</span>.password = <span class="k">await</span>
+    <span class="v">bcrypt</span>.<span class="v">hash</span>(<span class="k">this</span>.password, 10);
+  next();
+});
+
+<span class="c">// ב-login:</span>
+<span class="k">const</span> ok = <span class="k">await</span> <span class="v">bcrypt</span>.<span class="v">compare</span>(
+  plainPassword,
+  user.password
+);</pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#auth">→ bcrypt</a>
+              <a href="IDE_project.html">→ models/User.ts</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============= CORS ERRORS ============= -->
+  <section class="category" data-cat="cors">
+    <h2>🌐 שגיאות CORS</h2>
+    <p class="cat-sub">למה הדפדפן חוסם בקשות בין דומיינים — וזה בכוונה!</p>
+
+    <div class="errors-grid">
+
+      <div class="error-card" data-tag="cors" data-keywords="cors blocked access-control-allow-origin">
+        <details>
+          <summary>
+            <span class="err-tag cors">CORS</span>
+            <span class="err-msg">Access to fetch blocked by CORS policy</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה זה CORS?</div>
+              <div class="err-cause">Cross-Origin Resource Sharing — הגנה של דפדפנים. כשהפרונטנד (port 5173) קורא לבקאנד (port 3000) — זה "origins שונים". הדפדפן דורש מהשרת לאשר זאת מפורשות.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון בשרת (Express)</div>
+<pre class="good"><span class="k">import</span> cors <span class="k">from</span> <span class="s">'cors'</span>;
+
+<span class="c">// פתוח לכולם (פיתוח):</span>
+app.<span class="v">use</span>(<span class="v">cors</span>());
+
+<span class="c">// או ספציפי (production):</span>
+app.<span class="v">use</span>(<span class="v">cors</span>({
+  origin: <span class="s">'http://localhost:5173'</span>,
+  credentials: <span class="k">true</span>
+}));
+
+<span class="c">// לאחסון cookies — חובה credentials</span></pre>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">⚡ טיפ זהב</div>
+              <div class="err-cause">CORS מטופל בשרת, <strong>לא</strong> בלקוח. אם אתה רואה את השגיאה — הבעיה בשרת.</div>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#express">→ Express + CORS</a>
+              <a href="IDE_project.html">→ server.ts ב-IDE</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="cors" data-keywords="preflight options 405">
+        <details>
+          <summary>
+            <span class="err-tag cors">CORS</span>
+            <span class="err-msg">405 Method Not Allowed (OPTIONS preflight)</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">לפני בקשת PUT/DELETE/PATCH — הדפדפן שולח OPTIONS request כ"בדיקה". אם השרת לא תומך — הבקשה האמיתית לא נשלחת.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="c">// cors() כבר מטפל ב-OPTIONS, אבל:</span>
+app.<span class="v">use</span>(<span class="v">cors</span>({
+  methods: [<span class="s">'GET'</span>,<span class="s">'POST'</span>,<span class="s">'PUT'</span>,<span class="s">'DELETE'</span>],
+  allowedHeaders: [
+    <span class="s">'Content-Type'</span>,
+    <span class="s">'Authorization'</span>
+  ]
+}));</pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#async">→ HTTP Methods</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============= DEPLOY ERRORS ============= -->
+  <section class="category" data-cat="deploy">
+    <h2>🚀 שגיאות Deploy & Build</h2>
+    <p class="cat-sub">כשהאפליקציה עובדת אצלך אבל לא בייצור.</p>
+
+    <div class="errors-grid">
+
+      <div class="error-card" data-tag="deploy" data-keywords="env undefined process build">
+        <details>
+          <summary>
+            <span class="err-tag deploy">ENV</span>
+            <span class="err-msg">process.env.X is undefined בייצור</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">קובץ .env לא הועלה (ובצדק!) — אבל לא הגדרת את משתני הסביבה ב-Vercel/Netlify/Heroku.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון — Vercel</div>
+<pre class="good"><span class="c"># Dashboard → Settings → Environment Variables</span>
+<span class="c"># הוסף: MONGO_URI, JWT_SECRET, ...</span>
+
+<span class="c"># Vite דורש prefix:</span>
+<span class="v">VITE_API_URL</span>=<span class="s">https://api.myapp.com</span>
+
+<span class="c"># בקוד:</span>
+<span class="k">import</span>.meta.env.<span class="v">VITE_API_URL</span></pre>
+            </div>
+            <div class="related-links">
+              <a href="02_missing_topics.html#env-vars">→ ENV Variables</a>
+              <a href="01_master_theory.html#devops">→ DevOps</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="deploy" data-keywords="404 routes refresh react router production">
+        <details>
+          <summary>
+            <span class="err-tag deploy">DEPLOY</span>
+            <span class="err-msg">404 בכל refresh של דף שאינו /</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">React Router הוא client-side. כשמרעננים <code>/dashboard</code>, השרת מחפש קובץ פיזי שלא קיים — מחזיר 404.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון — Vercel</div>
+<pre class="good"><span class="c">// vercel.json בשורש הפרויקט</span>
+{
+  <span class="s">"rewrites"</span>: [
+    {
+      <span class="s">"source"</span>: <span class="s">"/(.*)"</span>,
+      <span class="s">"destination"</span>: <span class="s">"/index.html"</span>
+    }
+  ]
+}</pre>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ Netlify</div>
+<pre class="good"><span class="c"># public/_redirects</span>
+/*  /index.html  200</pre>
+            </div>
+            <div class="related-links">
+              <a href="02_missing_topics.html#router">→ React Router</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="deploy" data-keywords="build failed tsc typescript error">
+        <details>
+          <summary>
+            <span class="err-tag deploy">BUILD</span>
+            <span class="err-msg">TypeScript: Type errors blocking build</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause"><code>npm run dev</code> הוא lenient. <code>npm run build</code> מפעיל בדיקת types קפדנית ויחסום על שגיאה.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון — תקן את ה-types</div>
+<pre class="good"><span class="c">// במקום any:</span>
+<span class="k">function</span> get(id: <span class="ty">string</span>): <span class="ty">User</span> {}
+
+<span class="c">// בדיקה לפני שימוש:</span>
+<span class="k">if</span> (user) {
+  console.<span class="v">log</span>(user.name);
+}
+
+<span class="c">// או — לרוץ build דומה לפני deploy:</span>
+npm <span class="v">run</span> build <span class="c"># בדוק לפני git push</span></pre>
+            </div>
+            <div class="related-links">
+              <a href="01_master_theory.html#ts">→ TypeScript</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============= GIT ERRORS ============= -->
+  <section class="category" data-cat="git">
+    <h2>📝 שגיאות Git & הגשה</h2>
+    <p class="cat-sub">בעיות version control ולפני הגשה.</p>
+
+    <div class="errors-grid">
+
+      <div class="error-card" data-tag="git" data-keywords="rejected push failed pull">
+        <details>
+          <summary>
+            <span class="err-tag git">GIT</span>
+            <span class="err-msg">! [rejected] main -> main (fetch first)</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">השרת המרוחק מעודכן יותר ממך. צריך לקבל את השינויים שלו לפני שאתה דוחף.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good">git pull origin main --rebase
+<span class="c"># פתור conflicts אם יש</span>
+git push origin main</pre>
+            </div>
+            <div class="related-links">
+              <a href="05_snippets.html#git">→ פקודות Git</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="git" data-keywords="node_modules zip large file size">
+        <details>
+          <summary>
+            <span class="err-tag git">SUBMIT</span>
+            <span class="err-msg">הזיפ של ההגשה כבד מ-100MB</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">הכנסת את <code>node_modules/</code> לזיפ. שם יש אלפי קבצים שמהווים 90%+ מהגודל ולא צריכים אותם — אפשר לשחזר עם <code>npm install</code>.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="c"># Mac/Linux:</span>
+zip -r submit.zip . \
+  -x <span class="s">"*/node_modules/*"</span> \
+  -x <span class="s">"*/.git/*"</span> \
+  -x <span class="s">"*/dist/*"</span>
+
+<span class="c"># בדוק שהזיפ &lt; 5MB</span>
+ls -lh submit.zip</pre>
+            </div>
+            <div class="related-links">
+              <a href="06_strategy.html#submission">→ צ'קליסט הגשה</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="error-card" data-tag="git" data-keywords="merge conflict resolve">
+        <details>
+          <summary>
+            <span class="err-tag git">GIT</span>
+            <span class="err-msg">CONFLICT (content): Merge conflict in X</span>
+            <span class="err-arrow">▶</span>
+          </summary>
+          <div class="err-body">
+            <div class="err-section">
+              <div class="err-section-title">😱 מה קרה?</div>
+              <div class="err-cause">שניכם שיניתם את אותה שורה בקובץ. Git לא יודע מה לבחור.</div>
+            </div>
+            <div class="err-section">
+              <div class="err-section-title">✅ התיקון</div>
+<pre class="good"><span class="c">// פתח את הקובץ. תראה:</span>
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+your code
+=======
+their code
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; main
+
+<span class="c">// בחר אחד (או שלב), מחק את הסימנים</span>
+
+git add file.ts
+git commit
+<span class="c"># או: git rebase --continue</span></pre>
+            </div>
+            <div class="related-links">
+              <a href="05_snippets.html#git">→ Git Workflow</a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <div id="emptyMsg" class="empty-message" style="display:none;">
+    🔍 לא נמצאו שגיאות שתואמות לחיפוש שלך
+  </div>
+
+</div>
+
+<script>
+// Filter pills
+const pills = document.querySelectorAll('.pill');
+const cards = document.querySelectorAll('.error-card');
+const search = document.getElementById('searchBox');
+const emptyMsg = document.getElementById('emptyMsg');
+let activeFilter = 'all';
+
+function applyFilters() {
+  const term = search.value.trim().toLowerCase();
+  let visibleCount = 0;
+  cards.forEach(card => {
+    const tag = card.dataset.tag;
+    const keywords = (card.dataset.keywords || '') + ' ' +
+      card.querySelector('.err-msg').textContent.toLowerCase();
+    const matchesTag = activeFilter === 'all' || tag === activeFilter;
+    const matchesSearch = !term || keywords.includes(term);
+    const show = matchesTag && matchesSearch;
+    card.classList.toggle('hidden', !show);
+    if (show) visibleCount++;
+  });
+  // hide empty categories
+  document.querySelectorAll('.category').forEach(cat => {
+    const has = cat.querySelectorAll('.error-card:not(.hidden)').length > 0;
+    cat.style.display = has ? '' : 'none';
+  });
+  emptyMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
+pills.forEach(pill => {
+  pill.addEventListener('click', () => {
+    pills.forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    activeFilter = pill.dataset.filter;
+    applyFilters();
+  });
+});
+
+search.addEventListener('input', applyFilters);
+</script>
+
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

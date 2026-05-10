@@ -1,0 +1,2817 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>נושאים חסרים — השלמות</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); background-attachment: fixed; color: #e0e0e0; line-height: 1.7; min-height: 100vh; padding: 20px; }
+  .container { max-width: 1300px; margin: 0 auto; }
+  header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #6f42c1 0%, #a855f7 50%, #ec4899 100%); border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+  header h1 { font-size: 2.5em; color: white; margin-bottom: 10px; }
+  header p { color: rgba(255,255,255,0.95); font-size: 1.2em; }
+  .back-link { display: inline-block; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; }
+  .back-link:hover { background: rgba(255,217,61,0.25); }
+  .toc { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 30px; }
+  .toc h2 { color: #4ecdc4; margin-bottom: 20px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+  .toc a { color: #ffd93d; text-decoration: none; padding: 10px 14px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; border: 1px solid rgba(255,217,61,0.2); }
+  .toc a:hover { background: rgba(255,217,61,0.25); transform: translateY(-2px); }
+  section { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 35px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); scroll-margin-top: 30px; }
+  section h2 { color: #4ecdc4; font-size: 2em; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 3px solid rgba(78,205,196,0.3); }
+  section h3 { color: #ffd93d; margin: 25px 0 15px; font-size: 1.4em; padding-right: 15px; border-right: 4px solid #ffd93d; }
+  section h4 { color: #ff9a9e; margin: 20px 0 12px; font-size: 1.15em; }
+  .level-box { padding: 20px; border-radius: 12px; margin: 15px 0; border-right: 5px solid; }
+  .grandma { background: linear-gradient(135deg, rgba(255,154,158,0.15), rgba(250,208,196,0.15)); border-color: #ff9a9e; }
+  .grandma::before { content: "👵 רמת סבתא"; display: inline-block; background: #ff6b6b; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9em; margin-bottom: 10px; font-weight: bold; }
+  .programmer { background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.15)); border-color: #667eea; }
+  .programmer::before { content: "👨‍💻 רמת מתכנת"; display: inline-block; background: #667eea; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9em; margin-bottom: 10px; font-weight: bold; }
+  .code-block { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; font-family: 'Consolas', monospace; direction: ltr; text-align: left; overflow-x: auto; margin: 15px 0; color: #e6edf3; font-size: 0.95em; line-height: 1.6; white-space: pre; }
+  code.inline { background: rgba(78,205,196,0.15); color: #4ecdc4; padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.95em; direction: ltr; display: inline-block; }
+  .table-wrapper { overflow-x: auto; margin: 20px 0; border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; }
+  th { background: linear-gradient(135deg, #4ecdc4, #44a8a3); color: white; padding: 15px; text-align: right; font-weight: bold; }
+  td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  tr:hover td { background: rgba(78,205,196,0.05); }
+  .important { background: rgba(255,107,107,0.15); border-right: 4px solid #ff6b6b; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .important::before { content: "💡 "; font-size: 1.3em; }
+  .warning { background: rgba(220,53,69,0.15); border-right: 4px solid #dc3545; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .warning::before { content: "⚠️ "; font-size: 1.3em; }
+  .tip { background: rgba(40,167,69,0.15); border-right: 4px solid #28a745; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .tip::before { content: "✅ "; font-size: 1.3em; }
+  .exam { background: rgba(111,66,193,0.15); border-right: 4px solid #6f42c1; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .exam::before { content: "🎓 "; font-size: 1.3em; }
+  .scroll-top { position: fixed; bottom: 30px; left: 30px; background: linear-gradient(135deg, #4ecdc4, #44a8a3); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(78,205,196,0.4); border: none; font-size: 1.8em; opacity: 0; transition: all 0.3s ease; z-index: 1000; }
+  .scroll-top.visible { opacity: 1; }
+  @media (max-width: 768px) { section { padding: 20px 15px; } }
+  /* === Deep Dive Accordion === */
+  details.deep-dive { margin:20px 0; border-radius:12px; overflow:hidden; background:rgba(0,0,0,0.25); border:2px solid rgba(255,217,61,0.3); transition:all 0.3s; }
+  details.deep-dive[open] { border-color:rgba(255,217,61,0.6); }
+  details.deep-dive summary { padding:15px 20px; cursor:pointer; font-weight:bold; font-size:1.1em; color:#ffd93d; background:rgba(255,217,61,0.08); list-style:none; display:flex; align-items:center; gap:8px; transition:background 0.3s; }
+  details.deep-dive summary:hover { background:rgba(255,217,61,0.15); }
+  details.deep-dive summary::before { content:'▶'; font-size:0.7em; transition:transform 0.3s; }
+  details.deep-dive[open] summary::before { transform:rotate(90deg); }
+  details.deep-dive summary::-webkit-details-marker { display:none; }
+  .dd-content { padding:20px; }
+  .level { padding:18px; border-radius:10px; margin-bottom:15px; }
+  .level:last-child { margin-bottom:0; }
+  .level h4 { margin-bottom:10px; font-size:1.05em; }
+  .level p,.level ul,.level ol { line-height:1.8; margin-bottom:10px; }
+  .level ul,.level ol { padding-right:25px; }
+  .level-grandma { background:rgba(40,167,69,0.1); border-right:4px solid #28a745; }
+  .level-grandma h4 { color:#28a745; }
+  .level-mid { background:rgba(255,193,7,0.1); border-right:4px solid #ffc107; }
+  .level-mid h4 { color:#ffc107; }
+  .level-adv { background:rgba(255,107,107,0.1); border-right:4px solid #ff6b6b; }
+  .level-adv h4 { color:#ff6b6b; }
+  .level .code-block { margin:10px 0; font-size:0.9em; }
+</style>
+  <link rel="stylesheet" href="light-mode.css">
+  <link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+
+<div class="container">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;">
+    <a href="00_dashboard.html" class="back-link">← דשבורד</a>
+    <a href="IDE_project.html" class="back-link" style="background:rgba(88,166,255,0.15);border-color:rgba(88,166,255,0.4);color:#79c0ff;">💻 פתח IDE</a>
+    <a href="MAP_master.html" class="back-link" style="background:rgba(255,217,61,0.15);border-color:rgba(255,217,61,0.4);color:#ffd93d;">🗺️ המפה הגדולה</a>
+    <a href="DEBUG_errors.html" class="back-link" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.4);color:#fca5a5;">🛠️ מילון שגיאות</a>
+    <a href="BUILD_walkthrough.html" class="back-link" style="background:rgba(132,204,22,0.15);border-color:rgba(132,204,22,0.4);color:#bef264;">🛠️ בנה מאפס</a>
+  </div>
+
+  <header>
+    <h1>🧩 נושאים חסרים — השלמות</h1>
+    <p>Classes · Router · Context · Storage · Errors · לולאות מתקדמות</p>
+  </header>
+
+  <!-- ============= DIDACTIC HERO: 13 Missing Topics with KEY CODE per topic ============= -->
+  <style>
+    .miss-hero { background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%); border-radius:18px; padding:32px; margin-bottom:30px; box-shadow:0 12px 40px rgba(0,0,0,0.4); border:2px solid rgba(78,205,196,0.2); }
+    .miss-hero .mh-title { text-align:center; margin-bottom:24px; }
+    .miss-hero .mh-title h2 { color:#4ecdc4; font-size:1.8em; margin-bottom:8px; border:none; padding:0; }
+    .miss-hero .mh-title p { color:#cbd5e1; font-size:1.05em; }
+    .miss-hero .mh-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+    .mh-card { background:#fff; border-radius:12px; padding:18px; position:relative; overflow:hidden; transition:all .25s; text-decoration:none; color:#0f172a; display:block; border-right:5px solid; }
+    .mh-card:hover { transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,0,0,0.4); }
+    .mh-card.k1 { border-color:#3b82f6; }
+    .mh-card.k2 { border-color:#06b6d4; }
+    .mh-card.k3 { border-color:#10b981; }
+    .mh-card.k4 { border-color:#ef4444; }
+    .mh-card.k5 { border-color:#f59e0b; }
+    .mh-card.k6 { border-color:#a855f7; }
+    .mh-card.k7 { border-color:#ec4899; }
+    .mh-card.k8 { border-color:#22d3ee; }
+    .mh-card.k9 { border-color:#84cc16; }
+    .mh-card.k10 { border-color:#f97316; }
+    .mh-card.k11 { border-color:#0ea5e9; }
+    .mh-card.k12 { border-color:#d946ef; }
+    .mh-card.k13 { border-color:#14b8a6; }
+    .mh-card .mh-num { font-size:0.78em; color:#64748b; font-weight:700; letter-spacing:0.5px; }
+    .mh-card h3 { color:#0f172a; font-size:1.1em; margin:6px 0 8px; padding:0; border:none; }
+    .mh-card .mh-desc { color:#475569; font-size:0.85em; margin-bottom:10px; line-height:1.5; }
+    .mh-card pre { background:#0f172a; color:#a7f3d0; padding:9px 11px; border-radius:6px; font-size:0.74em; overflow-x:auto; margin:0; line-height:1.55; font-family:'SF Mono','Monaco','Consolas',monospace; direction:ltr; text-align:left; }
+    .mh-card pre .k { color:#f472b6; }
+    .mh-card pre .s { color:#fde68a; }
+    .mh-card pre .c { color:#64748b; font-style:italic; }
+    .mh-card pre .v { color:#93c5fd; }
+    .mh-card pre .e { color:#fca5a5; text-decoration:line-through; }
+    .mh-card pre .g { color:#86efac; }
+    .mh-card .mh-link { display:inline-block; margin-top:9px; color:#0ea5e9; font-size:0.82em; font-weight:600; }
+  </style>
+
+  <section class="miss-hero">
+    <div class="mh-title">
+      <h2>🧩 13 הנושאים החסרים — כל אחד עם דוגמת הקוד הקריטית</h2>
+      <p>לא לומדים אותם בקורס — אבל <strong style="color:#4ecdc4;">מופיעים במבחן</strong>. הנה המהות של כל אחד בקוד.</p>
+    </div>
+
+    <div class="mh-grid">
+
+      <a href="#classes" class="mh-card k1">
+        <div class="mh-num">01 / 13 · Classes & Inheritance</div>
+        <h3>🧬 ירושה — extends + super</h3>
+        <div class="mh-desc">class יורש מאחר. <code>super()</code> מפעיל את הבנאי של ההורה.</div>
+<pre><span class="k">class</span> Dog <span class="k">extends</span> Animal {
+  <span class="v">constructor</span>(name) {
+    <span class="k">super</span>(name); <span class="c">// חובה!</span>
+    <span class="k">this</span>.bark = <span class="s">'!woof'</span>;
+  }
+}</pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#loops" class="mh-card k2">
+        <div class="mh-num">02 / 13 · Loops + slice/splice</div>
+        <h3>🔁 map/filter vs splice</h3>
+        <div class="mh-desc">map/filter = חדשים. splice = משנה את המקור (אסור ב-React!).</div>
+<pre><span class="c">// ✅ ב-React:</span>
+nums.<span class="v">filter</span>(n =&gt; n &gt; 0)
+<span class="c">// ❌ אסור:</span>
+<span class="e">arr.splice(0, 1)</span></pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#storage" class="mh-card k3">
+        <div class="mh-num">03 / 13 · Browser Storage</div>
+        <h3>💾 localStorage API</h3>
+        <div class="mh-desc">שומר טקסט בלבד. אובייקטים → <code>JSON.stringify</code>.</div>
+<pre>localStorage.<span class="v">setItem</span>(<span class="s">'user'</span>,
+  <span class="v">JSON</span>.stringify(user));
+
+<span class="k">const</span> u = <span class="v">JSON</span>.parse(
+  localStorage.<span class="v">getItem</span>(<span class="s">'user'</span>));</pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#errors" class="mh-card k4">
+        <div class="mh-num">04 / 13 · Error Handling</div>
+        <h3>⚠️ try/catch ב-async</h3>
+        <div class="mh-desc">בלי try/catch — unhandled rejection 💥. תמיד עוטפים await.</div>
+<pre><span class="k">try</span> {
+  <span class="k">const</span> data = <span class="k">await</span> <span class="v">fetch</span>(url);
+} <span class="k">catch</span> (err) {
+  <span class="v">console</span>.<span class="v">error</span>(err);
+}</pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#router" class="mh-card k5">
+        <div class="mh-num">05 / 13 · React Router</div>
+        <h3>🧭 Routes + useNavigate</h3>
+        <div class="mh-desc">ניווט בין דפים בלי טעינה מחדש. <code>useParams</code> שולף מה-URL.</div>
+<pre>&lt;<span class="v">Route</span> path=<span class="s">"/users/:id"</span>
+  element={&lt;<span class="v">User</span> /&gt;} /&gt;
+
+<span class="c">// בתוך User:</span>
+<span class="k">const</span> { id } = <span class="v">useParams</span>();</pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#context" class="mh-card k6">
+        <div class="mh-num">06 / 13 · Context API</div>
+        <h3>📻 useContext — בלי props drilling</h3>
+        <div class="mh-desc">משתפים state גלובלי בעץ קומפוננטות. Provider → Consumer.</div>
+<pre><span class="k">const</span> Theme = <span class="v">createContext</span>();
+
+<span class="k">const</span> theme =
+  <span class="v">useContext</span>(Theme);</pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#ts-extra" class="mh-card k7">
+        <div class="mh-num">07 / 13 · TypeScript Extra</div>
+        <h3>📘 enum + tuple</h3>
+        <div class="mh-desc">enum = קבוצת ערכים קבועה. tuple = מערך עם סוגים שונים בכל index.</div>
+<pre><span class="k">enum</span> Status { Active, Done }
+
+<span class="c">// tuple:</span>
+<span class="k">const</span> p: [<span class="g">string</span>, <span class="g">number</span>]
+  = [<span class="s">'age'</span>, 25];</pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#fetch-extra" class="mh-card k8">
+        <div class="mh-num">08 / 13 · Advanced fetch</div>
+        <h3>🌐 Promise.all — מקבילי</h3>
+        <div class="mh-desc">3 בקשות בו-זמנית במקום ברצף. חוסך זמן רב.</div>
+<pre><span class="k">const</span> [u, p, c] = <span class="k">await</span>
+  <span class="v">Promise</span>.<span class="v">all</span>([
+    <span class="v">fetch</span>(<span class="s">'/users'</span>),
+    <span class="v">fetch</span>(<span class="s">'/posts'</span>),
+    <span class="v">fetch</span>(<span class="s">'/comments'</span>)
+  ]);</pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#destructuring" class="mh-card k9">
+        <div class="mh-num">09 / 13 · Destructuring</div>
+        <h3>📦 שליפת ערכים בקלות</h3>
+        <div class="mh-desc">{ } לאובייקטים, [ ] למערכים. עם default + rename.</div>
+<pre><span class="k">const</span> { name, age = 0 } =
+  user;
+
+<span class="k">const</span> [first, ...rest] =
+  array;</pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#promises" class="mh-card k10">
+        <div class="mh-num">10 / 13 · Promise Chaining</div>
+        <h3>⛓️ .then().catch().finally()</h3>
+        <div class="mh-desc">שרשור בקשות. כל .then מקבל את התוצאה הקודמת.</div>
+<pre><span class="v">fetch</span>(url)
+  .<span class="v">then</span>(r =&gt; r.<span class="v">json</span>())
+  .<span class="v">then</span>(d =&gt; <span class="v">console</span>.<span class="v">log</span>(d))
+  .<span class="v">catch</span>(err =&gt; ...);</pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#env-vars" class="mh-card k11">
+        <div class="mh-num">11 / 13 · ENV Variables</div>
+        <h3>🔑 .env — סודות מחוץ לקוד</h3>
+        <div class="mh-desc">API keys, DB URI — לעולם לא ב-git! Vite דורש <code>VITE_</code>.</div>
+<pre><span class="c">// .env</span>
+<span class="v">VITE_API_URL</span>=<span class="s">https://...</span>
+
+<span class="c">// בקוד:</span>
+<span class="k">import</span>.meta.env.VITE_API_URL</pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#deploy" class="mh-card k12">
+        <div class="mh-num">12 / 13 · Deploy Checklist</div>
+        <h3>🚀 לפני העלייה לאוויר</h3>
+        <div class="mh-desc">build + ENV + CORS + .gitignore + README — חובה לעבור.</div>
+<pre><span class="c">// 1.</span> npm <span class="v">run</span> build
+<span class="c">// 2.</span> .gitignore: node_modules
+<span class="c">// 3.</span> .env <span class="v">לא</span> ב-git!
+<span class="c">// 4.</span> CORS <span class="v">בשרת</span></pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+      <a href="#pkg-json" class="mh-card k13">
+        <div class="mh-num">13 / 13 · package.json</div>
+        <h3>📋 scripts + dependencies</h3>
+        <div class="mh-desc">המסמך הראשון שבוחנים את הפרויקט שלך. שמות scripts ברורים.</div>
+<pre>{
+  <span class="s">"scripts"</span>: {
+    <span class="s">"dev"</span>: <span class="s">"vite"</span>,
+    <span class="s">"build"</span>: <span class="s">"vite build"</span>
+  }
+}</pre>
+        <span class="mh-link">→ פתח</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- (Old decorative forest moved to hidden) -->
+  <section style="display:none;">
+    <svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+      <defs>
+        <linearGradient id="m2sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a2940"/><stop offset="100%" stop-color="#3d5a2c"/></linearGradient>
+        <radialGradient id="m2moon"><stop offset="0%" stop-color="#fff9c4"/><stop offset="100%" stop-color="#e0d878" stop-opacity="0"/></radialGradient>
+        <filter id="m2glow"><feGaussianBlur stdDeviation="3"/></filter>
+      </defs>
+      <rect width="1200" height="500" fill="url(#m2sky)"/>
+      <circle cx="100" cy="80" r="40" fill="url(#m2moon)"/><circle cx="100" cy="80" r="22" fill="#fff9c4"/>
+      <!-- Stars -->
+      <g fill="#fff9c4">
+        <circle cx="300" cy="50" r="1.5"/><circle cx="450" cy="80" r="1.5"/><circle cx="600" cy="40" r="1.5"/>
+        <circle cx="750" cy="70" r="1.5"/><circle cx="900" cy="55" r="1.5"/><circle cx="1100" cy="120" r="1.5"/>
+      </g>
+      <!-- Ground -->
+      <rect y="380" width="1200" height="120" fill="#2d3a1f"/>
+
+      <!-- Tree template generator -->
+      <g font-family="'Segoe UI','Arial Hebrew',sans-serif">
+      <!-- Tree 1: Classes -->
+      <a href="#classes"><g style="cursor:pointer">
+        <rect x="55" y="320" width="14" height="60" fill="#5d4037"/>
+        <polygon points="40,330 62,210 84,330" fill="#2d6a4f"/>
+        <polygon points="46,290 62,220 78,290" fill="#52b788"/>
+        <text x="62" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">🧬 Classes</text>
+      </g></a>
+      <!-- Tree 2: Loops -->
+      <a href="#loops"><g style="cursor:pointer">
+        <rect x="155" y="330" width="14" height="50" fill="#5d4037"/>
+        <circle cx="162" cy="290" r="38" fill="#2d6a4f"/>
+        <circle cx="148" cy="280" r="22" fill="#52b788"/>
+        <circle cx="180" cy="285" r="20" fill="#52b788"/>
+        <text x="162" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">🔁 Loops</text>
+      </g></a>
+      <!-- Tree 3: Storage -->
+      <a href="#storage"><g style="cursor:pointer">
+        <rect x="255" y="320" width="16" height="60" fill="#5d4037"/>
+        <polygon points="240,320 263,200 286,320" fill="#1b4332"/>
+        <text x="263" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">💾 Storage</text>
+        <!-- 3 chests under tree -->
+        <rect x="246" y="358" width="10" height="8" fill="#ffd93d"/>
+        <rect x="259" y="358" width="10" height="8" fill="#ff6b6b"/>
+        <rect x="272" y="358" width="10" height="8" fill="#4ecdc4"/>
+      </g></a>
+      <!-- Tree 4: Errors -->
+      <a href="#errors"><g style="cursor:pointer">
+        <rect x="355" y="325" width="14" height="55" fill="#5d4037"/>
+        <ellipse cx="362" cy="290" rx="35" ry="40" fill="#2d6a4f"/>
+        <text x="362" y="295" text-anchor="middle" font-size="22">⚠️</text>
+        <text x="362" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">try/catch</text>
+      </g></a>
+      <!-- Tree 5: Router -->
+      <a href="#router"><g style="cursor:pointer">
+        <rect x="455" y="320" width="14" height="60" fill="#5d4037"/>
+        <polygon points="440,330 462,200 484,330" fill="#52b788"/>
+        <text x="462" y="270" text-anchor="middle" font-size="20">🧭</text>
+        <text x="462" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">Router</text>
+      </g></a>
+      <!-- Tree 6: Context -->
+      <a href="#context"><g style="cursor:pointer">
+        <rect x="555" y="320" width="16" height="60" fill="#5d4037"/>
+        <circle cx="563" cy="280" r="42" fill="#2d6a4f"/>
+        <text x="563" y="290" text-anchor="middle" font-size="22">📻</text>
+        <text x="563" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">Context</text>
+      </g></a>
+      <!-- Tree 7: TS Extra -->
+      <a href="#ts-extra"><g style="cursor:pointer">
+        <rect x="655" y="330" width="14" height="50" fill="#5d4037"/>
+        <polygon points="640,340 662,220 684,340" fill="#1b4332"/>
+        <text x="662" y="290" text-anchor="middle" font-size="14" font-weight="900" fill="#3178c6">TS+</text>
+        <text x="662" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">enum/tuple</text>
+      </g></a>
+      <!-- Tree 8: Fetch -->
+      <a href="#fetch-extra"><g style="cursor:pointer">
+        <rect x="755" y="320" width="14" height="60" fill="#5d4037"/>
+        <ellipse cx="762" cy="285" rx="38" ry="35" fill="#52b788"/>
+        <text x="762" y="295" text-anchor="middle" font-size="20">🌐</text>
+        <text x="762" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">fetch++</text>
+      </g></a>
+      <!-- Tree 9: Destructuring -->
+      <a href="#destructuring"><g style="cursor:pointer">
+        <rect x="855" y="325" width="14" height="55" fill="#5d4037"/>
+        <polygon points="840,330 862,210 884,330" fill="#2d6a4f"/>
+        <text x="862" y="285" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">{ }</text>
+        <text x="862" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">Destruct.</text>
+      </g></a>
+      <!-- Tree 10: Promises -->
+      <a href="#promises"><g style="cursor:pointer">
+        <rect x="955" y="320" width="16" height="60" fill="#5d4037"/>
+        <circle cx="963" cy="280" r="40" fill="#1b4332"/>
+        <text x="963" y="290" text-anchor="middle" font-size="20">⛓️</text>
+        <text x="963" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">Promises</text>
+      </g></a>
+      <!-- Tree 11: ENV -->
+      <a href="#env-vars"><g style="cursor:pointer">
+        <rect x="1055" y="330" width="14" height="50" fill="#5d4037"/>
+        <polygon points="1040,340 1062,230 1084,340" fill="#52b788"/>
+        <text x="1062" y="295" text-anchor="middle" font-size="16">🔑</text>
+        <text x="1062" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">ENV</text>
+      </g></a>
+      <!-- Tree 12: Deploy -->
+      <a href="#deploy"><g style="cursor:pointer">
+        <rect x="1135" y="325" width="14" height="55" fill="#5d4037"/>
+        <ellipse cx="1142" cy="285" rx="32" ry="38" fill="#2d6a4f"/>
+        <text x="1142" y="295" text-anchor="middle" font-size="18">🚀</text>
+        <text x="1142" y="400" text-anchor="middle" font-size="11" fill="#fff9c4" font-weight="bold">Deploy</text>
+      </g></a>
+
+      <!-- Path through forest -->
+      <path d="M 30 460 Q 600 440 1180 460" fill="none" stroke="#fff9c4" stroke-width="3" stroke-dasharray="8 6" opacity="0.6"/>
+
+      <!-- Grandma with lantern -->
+      <g transform="translate(580,420)">
+        <ellipse cx="0" cy="20" rx="14" ry="20" fill="#9b59b6"/>
+        <circle cx="0" cy="-3" r="12" fill="#fde0c5"/>
+        <ellipse cx="0" cy="-12" rx="13" ry="7" fill="#ecf0f1"/>
+        <circle cx="-4" cy="-3" r="3" fill="none" stroke="#16213e" stroke-width="1.5"/>
+        <circle cx="4" cy="-3" r="3" fill="none" stroke="#16213e" stroke-width="1.5"/>
+        <!-- Lantern -->
+        <line x1="20" y1="0" x2="20" y2="20" stroke="#5d4037" stroke-width="2"/>
+        <rect x="14" y="20" width="12" height="14" fill="#ffd93d" filter="url(#m2glow)"/>
+        <circle cx="20" cy="27" r="14" fill="#ffd93d" opacity="0.3"/>
+      </g>
+      </g>
+    </svg>
+    <div style="text-align:center;margin-top:14px;color:#fff9c4;font-size:0.95em;font-style:italic;">
+      🔦 לחץ על כל עץ כדי לחשוף את הסוד שלו (קופץ לסעיף בדף)
+    </div>
+  </section>
+
+  <nav class="toc">
+    <h2>📚 תוכן עניינים</h2>
+    <div class="toc-grid">
+      <a href="#classes">1. Classes ו-Inheritance</a>
+      <a href="#loops">2. לולאות + slice/splice</a>
+      <a href="#storage">3. localStorage / sessionStorage / Cookies</a>
+      <a href="#errors">4. Errors + try/catch + Debugging</a>
+      <a href="#router">5. React Router</a>
+      <a href="#context">6. Context API</a>
+      <a href="#ts-extra">7. TypeScript: enum + tuple</a>
+      <a href="#fetch-extra">8. fetch מתקדם</a>
+      <a href="#destructuring">9. Destructuring</a>
+      <a href="#promises">10. Promise Chaining</a>
+      <a href="#env-vars">11. ENV Vars</a>
+      <a href="#deploy">12. Deploy Checklist</a>
+      <a href="#pkg-json">13. package.json</a>
+    </div>
+  </nav>
+
+  <!-- ============ 1. CLASSES ============ -->
+  <section id="classes">
+    <h2>1️⃣ Classes ו-Inheritance</h2>
+
+    <div class="level-box grandma">
+      <p>Class זו <strong>תבנית</strong> שאומרת איך לבנות אובייקט. כמו שעושים תבנית עוגה — אפשר להכין הרבה עוגות מאותה תבנית. כל אובייקט שנוצר מהClass הוא <strong>instance</strong>.</p>
+    </div>
+    <div class="level-box programmer">
+      <p>Class הוא syntactic sugar מעל prototype-based inheritance של JS. הוא מספק תחביר נקי לבניית אובייקטים מורכבים, ירושה (extends), ו-encapsulation עם methods פרטיים (#field).</p>
+    </div>
+
+    <h3>Class בסיסי</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">class BankAccount {
+  // Constructor — רץ כשיוצרים אובייקט חדש
+  constructor(owner, balance) {
+    this.owner = owner;
+    this.balance = balance;
+  }
+
+  // Method — פונקציה של ה-class
+  deposit(amount) {
+    this.balance += amount;
+    return this.balance;
+  }
+
+  withdraw(amount) {
+    if (amount > this.balance) {
+      throw new Error('אין מספיק יתרה');
+    }
+    this.balance -= amount;
+    return this.balance;
+  }
+
+  getBalance() {
+    return this.balance;
+  }
+}
+
+// יצירת instance
+const account = new BankAccount('תל', 1000);
+account.deposit(500);     // 1500
+account.withdraw(200);    // 1300
+account.getBalance();     // 1300</div>
+  </details>
+  
+
+    <h3>Inheritance (ירושה) עם extends</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// Class הורה
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    return `${this.name} עושה רעש`;
+  }
+}
+
+// Class ילד יורש מ-Animal
+class Dog extends Animal {
+  constructor(name, breed) {
+    super(name);              // קורא ל-constructor של ההורה
+    this.breed = breed;
+  }
+
+  // Override — דריסת method של ההורה
+  speak() {
+    return `${this.name} (${this.breed}) נובח: וף וף!`;
+  }
+
+  fetch() {
+    return `${this.name} מביא מקל`;
+  }
+}
+
+const rex = new Dog('רקס', 'לברדור');
+rex.speak();    // "רקס (לברדור) נובח: וף וף!"
+rex.fetch();    // "רקס מביא מקל"</div>
+  </details>
+  
+
+    <h3>super — קריאה להורה</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">class Vehicle {
+  constructor(wheels) {
+    this.wheels = wheels;
+  }
+
+  describe() {
+    return `יש ${this.wheels} גלגלים`;
+  }
+}
+
+class Car extends Vehicle {
+  constructor(brand) {
+    super(4);             // קורא ל-constructor של Vehicle עם 4
+    this.brand = brand;
+  }
+
+  describe() {
+    // משתמש ב-method של ההורה + מוסיף משלו
+    return `${super.describe()} ל-${this.brand}`;
+  }
+}
+
+const myCar = new Car('Toyota');
+myCar.describe();   // "יש 4 גלגלים ל-Toyota"</div>
+  </details>
+  
+
+    <h3>Static methods</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">class MathHelper {
+  // static — שייך ל-Class עצמו, לא ל-instances
+  static double(x) {
+    return x * 2;
+  }
+
+  static add(a, b) {
+    return a + b;
+  }
+}
+
+// אין צורך ב-new
+MathHelper.double(5);   // 10
+MathHelper.add(2, 3);   // 5</div>
+  </details>
+  
+
+    <h3>Private fields (חדש!)</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">class User {
+  #password;              // # = פרטי, לא נגיש מבחוץ
+
+  constructor(name, password) {
+    this.name = name;
+    this.#password = password;
+  }
+
+  checkPassword(input) {
+    return this.#password === input;
+  }
+}
+
+const u = new User('תל', 'secret123');
+u.name;             // 'תל' ✅
+u.#password;        // ❌ Error!
+u.checkPassword('secret123');   // true ✅</div>
+  </details>
+  
+
+    <h3>דוגמה ממבחן בנק</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">class Customer {
+  constructor(id, name, accounts = []) {
+    this.id = id;
+    this.name = name;
+    this.accounts = accounts;
+  }
+
+  totalBalance() {
+    return this.accounts.reduce((sum, acc) => sum + acc.balance, 0);
+  }
+}
+
+class Account {
+  constructor(id, type, balance = 0) {
+    this.id = id;
+    this.type = type;        // 'checking' | 'savings'
+    this.balance = balance;
+  }
+
+  deposit(amount) {
+    if (amount <= 0) throw new Error('סכום לא תקין');
+    this.balance += amount;
+  }
+
+  withdraw(amount) {
+    if (amount <= 0) throw new Error('סכום לא תקין');
+    if (amount > this.balance) throw new Error('יתרה לא מספקת');
+    this.balance -= amount;
+  }
+}
+
+const acc1 = new Account(1, 'checking', 5000);
+const acc2 = new Account(2, 'savings', 10000);
+const customer = new Customer(101, 'תל', [acc1, acc2]);
+customer.totalBalance();   // 15000</div>
+  </details>
+  
+
+    <div class="exam">
+      <strong>שאלת מבחן קלאסית:</strong> "צור class בנק עם methods של deposit, withdraw, transfer". זכור: throw new Error לקלט לא תקין, validation לפני כל פעולה.
+    </div>
+
+    <details class="deep-dive">
+      <summary>🔍 הסבר מעמיק — Classes ו-Inheritance</summary>
+      <div class="dd-content">
+        <div class="level level-grandma">
+          <h4>🟢 רמת סבתא</h4>
+          <p>Class = <strong>תבנית ליצירת דברים</strong>. כמו תוכנית לבניית בית:</p>
+          <ul>
+            <li><strong>constructor</strong> = ההוראות — "הבית חייב להיות עם 3 חדרים ומרפסת"</li>
+            <li><strong>methods</strong> = מה הבית יכול לעשות — "לפתוח דלת", "להדליק אור"</li>
+            <li><strong>extends</strong> = ירושה — "וילה היא כמו בית רגיל, אבל עם בריכה"</li>
+          </ul>
+        </div>
+        <div class="level level-mid">
+          <h4>🟡 רמת ביניים</h4>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">class BankAccount {
+  #balance = 0;  // private field
+  
+  constructor(owner, initialBalance) {
+    this.owner = owner;
+    this.#balance = initialBalance;
+  }
+  
+  deposit(amount) {
+    if (amount <= 0) throw new Error('Invalid amount');
+    this.#balance += amount;
+  }
+  
+  withdraw(amount) {
+    if (amount > this.#balance) throw new Error('Insufficient funds');
+    this.#balance -= amount;
+  }
+  
+  get balance() { return this.#balance; }  // getter
+}
+
+const acc = new BankAccount('תל', 1000);
+acc.deposit(500);     // 1500
+acc.withdraw(200);    // 1300
+acc.#balance;         // ❌ SyntaxError (private!)</div>
+  </details>
+  
+        </div>
+        <div class="level level-adv">
+          <h4>🔴 רמת מתקדמים</h4>
+          <p><strong>extends + super:</strong></p>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">class SavingsAccount extends BankAccount {
+  #interestRate;
+  
+  constructor(owner, balance, rate) {
+    super(owner, balance);  // חובה קודם!
+    this.#interestRate = rate;
+  }
+  
+  addInterest() {
+    const interest = this.balance * this.#interestRate;
+    this.deposit(interest);
+  }
+}
+
+// static — שייך ל-class, לא ל-instance
+class MathHelper {
+  static add(a, b) { return a + b; }
+}
+MathHelper.add(2, 3);  // 5 ✅
+new MathHelper().add;   // undefined ❌</div>
+  </details>
+  
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 2. LOOPS ============ -->
+  <section id="loops">
+    <h2>2️⃣ לולאות + slice / splice</h2>
+
+    <h3>סוגי לולאות</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>לולאה</th><th>שימוש</th><th>דוגמה</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">for</code></td><td>לולאה רגילה עם index</td><td><code class="inline">for (let i=0; i&lt;n; i++)</code></td></tr>
+          <tr><td><code class="inline">while</code></td><td>כל עוד תנאי מתקיים</td><td><code class="inline">while (x &gt; 0) {...}</code></td></tr>
+          <tr><td><code class="inline">do...while</code></td><td>רץ לפחות פעם אחת</td><td><code class="inline">do {...} while (x);</code></td></tr>
+          <tr><td><code class="inline">for...of</code></td><td>על ערכי מערך</td><td><code class="inline">for (const x of arr)</code></td></tr>
+          <tr><td><code class="inline">for...in</code></td><td>על מפתחות אובייקט</td><td><code class="inline">for (const k in obj)</code></td></tr>
+          <tr><td><code class="inline">forEach</code></td><td>method של מערך</td><td><code class="inline">arr.forEach(x =&gt; ...)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>for...of vs for...in (חשוב!)</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">const arr = ['a', 'b', 'c'];
+
+// for...of — נותן ערכים
+for (const value of arr) {
+  console.log(value);    // 'a', 'b', 'c'
+}
+
+// for...in — נותן מפתחות (אינדקסים במערך)
+for (const key in arr) {
+  console.log(key);      // '0', '1', '2'
+}
+
+const obj = { name: 'תל', age: 30 };
+
+// for...in — מתאים לאובייקטים
+for (const key in obj) {
+  console.log(key, obj[key]);   // 'name תל', 'age 30'
+}
+
+// for...of — לא עובד ישירות על object
+for (const x of obj) { ... }   // ❌ Error!
+
+// פתרון לאובייקט:
+for (const [key, value] of Object.entries(obj)) {
+  console.log(key, value);
+}</div>
+  </details>
+  
+
+    <h3>break ו-continue</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// break — יוצא מהלולאה
+for (let i = 0; i &lt; 10; i++) {
+  if (i === 5) break;
+  console.log(i);    // 0, 1, 2, 3, 4
+}
+
+// continue — מדלג על איטרציה
+for (let i = 0; i &lt; 5; i++) {
+  if (i === 2) continue;
+  console.log(i);    // 0, 1, 3, 4 (דילג על 2)
+}</div>
+  </details>
+  
+
+    <h3>forEach vs map vs filter</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">const nums = [1, 2, 3];
+
+// forEach — לא מחזיר כלום, רק עובר
+nums.forEach(n =&gt; console.log(n));   // undefined
+
+// map — מחזיר מערך חדש
+const doubled = nums.map(n =&gt; n * 2);   // [2, 4, 6]
+
+// filter — מחזיר מערך מסונן
+const evens = nums.filter(n =&gt; n % 2 === 0);   // [2]</div>
+  </details>
+  
+
+    <h3>slice vs splice (טעות נפוצה!) ⭐</h3>
+    <div class="warning">
+      <strong>זה אחד הבאגים הכי נפוצים!</strong> שתי הפונקציות נראות דומה אבל מתנהגות שונה לחלוטין.
+    </div>
+
+    <!-- ═══ Mini Diagram: slice vs splice = Cake Photo vs Cake Cut ═══ -->
+    <div style="margin:25px 0;background:linear-gradient(135deg,rgba(78,205,196,0.08),rgba(231,76,60,0.08));border:2px solid rgba(78,205,196,0.3);border-radius:14px;padding:22px;">
+      <h3 style="color:#4ecdc4;border:none;padding:0;margin:0 0 12px;text-align:center;">🎂 slice vs splice = צילום עוגה לעומת חיתוך עוגה (משל סבתא)</h3>
+      <p style="text-align:center;opacity:0.85;margin-bottom:18px;">סבתא אפתה עוגה. <strong>slice</strong> = מצלמת חתיכה (העוגה נשארת שלמה). <strong>splice</strong> = חותכת באמת (העוגה משתנה!).</p>
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+        <!-- ============ slice (LEFT) ============ -->
+        <g transform="translate(20,20)">
+          <text x="200" y="22" text-anchor="middle" font-size="16" font-weight="bold" fill="#27ae60">✅ slice — לא משנה את המקור</text>
+
+          <!-- Original cake (whole) -->
+          <text x="60" y="60" font-size="11" fill="#16213e" direction="rtl">לפני:</text>
+          <g transform="translate(20,70)">
+            <rect width="50" height="35" fill="#ff6b6b"/>
+            <rect x="55" width="50" height="35" fill="#ffd93d"/>
+            <rect x="110" width="50" height="35" fill="#4ecdc4"/>
+            <rect x="165" width="50" height="35" fill="#9b59b6"/>
+            <rect x="220" width="50" height="35" fill="#5dade2"/>
+            <text x="135" y="55" text-anchor="middle" font-size="10" fill="#16213e">[1, 2, 3, 4, 5]</text>
+          </g>
+
+          <!-- Camera icon -->
+          <text x="200" y="140" text-anchor="middle" font-size="28">📸</text>
+          <text x="200" y="165" text-anchor="middle" font-size="11" fill="#16213e" direction="rtl">slice(1, 3) — צילום בלבד</text>
+
+          <!-- Returned slice (photo) -->
+          <text x="60" y="195" font-size="11" fill="#16213e" direction="rtl">מוחזר:</text>
+          <g transform="translate(80,205)">
+            <rect width="50" height="35" fill="#ffd93d" stroke="#fff" stroke-width="2" stroke-dasharray="3 2"/>
+            <rect x="55" width="50" height="35" fill="#4ecdc4" stroke="#fff" stroke-width="2" stroke-dasharray="3 2"/>
+            <text x="55" y="55" text-anchor="middle" font-size="10" fill="#16213e">[2, 3]</text>
+          </g>
+
+          <!-- Original after (still whole!) -->
+          <text x="60" y="280" font-size="11" fill="#16213e" direction="rtl">המקור:</text>
+          <g transform="translate(20,290)">
+            <rect width="50" height="20" fill="#ff6b6b"/>
+            <rect x="55" width="50" height="20" fill="#ffd93d"/>
+            <rect x="110" width="50" height="20" fill="#4ecdc4"/>
+            <rect x="165" width="50" height="20" fill="#9b59b6"/>
+            <rect x="220" width="50" height="20" fill="#5dade2"/>
+            <text x="135" y="15" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">לא השתנה ✓</text>
+          </g>
+        </g>
+
+        <!-- Divider -->
+        <line x1="450" y1="20" x2="450" y2="320" stroke="#fff" stroke-width="2" stroke-dasharray="6 4" opacity="0.4"/>
+
+        <!-- ============ splice (RIGHT) ============ -->
+        <g transform="translate(470,20)">
+          <text x="200" y="22" text-anchor="middle" font-size="16" font-weight="bold" fill="#e74c3c">⚠️ splice — משנה את המקור!</text>
+
+          <!-- Original cake -->
+          <text x="60" y="60" font-size="11" fill="#16213e" direction="rtl">לפני:</text>
+          <g transform="translate(20,70)">
+            <rect width="50" height="35" fill="#ff6b6b"/>
+            <rect x="55" width="50" height="35" fill="#ffd93d"/>
+            <rect x="110" width="50" height="35" fill="#4ecdc4"/>
+            <rect x="165" width="50" height="35" fill="#9b59b6"/>
+            <rect x="220" width="50" height="35" fill="#5dade2"/>
+            <text x="135" y="55" text-anchor="middle" font-size="10" fill="#16213e">[1, 2, 3, 4, 5]</text>
+          </g>
+
+          <!-- Knife icon -->
+          <text x="200" y="140" text-anchor="middle" font-size="28">🔪</text>
+          <text x="200" y="165" text-anchor="middle" font-size="11" fill="#16213e" direction="rtl">splice(1, 2) — חיתוך אמיתי!</text>
+
+          <!-- Returned (cut pieces) -->
+          <text x="60" y="195" font-size="11" fill="#16213e" direction="rtl">מוחזר:</text>
+          <g transform="translate(80,205)">
+            <rect width="50" height="35" fill="#ffd93d"/>
+            <rect x="55" width="50" height="35" fill="#4ecdc4"/>
+            <text x="55" y="55" text-anchor="middle" font-size="10" fill="#16213e">[2, 3] (הוסר)</text>
+          </g>
+
+          <!-- Original after (modified!) -->
+          <text x="60" y="280" font-size="11" fill="#e74c3c" direction="rtl">המקור:</text>
+          <g transform="translate(20,290)">
+            <rect width="50" height="20" fill="#ff6b6b"/>
+            <!-- gap where 2 and 3 were -->
+            <rect x="55" width="110" height="20" fill="none" stroke="#e74c3c" stroke-width="2" stroke-dasharray="4 3"/>
+            <text x="110" y="14" text-anchor="middle" font-size="9" fill="#e74c3c">חסר!</text>
+            <rect x="170" width="50" height="20" fill="#9b59b6"/>
+            <rect x="225" width="50" height="20" fill="#5dade2"/>
+            <text x="285" y="14" font-size="9" fill="#e74c3c" font-weight="bold">[1, 4, 5] שונה!</text>
+          </g>
+        </g>
+      </svg>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;font-size:0.9em;">
+        <div style="background:rgba(39,174,96,0.12);padding:12px;border-radius:8px;border-right:4px solid #27ae60;">
+          <strong style="color:#27ae60;">📸 slice (אבטחה)</strong><br>
+          <code style="font-size:0.85em;">arr.slice(1, 3)</code><br>
+          → מחזיר העתק<br>
+          → המקור נשאר כפי שהוא<br>
+          → ב-React: <strong>תמיד מותר</strong>
+        </div>
+        <div style="background:rgba(231,76,60,0.12);padding:12px;border-radius:8px;border-right:4px solid #e74c3c;">
+          <strong style="color:#e74c3c;">🔪 splice (סכנה)</strong><br>
+          <code style="font-size:0.85em;">arr.splice(1, 2)</code><br>
+          → משנה את המערך עצמו<br>
+          → React <strong>לא יזהה שינוי!</strong><br>
+          → ב-State: <strong>אסור!</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th></th><th>slice</th><th>splice</th></tr></thead>
+        <tbody>
+          <tr><td>משנה את המקור?</td><td>❌ לא</td><td>✅ כן!</td></tr>
+          <tr><td>מחזיר?</td><td>מערך חדש</td><td>הפריטים שהוסרו</td></tr>
+          <tr><td>שימוש</td><td>חיתוך</td><td>הוספה/הסרה</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// slice(start, end) — חותך, לא משנה את המקור
+const arr = [1, 2, 3, 4, 5];
+const sliced = arr.slice(1, 3);    // [2, 3]
+console.log(arr);                   // [1, 2, 3, 4, 5] ← לא השתנה!
+
+// splice(start, deleteCount, ...items) — משנה את המקור
+const arr2 = [1, 2, 3, 4, 5];
+const removed = arr2.splice(1, 2);  // מסיר 2 פריטים מ-index 1
+console.log(removed);                // [2, 3] ← מה שהוסר
+console.log(arr2);                   // [1, 4, 5] ← המקור השתנה!
+
+// splice להוספה
+const arr3 = [1, 2, 5];
+arr3.splice(2, 0, 3, 4);            // ב-index 2, מסיר 0, מוסיף 3,4
+console.log(arr3);                   // [1, 2, 3, 4, 5]</div>
+  </details>
+  
+
+    <h3>שימוש ב-React (חשוב!)</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌ אסור — splice משנה את המקור!
+const handleRemove = (id) =&gt; {
+  const index = items.findIndex(i =&gt; i.id === id);
+  items.splice(index, 1);    // mutate!
+  setItems(items);            // React לא יזהה
+};
+
+// ✅ נכון — filter (יוצר מערך חדש)
+const handleRemove = (id) =&gt; {
+  setItems(items.filter(i =&gt; i.id !== id));
+};
+
+// ✅ או slice
+const handleRemove = (index) =&gt; {
+  setItems([...items.slice(0, index), ...items.slice(index + 1)]);
+};</div>
+  </details>
+  
+
+    <div class="exam">
+      <strong>שאלת מבחן:</strong> "מה ההבדל בין slice ל-splice?" — slice = חיתוך לא הורס. splice = פעולה ישירה על המקור.
+    </div>
+
+    <details class="deep-dive">
+      <summary>🔍 הסבר מעמיק — לולאות + slice/splice</summary>
+      <div class="dd-content">
+        <div class="level level-grandma">
+          <h4>🟢 רמת סבתא</h4>
+          <p>לולאה = <strong>סיבוב על רשימה</strong>. כמו לספור תלמידים בכיתה. <code>for</code> = עובר אחד אחד ברשימה. <code>forEach</code> = עושה משהו לכל אחד. <code>map</code> = עושה משהו <strong>ומחזיר</strong> רשימה חדשה.</p>
+          <p><strong>slice</strong> = לחתוך חתיכה מעוגה (המקור לא נפגע). <strong>splice</strong> = לגזור חתיכה מהעוגה (המקור נפגע!).</p>
+        </div>
+        <div class="level level-mid">
+          <h4>🟡 רמת ביניים</h4>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// שולחן מהיר — מתי מה?
+const nums = [1, 2, 3, 4, 5];
+
+// forEach — לא מחזיר כלום
+nums.forEach(n => console.log(n));  // undefined
+
+// map — מחזיר מערך חדש
+const doubled = nums.map(n => n * 2);  // [2,4,6,8,10]
+
+// filter — מסנן
+const evens = nums.filter(n => n % 2 === 0);  // [2,4]
+
+// for...of = ערכים, for...in = מפתחות
+for (const val of [10, 20]) {}  // 10, 20
+for (const key in {a:1}) {}     // 'a'
+
+// slice vs splice
+const arr = [1,2,3,4,5];
+arr.slice(1,3);    // [2,3] — המקור לא נפגע!
+arr.splice(1,2);   // [2,3] — המקור הפך ל-[1,4,5]!</div>
+  </details>
+  
+        </div>
+        <div class="level level-adv">
+          <h4>🔴 רמת מתקדמים</h4>
+          <p><strong>ב-React אסור splice (שאלת מבחן!):</strong></p>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌ splice משנה את המקור — React לא יזהה
+const handleRemove = (id) => {
+  items.splice(index, 1);
+  setItems(items);  // ❌ לא יעבוד!
+};
+
+// ✅ נכון: filter (יוצר מערך חדש)
+setItems(items.filter(i => i.id !== id));
+
+// ⚠️ break ו-continue:
+// break = יוצא מהלולאה
+// continue = מדלג איטרציה אחת
+// forEach לא תומך break! צריך for רגיל</div>
+  </details>
+  
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 3. STORAGE ============ -->
+  <section id="storage">
+    <h2>3️⃣ localStorage / sessionStorage / Cookies</h2>
+
+    <div class="level-box grandma">
+      <p>הדפדפן יודע לשמור לך מידע. יש 3 דרכים: <strong>localStorage</strong> שומר לתמיד (עד שמוחקים). <strong>sessionStorage</strong> שומר רק עד שסוגרים את הדפדפן. <strong>Cookies</strong> נשלחים אוטומטית עם כל בקשה לשרת.</p>
+    </div>
+
+    <!-- ═══ Mini Diagram: 3 Storage Types = 3 Places to Keep Stuff ═══ -->
+    <div style="margin:25px 0;background:linear-gradient(135deg,rgba(78,205,196,0.08),rgba(255,217,61,0.08));border:2px solid rgba(78,205,196,0.3);border-radius:14px;padding:22px;">
+      <h3 style="color:#4ecdc4;border:none;padding:0;margin:0 0 12px;text-align:center;">🏠 3 מקומות לשמור דברים — משל סבתא</h3>
+      <p style="text-align:center;opacity:0.85;margin-bottom:18px;">כל נתון שאתה רוצה לשמור — איפה הכי נכון?</p>
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+        <!-- localStorage = Closet at home -->
+        <g transform="translate(40,30)">
+          <rect width="240" height="220" rx="14" fill="rgba(78,205,196,0.1)" stroke="#4ecdc4" stroke-width="2"/>
+          <text x="120" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#4ecdc4" direction="rtl">🏠 localStorage</text>
+          <text x="120" y="50" text-anchor="middle" font-size="12" fill="#fff" direction="rtl">= ארון בבית</text>
+          <!-- Closet drawing -->
+          <g transform="translate(70,70)">
+            <rect width="100" height="100" fill="#8b6f47"/>
+            <line x1="50" y1="0" x2="50" y2="100" stroke="#5d4037" stroke-width="2"/>
+            <circle cx="38" cy="50" r="3" fill="#ffd93d"/>
+            <circle cx="62" cy="50" r="3" fill="#ffd93d"/>
+            <rect x="10" y="20" width="35" height="20" fill="#fff" opacity="0.5"/>
+            <rect x="55" y="40" width="35" height="20" fill="#fff" opacity="0.5"/>
+            <rect x="10" y="65" width="35" height="20" fill="#fff" opacity="0.5"/>
+          </g>
+          <text x="120" y="195" text-anchor="middle" font-size="11" fill="#fff" direction="rtl">⏰ נשאר לתמיד (~10MB)</text>
+          <text x="120" y="212" text-anchor="middle" font-size="10" fill="#fff" opacity="0.8" direction="rtl">theme · שפה · הגדרות</text>
+        </g>
+
+        <!-- sessionStorage = Daily bag -->
+        <g transform="translate(310,30)">
+          <rect width="240" height="220" rx="14" fill="rgba(255,217,61,0.1)" stroke="#ffd93d" stroke-width="2"/>
+          <text x="120" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffd93d" direction="rtl">🎒 sessionStorage</text>
+          <text x="120" y="50" text-anchor="middle" font-size="12" fill="#fff" direction="rtl">= תיק יומי</text>
+          <!-- Bag drawing -->
+          <g transform="translate(80,75)">
+            <path d="M 0 30 L 0 90 L 80 90 L 80 30 Q 80 0 40 0 Q 0 0 0 30 Z" fill="#9b59b6"/>
+            <rect x="20" y="40" width="40" height="30" fill="#fff" opacity="0.5"/>
+            <ellipse cx="40" cy="20" rx="20" ry="12" fill="none" stroke="#fff" stroke-width="2"/>
+          </g>
+          <text x="120" y="195" text-anchor="middle" font-size="11" fill="#fff" direction="rtl">⏰ נמחק כשסוגרים tab</text>
+          <text x="120" y="212" text-anchor="middle" font-size="10" fill="#fff" opacity="0.8" direction="rtl">טפסים · נתונים זמניים</text>
+        </g>
+
+        <!-- Cookies = note attached to every letter -->
+        <g transform="translate(580,30)">
+          <rect width="240" height="220" rx="14" fill="rgba(231,76,60,0.1)" stroke="#e74c3c" stroke-width="2"/>
+          <text x="120" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#ec7063" direction="rtl">🍪 Cookies</text>
+          <text x="120" y="50" text-anchor="middle" font-size="12" fill="#fff" direction="rtl">= פתק על כל מכתב</text>
+          <!-- Envelope with sticky note -->
+          <g transform="translate(70,75)">
+            <rect width="100" height="60" fill="#fff"/>
+            <polygon points="0,0 100,0 50,30" fill="#fff" stroke="#5d4037" stroke-width="1"/>
+            <line x1="0" y1="0" x2="100" y2="0" stroke="#5d4037" stroke-width="1"/>
+            <line x1="0" y1="60" x2="100" y2="60" stroke="#5d4037" stroke-width="1"/>
+            <line x1="0" y1="0" x2="0" y2="60" stroke="#5d4037" stroke-width="1"/>
+            <line x1="100" y1="0" x2="100" y2="60" stroke="#5d4037" stroke-width="1"/>
+            <!-- Sticky note -->
+            <rect x="60" y="40" width="40" height="35" fill="#ffd93d" transform="rotate(8 80 57)"/>
+            <text x="80" y="62" text-anchor="middle" font-size="9" font-weight="bold" fill="#16213e" transform="rotate(8 80 57)">cookie</text>
+          </g>
+          <text x="120" y="195" text-anchor="middle" font-size="11" fill="#fff" direction="rtl">📨 נשלח אוטומטית (~4KB)</text>
+          <text x="120" y="212" text-anchor="middle" font-size="10" fill="#fff" opacity="0.8" direction="rtl">JWT · auth · sessions</text>
+        </g>
+      </svg>
+    </div>
+
+    <h3>השוואה</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th></th><th>localStorage</th><th>sessionStorage</th><th>Cookies</th></tr></thead>
+        <tbody>
+          <tr><td>זמן חיים</td><td>לתמיד</td><td>עד סגירת tab</td><td>לפי expiration</td></tr>
+          <tr><td>גודל</td><td>~5-10MB</td><td>~5-10MB</td><td>~4KB</td></tr>
+          <tr><td>נשלח לשרת?</td><td>❌</td><td>❌</td><td>✅ אוטומטית</td></tr>
+          <tr><td>נגיש מ-JS?</td><td>✅</td><td>✅</td><td>✅ (אלא אם HttpOnly)</td></tr>
+          <tr><td>שימוש</td><td>הגדרות, שפה, theme</td><td>טפסים, נתונים זמניים</td><td>auth tokens, sessions</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>localStorage — API</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// שמירה (תמיד strings!)
+localStorage.setItem('username', 'תל');
+localStorage.setItem('age', '30');         // הופך ל-string
+
+// שמירה של object — חייב JSON.stringify
+const user = { name: 'תל', age: 30 };
+localStorage.setItem('user', JSON.stringify(user));
+
+// קריאה
+const username = localStorage.getItem('username');   // 'תל'
+const userJson = localStorage.getItem('user');
+const userObj = JSON.parse(userJson);                 // {name:'תל', age:30}
+
+// אם המפתח לא קיים — מחזיר null
+const missing = localStorage.getItem('xyz');          // null
+
+// מחיקה
+localStorage.removeItem('username');
+localStorage.clear();    // מוחק הכל!
+
+// בדיקה
+if (localStorage.getItem('username')) { ... }</div>
+  </details>
+  
+
+    <h3>sessionStorage — אותו API בדיוק</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">sessionStorage.setItem('cart', JSON.stringify(items));
+const cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
+
+// ההבדל היחיד: נמחק כשסוגרים tab</div>
+  </details>
+  
+
+    <h3>שימוש ב-React עם useEffect</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function App() {
+  // טעינה ראשונית מ-localStorage
+  const [todos, setTodos] = useState(() =&gt; {
+    const saved = localStorage.getItem('todos');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // שמירה אוטומטית בכל שינוי
+  useEffect(() =&gt; {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
+
+  // ...
+}</div>
+  </details>
+  
+
+    <h3>Cookies — בקצרה</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// קריאה
+document.cookie;     // 'name=value; other=value2'
+
+// כתיבה
+document.cookie = 'username=Tal; expires=Fri, 31 Dec 2026 23:59:59 GMT; path=/';
+
+// בדרך כלל מנהלים מהשרת:
+// Set-Cookie: token=xyz; HttpOnly; Secure; SameSite=Strict
+// HttpOnly = JS לא יכול לקרוא (בטוח יותר נגד XSS)</div>
+  </details>
+  
+
+    <div class="warning">
+      <strong>אסור לשמור ב-localStorage:</strong> סיסמאות, JWT tokens (זמינים ל-XSS!), כרטיסי אשראי. אלה צריכים להיות ב-HttpOnly cookies.
+    </div>
+
+    <h3>שגיאות נפוצות</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌ שכחתי JSON.stringify
+localStorage.setItem('user', { name: 'תל' });
+localStorage.getItem('user');    // "[object Object]" ⚠️
+
+// ✅ נכון
+localStorage.setItem('user', JSON.stringify({ name: 'תל' }));
+
+// ❌ שכחתי לבדוק null
+const data = JSON.parse(localStorage.getItem('xyz'));
+// JSON.parse(null) זורק SyntaxError
+
+// ✅ נכון
+const raw = localStorage.getItem('xyz');
+const data = raw ? JSON.parse(raw) : null;</div>
+  </details>
+  
+
+    <details class="deep-dive">
+      <summary>🔍 הסבר מעמיק — localStorage / sessionStorage</summary>
+      <div class="dd-content">
+        <div class="level level-grandma">
+          <h4>🟢 רמת סבתא</h4>
+          <p>תחשבי על 3 סוגי <strong>אחסון</strong>:</p>
+          <ul>
+            <li><strong>localStorage</strong> = מחסן גדול במרתף. הכל נשאר עד שמוחקים.</li>
+            <li><strong>sessionStorage</strong> = מחסן זמני. נמחק כשסוגרים את הטאב.</li>
+            <li><strong>Cookies</strong> = פתקים שנשלחים לשרת <strong>אוטומטית</strong> עם כל בקשה.</li>
+          </ul>
+        </div>
+        <div class="level level-mid">
+          <h4>🟡 רמת ביניים</h4>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ה-API זהה לשניהם
+localStorage.setItem('key', 'value');
+localStorage.getItem('key');        // 'value'
+localStorage.removeItem('key');
+localStorage.clear();
+
+// ❗ תמיד strings! חייב JSON.stringify/parse
+localStorage.setItem('user', JSON.stringify({name: 'תל'}));
+const user = JSON.parse(localStorage.getItem('user'));
+
+// React pattern
+const [data, setData] = useState(() => {
+  const saved = localStorage.getItem('data');
+  return saved ? JSON.parse(saved) : [];
+});
+
+useEffect(() => {
+  localStorage.setItem('data', JSON.stringify(data));
+}, [data]);</div>
+  </details>
+  
+        </div>
+        <div class="level level-adv">
+          <h4>🔴 רמת מתקדמים</h4>
+          <p><strong>טעויות קלאסיות (שאלות מבחן):</strong></p>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌ שכחתי JSON.stringify
+localStorage.setItem('user', {name: 'תל'});
+localStorage.getItem('user');  // "[object Object]" ⚠️
+
+// ❌ שכחתי לבדוק null
+JSON.parse(localStorage.getItem('xyz'));  // SyntaxError!
+
+// ✅ תמיד לבדוק
+const raw = localStorage.getItem('xyz');
+const data = raw ? JSON.parse(raw) : null;
+
+// ⚠️ HttpOnly cookies — JS לא יכול לקרוא
+// זה מגן נגד XSS. JWT צריך להיות שם!</div>
+  </details>
+  
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 4. ERRORS ============ -->
+  <section id="errors">
+    <h2>4️⃣ Errors + try/catch + Debugging</h2>
+
+    <h3>throw — זריקת שגיאה</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function divide(a, b) {
+  if (b === 0) {
+    throw new Error('אי אפשר לחלק באפס');
+  }
+  return a / b;
+}</div>
+  </details>
+  
+
+    <h3>try / catch / finally</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">try {
+  const result = divide(10, 0);
+  console.log(result);
+} catch (error) {
+  console.error('שגיאה:', error.message);
+} finally {
+  console.log('תמיד רץ');
+}</div>
+  </details>
+  
+
+    <h3>סוגי Errors</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>סוג</th><th>מתי נזרק</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">Error</code></td><td>כללי</td></tr>
+          <tr><td><code class="inline">TypeError</code></td><td>טיפוס לא נכון (<code class="inline">null.foo</code>)</td></tr>
+          <tr><td><code class="inline">ReferenceError</code></td><td>משתנה לא מוכר</td></tr>
+          <tr><td><code class="inline">SyntaxError</code></td><td>תחביר שגוי (<code class="inline">JSON.parse('not json')</code>)</td></tr>
+          <tr><td><code class="inline">RangeError</code></td><td>טווח לא תקין</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Custom Errors</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">class ValidationError extends Error {
+  constructor(message, field) {
+    super(message);
+    this.name = 'ValidationError';
+    this.field = field;
+  }
+}
+
+try {
+  throw new ValidationError('שדה חובה', 'email');
+} catch (err) {
+  if (err instanceof ValidationError) {
+    console.log(`שגיאה בשדה ${err.field}: ${err.message}`);
+  }
+}</div>
+  </details>
+  
+
+    <h3>async errors</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// עם async/await
+async function fetchUser() {
+  try {
+    const res = await fetch('/api/user');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+// עם .catch
+fetch('/api/user')
+  .then(r =&gt; r.json())
+  .then(data =&gt; console.log(data))
+  .catch(err =&gt; console.error(err));</div>
+  </details>
+  
+
+    <h3>Debugging — DevTools</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// debugger — עוצר את הקוד
+function calculate(x) {
+  debugger;        // יעצור כאן אם DevTools פתוח
+  return x * 2;
+}
+
+// console methods
+console.log('רגיל');
+console.error('שגיאה');
+console.warn('אזהרה');
+console.table([{a:1, b:2}, {a:3, b:4}]);   // טבלה!
+console.group('קבוצה');
+  console.log('פנימי 1');
+  console.log('פנימי 2');
+console.groupEnd();
+console.time('myTimer');
+// קוד...
+console.timeEnd('myTimer');                  // myTimer: 234ms</div>
+  </details>
+  
+
+    <h3>Error boundaries ב-React</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">class ErrorBoundary extends React.Component {
+  state = { hasError: false, error: null };
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, info) {
+    console.error('Component error:', error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return &lt;div&gt;משהו השתבש: {this.state.error.message}&lt;/div&gt;;
+    }
+    return this.props.children;
+  }
+}
+
+// שימוש
+&lt;ErrorBoundary&gt;
+  &lt;App /&gt;
+&lt;/ErrorBoundary&gt;</div>
+  </details>
+  
+
+    <details class="deep-dive">
+      <summary>🔍 הסבר מעמיק — Errors + try/catch</summary>
+      <div class="dd-content">
+        <div class="level level-grandma">
+          <h4>🟢 רמת סבתא</h4>
+          <p>תחשבי על <strong>בישול</strong>. אם המתכון אומר "שימי ביצה" ואין לך ביצים — יש <strong>שגיאה</strong>. במקום שכל המטבח יעצור (crash), את שמה <strong>תכנית ב'</strong>: "אם אין ביצים — תשתמשי בתחליף."</p>
+          <p><code>try</code> = "תנסי את המתכון." <code>catch</code> = "אם נכשל — תכנית ב'." <code>finally</code> = "תמיד נקי את המטבח, בהצלחה או בכישלון."</p>
+        </div>
+        <div class="level level-mid">
+          <h4>🟡 רמת ביניים</h4>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// שלושת הסוגים הנפוצים
+try {
+  const data = JSON.parse(userInput);  // SyntaxError?
+  const name = data.user.name;          // TypeError?
+  console.log(unknownVar);              // ReferenceError?
+} catch (err) {
+  console.error(err.name);    // 'SyntaxError' / 'TypeError'
+  console.error(err.message); // הודעת השגיאה
+} finally {
+  loading = false;  // תמיד רץ!
+}
+
+// ✅ async errors — שתי גישות
+// 1. async/await + try/catch
+async function fetchData() {
+  try {
+    const res = await fetch('/api/data');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// 2. .then/.catch
+fetch('/api/data')
+  .then(r => r.json())
+  .catch(err => console.error(err));</div>
+  </details>
+  
+        </div>
+        <div class="level level-adv">
+          <h4>🔴 רמת מתקדמים</h4>
+          <p><strong>Custom Error + instanceof (תבנית מבחן):</strong></p>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">class ApiError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
+try {
+  throw new ApiError('Not Found', 404);
+} catch (err) {
+  if (err instanceof ApiError) {
+    console.log(err.status);  // 404
+  }
+}
+
+// React Error Boundary — תופס שגיאות רנדור
+// ⚠️ לא תופס: event handlers, async, server errors
+// חייב class component (אין Hook equivalent)</div>
+  </details>
+  
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 5. REACT ROUTER ============ -->
+  <section id="router">
+    <h2>5️⃣ React Router ⭐</h2>
+
+    <div class="level-box grandma">
+      <p>React Router נותן לאתר שלך דפים שונים — Home, About, Profile. הוא משנה את הURL בלי לטעון מחדש את הדף, ומציג את הקומפוננטה הנכונה לפי הכתובת.</p>
+    </div>
+
+    <h3>התקנה</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">npm install react-router-dom</div>
+  </details>
+  
+
+    <h3>Setup בסיסי</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// App.jsx
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+import Profile from './pages/Profile';
+import NotFound from './pages/NotFound';
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;nav&gt;
+        &lt;Link to="/"&gt;בית&lt;/Link&gt; |{' '}
+        &lt;Link to="/about"&gt;אודות&lt;/Link&gt; |{' '}
+        &lt;Link to="/profile"&gt;פרופיל&lt;/Link&gt;
+      &lt;/nav&gt;
+
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+        &lt;Route path="/profile" element={&lt;Profile /&gt;} /&gt;
+        &lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}</div>
+  </details>
+  
+
+    <h3>Dynamic Routes — useParams</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// App.jsx
+&lt;Route path="/users/:id" element={&lt;UserProfile /&gt;} /&gt;
+&lt;Route path="/posts/:postId/comments/:commentId" element={&lt;Comment /&gt;} /&gt;
+
+// UserProfile.jsx
+import { useParams } from 'react-router-dom';
+
+function UserProfile() {
+  const { id } = useParams();    // קורא את :id מה-URL
+
+  return &lt;h1&gt;משתמש מספר: {id}&lt;/h1&gt;;
+}
+
+// Comment.jsx
+function Comment() {
+  const { postId, commentId } = useParams();
+  return &lt;p&gt;תגובה {commentId} בפוסט {postId}&lt;/p&gt;;
+}</div>
+  </details>
+  
+
+    <h3>useNavigate — ניווט תכנותי</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">import { useNavigate } from 'react-router-dom';
+
+function LoginForm() {
+  const navigate = useNavigate();
+
+  const handleLogin = async (credentials) =&gt; {
+    const success = await login(credentials);
+    if (success) {
+      navigate('/dashboard');         // עבור לדף
+    }
+  };
+
+  // אפשרויות נוספות:
+  navigate(-1);                        // חזור (כמו לחצן back)
+  navigate('/login', { replace: true }); // לא נשמר ב-history
+  navigate('/users/42', { state: { from: 'login' } });
+}</div>
+  </details>
+  
+
+    <h3>useLocation — מידע על הURL הנוכחי</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">import { useLocation } from 'react-router-dom';
+
+function CurrentPage() {
+  const location = useLocation();
+  // location.pathname = '/users/42'
+  // location.search = '?tab=settings'
+  // location.hash = '#section1'
+  // location.state = { from: 'login' }
+
+  return &lt;p&gt;אתה ב: {location.pathname}&lt;/p&gt;;
+}</div>
+  </details>
+  
+
+    <h3>Query Parameters — useSearchParams</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">import { useSearchParams } from 'react-router-dom';
+
+// URL: /products?category=electronics&sort=price
+function ProductsPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const category = searchParams.get('category');   // 'electronics'
+  const sort = searchParams.get('sort');           // 'price'
+
+  // עדכון
+  const handleSort = (newSort) =&gt; {
+    setSearchParams({ category, sort: newSort });
+  };
+
+  return &lt;div&gt;...&lt;/div&gt;;
+}</div>
+  </details>
+  
+
+    <h3>Nested Routes — Outlet</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// App.jsx
+&lt;Routes&gt;
+  &lt;Route path="/dashboard" element={&lt;DashboardLayout /&gt;}&gt;
+    &lt;Route index element={&lt;DashboardHome /&gt;} /&gt;
+    &lt;Route path="profile" element={&lt;Profile /&gt;} /&gt;
+    &lt;Route path="settings" element={&lt;Settings /&gt;} /&gt;
+  &lt;/Route&gt;
+&lt;/Routes&gt;
+
+// DashboardLayout.jsx
+import { Outlet, Link } from 'react-router-dom';
+
+function DashboardLayout() {
+  return (
+    &lt;div&gt;
+      &lt;aside&gt;
+        &lt;Link to="profile"&gt;פרופיל&lt;/Link&gt;
+        &lt;Link to="settings"&gt;הגדרות&lt;/Link&gt;
+      &lt;/aside&gt;
+      &lt;main&gt;
+        &lt;Outlet /&gt;   {/* הדף הפנימי מוכנס כאן */}
+      &lt;/main&gt;
+    &lt;/div&gt;
+  );
+}</div>
+  </details>
+  
+
+    <h3>Protected Routes</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function ProtectedRoute({ children }) {
+  const { user } = useAuth();
+
+  if (!user) {
+    return &lt;Navigate to="/login" replace /&gt;;
+  }
+
+  return children;
+}
+
+// שימוש
+&lt;Route path="/dashboard" element={
+  &lt;ProtectedRoute&gt;
+    &lt;Dashboard /&gt;
+  &lt;/ProtectedRoute&gt;
+} /&gt;</div>
+  </details>
+  
+
+    <div class="exam">
+      <strong>שאלות מבחן נפוצות:</strong>
+      <ul style="margin-top:10px;padding-right:25px;">
+        <li>"איך מקבלים פרמטר מה-URL?" — useParams</li>
+        <li>"איך מנווטים מתוך פונקציה?" — useNavigate</li>
+        <li>"מה ההבדל בין Link ל-a?" — Link לא טוען מחדש את הדף</li>
+        <li>"איך עושים 404?" — <code class="inline">path="*"</code></li>
+      </ul>
+    </div>
+
+    <details class="deep-dive">
+      <summary>🔍 הסבר מעמיק — React Router</summary>
+      <div class="dd-content">
+        <div class="level level-grandma">
+          <h4>🟢 רמת סבתא</h4>
+          <p>תחשבי על <strong>בניין עם קומות</strong>. כל קומה = <strong>עמוד אחר</strong>. ה-Router = <strong>מעלית</strong> — היא יודעת לאיזו קומה ללכת לפי ה-URL. הדף לא נטען מחדש!</p>
+        </div>
+        <div class="level level-mid">
+          <h4>🟡 רמת ביניים</h4>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">import { BrowserRouter, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;nav&gt;
+        &lt;Link to="/"&gt;בית&lt;/Link&gt;
+        &lt;Link to="/about"&gt;אודות&lt;/Link&gt;
+      &lt;/nav&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/users/:id" element={&lt;UserPage /&gt;} /&gt;
+        &lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+function UserPage() {
+  const { id } = useParams();        // URL params
+  const navigate = useNavigate();    // ניווט מתוכנתי
+  return &lt;button onClick={() =&gt; navigate('/')}&gt;חזור&lt;/button&gt;;
+}</div>
+  </details>
+  
+        </div>
+        <div class="level level-adv">
+          <h4>🔴 רמת מתקדמים</h4>
+          <p><strong>Protected Route + Nested Routes:</strong></p>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// Protected Route — רק מחוברים
+function ProtectedRoute({ children }) {
+  const { user } = useAuth();
+  if (!user) return &lt;Navigate to="/login" /&gt;;
+  return children;
+}
+
+// Nested Routes
+&lt;Route path="/dashboard" element={&lt;DashboardLayout /&gt;}&gt;
+  &lt;Route index element={&lt;Overview /&gt;} /&gt;
+  &lt;Route path="settings" element={&lt;Settings /&gt;} /&gt;
+&lt;/Route&gt;
+// DashboardLayout משתמש ב-&lt;Outlet /&gt; לרנדר ילדים</div>
+  </details>
+  
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 6. CONTEXT API ============ -->
+  <section id="context">
+    <h2>6️⃣ Context API ⭐</h2>
+
+    <div class="level-box grandma">
+      <p>תארי לך שאת מעבירה הודעה במשפחה. במקום שכל אחד יגיד לבא בתור (props drilling), את שמה הודעה על לוח המודעות שכולם רואים. <strong>Context</strong> זה לוח המודעות של React.</p>
+    </div>
+
+    <h3>הבעיה: Props Drilling</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌ בעייתי — props עוברים דרך הרבה שכבות
+function App() {
+  const user = { name: 'תל' };
+  return &lt;Layout user={user} /&gt;;
+}
+
+function Layout({ user }) {
+  return &lt;Sidebar user={user} /&gt;;     // רק מעביר
+}
+
+function Sidebar({ user }) {
+  return &lt;Profile user={user} /&gt;;     // רק מעביר
+}
+
+function Profile({ user }) {
+  return &lt;div&gt;{user.name}&lt;/div&gt;;       // סוף סוף משתמש
+}</div>
+  </details>
+  
+
+    <h3>הפתרון: Context</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// 1. צור context
+import { createContext, useContext, useState } from 'react';
+
+const UserContext = createContext(null);
+
+// 2. עטוף את האפליקציה ב-Provider
+function App() {
+  const [user, setUser] = useState({ name: 'תל' });
+
+  return (
+    &lt;UserContext.Provider value={{ user, setUser }}&gt;
+      &lt;Layout /&gt;
+    &lt;/UserContext.Provider&gt;
+  );
+}
+
+// 3. השתמש ב-context בכל מקום
+function Profile() {
+  const { user, setUser } = useContext(UserContext);
+  return &lt;div&gt;{user.name}&lt;/div&gt;;       // ישר!
+}</div>
+  </details>
+  
+
+    <h3>Context מלא עם Custom Hook</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// AuthContext.jsx
+import { createContext, useContext, useState } from 'react';
+
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+
+  const login = async (email, password) =&gt; {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const data = await res.json();
+    setUser(data.user);
+  };
+
+  const logout = () =&gt; {
+    setUser(null);
+  };
+
+  return (
+    &lt;AuthContext.Provider value={{ user, login, logout }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+}
+
+// Custom Hook לשימוש נוח
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
+}
+
+// שימוש
+function LoginForm() {
+  const { login } = useAuth();
+  // ...
+}
+
+function Dashboard() {
+  const { user, logout } = useAuth();
+  return (
+    &lt;div&gt;
+      שלום {user.name}
+      &lt;button onClick={logout}&gt;התנתק&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</div>
+  </details>
+  
+
+    <h3>מה מתאים ל-Context?</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>מתאים ✅</th><th>לא מתאים ❌</th></tr></thead>
+        <tbody>
+          <tr><td>משתמש מחובר (auth)</td><td>state של form ספציפי</td></tr>
+          <tr><td>theme (light/dark)</td><td>open/close של modal יחיד</td></tr>
+          <tr><td>שפה (i18n)</td><td>תוצאות חיפוש</td></tr>
+          <tr><td>הרשאות גלובליות</td><td>נתונים של דף אחד</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>אזהרה: ביצועים</h3>
+    <div class="warning">
+      כל קומפוננטה שמשתמשת ב-Context תעשה re-render כשהערך משתנה. אם יש הרבה consumers, עדיף לפצל ל-contexts קטנים יותר.
+    </div>
+
+    <div class="exam">
+      <strong>שאלות מבחן:</strong>
+      <ul style="margin-top:10px;padding-right:25px;">
+        <li>"מה זה props drilling?" — העברת props דרך שכבות מרובות</li>
+        <li>"מתי להשתמש ב-Context?" — מידע שצריך הרבה קומפוננטות (auth, theme)</li>
+        <li>"איך useContext עובד?" — קורא value מה-Provider הקרוב</li>
+      </ul>
+    </div>
+
+    <details class="deep-dive">
+      <summary>🔍 הסבר מעמיק — Context API</summary>
+      <div class="dd-content">
+        <div class="level level-grandma">
+          <h4>🟢 רמת סבתא</h4>
+          <p>תחשבי על <strong>שלט טלוויזיה</strong>. במקום שכל חדר יקבל שלט משלו (Props = להעביר מיד ליד), Context = <strong>שלט אחד לכל הבית</strong>. כל חדר יכול לגשת ישירות.</p>
+        </div>
+        <div class="level level-mid">
+          <h4>🟡 רמת ביניים</h4>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// 1. צור Context
+const ThemeContext = createContext('light');
+
+// 2. ספק Provider בראש העץ
+function App() {
+  const [theme, setTheme] = useState('dark');
+  return (
+    &lt;ThemeContext.Provider value={{ theme, setTheme }}&gt;
+      &lt;Toolbar /&gt;
+    &lt;/ThemeContext.Provider&gt;
+  );
+}
+
+// 3. קרא בכל עומק (!) בלי prop drilling
+function DeepChild() {
+  const { theme, setTheme } = useContext(ThemeContext);
+  return &lt;button onClick={() =&gt; setTheme('light')}&gt;{theme}&lt;/button&gt;;
+}</div>
+  </details>
+  
+        </div>
+        <div class="level level-adv">
+          <h4>🔴 רמת מתקדמים</h4>
+          <p><strong>Custom Hook ל-Context (תבנית מבחן):</strong></p>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// תבנית מושלמת
+function useTheme() {
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error('useTheme must be inside ThemeProvider');
+  return ctx;
+}
+
+// שימוש נקי
+const { theme } = useTheme();  // ✅
+
+// ⚠️ Context גורם re-render לכל הצרכנים!
+// פתרון: פצל לכמה Contexts או השתמש ב-useMemo</div>
+  </details>
+  
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 7. TYPESCRIPT EXTRA ============ -->
+  <section id="ts-extra">
+    <h2>7️⃣ TypeScript: enum + tuple</h2>
+
+    <h3>enum — סט קבוע של ערכים</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// Numeric enum
+enum Direction {
+  Up,        // 0
+  Down,      // 1
+  Left,      // 2
+  Right,     // 3
+}
+
+const dir: Direction = Direction.Up;
+console.log(dir);              // 0
+
+// String enum (עדיף!)
+enum Status {
+  Pending = 'PENDING',
+  Active = 'ACTIVE',
+  Completed = 'COMPLETED',
+}
+
+const status: Status = Status.Active;
+console.log(status);           // 'ACTIVE'</div>
+  </details>
+  
+
+    <h3>enum vs union (מה עדיף?)</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌ enum — ישן, מייצר JS code
+enum Role {
+  Admin = 'admin',
+  User = 'user',
+}
+
+// ✅ union — מודרני, אפס runtime
+type Role = 'admin' | 'user';
+
+// ✅ const assertion — שילוב של השניים
+const ROLES = {
+  Admin: 'admin',
+  User: 'user',
+} as const;
+
+type Role = typeof ROLES[keyof typeof ROLES];   // 'admin' | 'user'</div>
+  </details>
+  
+
+    <h3>tuple — מערך עם טיפוסים שונים</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// Tuple — מערך עם אורך וטיפוסים מוגדרים
+let person: [string, number] = ['תל', 30];
+person[0];       // string
+person[1];       // number
+
+// useState מחזיר tuple!
+const [count, setCount] = useState(0);
+// טיפוס: [number, Dispatch&lt;SetStateAction&lt;number&gt;&gt;]
+
+// Tuple עם named members (TS 4.0+)
+type Point = [x: number, y: number];
+const p: Point = [10, 20];
+
+// readonly tuple
+const colors: readonly [string, string, string] = ['red', 'green', 'blue'];
+colors[0] = 'yellow';   // ❌ Error</div>
+  </details>
+  
+
+    <h3>readonly</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// readonly modifier
+type User = {
+  readonly id: number;
+  name: string;
+};
+
+const user: User = { id: 1, name: 'תל' };
+user.name = 'דן';      // ✅
+user.id = 2;            // ❌ Error
+
+// Readonly utility
+type FrozenUser = Readonly&lt;User&gt;;
+
+// readonly array
+const nums: readonly number[] = [1, 2, 3];
+nums.push(4);           // ❌ Error
+nums[0] = 10;           // ❌ Error
+
+// ReadonlyArray
+const items: ReadonlyArray&lt;string&gt; = ['a', 'b'];</div>
+  </details>
+  
+
+    <details class="deep-dive">
+      <summary>🔍 הסבר מעמיק — TypeScript enum + tuple</summary>
+      <div class="dd-content">
+        <div class="level level-grandma">
+          <h4>🟢 רמת סבתא</h4>
+          <p>תחשבי על <strong>תפריט מסעדה</strong>. <strong>enum</strong> = הרשימה הקבועה של המנות ("בשרי", "דגים", "צמחוני"). לא יכולים להמציא מנות שלא קיימות.</p>
+          <p><strong>tuple</strong> = צלחת עם <strong>תאים קבועים</strong>. התא הראשון תמיד מרק, השני עיקרית, השלישי קינוח. לא אפשר לשים קינוח בתא של המרק!</p>
+        </div>
+        <div class="level level-mid">
+          <h4>🟡 רמת ביניים</h4>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// enum — קבוצת קבועים בעלי שם
+enum Status {
+  Pending = 'PENDING',
+  Active = 'ACTIVE',
+  Closed = 'CLOSED'
+}
+
+const order: Status = Status.Active;  // 'ACTIVE'
+
+// numeric enum (ברירת מחדל)
+enum Direction { Up, Down, Left, Right }
+// Up=0, Down=1, Left=2, Right=3
+
+// tuple — מערך עם טיפוסים קבועים לפי מיקום
+const point: [number, number] = [10, 20];
+const entry: [string, number] = ['תל', 30];
+
+// Destructuring
+const [name, age] = entry;  // name: string, age: number</div>
+  </details>
+  
+        </div>
+        <div class="level level-adv">
+          <h4>🔴 רמת מתקדמים</h4>
+          <p><strong>const enum + readonly tuple (שאלות מבחן):</strong></p>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// const enum — נמחק ב-compile, הופך למספרים
+const enum Color { Red, Green, Blue }
+let c = Color.Red;  // מתורגם ל: let c = 0;
+
+// readonly tuple — לא ניתן לשנות
+const rgb: readonly [number, number, number] = [255, 0, 0];
+rgb[0] = 128;  // ❌ Error!
+
+// enum vs union type
+type Status = 'pending' | 'active' | 'closed';  // עדיף!
+// union type = פשוט יותר, tree-shakeable, אין runtime cost
+
+// ⚠️ מבחן: typeof Direction.Up = 'number' (numeric enum)
+// ⚠️ מבחן: typeof Status.Active = 'string' (string enum)</div>
+  </details>
+  
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 8. FETCH EXTRA ============ -->
+  <section id="fetch-extra">
+    <h2>8️⃣ fetch מתקדם</h2>
+
+    <h3>Headers + Authorization</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">const res = await fetch('/api/users', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+    'Accept-Language': 'he',
+    'X-Custom-Header': 'value'
+  },
+  body: JSON.stringify(data)
+});</div>
+  </details>
+  
+
+    <h3>תגובה — לא רק json()</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">const res = await fetch('/api/data');
+
+// בדוק status
+console.log(res.status);           // 200, 404, 500...
+console.log(res.ok);               // true if 200-299
+console.log(res.statusText);       // 'OK', 'Not Found'...
+
+// סוגי response
+const json = await res.json();
+const text = await res.text();
+const blob = await res.blob();     // לקבצים
+const formData = await res.formData();
+const arrayBuffer = await res.arrayBuffer();
+
+// headers
+const contentType = res.headers.get('content-type');</div>
+  </details>
+  
+
+    <h3>FormData — שליחת טפסים וקבצים</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">const formData = new FormData();
+formData.append('name', 'תל');
+formData.append('age', '30');
+formData.append('avatar', fileInput.files[0]);   // קובץ!
+
+const res = await fetch('/api/upload', {
+  method: 'POST',
+  body: formData
+  // ❌ לא לכלול Content-Type — הדפדפן יוסיף עם boundary נכון
+});</div>
+  </details>
+  
+
+    <h3>AbortController — ביטול בקשה</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">const controller = new AbortController();
+
+// ביטול אחרי 5 שניות
+setTimeout(() =&gt; controller.abort(), 5000);
+
+try {
+  const res = await fetch('/api/slow', {
+    signal: controller.signal
+  });
+  const data = await res.json();
+} catch (err) {
+  if (err.name === 'AbortError') {
+    console.log('הבקשה בוטלה');
+  } else {
+    throw err;
+  }
+}</div>
+  </details>
+  
+
+    <h3>Wrapper מקצועי</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">async function api(url, options = {}) {
+  const token = localStorage.getItem('token');
+
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+      ...options.headers,
+    },
+    body: options.body ? JSON.stringify(options.body) : undefined,
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() =&gt; ({}));
+    throw new Error(error.message || `HTTP ${res.status}`);
+  }
+
+  if (res.status === 204) return null;   // No Content
+  return res.json();
+}
+
+// שימוש
+const users = await api('/api/users');
+const newUser = await api('/api/users', {
+  method: 'POST',
+  body: { name: 'תל' }
+});</div>
+  </details>
+  
+
+    <details class="deep-dive">
+      <summary>🔍 הסבר מעמיק — fetch מתקדם</summary>
+      <div class="dd-content">
+        <div class="level level-grandma">
+          <h4>🟢 רמת סבתא</h4>
+          <p><code>fetch</code> = <strong>שליח שהולך למחסן</strong>. אתה נותנת לו רשימה ("תביא לי 3 ביצים"), הוא הולך לשרת, וחוזר עם התשובה. זה <strong>לא מיידי</strong> — זה async, הקוד לא מחכה לתשובה.</p>
+        </div>
+        <div class="level level-mid">
+          <h4>🟡 רמת ביניים</h4>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// GET בסיסי
+const res = await fetch('/api/users');
+const data = await res.json();
+
+// POST עם body
+const res = await fetch('/api/users', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: 'תל' })
+});
+
+// ❗ fetch לא זורק Error על 404/500!
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+// עם credentials (cookies)
+fetch('/api/me', { credentials: 'include' });</div>
+  </details>
+  
+        </div>
+        <div class="level level-adv">
+          <h4>🔴 רמת מתקדמים</h4>
+          <p><strong>Wrapper function + error handling (תבנית הכי נפוצה):</strong></p>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">async function api(url, options = {}) {
+  const config = {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+    body: options.body ? JSON.stringify(options.body) : undefined
+  };
+  
+  const res = await fetch(url, config);
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.message || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+// Promise.all — מקביל
+// Promise.allSettled — לא נכשל אם אחד נופל</div>
+  </details>
+  
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 9. TESTING ============ -->
+  <section id="testing">
+    <h2>9️⃣ Testing — Jest & React Testing Library <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <p><span class="term" data-tip="Unit Test = בדיקה של חלק קטן מהקוד (פונקציה אחת). Integration Test = בדיקה של כמה חלקים יחד. E2E = בדיקה של כל המערכת מקצה לקצה.">Testing</span> = וידוא שהקוד עושה מה שהוא צריך. <strong>Jest</strong> = framework לבדיקות JS. <strong>RTL</strong> = בדיקות React.</p>
+
+    <h3>סוגי בדיקות</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      <tr style="background:rgba(78,205,196,0.15);">
+        <th style="padding:10px;text-align:right;">סוג</th>
+        <th style="padding:10px;text-align:right;">מה בודק</th>
+        <th style="padding:10px;text-align:right;">כלי</th>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+        <td style="padding:10px;">Unit</td>
+        <td style="padding:10px;">פונקציה בודדת</td>
+        <td style="padding:10px;">Jest</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+        <td style="padding:10px;">Integration</td>
+        <td style="padding:10px;">כמה חלקים יחד</td>
+        <td style="padding:10px;">Jest + RTL</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+        <td style="padding:10px;">E2E</td>
+        <td style="padding:10px;">כל המערכת</td>
+        <td style="padding:10px;">Cypress / Playwright</td>
+      </tr>
+    </table>
+
+    <h3 style="margin-top:25px;">Jest — בסיס</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// math.js
+function add(a, b) { return a + b; }
+module.exports = { add };
+
+// math.test.js
+const { add } = require('./math');
+
+describe('add function', () => {
+  test('adds 1 + 2 to equal 3', () => {
+    expect(add(1, 2)).toBe(3);
+  });
+
+  test('adds negative numbers', () => {
+    expect(add(-1, -2)).toBe(-3);
+  });
+});
+
+// Matchers נפוצים:
+expect(value).toBe(3);           // ===
+expect(value).toEqual({a: 1});   // deep equal
+expect(value).toBeTruthy();      // truthy
+expect(value).toBeNull();        // null
+expect(arr).toContain(item);     // includes
+expect(fn).toThrow();            // throws error</div>
+  </details>
+  
+
+    <h3 style="margin-top:25px;">React Testing Library (RTL)</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">import { render, screen, fireEvent } from '@testing-library/react';
+import Counter from './Counter';
+
+test('renders counter and increments', () => {
+  render(&lt;Counter /&gt;);
+
+  // מצא אלמנט על פי טקסט
+  const button = screen.getByText('הוסף');
+  const count = screen.getByText('0');
+
+  // לחץ
+  fireEvent.click(button);
+
+  // ודא שהערך השתנה
+  expect(screen.getByText('1')).toBeInTheDocument();
+});
+
+// Queries נפוצות:
+screen.getByText('...')       // זורק error אם לא נמצא
+screen.getByRole('button')   // לפי role
+screen.getByPlaceholderText() // לפי placeholder
+screen.queryByText('...')     // מחזיר null אם לא נמצא
+screen.findByText('...')      // async — מחכה</div>
+  </details>
+  
+
+    <div class="exam" style="background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:8px;padding:15px;margin-top:15px;">
+      <strong>שאלת מבחן:</strong> "מה ההבדל בין getByText ל-queryByText?" — <code>getByText</code> זורק שגיאה אם לא נמצא. <code>queryByText</code> מחזיר <code>null</code>.
+    </div>
+
+    <details class="deep-dive">
+      <summary>🔍 הסבר מעמיק — Testing</summary>
+      <div class="dd-content">
+        <div class="level level-grandma">
+          <h4>🟢 רמת סבתא</h4>
+          <p>תחשבי על <strong>מפעל עוגיות</strong>. לפני שהעוגיות יוצאות מהמפעל, <strong>בודקים</strong> שהן בגודל הנכון, בצורה הנכונה, בטעם הנכון. Testing = <strong>בדיקת איכות</strong> של הקוד לפני שהוא יוצא לעולם.</p>
+          <p><strong>Unit test</strong> = בדיקת עוגיה אחת. <strong>Integration</strong> = בדיקה שהעוגיה נכנסת לקופסה. <strong>E2E</strong> = בדיקה שהלקוח מקבל את הקופסה.</p>
+        </div>
+        <div class="level level-mid">
+          <h4>🟡 רמת ביניים</h4>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// Mock — מזייף פונקציה חיצונית
+const mockFn = jest.fn();
+mockFn('hello');
+expect(mockFn).toHaveBeenCalledWith('hello');
+expect(mockFn).toHaveBeenCalledTimes(1);
+
+// Async test
+test('fetches users', async () => {
+  const data = await fetchUsers();
+  expect(data.length).toBeGreaterThan(0);
+});
+
+// beforeEach — רץ לפני כל טסט
+beforeEach(() => {
+  localStorage.clear();
+});</div>
+  </details>
+  
+        </div>
+        <div class="level level-adv">
+          <h4>🔴 רמת מתקדמים</h4>
+          <p><strong>שאלות מבחן קלאסיות:</strong></p>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ⚠️ getBy vs queryBy vs findBy
+getByText    → throws if not found (sync)
+queryByText  → returns null if not found (sync)
+findByText   → returns Promise (async, waits)
+
+// ⚠️ fireEvent vs userEvent
+fireEvent.click(btn)  // סינתטי, מהיר
+userEvent.click(btn)  // מדמה user אמיתי (עדיף!)
+
+// ⚠️ act() — עוטף state updates ב-tests
+// RTL עושה את זה אוטומטית ברוב המקרים
+
+// Coverage — כמה מהקוד מכוסה בטסטים
+// npx jest --coverage</div>
+  </details>
+  
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 10. DESIGN PATTERNS ============ -->
+  <section id="patterns">
+    <h2>🔟 Design Patterns — תבניות עיצוב <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <p><span class="term" data-tip="Design Pattern = פתרון מוכח לבעיה נפוצה בתכנות. במקום להמציא את הגלגל, משתמשים בתבנית שכבר עובדת.">Design Pattern</span> = פתרון מוכח לבעיה חוזרת. לא צריך להמציא — צריך <strong>לזהות ולהשתמש</strong>.</p>
+
+    <h3>תבניות נפוצות ב-Full-Stack</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      <tr style="background:rgba(78,205,196,0.15);">
+        <th style="padding:10px;text-align:right;">תבנית</th>
+        <th style="padding:10px;text-align:right;">מה עושה</th>
+        <th style="padding:10px;text-align:right;">דוגמה</th>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+        <td style="padding:10px;">MVC</td>
+        <td style="padding:10px;">מפריד נתונים / תצוגה / לוגיקה</td>
+        <td style="padding:10px;">Express: Model + Route + Controller</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+        <td style="padding:10px;">Singleton</td>
+        <td style="padding:10px;">instance אחד בלבד</td>
+        <td style="padding:10px;">mongoose.connect (חיבור אחד ל-DB)</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+        <td style="padding:10px;">Observer</td>
+        <td style="padding:10px;">מנוי + התראות</td>
+        <td style="padding:10px;">addEventListener, React state</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+        <td style="padding:10px;">Factory</td>
+        <td style="padding:10px;">יוצר אובייקטים לפי תנאי</td>
+        <td style="padding:10px;">createUser(type) → Admin/User</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+        <td style="padding:10px;">Middleware</td>
+        <td style="padding:10px;">שרשרת עיבוד</td>
+        <td style="padding:10px;">Express middleware chain</td>
+      </tr>
+    </table>
+
+    <h3 style="margin-top:25px;">MVC ב-Express</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// Model — מגדיר את הנתונים
+// models/User.js
+const userSchema = new mongoose.Schema({ name: String, email: String });
+module.exports = mongoose.model('User', userSchema);
+
+// Controller — מכיל את הלוגיקה
+// controllers/userController.js
+const User = require('../models/User');
+exports.getAll = async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+};
+
+// Route — מחבר URL ל-Controller
+// routes/userRoutes.js
+const router = require('express').Router();
+const ctrl = require('../controllers/userController');
+router.get('/', ctrl.getAll);
+module.exports = router;</div>
+  </details>
+  
+
+    <h3 style="margin-top:25px;">React Patterns</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// 1. Container/Presentational
+// Container = לוגיקה (fetch, state)
+// Presentational = רק UI (props בלבד)
+
+// 2. Custom Hook — שיתוף לוגיקה
+function useLocalStorage(key, init) {
+  const [val, setVal] = useState(() => {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : init;
+  });
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(val));
+  }, [key, val]);
+  return [val, setVal];
+}
+
+// 3. Compound Components
+// &lt;Tabs&gt;
+//   &lt;Tabs.Tab&gt;...&lt;/Tabs.Tab&gt;
+//   &lt;Tabs.Panel&gt;...&lt;/Tabs.Panel&gt;
+// &lt;/Tabs&gt;</div>
+  </details>
+  
+
+    <details class="deep-dive">
+      <summary>🔍 הסבר מעמיק — Design Patterns</summary>
+      <div class="dd-content">
+        <div class="level level-grandma">
+          <h4>🟢 רמת סבתא</h4>
+          <p>תחשבי על <strong>מתכונים</strong>. במקום להמציא כל ארוחה מחדש, יש <strong>תבניות ידועות</strong> — עוגיות, פיצה, סלט. כל אחת פותרת בעיה (רעב) בצורה מוכחת. Design Patterns = <strong>מתכונים לקוד</strong>.</p>
+          <p><strong>MVC</strong> = מפרידים בין מה (Model), איך נראה (View), ומה לעשות (Controller). כמו מטבח: מתכון, צלחת, טבח.</p>
+        </div>
+        <div class="level level-mid">
+          <h4>🟡 רמת ביניים</h4>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// Singleton — instance אחד בלבד
+class Database {
+  static instance = null;
+  static getInstance() {
+    if (!Database.instance) {
+      Database.instance = new Database();
+    }
+    return Database.instance;
+  }
+}
+
+// Observer — מנוי + פרסום
+class EventEmitter {
+  constructor() { this.listeners = {}; }
+  on(event, fn) { 
+    (this.listeners[event] ||= []).push(fn);
+  }
+  emit(event, data) {
+    this.listeners[event]?.forEach(fn => fn(data));
+  }
+}
+
+// Factory — יוצר אובייקטים לפי תנאי
+function createUser(role) {
+  if (role === 'admin') return new Admin();
+  return new RegularUser();
+}</div>
+  </details>
+  
+        </div>
+        <div class="level level-adv">
+          <h4>🔴 רמת מתקדמים</h4>
+          <p><strong>שאלות מבחן — זיהוי Pattern:</strong></p>
+          
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// Q: "Express middleware chain = ?"
+// A: Chain of Responsibility (שרשרת אחריות)
+app.use(cors());      // שלב 1
+app.use(auth());      // שלב 2  
+app.use(logger());    // שלב 3
+
+// Q: "React Context = ?"
+// A: Observer Pattern (מנוי + התראות)
+// Provider = publisher, useContext = subscriber
+
+// Q: "mongoose.connect() נקרא פעם אחת = ?"
+// A: Singleton Pattern
+
+// Q: "Custom Hook = ?"
+// A: מיקסין / Composition Pattern
+// שיתוף לוגיקה בלי inheritance</div>
+  </details>
+  
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 9. Destructuring ============ -->
+  <section id="destructuring">
+    <h2>9️⃣ Destructuring מתקדם <span class="diff-badge diff-medium" style="background:#ffc107;color:#333;padding:4px 8px;border-radius:12px;font-size:0.5em;vertical-align:middle;">בינוני</span></h2>
+    <p>פירוק מערכים ואובייקטים בצורה מתקדמת. שאלות ראיונות קלאסיות.</p>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// Nested Destructuring
+const user = { id: 1, info: { name: 'Dan', age: 30 } };
+const { info: { name, age } } = user; // name='Dan', age=30
+
+// Default Values (ערך ברירת מחדל אם לא קיים)
+const { role = 'Guest' } = user; 
+
+// Renaming Variables (שינוי שם המשתנה)
+const { info: { name: firstName } } = user; // firstName='Dan'
+
+// Array Swap (החלפת משתנים בלי משתנה עזר ע"י Destructuring)
+let a = 1, b = 2;
+[a, b] = [b, a]; // a=2, b=1
+
+// Rest Operator (...) — איסוף השאריות
+const [first, ...rest] = [1, 2, 3, 4]; // first=1, rest=[2,3,4]
+const { id, ...details } = user; // id=1, details={info:{...}}</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ 10. Promise Chaining ============ -->
+  <section id="promises">
+    <h2>1️⃣0️⃣ Promise Chaining Patterns <span class="diff-badge diff-hard" style="background:#ff6b6b;color:#fff;padding:4px 8px;border-radius:12px;font-size:0.5em;vertical-align:middle;">קשה</span></h2>
+    <p>ההבדל בין שרשור נכון של הבטחות לשגוי (Callback Hell חדש).</p>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌ שגוי (Callback Hell חדש — קינון מיותר)
+fetchUser().then(user => {
+  fetchPosts(user.id).then(posts => {
+    console.log(posts);
+  });
+});
+
+// ✅ נכון (Chaining — החזרת Promise מה-then הראשון ל-then הבא)
+fetchUser()
+  .then(user => fetchPosts(user.id)) // מחזיר Promise
+  .then(posts => console.log(posts))
+  .catch(err => console.error(err)); // תופס שגיאות מכל השרשרת
+
+// ✅ נכון ביותר (async/await — סינכרוני למראה)
+async function getData() {
+  try {
+    const user = await fetchUser();
+    const posts = await fetchPosts(user.id);
+    console.log(posts);
+  } catch(err) { 
+    console.error(err); 
+  }
+}</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ 11. ENV VARS ============ -->
+  <section id="env-vars">
+    <h2>1️⃣1️⃣ Environment Variables (.env)</h2>
+    <p>שמירת סודות וקונפיגורציות לפי סביבה (Dev/Prod).</p>
+    <ul style="padding-right:20px;line-height:1.8;">
+      <li><code class="inline">.env</code> <strong>לעולם לא יעלה ל-Git!</strong> (חובה להכניס ל-<code class="inline">.gitignore</code>)</li>
+      <li>ב-Node.js הגישה אליהם היא דרך <code class="inline">process.env.SECRET_KEY</code></li>
+      <li>כדי שקובץ <code class="inline">.env</code> ייטען ב-Node צריך את החבילה <code class="inline">dotenv</code> (<code class="inline">require('dotenv').config()</code>)</li>
+      <li>ב-React/Vite (Frontend) המשתנים חייבים להתחיל בקידומת כדי שה-Bundler יאפשר להם להיות חשופים לדפדפן (אחרת הם מוסתרים לאבטחה):
+        <ul style="padding-right:20px;">
+          <li>Create React App: מתחיל ב-<code class="inline">REACT_APP_</code></li>
+          <li>Vite: מתחיל ב-<code class="inline">VITE_</code></li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============ 12. Deployment ============ -->
+  <section id="deploy">
+    <h2>1️⃣2️⃣ Deployment Checklist</h2>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">✅ Client (Vercel / Netlify):
+1. build command מוגדר (npm run build)
+2. output directory מוגדר (dist או build)
+3. Rewrite rules (Vercel: vercel.json) בשביל React Router:
+   { "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
+4. העתקת סודות ל-Environment Variables בהגדרות ה-Dashboard.
+
+✅ Server (Render / Railway / Heroku):
+1. start command מוגדר (node server.js, לא nodemon!)
+2. פורט דינמי חובה: app.listen(process.env.PORT || 3000)
+3. שמירת URI של MongoDB ב-Environment Variables.
+4. הוספת IP של השרת ל-Network Access ב-MongoDB Atlas (או אישור הכל: 0.0.0.0/0)
+
+✅ CORS Configurations (חובה כשהשרת והלקוח בדומיינים שונים):
+app.use(cors({
+  origin: 'https://my-client-app.vercel.app', // רק הדומיין של הלקוח
+  credentials: true // חובה לעבודה עם Cookies (למשל HttpOnly Token)!
+}));</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ 13. package.json ============ -->
+  <section id="pkg-json">
+    <h2>1️⃣3️⃣ package.json Deep Dive</h2>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">{
+  "name": "my-app",         // שם הפרויקט (בלי רווחים)
+  "version": "1.0.0",       // SemVer (Major.Minor.Patch)
+  "main": "index.js",       // נקודת הכניסה (Entry point)
+  "scripts": {              // פקודות קיצור (npm run ...)
+    "start": "node index",  // ה-script שרץ בפרודקשן (שרת הענן יריץ אותו)!
+    "dev": "nodemon index"  // רק לסביבת פיתוח מקומית
+  },
+  "dependencies": {         // חבילות שחובה ב-Production (למשל express)
+    "express": "^4.18.2"    // ^ אומר "עדכן גרסאות Minor/Patch בלבד, לא Major"
+  },
+  "devDependencies": {      // חבילות רק ל-Development (למשל nodemon, jest, typescript)
+    "nodemon": "^3.0.1"     // לא יותקן על השרת האמיתי אם הוא רץ במצב production!
+  }
+}</div>
+  </details>
+  
+  </section>
+
+  <footer style="text-align:center;padding:30px;color:rgba(255,255,255,0.6);">
+    <p>📚 חזור לדשבורד לראות את ההתקדמות שלך</p>
+    <p>🎯 100/100 — בא לקראתך</p>
+  </footer>
+
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    if (window.scrollY > 300) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+  });
+</script>
+
+<script src="concept-widget.js"></script>
+<script src="theme-toggle.js"></script>
+<script src="breadcrumbs.js"></script>
+<script src="collapse-sections.js"></script>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

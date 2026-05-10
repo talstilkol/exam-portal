@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ בנה מאפס — 8 שלבים לפרויקט עובד</title>
+  <link rel="stylesheet" href="light-mode.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:'Segoe UI','Arial Hebrew',system-ui,sans-serif;
+    background:linear-gradient(180deg,#0a0e27 0%,#16213e 50%,#1a1a2e 100%);
+    background-attachment:fixed;
+    color:#e8e8e8;
+    line-height:1.7;
+    padding:20px;
+    min-height:100vh;
+  }
+  .container { max-width:1200px; margin:0 auto; }
+  a { color:inherit; text-decoration:none; }
+
+  /* Top nav */
+  .topnav { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+  .topnav a { padding:10px 22px; border-radius:30px; border:1px solid; transition:all .2s; font-size:0.95em; }
+  .topnav a.dash { background:rgba(78,205,196,0.15); border-color:rgba(78,205,196,0.4); color:#4ecdc4; }
+  .topnav a.ide { background:rgba(88,166,255,0.15); border-color:rgba(88,166,255,0.4); color:#79c0ff; }
+  .topnav a.map { background:rgba(255,217,61,0.15); border-color:rgba(255,217,61,0.4); color:#ffd93d; }
+  .topnav a.dbg { background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.4); color:#fca5a5; }
+  .topnav a:hover { transform:translateY(-2px); }
+
+  header {
+    text-align:center;
+    padding:50px 20px 30px;
+    background:radial-gradient(ellipse at center,rgba(132,204,22,0.18),transparent 60%);
+    border-radius:24px;
+    margin-bottom:24px;
+    border:2px solid rgba(132,204,22,0.25);
+  }
+  header h1 { font-size:3em; color:#bef264; margin-bottom:14px; }
+  header p { color:#cbd5e1; font-size:1.2em; max-width:800px; margin:0 auto; }
+
+  /* Progress bar */
+  .progress-wrap {
+    background:rgba(255,255,255,0.05);
+    border-radius:16px;
+    padding:20px 24px;
+    margin-bottom:24px;
+    border:1px solid rgba(255,255,255,0.08);
+    position:sticky;
+    top:10px;
+    z-index:50;
+    backdrop-filter:blur(10px);
+  }
+  .progress-row { display:flex; align-items:center; gap:14px; margin-bottom:10px; flex-wrap:wrap; }
+  .progress-row h3 { color:#bef264; font-size:1.05em; flex-shrink:0; }
+  .progress-bar {
+    flex:1;
+    min-width:200px;
+    height:14px;
+    background:rgba(0,0,0,0.4);
+    border-radius:7px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,0.1);
+  }
+  .progress-fill {
+    height:100%;
+    background:linear-gradient(90deg,#84cc16,#22c55e,#4ecdc4);
+    transition:width 0.4s ease;
+    width:0%;
+  }
+  .progress-stats { color:#cbd5e1; font-size:0.95em; font-weight:600; }
+  .progress-actions { display:flex; gap:10px; }
+  .progress-actions button {
+    padding:6px 14px;
+    background:rgba(78,205,196,0.15);
+    border:1px solid rgba(78,205,196,0.4);
+    border-radius:14px;
+    color:#4ecdc4;
+    font-family:inherit;
+    font-size:0.85em;
+    cursor:pointer;
+    transition:all .2s;
+  }
+  .progress-actions button:hover { background:rgba(78,205,196,0.3); }
+  .progress-actions button.danger { background:rgba(239,68,68,0.1); border-color:rgba(239,68,68,0.3); color:#fca5a5; }
+
+  /* Phase card */
+  .phase {
+    background:rgba(255,255,255,0.03);
+    border-radius:18px;
+    margin-bottom:18px;
+    border:1px solid rgba(255,255,255,0.08);
+    overflow:hidden;
+    transition:all .2s;
+  }
+  .phase.completed { border-color:rgba(132,204,22,0.4); background:rgba(132,204,22,0.04); }
+  .phase summary {
+    list-style:none;
+    cursor:pointer;
+    padding:22px 26px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    user-select:none;
+    transition:background .15s;
+  }
+  .phase summary:hover { background:rgba(255,255,255,0.04); }
+  .phase summary::-webkit-details-marker { display:none; }
+  .phase .ph-num {
+    width:50px; height:50px; line-height:50px;
+    background:linear-gradient(135deg,#84cc16,#16213e);
+    border-radius:50%;
+    text-align:center;
+    font-weight:bold;
+    font-size:1.3em;
+    color:#fff;
+    flex-shrink:0;
+    box-shadow:0 4px 14px rgba(132,204,22,0.3);
+  }
+  .phase.completed .ph-num { background:linear-gradient(135deg,#22c55e,#16213e); }
+  .phase.completed .ph-num::after { content:""; }
+  .phase .ph-info { flex:1; min-width:0; }
+  .phase .ph-info h3 { color:#fff; font-size:1.25em; margin-bottom:4px; }
+  .phase .ph-info p { color:#94a3b8; font-size:0.92em; }
+  .phase .ph-meta { display:flex; gap:8px; align-items:center; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; }
+  .phase .ph-time { padding:5px 12px; background:rgba(255,217,61,0.12); color:#ffd93d; border-radius:12px; font-size:0.8em; }
+  .phase .ph-progress {
+    padding:5px 12px;
+    background:rgba(255,255,255,0.05);
+    color:#cbd5e1;
+    border-radius:12px;
+    font-size:0.8em;
+    font-family:monospace;
+  }
+  .phase.completed .ph-progress { background:rgba(132,204,22,0.15); color:#bef264; }
+  .phase .ph-arrow { color:#7d8590; transition:transform 0.2s; flex-shrink:0; font-size:1.2em; }
+  .phase[open] .ph-arrow { transform:rotate(90deg); color:#bef264; }
+
+  .phase-body { padding:0 26px 24px; }
+
+  /* Steps inside phase */
+  .step {
+    background:#1e293b;
+    border-radius:12px;
+    padding:18px 22px;
+    margin-bottom:14px;
+    border:1px solid #334155;
+    transition:all .2s;
+  }
+  .step.checked { background:rgba(132,204,22,0.06); border-color:rgba(132,204,22,0.3); }
+  .step-header { display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+  .step-checkbox {
+    width:24px; height:24px;
+    border:2px solid #4ecdc4;
+    border-radius:6px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    transition:all .15s;
+    background:transparent;
+  }
+  .step-checkbox:hover { background:rgba(78,205,196,0.15); }
+  .step.checked .step-checkbox { background:#22c55e; border-color:#22c55e; }
+  .step.checked .step-checkbox::before { content:"✓"; color:#fff; font-weight:bold; }
+  .step-title { color:#fff; font-size:1.05em; font-weight:600; flex:1; }
+  .step.checked .step-title { color:#bef264; text-decoration:line-through; opacity:0.7; }
+  .step-explain { color:#cbd5e1; font-size:0.95em; margin-bottom:12px; line-height:1.65; }
+  .step-explain code { background:#0f172a; color:#a7f3d0; padding:1px 7px; border-radius:4px; font-family:'SF Mono',monospace; font-size:0.9em; }
+
+  /* Code/terminal blocks */
+  .code-block {
+    background:#0d1117;
+    border-radius:8px;
+    overflow:hidden;
+    margin:10px 0;
+    border:1px solid #21262d;
+    position:relative;
+  }
+  .code-header {
+    background:#161b22;
+    padding:8px 14px;
+    font-size:0.78em;
+    color:#7d8590;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #21262d;
+  }
+  .code-header .filename { color:#a5d6ff; font-family:monospace; }
+  .code-header .lang { background:rgba(255,255,255,0.05); padding:1px 8px; border-radius:4px; }
+  .copy-btn {
+    background:rgba(78,205,196,0.15);
+    border:1px solid rgba(78,205,196,0.3);
+    color:#4ecdc4;
+    padding:3px 12px;
+    border-radius:5px;
+    font-size:0.75em;
+    cursor:pointer;
+    font-family:inherit;
+    transition:all .15s;
+  }
+  .copy-btn:hover { background:rgba(78,205,196,0.3); }
+  .copy-btn.copied { background:rgba(132,204,22,0.2); color:#bef264; border-color:#bef264; }
+  pre {
+    padding:14px 18px;
+    color:#e6edf3;
+    font-family:'SF Mono','Consolas',monospace;
+    font-size:0.85em;
+    overflow-x:auto;
+    line-height:1.55;
+    direction:ltr;
+    text-align:left;
+  }
+  pre.terminal { color:#a7f3d0; background:#0a0f1a; }
+  pre.terminal .prompt { color:#7d8590; user-select:none; }
+  pre .k { color:#ff7b72; }
+  pre .s { color:#a5d6ff; }
+  pre .c { color:#8b949e; font-style:italic; }
+  pre .v { color:#79c0ff; }
+  pre .tt { color:#7ee787; }
+
+  /* What happens */
+  .what-happens {
+    background:rgba(88,166,255,0.06);
+    border-right:4px solid #58a6ff;
+    padding:12px 16px;
+    border-radius:8px;
+    margin:10px 0;
+    font-size:0.93em;
+    color:#a5d6ff;
+    line-height:1.6;
+  }
+  .what-happens strong { color:#79c0ff; }
+
+  /* Common mistake warning */
+  .mistake {
+    background:rgba(239,68,68,0.06);
+    border-right:4px solid #ef4444;
+    padding:12px 16px;
+    border-radius:8px;
+    margin:10px 0;
+    font-size:0.92em;
+    color:#fecaca;
+    line-height:1.6;
+  }
+  .mistake strong { color:#fca5a5; }
+
+  /* Step links */
+  .step-links { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .step-links a {
+    padding:5px 12px;
+    background:rgba(168,85,247,0.1);
+    border:1px solid rgba(168,85,247,0.3);
+    color:#d2a8ff;
+    border-radius:6px;
+    font-size:0.82em;
+    transition:all .2s;
+  }
+  .step-links a:hover { background:rgba(168,85,247,0.25); }
+
+  /* Final celebration */
+  .celebration {
+    text-align:center;
+    padding:60px 30px;
+    background:radial-gradient(ellipse at center,rgba(132,204,22,0.2),transparent 70%);
+    border-radius:24px;
+    border:2px solid rgba(132,204,22,0.4);
+    margin-top:30px;
+    display:none;
+  }
+  .celebration.show { display:block; animation:fadein 0.6s ease; }
+  @keyframes fadein { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  .celebration h2 { font-size:2.5em; color:#bef264; margin-bottom:14px; }
+  .celebration p { color:#cbd5e1; font-size:1.15em; max-width:700px; margin:0 auto 20px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="topnav">
+    <a href="00_dashboard.html" class="dash">← דשבורד</a>
+    <a href="IDE_project.html" class="ide">💻 פתח IDE</a>
+    <a href="MAP_master.html" class="map">🗺️ המפה הגדולה</a>
+    <a href="DEBUG_errors.html" class="dbg">🛠️ מילון שגיאות</a>
+  </div>
+
+  <header>
+    <h1>🛠️ בנה את הפרויקט מאפס</h1>
+    <p>8 שלבים, ~3 שעות, פרויקט עובד בסוף. עקוב אחרי הצעדים, סמן וי, תהיה Full-Stack Developer.</p>
+  </header>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-row">
+      <h3>📊 התקדמות</h3>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-stats" id="progressStats">0 / 0</span>
+      <div class="progress-actions">
+        <button onclick="expandAll()">📂 פתח הכל</button>
+        <button onclick="collapseAll()">📁 סגור הכל</button>
+        <button onclick="resetProgress()" class="danger">🔄 אפס</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PHASE 1: SETUP ============ -->
+  <details class="phase" data-phase="1" open>
+    <summary>
+      <div class="ph-num">1</div>
+      <div class="ph-info">
+        <h3>🚀 Setup — הקמת תיקיות והתקנות</h3>
+        <p>יוצרים שני פרויקטים: שרת (server) ולקוח (client). מתקינים את כל החבילות.</p>
+      </div>
+      <div class="ph-meta">
+        <span class="ph-time">⏱ 15 דק'</span>
+        <span class="ph-progress" data-phase-progress="1">0/4</span>
+        <span class="ph-arrow">▶</span>
+      </div>
+    </summary>
+    <div class="phase-body">
+
+      <div class="step" data-step="1-1">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">1.1 צור תיקייה ראשית</div>
+        </div>
+        <div class="step-explain">בוחרים מקום נח (לא ב-Desktop). פותחים terminal שם.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">Terminal</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre class="terminal"><span class="prompt">$ </span>mkdir task-manager-pro
+<span class="prompt">$ </span>cd task-manager-pro</pre>
+        </div>
+      </div>
+
+      <div class="step" data-step="1-2">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">1.2 צור את ה-Backend</div>
+        </div>
+        <div class="step-explain">תיקייה <code>server</code> עם Node + TypeScript + כל החבילות.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">Terminal — server</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre class="terminal"><span class="prompt">$ </span>mkdir server &amp;&amp; cd server
+<span class="prompt">$ </span>npm init -y
+<span class="prompt">$ </span>npm i express mongoose bcryptjs jsonwebtoken cors dotenv
+<span class="prompt">$ </span>npm i -D typescript ts-node-dev @types/express @types/jsonwebtoken @types/bcryptjs @types/cors
+<span class="prompt">$ </span>npx tsc --init</pre>
+        </div>
+        <div class="what-happens">
+          <strong>מה קורה?</strong> npm יוצר <code>node_modules/</code> (כבד!) ו-<code>package.json</code>. ה-<code>-D</code> אומר "רק לפיתוח, לא בייצור".
+        </div>
+      </div>
+
+      <div class="step" data-step="1-3">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">1.3 צור את ה-Frontend</div>
+        </div>
+        <div class="step-explain">חזור לתיקייה הראשית, צור React+TS+Vite.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">Terminal — client</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre class="terminal"><span class="prompt">$ </span>cd ..
+<span class="prompt">$ </span>npm create vite@latest client -- --template react-ts
+<span class="prompt">$ </span>cd client &amp;&amp; npm install
+<span class="prompt">$ </span>npm i react-router-dom
+<span class="prompt">$ </span>npm i -D tailwindcss postcss autoprefixer
+<span class="prompt">$ </span>npx tailwindcss init -p</pre>
+        </div>
+        <div class="step-links">
+          <a href="05_snippets.html#setup">📋 כל פקודות ההתקנה</a>
+          <a href="IDE_project.html">💻 ראה ב-IDE</a>
+        </div>
+      </div>
+
+      <div class="step" data-step="1-4">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">1.4 git init + commit ראשון</div>
+        </div>
+        <div class="step-explain">תמיד מתחילים git כבר ב-setup. שם <code>.gitignore</code> נכון!</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">Terminal — root</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre class="terminal"><span class="prompt">$ </span>cd ..
+<span class="prompt">$ </span>echo "node_modules/
+dist/
+.env
+.DS_Store" &gt; .gitignore
+<span class="prompt">$ </span>git init
+<span class="prompt">$ </span>git add .
+<span class="prompt">$ </span>git commit -m "Initial setup"</pre>
+        </div>
+        <div class="mistake">
+          <strong>⚠️ מלכודת:</strong> אם שכחת <code>.gitignore</code> ועלית <code>node_modules/</code> ל-git — קשה להחזיר. תמיד <code>.gitignore</code> ראשון!
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ============ PHASE 2: ENV + DB ============ -->
+  <details class="phase" data-phase="2">
+    <summary>
+      <div class="ph-num">2</div>
+      <div class="ph-info">
+        <h3>🔑 ENV + חיבור ל-MongoDB</h3>
+        <p>מגדירים סודות ב-<code>.env</code> ומחברים את השרת ל-DB.</p>
+      </div>
+      <div class="ph-meta">
+        <span class="ph-time">⏱ 10 דק'</span>
+        <span class="ph-progress" data-phase-progress="2">0/3</span>
+        <span class="ph-arrow">▶</span>
+      </div>
+    </summary>
+    <div class="phase-body">
+
+      <div class="step" data-step="2-1">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">2.1 צור server/.env</div>
+        </div>
+        <div class="step-explain">קובץ הסודות. MongoDB צריך לרוץ במחשב (או Atlas cloud).</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">server/.env</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre>PORT=3000
+MONGO_URI=mongodb://localhost:27017/taskmanager
+JWT_SECRET=change-me-to-random-string-32-chars+
+CLIENT_URL=http://localhost:5173</pre>
+        </div>
+        <div class="step-links">
+          <a href="02_missing_topics.html#env-vars">🔑 ENV Variables</a>
+          <a href="DEBUG_errors.html">🛠️ אם MongoDB לא מתחבר</a>
+        </div>
+      </div>
+
+      <div class="step" data-step="2-2">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">2.2 צור server/src/db.ts</div>
+        </div>
+        <div class="step-explain">פונקציה שפותחת חיבור ל-MongoDB. אם נכשל — השרת לא עולה.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">server/src/db.ts</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre><span class="k">import</span> mongoose <span class="k">from</span> <span class="s">'mongoose'</span>;
+
+<span class="k">export async function</span> <span class="v">connectDB</span>() {
+  <span class="k">try</span> {
+    <span class="k">const</span> uri = process.env.<span class="v">MONGO_URI</span>!;
+    <span class="k">await</span> mongoose.<span class="v">connect</span>(uri);
+    console.<span class="v">log</span>(<span class="s">'📦 MongoDB connected'</span>);
+  } <span class="k">catch</span> (err) {
+    console.<span class="v">error</span>(err);
+    process.<span class="v">exit</span>(1);
+  }
+}</pre>
+        </div>
+      </div>
+
+      <div class="step" data-step="2-3">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">2.3 הפעל את MongoDB מקומית</div>
+        </div>
+        <div class="step-explain">לפני הרצת השרת — וודא ש-MongoDB רץ.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">Terminal</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre class="terminal"><span class="prompt"># </span>Mac:
+<span class="prompt">$ </span>brew services start mongodb-community
+
+<span class="prompt"># </span>Linux:
+<span class="prompt">$ </span>sudo systemctl start mongod
+
+<span class="prompt"># </span>Windows:
+<span class="prompt">$ </span>net start MongoDB</pre>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ============ PHASE 3: MODELS ============ -->
+  <details class="phase" data-phase="3">
+    <summary>
+      <div class="ph-num">3</div>
+      <div class="ph-info">
+        <h3>📦 Models — Schema של User + Task</h3>
+        <p>מגדירים מבנה הנתונים ב-DB. כולל hash של סיסמה ב-pre-save hook.</p>
+      </div>
+      <div class="ph-meta">
+        <span class="ph-time">⏱ 20 דק'</span>
+        <span class="ph-progress" data-phase-progress="3">0/2</span>
+        <span class="ph-arrow">▶</span>
+      </div>
+    </summary>
+    <div class="phase-body">
+
+      <div class="step" data-step="3-1">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">3.1 צור server/src/models/User.ts</div>
+        </div>
+        <div class="step-explain">משתמש עם email+password+name. סיסמה מוצפנת אוטומטית עם bcrypt.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">server/src/models/User.ts</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre><span class="k">import</span> mongoose, { Schema } <span class="k">from</span> <span class="s">'mongoose'</span>;
+<span class="k">import</span> bcrypt <span class="k">from</span> <span class="s">'bcryptjs'</span>;
+
+<span class="k">const</span> userSchema = <span class="k">new</span> Schema({
+  email: { type: String, required: <span class="k">true</span>, unique: <span class="k">true</span> },
+  password: { type: String, required: <span class="k">true</span>, minlength: 6 },
+  name: { type: String, required: <span class="k">true</span> }
+}, { timestamps: <span class="k">true</span> });
+
+userSchema.<span class="v">pre</span>(<span class="s">'save'</span>, <span class="k">async function</span>(next) {
+  <span class="k">if</span> (!<span class="k">this</span>.<span class="v">isModified</span>(<span class="s">'password'</span>)) <span class="k">return</span> next();
+  <span class="k">this</span>.password = <span class="k">await</span> bcrypt.<span class="v">hash</span>(<span class="k">this</span>.password, 10);
+  next();
+});
+
+userSchema.methods.<span class="v">comparePassword</span> = <span class="k">function</span>(plain: string) {
+  <span class="k">return</span> bcrypt.<span class="v">compare</span>(plain, <span class="k">this</span>.password);
+};
+
+<span class="k">export default</span> mongoose.<span class="v">model</span>(<span class="s">'User'</span>, userSchema);</pre>
+        </div>
+        <div class="what-happens">
+          <strong>למה pre-save?</strong> אם מישהו משתמש ב-<code>User.create()</code> או <code>user.save()</code> — bcrypt רץ אוטומטית. אי אפשר "לשכוח".
+        </div>
+        <div class="step-links">
+          <a href="01_master_theory.html#auth">🔐 בקרא על bcrypt</a>
+          <a href="IDE_project.html">💻 ראה במלואו ב-IDE</a>
+        </div>
+      </div>
+
+      <div class="step" data-step="3-2">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">3.2 צור server/src/models/Task.ts</div>
+        </div>
+        <div class="step-explain">משימה עם title+status. הקשר ל-User דרך <code>ref</code>.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">server/src/models/Task.ts</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre><span class="k">import</span> mongoose, { Schema } <span class="k">from</span> <span class="s">'mongoose'</span>;
+
+<span class="k">const</span> taskSchema = <span class="k">new</span> Schema({
+  title: { type: String, required: <span class="k">true</span>, maxlength: 200 },
+  status: { type: String, enum: [<span class="s">'active'</span>, <span class="s">'done'</span>], default: <span class="s">'active'</span> },
+  user: { type: Schema.Types.ObjectId, ref: <span class="s">'User'</span>, required: <span class="k">true</span> }
+}, { timestamps: <span class="k">true</span> });
+
+<span class="k">export default</span> mongoose.<span class="v">model</span>(<span class="s">'Task'</span>, taskSchema);</pre>
+        </div>
+        <div class="what-happens">
+          <strong>מה זה <code>ref: 'User'</code>?</strong> כמו foreign key ב-SQL. מאפשר אחר כך <code>Task.find().populate('user')</code> — מקבלים את כל פרטי המשתמש בתוצאה.
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ============ PHASE 4: ROUTES ============ -->
+  <details class="phase" data-phase="4">
+    <summary>
+      <div class="ph-num">4</div>
+      <div class="ph-info">
+        <h3>🚂 Auth Routes — Register + Login</h3>
+        <p>מאפשרים למשתמשים להירשם ולהתחבר. מחזירים JWT.</p>
+      </div>
+      <div class="ph-meta">
+        <span class="ph-time">⏱ 25 דק'</span>
+        <span class="ph-progress" data-phase-progress="4">0/2</span>
+        <span class="ph-arrow">▶</span>
+      </div>
+    </summary>
+    <div class="phase-body">
+
+      <div class="step" data-step="4-1">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">4.1 צור middleware/auth.ts</div>
+        </div>
+        <div class="step-explain">בודק token בכל בקשה מוגנת.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">server/src/middleware/auth.ts</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre><span class="k">import</span> { Request, Response, NextFunction } <span class="k">from</span> <span class="s">'express'</span>;
+<span class="k">import</span> jwt <span class="k">from</span> <span class="s">'jsonwebtoken'</span>;
+
+<span class="k">declare global</span> {
+  <span class="k">namespace</span> Express {
+    <span class="k">interface</span> Request { userId?: string; }
+  }
+}
+
+<span class="k">export function</span> <span class="v">authMiddleware</span>(req: Request, res: Response, next: NextFunction) {
+  <span class="k">const</span> header = req.headers.authorization;
+  <span class="k">if</span> (!header?.<span class="v">startsWith</span>(<span class="s">'Bearer '</span>)) {
+    <span class="k">return</span> res.<span class="v">status</span>(401).<span class="v">json</span>({ error: <span class="s">'Token required'</span> });
+  }
+  <span class="k">try</span> {
+    <span class="k">const</span> payload = jwt.<span class="v">verify</span>(header.<span class="v">slice</span>(7), process.env.<span class="v">JWT_SECRET</span>!) <span class="k">as</span> { userId: string };
+    req.userId = payload.userId;
+    next();
+  } <span class="k">catch</span> {
+    res.<span class="v">status</span>(401).<span class="v">json</span>({ error: <span class="s">'Invalid token'</span> });
+  }
+}</pre>
+        </div>
+        <div class="step-links">
+          <a href="01_master_theory.html#auth">🔐 JWT Flow מלא</a>
+          <a href="IDE_project.html">💻 middleware/auth.ts</a>
+        </div>
+      </div>
+
+      <div class="step" data-step="4-2">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">4.2 צור routes/auth.ts</div>
+        </div>
+        <div class="step-explain">POST /register + POST /login. שניהם מחזירים JWT.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">server/src/routes/auth.ts</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre><span class="k">import</span> { Router } <span class="k">from</span> <span class="s">'express'</span>;
+<span class="k">import</span> jwt <span class="k">from</span> <span class="s">'jsonwebtoken'</span>;
+<span class="k">import</span> User <span class="k">from</span> <span class="s">'../models/User.js'</span>;
+
+<span class="k">const</span> router = <span class="v">Router</span>();
+
+router.<span class="v">post</span>(<span class="s">'/register'</span>, <span class="k">async</span> (req, res) =&gt; {
+  <span class="k">const</span> { email, password, name } = req.body;
+  <span class="k">if</span> (<span class="k">await</span> User.<span class="v">findOne</span>({ email })) {
+    <span class="k">return</span> res.<span class="v">status</span>(409).<span class="v">json</span>({ error: <span class="s">'Email taken'</span> });
+  }
+  <span class="k">const</span> user = <span class="k">await</span> User.<span class="v">create</span>({ email, password, name });
+  <span class="k">const</span> token = jwt.<span class="v">sign</span>({ userId: user.id }, process.env.<span class="v">JWT_SECRET</span>!, { expiresIn: <span class="s">'7d'</span> });
+  res.<span class="v">json</span>({ token, user: { id: user.id, email, name } });
+});
+
+router.<span class="v">post</span>(<span class="s">'/login'</span>, <span class="k">async</span> (req, res) =&gt; {
+  <span class="k">const</span> { email, password } = req.body;
+  <span class="k">const</span> user: any = <span class="k">await</span> User.<span class="v">findOne</span>({ email });
+  <span class="k">if</span> (!user || !(<span class="k">await</span> user.<span class="v">comparePassword</span>(password))) {
+    <span class="k">return</span> res.<span class="v">status</span>(401).<span class="v">json</span>({ error: <span class="s">'Bad credentials'</span> });
+  }
+  <span class="k">const</span> token = jwt.<span class="v">sign</span>({ userId: user.id }, process.env.<span class="v">JWT_SECRET</span>!, { expiresIn: <span class="s">'7d'</span> });
+  res.<span class="v">json</span>({ token, user: { id: user.id, email: user.email, name: user.name } });
+});
+
+<span class="k">export default</span> router;</pre>
+        </div>
+        <div class="mistake">
+          <strong>⚠️ אבטחה:</strong> תמיד אותה הודעת שגיאה ל-"user not found" ול-"wrong password". אחרת תוקף יודע אילו אימיילים קיימים!
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ============ PHASE 5: TASK CRUD ============ -->
+  <details class="phase" data-phase="5">
+    <summary>
+      <div class="ph-num">5</div>
+      <div class="ph-info">
+        <h3>📋 Task Routes — CRUD מלא</h3>
+        <p>GET, POST, PUT, DELETE על משימות. כל פעולה מוגנת + מסוננת לפי משתמש.</p>
+      </div>
+      <div class="ph-meta">
+        <span class="ph-time">⏱ 25 דק'</span>
+        <span class="ph-progress" data-phase-progress="5">0/2</span>
+        <span class="ph-arrow">▶</span>
+      </div>
+    </summary>
+    <div class="phase-body">
+
+      <div class="step" data-step="5-1">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">5.1 צור routes/tasks.ts</div>
+        </div>
+        <div class="step-explain">כל ה-routes מוגנים. תמיד מסננים <code>{ user: req.userId }</code>!</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">server/src/routes/tasks.ts</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre><span class="k">import</span> { Router } <span class="k">from</span> <span class="s">'express'</span>;
+<span class="k">import</span> Task <span class="k">from</span> <span class="s">'../models/Task.js'</span>;
+<span class="k">import</span> { authMiddleware } <span class="k">from</span> <span class="s">'../middleware/auth.js'</span>;
+
+<span class="k">const</span> router = <span class="v">Router</span>();
+router.<span class="v">use</span>(authMiddleware);
+
+router.<span class="v">get</span>(<span class="s">'/'</span>, <span class="k">async</span> (req, res) =&gt; {
+  <span class="k">const</span> tasks = <span class="k">await</span> Task.<span class="v">find</span>({ user: req.userId }).<span class="v">sort</span>({ createdAt: -1 });
+  res.<span class="v">json</span>(tasks);
+});
+
+router.<span class="v">post</span>(<span class="s">'/'</span>, <span class="k">async</span> (req, res) =&gt; {
+  <span class="k">const</span> task = <span class="k">await</span> Task.<span class="v">create</span>({ ...req.body, user: req.userId });
+  res.<span class="v">status</span>(201).<span class="v">json</span>(task);
+});
+
+router.<span class="v">put</span>(<span class="s">'/:id'</span>, <span class="k">async</span> (req, res) =&gt; {
+  <span class="k">const</span> task = <span class="k">await</span> Task.<span class="v">findOneAndUpdate</span>(
+    { _id: req.params.id, user: req.userId }, req.body, { new: <span class="k">true</span> }
+  );
+  res.<span class="v">json</span>(task);
+});
+
+router.<span class="v">delete</span>(<span class="s">'/:id'</span>, <span class="k">async</span> (req, res) =&gt; {
+  <span class="k">await</span> Task.<span class="v">deleteOne</span>({ _id: req.params.id, user: req.userId });
+  res.<span class="v">status</span>(204).<span class="v">end</span>();
+});
+
+<span class="k">export default</span> router;</pre>
+        </div>
+        <div class="mistake">
+          <strong>⚠️ אבטחה קריטית:</strong> כל endpoint חייב <code>{ user: req.userId }</code>. אחרת משתמש יכול לראות/לערוך משימות של אחרים!
+        </div>
+      </div>
+
+      <div class="step" data-step="5-2">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">5.2 צור server/src/server.ts והפעל</div>
+        </div>
+        <div class="step-explain">המאחד הכל. הפעל ובדוק עם curl.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">server/src/server.ts</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre><span class="k">import</span> express <span class="k">from</span> <span class="s">'express'</span>;
+<span class="k">import</span> cors <span class="k">from</span> <span class="s">'cors'</span>;
+<span class="k">import</span> dotenv <span class="k">from</span> <span class="s">'dotenv'</span>;
+<span class="k">import</span> { connectDB } <span class="k">from</span> <span class="s">'./db.js'</span>;
+<span class="k">import</span> authRouter <span class="k">from</span> <span class="s">'./routes/auth.js'</span>;
+<span class="k">import</span> tasksRouter <span class="k">from</span> <span class="s">'./routes/tasks.js'</span>;
+
+dotenv.<span class="v">config</span>();
+<span class="k">const</span> app = <span class="v">express</span>();
+
+app.<span class="v">use</span>(<span class="v">cors</span>({ origin: process.env.<span class="v">CLIENT_URL</span> }));
+app.<span class="v">use</span>(express.<span class="v">json</span>());
+
+app.<span class="v">use</span>(<span class="s">'/api/auth'</span>, authRouter);
+app.<span class="v">use</span>(<span class="s">'/api/tasks'</span>, tasksRouter);
+
+connectDB().<span class="v">then</span>(() =&gt; {
+  app.<span class="v">listen</span>(3000, () =&gt; console.<span class="v">log</span>(<span class="s">'✅ Server on :3000'</span>));
+});</pre>
+        </div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">Terminal — server/</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre class="terminal"><span class="prompt">$ </span>npx ts-node-dev --respawn src/server.ts
+
+<span class="prompt"># </span>בדיקה (בtab אחר):
+<span class="prompt">$ </span>curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"a@b.com","password":"123456","name":"Tal"}'</pre>
+        </div>
+        <div class="step-links">
+          <a href="DEBUG_errors.html">🛠️ אם יש שגיאה</a>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ============ PHASE 6: REACT BASE ============ -->
+  <details class="phase" data-phase="6">
+    <summary>
+      <div class="ph-num">6</div>
+      <div class="ph-info">
+        <h3>⚛️ Frontend — Auth + Router</h3>
+        <p>App + Login + useAuth hook + API client.</p>
+      </div>
+      <div class="ph-meta">
+        <span class="ph-time">⏱ 35 דק'</span>
+        <span class="ph-progress" data-phase-progress="6">0/3</span>
+        <span class="ph-arrow">▶</span>
+      </div>
+    </summary>
+    <div class="phase-body">
+
+      <div class="step" data-step="6-1">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">6.1 צור api/client.ts</div>
+        </div>
+        <div class="step-explain">wrapper ל-fetch שמצרף JWT אוטומטית בכל בקשה.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">client/src/api/client.ts</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre><span class="k">const</span> BASE = <span class="s">'http://localhost:3000/api'</span>;
+
+<span class="k">async function</span> <span class="v">request</span>&lt;T&gt;(path: string, options: RequestInit = {}): Promise&lt;T&gt; {
+  <span class="k">const</span> token = localStorage.<span class="v">getItem</span>(<span class="s">'token'</span>);
+  <span class="k">const</span> res = <span class="k">await</span> <span class="v">fetch</span>(<span class="s">`</span><span class="v">${</span>BASE<span class="v">}${</span>path<span class="v">}</span><span class="s">`</span>, {
+    ...options,
+    headers: {
+      <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>,
+      ...(token &amp;&amp; { Authorization: <span class="s">`Bearer </span><span class="v">${</span>token<span class="v">}</span><span class="s">`</span> }),
+      ...options.headers,
+    },
+  });
+  <span class="k">if</span> (!res.ok) <span class="k">throw new</span> <span class="v">Error</span>((<span class="k">await</span> res.<span class="v">json</span>()).error);
+  <span class="k">return</span> res.status === 204 ? (<span class="k">null as</span> T) : res.<span class="v">json</span>();
+}
+
+<span class="k">export const</span> api = {
+  get:    &lt;T&gt;(p: string) =&gt; <span class="v">request</span>&lt;T&gt;(p),
+  post:   &lt;T&gt;(p: string, b: unknown) =&gt; <span class="v">request</span>&lt;T&gt;(p, { method: <span class="s">'POST'</span>, body: <span class="v">JSON</span>.<span class="v">stringify</span>(b) }),
+  put:    &lt;T&gt;(p: string, b: unknown) =&gt; <span class="v">request</span>&lt;T&gt;(p, { method: <span class="s">'PUT'</span>, body: <span class="v">JSON</span>.<span class="v">stringify</span>(b) }),
+  delete: &lt;T&gt;(p: string) =&gt; <span class="v">request</span>&lt;T&gt;(p, { method: <span class="s">'DELETE'</span> }),
+};</pre>
+        </div>
+      </div>
+
+      <div class="step" data-step="6-2">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">6.2 צור hooks/useAuth.ts</div>
+        </div>
+        <div class="step-explain">Custom hook לניהול login/logout + token.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">client/src/hooks/useAuth.ts</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre><span class="k">import</span> { useState, useCallback } <span class="k">from</span> <span class="s">'react'</span>;
+<span class="k">import</span> { api } <span class="k">from</span> <span class="s">'../api/client'</span>;
+
+<span class="k">export function</span> <span class="v">useAuth</span>() {
+  <span class="k">const</span> [token, setToken] = <span class="v">useState</span>&lt;string | <span class="k">null</span>&gt;(
+    () =&gt; localStorage.<span class="v">getItem</span>(<span class="s">'token'</span>)
+  );
+
+  <span class="k">const</span> login = <span class="v">useCallback</span>(<span class="k">async</span> (email: string, pw: string) =&gt; {
+    <span class="k">const</span> data: any = <span class="k">await</span> api.<span class="v">post</span>(<span class="s">'/auth/login'</span>, { email, password: pw });
+    localStorage.<span class="v">setItem</span>(<span class="s">'token'</span>, data.token);
+    setToken(data.token);
+  }, []);
+
+  <span class="k">const</span> logout = <span class="v">useCallback</span>(() =&gt; {
+    localStorage.<span class="v">removeItem</span>(<span class="s">'token'</span>);
+    setToken(<span class="k">null</span>);
+  }, []);
+
+  <span class="k">return</span> { token, login, logout };
+}</pre>
+        </div>
+      </div>
+
+      <div class="step" data-step="6-3">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">6.3 עדכן App.tsx + main.tsx</div>
+        </div>
+        <div class="step-explain">Routes: Login + Dashboard מוגן.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">client/src/App.tsx</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre><span class="k">import</span> { Routes, Route, Navigate } <span class="k">from</span> <span class="s">'react-router-dom'</span>;
+<span class="k">import</span> { useAuth } <span class="k">from</span> <span class="s">'./hooks/useAuth'</span>;
+<span class="k">import</span> Login <span class="k">from</span> <span class="s">'./pages/Login'</span>;
+<span class="k">import</span> Dashboard <span class="k">from</span> <span class="s">'./pages/Dashboard'</span>;
+
+<span class="k">function</span> <span class="v">PrivateRoute</span>({ children }: any) {
+  <span class="k">const</span> { token } = <span class="v">useAuth</span>();
+  <span class="k">return</span> token ? children : &lt;<span class="tt">Navigate</span> to=<span class="s">"/login"</span> /&gt;;
+}
+
+<span class="k">export default function</span> <span class="v">App</span>() {
+  <span class="k">return</span> (
+    &lt;<span class="tt">Routes</span>&gt;
+      &lt;<span class="tt">Route</span> path=<span class="s">"/login"</span> element={&lt;<span class="tt">Login</span> /&gt;} /&gt;
+      &lt;<span class="tt">Route</span> path=<span class="s">"/"</span> element={&lt;<span class="tt">PrivateRoute</span>&gt;&lt;<span class="tt">Dashboard</span> /&gt;&lt;/<span class="tt">PrivateRoute</span>&gt;} /&gt;
+    &lt;/<span class="tt">Routes</span>&gt;
+  );
+}</pre>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ============ PHASE 7: COMPONENTS ============ -->
+  <details class="phase" data-phase="7">
+    <summary>
+      <div class="ph-num">7</div>
+      <div class="ph-info">
+        <h3>🎨 Components — Login + Dashboard + TaskList</h3>
+        <p>הדפים והרכיבים שהמשתמש רואה.</p>
+      </div>
+      <div class="ph-meta">
+        <span class="ph-time">⏱ 40 דק'</span>
+        <span class="ph-progress" data-phase-progress="7">0/3</span>
+        <span class="ph-arrow">▶</span>
+      </div>
+    </summary>
+    <div class="phase-body">
+
+      <div class="step" data-step="7-1">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">7.1 דף Login</div>
+        </div>
+        <div class="step-explain">Form עם controlled inputs. preventDefault + try/catch.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">client/src/pages/Login.tsx</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre><span class="k">import</span> { useState } <span class="k">from</span> <span class="s">'react'</span>;
+<span class="k">import</span> { useNavigate } <span class="k">from</span> <span class="s">'react-router-dom'</span>;
+<span class="k">import</span> { useAuth } <span class="k">from</span> <span class="s">'../hooks/useAuth'</span>;
+
+<span class="k">export default function</span> <span class="v">Login</span>() {
+  <span class="k">const</span> [email, setEmail] = <span class="v">useState</span>(<span class="s">''</span>);
+  <span class="k">const</span> [pw, setPw] = <span class="v">useState</span>(<span class="s">''</span>);
+  <span class="k">const</span> [err, setErr] = <span class="v">useState</span>(<span class="s">''</span>);
+  <span class="k">const</span> { login } = <span class="v">useAuth</span>();
+  <span class="k">const</span> nav = <span class="v">useNavigate</span>();
+
+  <span class="k">const</span> handle = <span class="k">async</span> (e: any) =&gt; {
+    e.<span class="v">preventDefault</span>();
+    <span class="k">try</span> { <span class="k">await</span> <span class="v">login</span>(email, pw); <span class="v">nav</span>(<span class="s">'/'</span>); }
+    <span class="k">catch</span> (e: any) { <span class="v">setErr</span>(e.message); }
+  };
+
+  <span class="k">return</span> (
+    &lt;<span class="tt">form</span> onSubmit={handle} className=<span class="s">"max-w-sm mx-auto p-6"</span>&gt;
+      &lt;<span class="tt">h1</span> className=<span class="s">"text-2xl font-bold mb-4"</span>&gt;Login&lt;/<span class="tt">h1</span>&gt;
+      {err &amp;&amp; &lt;<span class="tt">div</span> className=<span class="s">"text-red-500"</span>&gt;{err}&lt;/<span class="tt">div</span>&gt;}
+      &lt;<span class="tt">input</span> value={email} onChange={(e) =&gt; <span class="v">setEmail</span>(e.target.value)} className=<span class="s">"border p-2 w-full"</span> /&gt;
+      &lt;<span class="tt">input</span> type=<span class="s">"password"</span> value={pw} onChange={(e) =&gt; <span class="v">setPw</span>(e.target.value)} className=<span class="s">"border p-2 w-full mt-2"</span> /&gt;
+      &lt;<span class="tt">button</span> className=<span class="s">"bg-blue-500 text-white p-2 w-full mt-3"</span>&gt;Login&lt;/<span class="tt">button</span>&gt;
+    &lt;/<span class="tt">form</span>&gt;
+  );
+}</pre>
+        </div>
+      </div>
+
+      <div class="step" data-step="7-2">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">7.2 דף Dashboard + TaskList + TaskForm</div>
+        </div>
+        <div class="step-explain">פתח את ה-IDE לראות את הקוד המלא — הוא ארוך מדי בשביל כאן. זה הזמן לחקות בעצמך!</div>
+        <div class="step-links">
+          <a href="IDE_project.html">💻 פתח Dashboard.tsx ב-IDE</a>
+          <a href="IDE_project.html">💻 פתח TaskList.tsx</a>
+          <a href="IDE_project.html">💻 פתח TaskForm.tsx</a>
+        </div>
+      </div>
+
+      <div class="step" data-step="7-3">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">7.3 הפעל את שני השרתים בו-זמנית</div>
+        </div>
+        <div class="step-explain">2 terminals: אחד לשרת, אחד ללקוח.</div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">Terminal 1 — server/</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre class="terminal"><span class="prompt">$ </span>cd server &amp;&amp; npx ts-node-dev src/server.ts</pre>
+        </div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">Terminal 2 — client/</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre class="terminal"><span class="prompt">$ </span>cd client &amp;&amp; npm run dev
+<span class="prompt"># </span>פתח http://localhost:5173</pre>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ============ PHASE 8: SUBMIT ============ -->
+  <details class="phase" data-phase="8">
+    <summary>
+      <div class="ph-num">8</div>
+      <div class="ph-info">
+        <h3>📦 הגשה — בדיקה אחרונה + zip</h3>
+        <p>צ'קליסט סופי לפני שליחה.</p>
+      </div>
+      <div class="ph-meta">
+        <span class="ph-time">⏱ 10 דק'</span>
+        <span class="ph-progress" data-phase-progress="8">0/4</span>
+        <span class="ph-arrow">▶</span>
+      </div>
+    </summary>
+    <div class="phase-body">
+
+      <div class="step" data-step="8-1">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">8.1 כתוב README.md</div>
+        </div>
+        <div class="step-explain">בודק יראה אותו ראשון. שמות clear, run instructions.</div>
+        <div class="step-links">
+          <a href="IDE_project.html">💻 ראה README ב-IDE</a>
+          <a href="06_strategy.html#submission">📋 צ'קליסט הגשה</a>
+        </div>
+      </div>
+
+      <div class="step" data-step="8-2">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">8.2 בדוק שהכל עובד</div>
+        </div>
+        <div class="step-explain">Register → Login → הוסף משימה → סמן done → מחק → רענן.</div>
+        <div class="mistake">
+          <strong>בדוק שאין errors בלוג וברשת!</strong> פתח DevTools → Console + Network. אסור שיהיה אדום.
+        </div>
+      </div>
+
+      <div class="step" data-step="8-3">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">8.3 git commit אחרון</div>
+        </div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">Terminal — root</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre class="terminal"><span class="prompt">$ </span>git add .
+<span class="prompt">$ </span>git commit -m "Final submission"
+<span class="prompt">$ </span>git push origin main</pre>
+        </div>
+      </div>
+
+      <div class="step" data-step="8-4">
+        <div class="step-header">
+          <div class="step-checkbox"></div>
+          <div class="step-title">8.4 צור zip להגשה</div>
+        </div>
+        
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">
+          <div class="code-header"><span class="filename">Terminal</span><button class="copy-btn">העתק</button></div>
+  </details>
+  
+<pre class="terminal"><span class="prompt">$ </span>cd ..
+<span class="prompt">$ </span>zip -r task-manager.zip task-manager-pro \
+  -x <span class="s">"*/node_modules/*"</span> \
+  -x <span class="s">"*/.git/*"</span> \
+  -x <span class="s">"*/dist/*"</span>
+<span class="prompt">$ </span>ls -lh task-manager.zip
+<span class="prompt"># </span>אמור להיות פחות מ-2MB</pre>
+        </div>
+        <div class="step-links">
+          <a href="DEBUG_errors.html">🛠️ אם הזיפ &gt; 100MB</a>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- Final celebration -->
+  <div class="celebration" id="celebration">
+    <h2>🎉 מזל טוב! בנית פרויקט Full-Stack מאפס!</h2>
+    <p>אתה יודע עכשיו לבנות אפליקציה מלאה — Backend, Frontend, Auth, DB, Deploy. אם הצלחת את התהליך הזה — אתה מוכן ל-100/100 במבחן.</p>
+    <p>🎯 הצעדים הבאים: תרגל עם <a href="03_exam_solutions.html" style="color:#bef264;text-decoration:underline;">4 מבחני הדמייה</a>, ראה את <a href="MAP_master.html" style="color:#bef264;text-decoration:underline;">המפה הגדולה</a>, או <a href="00_dashboard.html" style="color:#bef264;text-decoration:underline;">חזור לדשבורד</a>.</p>
+  </div>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'build_walkthrough_progress';
+const allCheckboxes = document.querySelectorAll('.step-checkbox');
+const allSteps = document.querySelectorAll('.step');
+const phases = document.querySelectorAll('.phase');
+
+// Load saved progress
+function loadProgress() {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  allSteps.forEach(step => {
+    const id = step.dataset.step;
+    if (saved[id]) {
+      step.classList.add('checked');
+    }
+  });
+  updateProgress();
+}
+
+// Save progress
+function saveProgress() {
+  const state = {};
+  allSteps.forEach(step => {
+    if (step.classList.contains('checked')) {
+      state[step.dataset.step] = true;
+    }
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// Update bars
+function updateProgress() {
+  const total = allSteps.length;
+  const checked = document.querySelectorAll('.step.checked').length;
+  const pct = total === 0 ? 0 : Math.round((checked / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressStats').textContent = `${checked}/${total} (${pct}%)`;
+
+  // Per-phase progress
+  phases.forEach(phase => {
+    const phaseSteps = phase.querySelectorAll('.step');
+    const phaseChecked = phase.querySelectorAll('.step.checked').length;
+    const stat = phase.querySelector('[data-phase-progress]');
+    if (stat) stat.textContent = `${phaseChecked}/${phaseSteps.length}`;
+    phase.classList.toggle('completed', phaseChecked === phaseSteps.length && phaseSteps.length > 0);
+  });
+
+  // Show celebration if all done
+  document.getElementById('celebration').classList.toggle('show', checked === total && total > 0);
+}
+
+// Click handlers
+allCheckboxes.forEach(cb => {
+  cb.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const step = cb.closest('.step');
+    step.classList.toggle('checked');
+    saveProgress();
+    updateProgress();
+  });
+});
+
+// Copy buttons
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const codeBlock = btn.closest('.code-block');
+    const code = codeBlock.querySelector('pre').innerText;
+    try {
+      await navigator.clipboard.writeText(code);
+      btn.classList.add('copied');
+      btn.textContent = '✓ הועתק';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.textContent = 'העתק';
+      }, 1500);
+    } catch (err) {
+      btn.textContent = 'שגיאה';
+    }
+  });
+});
+
+function expandAll() {
+  phases.forEach(p => p.open = true);
+}
+function collapseAll() {
+  phases.forEach(p => p.open = false);
+}
+function resetProgress() {
+  if (!confirm('בטוח שאתה רוצה לאפס את כל ההתקדמות?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  allSteps.forEach(s => s.classList.remove('checked'));
+  updateProgress();
+}
+
+loadProgress();
+</script>
+
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>Reference Guides - חומרי העשרה</title>
+  <link rel="stylesheet" href="light-mode.css">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --text: #f8fafc;
+      --card-bg: #1e293b;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --border: #334155;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 300px;
+      background: var(--card-bg);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .sidebar-header {
+      padding: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--card-bg);
+      z-index: 10;
+    }
+    .lesson-btn {
+      padding: 15px 20px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      text-align: right;
+      font-size: 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.2s;
+    }
+    .lesson-btn:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+    }
+    .lesson-btn.active {
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--primary);
+      border-right: 4px solid var(--primary);
+    }
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+    .main-header {
+      margin-bottom: 30px;
+    }
+    .main-header h1 {
+      margin: 0 0 10px 0;
+      color: var(--primary);
+      font-size: 2.5rem;
+    }
+    .main-header p {
+      color: #cbd5e1;
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+    .concept-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .concept-header {
+      padding: 15px 20px;
+      background: rgba(0,0,0,0.2);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .concept-header:hover {
+      background: rgba(0,0,0,0.3);
+    }
+    .concept-body {
+      padding: 20px;
+      display: none;
+      border-top: 1px solid var(--border);
+    }
+    .concept-body.open {
+      display: block;
+    }
+    .level-badge {
+      display: inline-block;
+      background: #475569;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+    }
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      direction: ltr;
+      text-align: left;
+    }
+    code {
+      font-family: Consolas, Monaco, monospace;
+      color: #38bdf8;
+    }
+    .nav-top {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 100;
+    }
+    .back-btn {
+      background: var(--card-bg);
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .back-btn:hover {
+      background: var(--primary);
+    }
+    .illustration {
+      background: #0f172a;
+      padding: 15px;
+      border-radius: 8px;
+      border-right: 4px solid var(--accent);
+      white-space: pre-wrap;
+      font-family: monospace;
+      margin: 15px 0;
+      color: #a7f3d0;
+    }
+    .explanation {
+      background: rgba(59, 130, 246, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      border-right: 4px solid var(--primary);
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+
+  
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">📚 ספריות הלימוד</div>
+    <!-- Buttons will be injected here -->
+  </div>
+
+  <div class="main-content" id="main-content">
+    <div style="text-align: center; margin-top: 20vh;">
+      <h1 style="color: var(--primary); font-size: 3rem;">Reference Guides</h1>
+      <p style="color: #94a3b8; font-size: 1.2rem;">בחר פרק לימוד מהתפריט הימני כדי לצפות בסיכומים המעמיקים.</p>
+    </div>
+  </div>
+
+  <script src="materials/raw-data/lesson11.js"></script>
+  <script src="materials/raw-data/lesson12.js"></script>
+  <script src="materials/raw-data/lesson13.js"></script>
+  <script src="materials/raw-data/lesson15.js"></script>
+  <script src="materials/raw-data/lesson16.js"></script>
+  <script src="materials/raw-data/lesson17.js"></script>
+  <script src="materials/raw-data/lesson18.js"></script>
+  <script src="materials/raw-data/lesson19.js"></script>
+  <script src="materials/raw-data/lesson20.js"></script>
+  <script src="materials/raw-data/lesson21.js"></script>
+  <script src="materials/raw-data/lesson22.js"></script>
+  <script src="materials/raw-data/lesson23.js"></script>
+  <script src="materials/raw-data/lesson24.js"></script>
+  <script src="materials/raw-data/lesson25.js"></script>
+  <script src="materials/raw-data/lesson26.js"></script>
+  <script src="materials/raw-data/lesson27.js"></script>
+  <script src="materials/raw-data/lesson_ai_engineering.js"></script>
+  <script src="materials/raw-data/lesson_auth_security.js"></script>
+  <script src="materials/raw-data/lesson_closures.js"></script>
+  <script src="materials/raw-data/lesson_design_systems.js"></script>
+  <script src="materials/raw-data/lesson_devops_deploy.js"></script>
+  <script src="materials/raw-data/lesson_html_css_foundations.js"></script>
+  <script src="materials/raw-data/lesson_nestjs.js"></script>
+  <script src="materials/raw-data/lesson_nextjs.js"></script>
+  <script src="materials/raw-data/lesson_quiz_keys.js"></script>
+  <script src="materials/raw-data/lesson_sql_orm.js"></script>
+  <script src="materials/raw-data/lesson_tooling_git.js"></script>
+
+  <script>
+    // Gather all loaded lessons — they are defined as `var LESSON_XX = {...}`
+    // In browser, var at top level = window property
+    const lessons = [];
+    for (const key in window) {
+      const val = window[key];
+      if (
+        (key.startsWith('LESSON_') || key.match(/^LESSON\d/)) &&
+        val && typeof val === 'object' && val.title && val.concepts
+      ) {
+        lessons.push(val);
+      }
+    }
+    
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+
+    // Sort lessons by ID
+    lessons.sort((a, b) => (a.id || '').localeCompare(b.id || ''));
+
+    if (lessons.length === 0) {
+      mainContent.innerHTML = `
+        <div style="text-align:center; margin-top:15vh; color:#94a3b8;">
+          <h2 style="color:var(--primary); font-size:2rem;">⚠️ לא נמצאו שיעורים</h2>
+          <p style="margin-top:10px;">הקבצים ב-materials/raw-data/ לא נטענו.</p>
+          <p style="margin-top:10px;"><a href="01_master_theory.html" style="color:var(--primary)">← עבור למדריך המאסטר</a></p>
+        </div>`;
+    }
+
+    lessons.forEach((lesson, index) => {
+
+      const btn = document.createElement('button');
+      btn.className = 'lesson-btn';
+      btn.innerText = lesson.title || lesson.id;
+      btn.onclick = () => {
+        document.querySelectorAll('.lesson-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderLesson(lesson);
+      };
+      sidebar.appendChild(btn);
+    });
+
+    function renderLesson(lesson) {
+      let html = `
+        <div class="main-header">
+          <h1>${lesson.title}</h1>
+          <p>${lesson.description || 'ללא תיאור'}</p>
+        </div>
+      `;
+
+      if (lesson.concepts && lesson.concepts.length > 0) {
+        lesson.concepts.forEach((concept, i) => {
+          let levelsHtml = '';
+          if (concept.levels) {
+            if (concept.levels.grandma) levelsHtml += `<p><strong>👵 סבתא:</strong> ${concept.levels.grandma}</p>`;
+            if (concept.levels.student) levelsHtml += `<p><strong>🎓 סטודנט:</strong> ${concept.levels.student}</p>`;
+            if (concept.levels.junior) levelsHtml += `<p><strong>💻 ג'וניור:</strong> ${concept.levels.junior}</p>`;
+          }
+
+          let illustrationHtml = concept.illustration ? `<div class="illustration">${concept.illustration}</div>` : '';
+          let codeHtml = concept.codeExample ? `<pre><code>${concept.codeExample.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>` : '';
+          let codeExpHtml = concept.codeExplanation ? `<div class="explanation">${concept.codeExplanation}</div>` : '';
+
+          html += `
+            <div class="concept-card">
+              <div class="concept-header" onclick="this.nextElementSibling.classList.toggle('open')">
+                <span>${i+1}. ${concept.conceptName}</span>
+                <span>▼</span>
+              </div>
+              <div class="concept-body">
+                ${levelsHtml}
+                ${illustrationHtml}
+                ${codeHtml}
+                ${codeExpHtml}
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        html += `<p style="color: #94a3b8;">לא נמצאו מושגים בפרק זה.</p>`;
+      }
+
+      mainContent.innerHTML = html;
+      mainContent.scrollTo(0, 0);
+    }
+  </script>
+<script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+<script src="theme-toggle.js"></script>
+</body>
+</html>

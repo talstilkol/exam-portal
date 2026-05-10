@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📈 דשבורד אנליטיקות מתקדם</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #e0e0e0; padding: 20px; min-height: 100vh; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 40px; padding: 30px; background: rgba(0,0,0,0.3); border-radius: 15px; border-bottom: 4px solid #f472b6; }
+    h1 { color: #f472b6; font-size: 2.5em; margin-bottom: 10px; }
+    
+    .back-link { display: inline-block; color: #ffd93d; text-decoration: none; padding: 8px 16px; background: rgba(255,217,61,0.1); border-radius: 8px; margin-bottom: 20px; transition: 0.3s; }
+    .back-link:hover { background: rgba(255,217,61,0.2); }
+
+    .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .card h3 { color: #38bdf8; margin-bottom: 20px; border-bottom: 1px solid rgba(56,189,248,0.3); padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+
+    /* CSS Bar Chart */
+    .bar-chart { display: flex; align-items: flex-end; height: 200px; gap: 15px; padding-bottom: 30px; border-bottom: 2px solid rgba(255,255,255,0.1); position: relative; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; }
+    .bar { width: 100%; max-width: 40px; background: linear-gradient(to top, #0ea5e9, #38bdf8); border-radius: 6px 6px 0 0; transition: height 1s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+    .bar:hover { filter: brightness(1.2); }
+    .bar-label { position: absolute; bottom: -25px; color: #94a3b8; font-size: 0.85em; text-align: center; width: 100%; white-space: nowrap; }
+    .bar-val { position: absolute; top: -25px; color: #fff; font-weight: bold; font-size: 0.9em; width: 100%; text-align: center; }
+
+    /* Heatmap */
+    .heatmap { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
+    .heat-cell { aspect-ratio: 1; border-radius: 4px; background: rgba(255,255,255,0.05); position: relative; cursor: pointer; transition: 0.2s; }
+    .heat-cell:hover { transform: scale(1.1); z-index: 2; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+    
+    /* Heatmap Colors based on intensity */
+    .heat-1 { background: #064e3b; }
+    .heat-2 { background: #047857; }
+    .heat-3 { background: #10b981; }
+    .heat-4 { background: #34d399; }
+    .heat-5 { background: #6ee7b7; }
+
+    .tooltip { position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 0.8em; white-space: nowrap; pointer-events: none; opacity: 0; transition: 0.2s; z-index: 10; }
+    .heat-cell:hover .tooltip { opacity: 1; }
+
+    .days-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; color: #64748b; font-size: 0.8em; margin-bottom: 5px; }
+
+    /* Performance Radar (Mock using pure CSS tricks) */
+    .skills-list { list-style: none; padding: 0; }
+    .skill-row { margin-bottom: 15px; }
+    .skill-name { display: flex; justify-content: space-between; margin-bottom: 5px; color: #e2e8f0; font-size: 0.9em; }
+    .skill-track { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+    .skill-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); border-radius: 4px; transition: width 1s ease-out; }
+
+    .suggestions { list-style: none; }
+    .suggestions li { padding: 12px; background: rgba(255,107,107,0.1); border-right: 4px solid #ff6b6b; margin-bottom: 10px; border-radius: 6px; font-size: 0.95em; }
+
+    /* Key stats */
+    .stats-row { display: flex; gap: 15px; margin-bottom: 20px; }
+    .stat-box { flex: 1; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 15px; text-align: center; }
+    .stat-box h4 { color: #10b981; font-size: 0.9em; margin-bottom: 5px; }
+    .stat-box .val { font-size: 2em; font-weight: bold; color: white; }
+
+  </style>
+  <link rel="stylesheet" href="light-mode.css">
+</head>
+<body>
+
+<div class="container">
+  <a href="00_dashboard.html" class="back-link">← חזרה לדשבורד</a>
+  
+  <header>
+    <h1>📈 ניתוח נתונים ואנליטיקה</h1>
+    <p style="color:#94a3b8;">צפה בהתקדמות, זהה נקודות תורפה וקבל המלצות ממוקדות.</p>
+  </header>
+
+  <div class="stats-row" id="top-stats">
+    <div class="stat-box">
+      <h4>שעות למידה נטו</h4>
+      <div class="val" id="stat-hours">0</div>
+    </div>
+    <div class="stat-box" style="background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3);">
+      <h4 style="color: #f59e0b;">ממוצע ציונים (מבחן)</h4>
+      <div class="val" id="stat-avg">0%</div>
+    </div>
+    <div class="stat-box" style="background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.3);">
+      <h4 style="color: #38bdf8;">נושאים חזקים</h4>
+      <div class="val" id="stat-strong" style="font-size: 1.2em; line-height: 1.6; margin-top:10px;">-</div>
+    </div>
+  </div>
+
+  <div class="grid-container">
+    
+    <!-- Chart: Quiz Scores Over Time -->
+    <div class="card">
+      <h3>📊 התקדמות ציונים בסימולטור</h3>
+      <div class="bar-chart" id="scores-chart">
+        <!-- Bars injected by JS -->
+      </div>
+    </div>
+
+    <!-- Heatmap: Activity -->
+    <div class="card">
+      <h3 style="color:#10b981; border-color:rgba(16,185,129,0.3);">🟩 מפת פעילות (30 ימים אחרונים)</h3>
+      <div class="days-row">
+        <span>א'</span><span>ב'</span><span>ג'</span><span>ד'</span><span>ה'</span><span>ו'</span><span>ש'</span>
+      </div>
+      <div class="heatmap" id="heatmap-grid">
+        <!-- Cells injected by JS -->
+      </div>
+    </div>
+
+    <!-- Skills Breakdown -->
+    <div class="card">
+      <h3 style="color:#f59e0b; border-color:rgba(245,158,11,0.3);">🎯 מיפוי שליטה בנושאים</h3>
+      <ul class="skills-list" id="skills-list">
+        <!-- Skills injected by JS -->
+      </ul>
+    </div>
+
+    <!-- AI Recommendations -->
+    <div class="card">
+      <h3 style="color:#ff6b6b; border-color:rgba(255,107,107,0.3);">🤖 המלצות מנוע הלמידה</h3>
+      <ul class="suggestions" id="ai-suggestions">
+        <!-- Suggestions injected by JS -->
+        <li>לא נמצאו מספיק נתונים להמלצה. בצע לפחות מבחן אחד!</li>
+      </ul>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="progress-engine.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    
+    // Fetch data from progress engine DB
+    const db = JSON.parse(localStorage.getItem('FullStackStudyProgressDB')) || { 
+      quizScores: [], 
+      difficultConcepts: {},
+      history: {},
+      timeSpent: 0
+    };
+
+    // 1. Top Stats
+    document.getElementById('stat-hours').textContent = (db.timeSpent / 3600).toFixed(1) + 'h';
+    
+    if (db.quizScores && db.quizScores.length > 0) {
+        const sum = db.quizScores.reduce((acc, curr) => acc + curr.score, 0);
+        document.getElementById('stat-avg').textContent = Math.round(sum / db.quizScores.length) + '%';
+    }
+
+    // 2. Scores Bar Chart
+    const chart = document.getElementById('scores-chart');
+    const recentScores = (db.quizScores || []).slice(-7); // Last 7 attempts
+    
+    if (recentScores.length === 0) {
+        chart.innerHTML = '<p style="color:#888; margin:auto;">אין עדיין נתוני מבחנים.</p>';
+    } else {
+        recentScores.forEach((attempt, index) => {
+            const col = document.createElement('div');
+            col.className = 'bar-col';
+            
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            // Slight delay for animation effect
+            setTimeout(() => {
+                bar.style.height = `${attempt.score}%`;
+            }, index * 100);
+            
+            if (attempt.score < 60) bar.style.background = 'linear-gradient(to top, #ef4444, #f87171)';
+            else if (attempt.score > 85) bar.style.background = 'linear-gradient(to top, #10b981, #34d399)';
+
+            bar.innerHTML = `<div class="bar-val">${attempt.score}%</div>`;
+            col.appendChild(bar);
+            col.innerHTML += `<div class="bar-label">מבחן ${index+1}</div>`;
+            chart.appendChild(col);
+        });
+    }
+
+    // 3. Activity Heatmap
+    const heatmap = document.getElementById('heatmap-grid');
+    const today = new Date();
+    // Generate 35 cells (5 weeks)
+    for(let i=34; i>=0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        
+        const dayData = db.history[dateStr];
+        let heatLevel = 0;
+        let timeLabel = "0 דקות";
+        
+        if (dayData && dayData.timeSpent) {
+            const mins = Math.round(dayData.timeSpent / 60);
+            timeLabel = `${mins} דקות`;
+            if (mins > 0) heatLevel = 1;
+            if (mins > 30) heatLevel = 2;
+            if (mins > 60) heatLevel = 3;
+            if (mins > 120) heatLevel = 4;
+            if (mins > 240) heatLevel = 5;
+        }
+
+        const cell = document.createElement('div');
+        cell.className = `heat-cell ${heatLevel > 0 ? 'heat-'+heatLevel : ''}`;
+        cell.innerHTML = `<div class="tooltip">${dateStr}: ${timeLabel}</div>`;
+        heatmap.appendChild(cell);
+    }
+
+    // 4. Skills Breakdown (Based on difficult concepts & scores)
+    const labels = {
+        'html-css': 'HTML & CSS',
+        'js-core': 'JavaScript Core',
+        'react': 'React & Hooks',
+        'async': 'Asynchronous JS',
+        'database': 'MongoDB & DBs',
+        'node-express': 'Node.js & Express',
+        'typescript': 'TypeScript',
+        'auth-security': 'Auth & Security',
+        'devops': 'DevOps & CI/CD',
+        'algorithms': 'Algorithms & Logic',
+        'topic_svcollege_ai_engineering': 'AI Engineering',
+        'topic_svcollege_nestjs': 'Nest.js Architecture',
+        'topic_svcollege_design_systems': 'Design Systems',
+        'topic_svcollege_sql_orm': 'SQL & PostgreSQL'
+    };
+
+    const skillMap = {};
+    // Initialize base scores
+    Object.keys(labels).forEach(key => { skillMap[key] = 100; });
+
+    // Penalize skills based on difficultConcepts tracker
+    if (db.difficultConcepts) {
+        Object.keys(db.difficultConcepts).forEach(q => {
+            const qLower = q.toLowerCase();
+            if (qLower.includes('react') || qLower.includes('useeffect') || qLower.includes('hook')) skillMap['react'] -= 3;
+            if (qLower.includes('promise') || qLower.includes('async')) skillMap['async'] -= 3;
+            if (qLower.includes('var') || qLower.includes('closure') || qLower.includes('array')) skillMap['js-core'] -= 3;
+            if (qLower.includes('css') || qLower.includes('html') || qLower.includes('flex')) skillMap['html-css'] -= 3;
+            if (qLower.includes('mongo') || qLower.includes('database')) skillMap['database'] -= 3;
+            if (qLower.includes('node') || qLower.includes('express')) skillMap['node-express'] -= 3;
+            if (qLower.includes('type') || qLower.includes('interface')) skillMap['typescript'] -= 3;
+        });
+    }
+
+    // Penalize based on explicit recorded mistakes from quiz engine
+    if (db.mistakes) {
+        Object.keys(db.mistakes).forEach(tag => {
+            // tag could be "JS Core" or "js-core"
+            let mappedKey = Object.keys(labels).find(k => labels[k] === tag || k === tag);
+            if (!mappedKey) {
+                // If unknown tag, add it dynamically
+                labels[tag] = tag;
+                skillMap[tag] = 100;
+                mappedKey = tag;
+            }
+            if(db.mistakes[tag] > 0) {
+               skillMap[mappedKey] -= (db.mistakes[tag] * 2); 
+            }
+        });
+    }
+
+    const skillsList = document.getElementById('skills-list');
+
+    let strongest = { name: '', score: 0 };
+    let weakest = { name: '', score: 100 };
+
+    Object.keys(skillMap).forEach(key => {
+        let score = Math.max(10, Math.min(100, skillMap[key])); // Clamp 10-100
+        
+        if (score > strongest.score) { strongest = { name: labels[key], score: score }; }
+        if (score < weakest.score) { weakest = { name: labels[key], score: score }; }
+
+        const li = document.createElement('li');
+        li.className = 'skill-row';
+        li.innerHTML = `
+            <div class="skill-name"><span>${labels[key]}</span> <span>${score}% שליטה משוערת</span></div>
+            <div class="skill-track">
+                <div class="skill-fill" style="width: 0%;" data-target="${score}%"></div>
+            </div>
+        `;
+        skillsList.appendChild(li);
+    });
+
+    document.getElementById('stat-strong').textContent = strongest.name || '-';
+
+    // Animate skill bars
+    setTimeout(() => {
+        document.querySelectorAll('.skill-fill').forEach(fill => {
+            fill.style.width = fill.getAttribute('data-target');
+        });
+    }, 300);
+
+    // 5. AI Recommendations
+    const aiList = document.getElementById('ai-suggestions');
+    aiList.innerHTML = ''; // clear
+
+    if (weakest.name) {
+        aiList.innerHTML += `<li>🔴 <strong>חולשה זוהתה:</strong> הנושא שבו אתה מתקשה ביותר הוא <strong>${weakest.name}</strong>. מומלץ לחזור לתיאוריה ולתרגל ספציפית נושא זה.</li>`;
+    }
+
+    if (db.difficultConcepts && Object.keys(db.difficultConcepts).length > 5) {
+        aiList.innerHTML += `<li>⚠️ פנקס המושגים הקשים שלך עמוס! עבור עליו לפני שאתה מתקדם הלאה. נסה למחוק לפחות 3 מושגים שסיימת לשנן.</li>`;
+    }
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (!db.history[todayStr] || db.history[todayStr].timeSpent < 1800) {
+        aiList.innerHTML += `<li>💡 טיפ יומי: עדיין לא צברת 30 דקות למידה היום. פתח את כרטיסיות השינון לחימום מהיר!</li>`;
+    } else {
+        aiList.innerHTML += `<li style="background:rgba(16,185,129,0.1); border-color:#10b981;">✅ עבודה מצוינת היום! צברת זמן למידה משמעותי. זכור לקחת הפסקות.</li>`;
+    }
+
+  });
+</script>
+<script src="theme-toggle.js"></script>
+</body>
+</html>

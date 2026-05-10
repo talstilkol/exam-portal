@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>פתרון 100 — Bank — Express שמירת טקסט (15 נק׳)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0f172a;--bg:#f8fafc;--accent:#7c3aed;--accent2:#2563eb;--good:#16a34a}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Heebo,Arial,sans-serif;background:linear-gradient(135deg,#fef9c3,#dbeafe);color:var(--ink);line-height:1.7;direction:rtl;padding:24px}
+  .wrap{max-width:1100px;margin:0 auto}
+  .hero{padding:24px 28px;border:3px solid #000;border-radius:18px;background:linear-gradient(135deg,#0f172a,#312e81 60%,#7c3aed);color:#fff;box-shadow:6px 6px 0 #000;margin-bottom:18px}
+  .hero h1{margin:0 0 8px;font-size:28px}
+  .hero .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .hero .pill{padding:4px 10px;border:2px solid #fff;border-radius:999px;font-size:12px;font-weight:900;background:rgba(255,255,255,.15)}
+  .hero .pill.gold{background:#facc15;color:#000;border-color:#000}
+  section.card{padding:18px 22px;border:2.5px solid #000;border-radius:16px;background:#fff;box-shadow:5px 5px 0 #000;margin-bottom:16px}
+  section.card h2{margin:0 0 10px;font-size:20px;color:#1f2937;display:flex;gap:8px;align-items:center}
+  ul.fixes{padding:0;margin:0;list-style:none;display:grid;gap:6px}
+  ul.fixes li{padding:8px 12px;border:2px solid #000;border-radius:8px;background:#f0fdf4;font-weight:600;font-size:13.5px;display:flex;gap:8px}
+  ul.fixes li .fix-mark{font-weight:900}
+  table.req{width:100%;border-collapse:collapse}
+  table.req td{padding:8px 12px;border-bottom:1.5px solid #cbd5e1;font-size:13.5px;vertical-align:top}
+  table.req .req-mark{width:24px;text-align:center;font-weight:900;font-size:16px}
+  table.req tr.req-yes .req-mark{color:#16a34a}
+  table.req tr.req-no .req-mark{color:#dc2626}
+  .annotated-code{border:2px solid #000;border-radius:12px;background:#0f172a;padding:14px;direction:ltr;text-align:left;overflow-x:auto;font-family:Consolas,Monaco,monospace;font-size:13px;line-height:1.65}
+  .code-line{display:flex;gap:10px;padding:1px 4px;border-radius:4px;cursor:help;color:#e2e8f0}
+  .code-line:hover{background:rgba(250,204,21,.1)}
+  .code-line:focus{outline:2px solid #facc15;outline-offset:-2px}
+  .code-line.is-comment .src{color:#94a3b8;font-style:italic}
+  .code-line.is-fix{background:rgba(16,185,129,.18)}
+  .code-line.is-fix .src{color:#86efac}
+  .ln{color:#64748b;min-width:36px;text-align:left;user-select:none;flex:0 0 auto}
+  .src{flex:1;white-space:pre;color:#e2e8f0}
+  .src .keyword{color:#c084fc}
+  .src .string{color:#fcd34d}
+  /* Hover tooltip */
+  .code-line[data-tip]{position:relative}
+  .code-line[data-tip]:hover::after{
+    content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);right:0;
+    background:#facc15;color:#0f172a;padding:6px 10px;border:2px solid #000;border-radius:8px;
+    font-size:11.5px;font-weight:900;direction:rtl;white-space:normal;width:max-content;max-width:380px;
+    box-shadow:3px 3px 0 #000;z-index:5;pointer-events:none;font-family:Heebo,Arial,sans-serif
+  }
+  .lang-pill{display:inline-block;padding:2px 9px;background:#1f2937;color:#facc15;border-radius:999px;font-size:11px;font-weight:900;margin-right:8px;font-family:Consolas,monospace}
+  /* Markdown rendering (theory pages) */
+  .md-content{padding:8px 4px;line-height:1.85;font-size:14.5px}
+  .md-content h1{font-size:24px;margin:16px 0 10px;color:#1e1b4b;border-bottom:2px solid #c7d2fe;padding-bottom:6px}
+  .md-content h2{font-size:20px;margin:18px 0 8px;color:#312e81}
+  .md-content h3{font-size:17px;margin:14px 0 6px;color:#4338ca}
+  .md-content h4{font-size:15px;margin:12px 0 4px;color:#5b21b6}
+  .md-content p{margin:6px 0}
+  .md-content code{background:#0f172a;color:#fcd34d;padding:1px 6px;border-radius:5px;font-family:Consolas,monospace;font-size:12.5px;direction:ltr;display:inline-block}
+  .md-content pre.md-code{background:#0f172a;color:#86efac;padding:12px;border-radius:10px;direction:ltr;text-align:left;font-family:Consolas,monospace;font-size:12.5px;line-height:1.55;overflow-x:auto;margin:10px 0}
+  .md-content pre.md-code code{background:transparent;color:inherit;padding:0;display:block}
+  .md-content blockquote{border-right:4px solid #7c3aed;padding:8px 14px;background:#f5f3ff;margin:8px 0;font-style:italic}
+  .md-content table.md-table{width:100%;border-collapse:collapse;margin:10px 0;background:#fff;box-shadow:0 4px 12px rgba(15,23,42,.08);border-radius:10px;overflow:hidden}
+  .md-content table.md-table th{background:#312e81;color:#fff;padding:8px 12px;text-align:right;font-weight:900}
+  .md-content table.md-table td{padding:8px 12px;border-bottom:1px solid #e5e7eb;vertical-align:top}
+  .md-content table.md-table tr:nth-child(even) td{background:#f8fafc}
+  .md-content ul.md-list, .md-content ol.md-list{padding-right:24px;margin:6px 0}
+  .md-content ul.md-list li, .md-content ol.md-list li{margin:3px 0}
+  .md-content hr{border:none;border-top:2px dashed #94a3b8;margin:18px 0}
+  .md-content a{color:#2563eb;text-decoration:underline}
+
+  @media print{body{background:#fff !important;padding:10px}section.card{box-shadow:none;border:1.5px solid #94a3b8;break-inside:avoid}section.card:hover{transform:none}.hero{background:#0f172a !important;box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}.annotated-code{border:1px solid #64748b}.code-line:hover::after{display:none}.back-link{display:none !important}}
+
+  /* === Phase C: Dark mode === */
+  @media(prefers-color-scheme:dark){
+    :root{--ink:#e2e8f0;--bg:#0f172a}
+    body{background:#0f172a;color:var(--ink)}
+    section.card{background:#1e293b;border-color:#334155;box-shadow:5px 5px 0 #000}
+    section.card h2{color:#e2e8f0}
+    ul.fixes li{background:#1a2e1a;border-color:#334155;color:#d1fae5}
+    table.req td{border-color:#334155;color:#cbd5e1}
+    .hero{box-shadow:6px 6px 0 #1e1b4b}
+    .md-content h1{color:#c7d2fe;border-color:#4338ca}
+    .md-content h2{color:#a5b4fc}
+    .md-content h3{color:#c4b5fd}
+    .md-content h4{color:#ddd6fe}
+    .md-content p,.md-content li{color:#cbd5e1}
+    .md-content blockquote{background:#1e1b4b;border-color:#7c3aed;color:#c7d2fe}
+    .md-content table.md-table{background:#1e293b;box-shadow:none}
+    .md-content table.md-table td{border-color:#334155;color:#cbd5e1}
+    .md-content table.md-table tr:nth-child(even) td{background:#0f172a}
+    .md-content a{color:#93c5fd}
+    .back-link{border-color:rgba(255,255,255,.3) !important;color:#93c5fd !important}
+  }
+  /* === Phase C: Responsive === */
+  @media(max-width:768px){
+    body{padding:12px}
+    .hero{padding:16px 18px;border-radius:12px}
+    .hero h1{font-size:20px}
+    .hero .meta{gap:5px}
+    .hero .pill{font-size:10px;padding:3px 7px}
+    section.card{padding:12px 14px;border-radius:12px}
+    section.card h2{font-size:16px}
+    ul.fixes li{font-size:12px;padding:6px 8px}
+    table.req td{padding:6px 8px;font-size:12px}
+    .annotated-code{padding:8px;font-size:11px;border-radius:8px}
+    .code-line[data-tip]:hover::after{max-width:260px;font-size:10px}
+    .ln{min-width:28px;font-size:11px}
+    .md-content{font-size:13px}
+    .md-content h1{font-size:19px}
+    .md-content h2{font-size:17px}
+    .md-content pre.md-code{font-size:11px;padding:8px}
+  }
+  /* === Phase C: Animations === */
+  section.card{transition:transform .15s,box-shadow .15s}
+  section.card:hover{transform:translateY(-2px);box-shadow:5px 7px 0 #000}
+  ul.fixes li{transition:background .15s}
+  ul.fixes li:hover{background:#dcfce7}
+  .back-link:hover{border-color:rgba(255,255,255,.7) !important;background:rgba(255,255,255,.1) !important}
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:0.01ms !important;transition-duration:0.01ms !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>🏆 פתרון לציון 100 — Bank — Express שמירת טקסט (15 נק׳)</h1>
+    <p style="margin:0;color:#dbeafe">קוד <strong>מתוקן</strong> — עם כל הבאגים שתועדו במקור מתוקנים בפועל.
+    רחפו על כל שורה לתיאור קצר; שורות ירוקות הן תיקונים.</p>
+    <div class="meta">
+      <span class="pill gold">Express</span>
+      <span class="pill">77 שורות</span>
+      <span class="pill">2561 תווים</span>
+      <span class="pill">qid: bank-q3</span>
+    </div>
+      <a class="back-link" href="../qa-bundle-r3/bank-q3.html" style="display:inline-block;margin-top:12px;padding:6px 14px;border:2px solid rgba(255,255,255,.4);border-radius:8px;color:#dbeafe;text-decoration:none;font-size:12px;font-weight:700;transition:.12s">← חזרה לשאלה המקורית</a>
+  </header>
+
+  <section class="card">
+    <h2>🔧 באגים שתוקנו (לא רק תועדו — תוקנו בקוד)</h2>
+    <ul class="fixes"><li><span class="fix-mark">✅</span> POST /save-text — `fs.appendFile` (לא writeFile שדורסת!)</li><li><span class="fix-mark">✅</span> Validation: text חייב להיות string לא ריק</li><li><span class="fix-mark">✅</span> GET /text — קריאת תוכן + ENOENT handling</li><li><span class="fix-mark">✅</span> GET /lines — מחזיר מערך שורות</li><li><span class="fix-mark">✅</span> DELETE /text — ניקוי</li><li><span class="fix-mark">✅</span> Error middleware</li></ul>
+  </section>
+
+  <section class="card">
+    <h2>✅ דרישה-מול-מימוש (טבלת בקרה)</h2>
+    <table class="req"><tr class="req-yes"><td class="req-mark">✓</td><td>POST /save-text שומר ל-file</td></tr><tr class="req-yes"><td class="req-mark">✓</td><td>appendFile (לא דורס)</td></tr><tr class="req-yes"><td class="req-mark">✓</td><td>Validation על text</td></tr><tr class="req-yes"><td class="req-mark">✓</td><td>ENOENT handling</td></tr></table>
+  </section>
+
+  <section class="card">
+    <h2>📦 הקובץ המלא — קוד מתוקן עם hover-tip לכל שורה</h2>
+    <div class="annotated-code lang-js"><div class="code-lines"><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">1</span><span class="src">// SV Bank — Server Q3 (15 pts)</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">2</span><span class="src">// &quot;Express POST /save-text — שמירת טקסט לקובץ&quot;</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">3</span><span class="src">// Spec: receive text in body, append to file (NOT overwrite), validate input.</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">4</span><span class="src">&nbsp;</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">5</span><span class="src">const express = require(&quot;express&quot;);</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">6</span><span class="src">const fs = require(&quot;fs/promises&quot;);</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">7</span><span class="src">const path = require(&quot;path&quot;);</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">8</span><span class="src">&nbsp;</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">9</span><span class="src">const PORT = process.env.PORT || 3004;</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">10</span><span class="src">const TXT_FILE = path.join(__dirname, &quot;saved-text.txt&quot;);</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">11</span><span class="src">&nbsp;</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">12</span><span class="src">const app = express();</span></div><div class="code-line" data-tip="Express endpoint: מאזין לבקשה ב־path מסוים." tabindex="0"><span class="ln">13</span><span class="src">app.use(express.json());</span></div><div class="code-line" data-tip="Express endpoint: מאזין לבקשה ב־path מסוים." tabindex="0"><span class="ln">14</span><span class="src">app.use((req, _res, next) =&gt; { console.log(`${req.method} ${req.url}`); next(); });</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">15</span><span class="src">&nbsp;</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">16</span><span class="src">// POST /save-text — append text to file</span></div><div class="code-line is-comment is-fix" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">17</span><span class="src">// ✅ FIXED: use fs.appendFile NOT fs.writeFile (writeFile would overwrite previous lines)</span></div><div class="code-line" data-tip="Express endpoint: מאזין לבקשה ב־path מסוים." tabindex="0"><span class="ln">18</span><span class="src">app.post(&quot;/save-text&quot;, async (req, res) =&gt; {</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">19</span><span class="src">  const { text } = req.body || {};</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">20</span><span class="src">  // ✅ Input validation</span></div><div class="code-line" data-tip="תנאי: מפצל את הזרימה לפי בדיקה." tabindex="0"><span class="ln">21</span><span class="src">  if (typeof text !== &quot;string&quot;) {</span></div><div class="code-line" data-tip="return: מסיים את הפונקציה ומחזיר ערך." tabindex="0"><span class="ln">22</span><span class="src">    return res.status(400).json({ error: &quot;text must be a string&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">23</span><span class="src">  }</span></div><div class="code-line" data-tip="תנאי: מפצל את הזרימה לפי בדיקה." tabindex="0"><span class="ln">24</span><span class="src">  if (!text.trim()) {</span></div><div class="code-line" data-tip="return: מסיים את הפונקציה ומחזיר ערך." tabindex="0"><span class="ln">25</span><span class="src">    return res.status(400).json({ error: &quot;text cannot be empty&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">26</span><span class="src">  }</span></div><div class="code-line" data-tip="try/catch: לוכד שגיאות שלא יקריסו את התהליך." tabindex="0"><span class="ln">27</span><span class="src">  try {</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">28</span><span class="src">    // Append a single line + newline so each request is its own line</span></div><div class="code-line" data-tip="fs.promises: גישה לקבצים אסינכרונית." tabindex="0"><span class="ln">29</span><span class="src">    await fs.appendFile(TXT_FILE, text + &quot;\n&quot;, &quot;utf-8&quot;);</span></div><div class="code-line" data-tip="שולח תשובה ללקוח — עם status code נכון." tabindex="0"><span class="ln">30</span><span class="src">    res.status(201).json({ ok: true, savedAt: new Date().toISOString() });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">31</span><span class="src">  } catch (err) {</span></div><div class="code-line" data-tip="שולח תשובה ללקוח — עם status code נכון." tabindex="0"><span class="ln">32</span><span class="src">    res.status(500).json({ error: &quot;Failed to write file&quot;, message: err.message });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">33</span><span class="src">  }</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">34</span><span class="src">});</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">35</span><span class="src">&nbsp;</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">36</span><span class="src">// GET /text — read full content (bonus endpoint)</span></div><div class="code-line" data-tip="Express endpoint: מאזין לבקשה ב־path מסוים." tabindex="0"><span class="ln">37</span><span class="src">app.get(&quot;/text&quot;, async (_req, res) =&gt; {</span></div><div class="code-line" data-tip="try/catch: לוכד שגיאות שלא יקריסו את התהליך." tabindex="0"><span class="ln">38</span><span class="src">  try {</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">39</span><span class="src">    const content = await fs.readFile(TXT_FILE, &quot;utf-8&quot;);</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">40</span><span class="src">    res.type(&quot;text/plain; charset=utf-8&quot;).send(content);</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">41</span><span class="src">  } catch (err) {</span></div><div class="code-line is-comment is-fix" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">42</span><span class="src">    // ✅ FIXED: handle ENOENT — file simply doesn&#x27;t exist yet</span></div><div class="code-line" data-tip="תנאי: מפצל את הזרימה לפי בדיקה." tabindex="0"><span class="ln">43</span><span class="src">    if (err.code === &quot;ENOENT&quot;) {</span></div><div class="code-line" data-tip="return: מסיים את הפונקציה ומחזיר ערך." tabindex="0"><span class="ln">44</span><span class="src">      return res.type(&quot;text/plain&quot;).send(&quot;&quot;);</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">45</span><span class="src">    }</span></div><div class="code-line" data-tip="שולח תשובה ללקוח — עם status code נכון." tabindex="0"><span class="ln">46</span><span class="src">    res.status(500).json({ error: err.message });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">47</span><span class="src">  }</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">48</span><span class="src">});</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">49</span><span class="src">&nbsp;</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">50</span><span class="src">// GET /lines — return array of lines (bonus)</span></div><div class="code-line" data-tip="Express endpoint: מאזין לבקשה ב־path מסוים." tabindex="0"><span class="ln">51</span><span class="src">app.get(&quot;/lines&quot;, async (_req, res) =&gt; {</span></div><div class="code-line" data-tip="try/catch: לוכד שגיאות שלא יקריסו את התהליך." tabindex="0"><span class="ln">52</span><span class="src">  try {</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">53</span><span class="src">    const content = await fs.readFile(TXT_FILE, &quot;utf-8&quot;);</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">54</span><span class="src">    const lines = content.split(&quot;\n&quot;).filter((l) =&gt; l.length &gt; 0);</span></div><div class="code-line" data-tip="שולח תשובה ללקוח — עם status code נכון." tabindex="0"><span class="ln">55</span><span class="src">    res.json({ count: lines.length, lines });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">56</span><span class="src">  } catch (err) {</span></div><div class="code-line" data-tip="תנאי: מפצל את הזרימה לפי בדיקה." tabindex="0"><span class="ln">57</span><span class="src">    if (err.code === &quot;ENOENT&quot;) return res.json({ count: 0, lines: [] });</span></div><div class="code-line" data-tip="שולח תשובה ללקוח — עם status code נכון." tabindex="0"><span class="ln">58</span><span class="src">    res.status(500).json({ error: err.message });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">59</span><span class="src">  }</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">60</span><span class="src">});</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">61</span><span class="src">&nbsp;</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">62</span><span class="src">// DELETE /text — clear file</span></div><div class="code-line" data-tip="Express endpoint: מאזין לבקשה ב־path מסוים." tabindex="0"><span class="ln">63</span><span class="src">app.delete(&quot;/text&quot;, async (_req, res) =&gt; {</span></div><div class="code-line" data-tip="try/catch: לוכד שגיאות שלא יקריסו את התהליך." tabindex="0"><span class="ln">64</span><span class="src">  try {</span></div><div class="code-line" data-tip="fs.promises: גישה לקבצים אסינכרונית." tabindex="0"><span class="ln">65</span><span class="src">    await fs.writeFile(TXT_FILE, &quot;&quot;, &quot;utf-8&quot;);</span></div><div class="code-line" data-tip="שולח תשובה ללקוח — עם status code נכון." tabindex="0"><span class="ln">66</span><span class="src">    res.json({ ok: true, cleared: true });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">67</span><span class="src">  } catch (err) {</span></div><div class="code-line" data-tip="שולח תשובה ללקוח — עם status code נכון." tabindex="0"><span class="ln">68</span><span class="src">    res.status(500).json({ error: err.message });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">69</span><span class="src">  }</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">70</span><span class="src">});</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">71</span><span class="src">&nbsp;</span></div><div class="code-line" data-tip="Express endpoint: מאזין לבקשה ב־path מסוים." tabindex="0"><span class="ln">72</span><span class="src">app.use((err, _req, res, _next) =&gt; {</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">73</span><span class="src">  console.error(err);</span></div><div class="code-line" data-tip="שולח תשובה ללקוח — עם status code נכון." tabindex="0"><span class="ln">74</span><span class="src">  res.status(500).json({ error: &quot;Server error&quot;, message: err.message });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">75</span><span class="src">});</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">76</span><span class="src">&nbsp;</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">77</span><span class="src">app.listen(PORT, () =&gt; console.log(`Bank Q3 on http://localhost:${PORT}`));</span></div></div></div>
+  </section>
+
+</div>
+</body>
+</html>

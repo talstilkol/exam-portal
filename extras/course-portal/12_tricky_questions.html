@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔥 30 שאלות מלכודת (Tricky Questions)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); background-attachment: fixed; color: #e0e0e0; line-height: 1.7; min-height: 100vh; padding: 20px; }
+  .container { max-width: 1000px; margin: 0 auto; }
+  header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+  header h1 { font-size: 2.5em; color: white; margin-bottom: 10px; }
+  header p { color: rgba(255,255,255,0.95); font-size: 1.2em; }
+  .back-link { display: inline-block; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; border:1px solid rgba(255,217,61,0.2); }
+  .back-link:hover { background: rgba(255,217,61,0.25); }
+  
+  .question-card { background: rgba(0,0,0,0.3); border: 2px solid rgba(255,107,107,0.3); border-radius: 15px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease; }
+  .question-card:hover { border-color: #ff6b6b; transform: translateY(-3px); }
+  .q-title { color: #ff9a9e; font-size: 1.3em; margin-bottom: 15px; display:flex; gap:10px; align-items:flex-start; }
+  .q-number { background: #ff6b6b; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 0.8em; flex-shrink: 0; margin-top: 3px; }
+  
+  .code-block { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 15px; font-family: 'Consolas', monospace; direction: ltr; text-align: left; overflow-x: auto; margin: 15px 0; color: #e6edf3; font-size: 0.95em; line-height: 1.5; white-space: pre; }
+  
+  details { margin-top: 15px; background: rgba(78,205,196,0.1); border: 1px solid rgba(78,205,196,0.3); border-radius: 8px; }
+  summary { padding: 12px 15px; cursor: pointer; font-weight: bold; color: #4ecdc4; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "▼"; font-size: 0.8em; transition: transform 0.3s; }
+  details[open] summary::after { transform: rotate(180deg); }
+  .answer { padding: 15px; border-top: 1px solid rgba(78,205,196,0.2); color: #fff; line-height: 1.6; }
+  
+  .tab-btn { background: rgba(0,0,0,0.3); border: 2px solid #38bdf8; color: #e2e8f0; padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-weight: bold; }
+  .tab-btn:hover { background: rgba(56,189,248,0.2); }
+  .tab-btn.active { background: #38bdf8; color: #0f172a; }
+</style>
+  <link rel="stylesheet" href="light-mode.css">
+  <link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+
+<div class="container">
+  <a href="00_dashboard.html" class="back-link">← חזרה לדשבורד</a>
+
+  <header>
+    <h1>🔥 30 שאלות מלכודת</h1>
+    <p>שאלות הראיונות הכי מכשילות ב-JavaScript ו-React. תוודא שאתה לא נופל בפח!</p>
+  </header>
+
+  <div style="display:flex; justify-content:center; gap:10px; margin-bottom:25px; flex-wrap:wrap;" id="tabs-container">
+    <button class="tab-btn active" onclick="filterCategory('All')">הכל</button>
+    <button class="tab-btn" onclick="filterCategory('JS Core')">JS Core</button>
+    <button class="tab-btn" onclick="filterCategory('React')">React</button>
+    <button class="tab-btn" onclick="filterCategory('Backend / DB')">Backend / DB</button>
+    <button class="tab-btn" onclick="filterCategory('Architecture / Auth')">אבטחה וארכיטקטורה</button>
+  </div>
+
+  <div id="questions-container"></div>
+
+</div>
+
+<script>
+  const questions = [
+    {
+      q: "מה יודפס בקונסול? (Scope)",
+      code: "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 1000);\n}",
+      a: "יודפס <code>3 3 3</code>. <br>בגלל ש-<code class='inline'>var</code> מוגדר ב-Function Scope ולא ב-Block Scope, בסיום הלולאה <code>i</code> שווה ל-3. כשהטיימר מסתיים אחרי שנייה, הוא מדפיס את המשתנה הגלובלי 3 פעמים. פתרון: לשנות ל-<code class='inline'>let</code>."
+    },
+    {
+      q: "מה יודפס בקונסול? (Type Coercion)",
+      code: "console.log(1 + '2' + 3);\nconsole.log(1 + 2 + '3');",
+      a: "הראשון: <code>123</code> (ברגע שיש מחרוזת, הכל הופך לשרשור מחרוזות).<br>השני: <code>33</code> (קודם חיבור מספרי 1+2=3, ואז שרשור למחרוזת '3')."
+    },
+    {
+      q: "מה יודפס בקונסול? (Array Comparison)",
+      code: "console.log([] == []);\nconsole.log([] === []);",
+      a: "<code>false false</code>.<br>מערכים (ואובייקטים) הם Reference Types. ההשוואה בודקת האם הם מצביעים לאותו מקום בזיכרון, וכאן יצרנו שני מערכים שונים לחלוטין."
+    },
+    {
+      q: "מה הבעיה בקוד הבא? (React State)",
+      code: "const [user, setUser] = useState({ name: 'Dan', age: 20 });\n\nfunction updateAge() {\n  user.age = 21;\n  setUser(user);\n}",
+      a: "<b>Mutation ישיר.</b> <br>ב-React, שינוי אובייקט במקום (<code class='inline'>user.age = 21</code>) אינו משנה את ה-Reference שלו. כשתקרא ל-<code class='inline'>setUser(user)</code>, ה-React יראה שזה אותו Reference ולא ירנדר מחדש. הפתרון: <code>setUser({ ...user, age: 21 })</code>."
+    },
+    {
+      visual: `<div style="display:flex; gap:10px; margin-top:15px; font-size:0.9em; text-align:center;">
+<div style="flex:1; background:#1e293b; padding:10px; border:1px solid #3b82f6; border-radius:8px;"><div style="color:#3b82f6;font-weight:bold;">1. Call Stack</div><div>console.log('1')<br>console.log('4')</div></div>
+<div style="flex:1; background:#1e293b; padding:10px; border:1px solid #f59e0b; border-radius:8px;"><div style="color:#f59e0b;font-weight:bold;">2. Microtasks</div><div>Promise: log('3')</div></div>
+<div style="flex:1; background:#1e293b; padding:10px; border:1px solid #10b981; border-radius:8px;"><div style="color:#10b981;font-weight:bold;">3. Macrotasks</div><div>setTimeout: log('2')</div></div>
+</div>`,
+      q: "מה יודפס בקונסול? (Event Loop)",
+      code: "console.log('1');\nsetTimeout(() => console.log('2'), 0);\nPromise.resolve().then(() => console.log('3'));\nconsole.log('4');",
+      a: "<code>1, 4, 3, 2</code>.<br>קודם סינכרוני (1, 4). ואז Microtasks (ה-Promise ידפיס 3). ורק בסוף Macrotasks (ה-setTimeout ידפיס 2)."
+    },
+    {
+      q: "מה יודפס בקונסול? (Hoisting)",
+      code: "console.log(a);\nvar a = 5;\n\nconsole.log(b);\nlet b = 5;",
+      a: "<code>undefined</code> ואז <code>ReferenceError</code>.<br><code>var</code> מקבל Hoisting (עולה למעלה) ומוגדר כ-undefined. <code>let</code> גם עולה למעלה, אבל נשאר ב-Temporal Dead Zone ולא ניתן לגשת אליו לפני שורת ההצהרה."
+    },
+    {
+      q: "מה יודפס בקונסול? (this Keyword)",
+      code: "const obj = {\n  name: 'JS',\n  regularFn: function() { console.log(this.name); },\n  arrowFn: () => { console.log(this.name); }\n};\n\nobj.regularFn();\nobj.arrowFn();",
+      a: "<code>'JS'</code> ואז <code>undefined</code>.<br>פונקציה רגילה מקבלת את ה-<code class='inline'>this</code> של מי שקרא לה (האובייקט obj). פונקציית חץ יורשת את ה-<code class='inline'>this</code> מהסביבה העוטפת שלה (Global Window) שבה אין name."
+    },
+    {
+      q: "למה typeof null מחזיר 'object'?",
+      code: "console.log(typeof null); // 'object'",
+      a: "זוהי שגיאה היסטורית (באג) מהגרסאות הראשונות של JavaScript. לא מתקנים אותה היום כדי לא לשבור מיליוני אתרים ישנים באינטרנט שמסתמכים על זה."
+    },
+    {
+      q: "מה הבעיה בקוד הבא? (React Hooks)",
+      code: "function App() {\n  if (user) {\n    useEffect(() => console.log('Hi'), []);\n  }\n  return <div/>;\n}",
+      a: "<b>שבירת חוקי ה-Hooks!</b><br>אסור לקרוא ל-Hooks בתוך תנאים (if), לולאות (for), או פונקציות פנימיות. ה-Hooks חייבים להיות ברמה הראשונה של הקומפוננטה."
+    },
+    {
+      q: "מה יודפס בקונסול? (Closures ב-React)",
+      code: "const [count, setCount] = useState(0);\n\nfunction handleAdd() {\n  setCount(count + 1);\n  setCount(count + 1);\n}",
+      a: "<b>1.</b><br>הקריאה הראשונה מגדירה 0+1=1. הקריאה השנייה לא יודעת שהערך השתנה עדיין (בגלל ש-count הוא closure שזוכר את ה-0 של הרינדור הנוכחי), לכן היא שוב מגדירה 0+1=1. הפתרון: להשתמש ב-Functional Update <code>setCount(prev => prev + 1)</code>."
+    },
+    {
+      q: "מה קורה במצב הבא? (Memory Leaks ב-React)",
+      code: "useEffect(() => {\n  const timer = setInterval(() => console.log('Tick'), 1000);\n}, []);",
+      a: "הטיימר ימשיך לרוץ לנצח, גם כשהקומפוננטה תרד מהמסך (Unmount), מה שייצור <b>Memory Leak</b> (דליפת זיכרון).<br>חובה להוסיף <code>return () => clearInterval(timer);</code> פנימה כדי לנקות."
+    },
+    {
+      q: "מה מחזיר map ללא return?",
+      code: "const arr = [1, 2, 3];\nconst res = arr.map(x => { x * 2 });\nconsole.log(res);",
+      a: "<code>[undefined, undefined, undefined]</code>.<br>בגלל שהשתמשנו בסוגריים מסולסלים <code class='inline'>{}</code> פתחנו בלוק פונקציה ולכן אנו חייבים להוסיף <code>return</code> מפורש. אם לא היינו משתמשים במסולסלים (<code class='inline'>x => x * 2</code>), החזרה הייתה אימפליציטית."
+    },
+    {
+      q: "מה ההבדל בין map ל-forEach?",
+      code: "arr.map(x => x*2);\narr.forEach(x => x*2);",
+      a: "<code>map</code> מחזיר <b>מערך חדש</b> עם התוצאות.<br><code>forEach</code> לא מחזיר כלום (מריץ לולאה בלבד, שימושי ל-side effects כמו להדפיס או לעדכן מערך חיצוני)."
+    },
+    {
+      q: "מה הערך של x? (Destructuring)",
+      code: "const { a: x = 10 } = { a: 5, x: 20 };",
+      a: "<code>x = 5</code>.<br>אנחנו מחלצים את התכונה <code class='inline'>a</code> מתוך האובייקט (שערכה 5), שומרים אותה במשתנה בשם <code class='inline'>x</code>. ה-10 הוא רק ערך ברירת מחדל אם <code class='inline'>a</code> היה undefined."
+    },
+    {
+      q: "מה יודפס בקונסול? (Double Negation)",
+      code: "console.log(!!0);\nconsole.log(!!'false');",
+      a: "<code>false</code> ואז <code>true</code>.<br>!! ממיר ערך ל-Boolean. המספר 0 הוא Falsy. המחרוזת 'false' (עם גרשיים) אינה ריקה, ולכן נחשבת ל-Truthy."
+    },
+    {
+      q: "למה אסור לעשות splice על מערך ב-React State?",
+      code: "const users = ['A', 'B'];\nusers.splice(1, 1);\nsetUsers(users);",
+      a: "<code>splice</code> מבצעת מוטציה על המערך המקורי! המערך משתנה, אך ה-Reference שלו נשאר זהה. React לא מזהה את השינוי ולא תרנדר מחדש. הפתרון הוא להשתמש ב-<code>filter</code> או <code>slice</code>."
+    },
+    {
+      q: "מה יודפס בקונסול? (Object.freeze)",
+      code: "const obj = Object.freeze({ a: 1, b: { c: 2 } });\nobj.a = 10;\nobj.b.c = 20;\nconsole.log(obj.a, obj.b.c);",
+      a: "<code>1 20</code>.<br><code class='inline'>Object.freeze</code> הוא רדוד (Shallow). הוא מונע שינויים ברמה הראשונה (<code class='inline'>obj.a</code> לא ישתנה). אבל אובייקטים פנימיים (<code class='inline'>obj.b</code>) לא מוקפאים ולכן הערך ישתנה ל-20."
+    },
+    {
+      q: "מה הפלט של הקוד? (parseInt)",
+      code: "console.log(['1', '7', '11'].map(parseInt));",
+      a: "<code>[1, NaN, 3]</code>.<br>הפונקציה <code>parseInt</code> מקבלת שני פרמטרים (string, radix). <code>map</code> מעביר לכל קריאה את ה-(value, index). לכן הוא קורא ל-<code>parseInt('7', 1)</code> ול-<code>parseInt('11', 2)</code> (שזה 3 בינארי!)."
+    },
+    {
+      q: "מה יודפס בקונסול? (Promise Constructor)",
+      code: "console.log('start');\nnew Promise((resolve) => {\n  console.log('promise');\n  resolve();\n}).then(() => console.log('then'));\nconsole.log('end');",
+      a: "<code>start, promise, end, then</code>.<br>פונקציית ה-Executor של Promise (זו שבתוכה) רצה <b>באופן סינכרוני מיידית</b>. רק ה-<code>.then()</code> הולך ל-Microtasks Queue ורץ בסוף."
+    },
+    {
+      q: "מה קורה בקוד הבא? (Mongoose Schema)",
+      code: "const UserSchema = new mongoose.Schema({ age: Number });\nconst user = new User({ name: 'Dan', age: 30 });\nawait user.save();",
+      a: "השדה <code>name</code> ייעלם ולא יישמר ב-DB!<br>ב-Mongoose, אם שדה לא מוגדר ב-Schema (כמו <code class='inline'>name</code> בדוגמה זו), הוא יסונן החוצה בצורה שקטה (Stripped out)."
+    },
+    {
+      q: "מה יוחזר? (Arrow functions & Object literal)",
+      code: "const getObj = () => { name: 'Dan' };\nconsole.log(getObj());",
+      a: "<code>undefined</code>.<br>פונקציית החץ חושבת שהמסולסלים <code>{}</code> הם התחלת בלוק-פונקציה, ולא אובייקט. לכן היא לא מחזירה כלום. כדי להחזיר אובייקט חובה לעטוף בסוגריים עגולים: <code>({ name: 'Dan' })</code>."
+    },
+    {
+      q: "מה יודפס בקונסול? (+ operator)",
+      code: "console.log(typeof NaN);\nconsole.log('b' + 'a' + + 'a' + 'a');",
+      a: "<code>number</code>, <code>baNaNa</code>.<br>הטייפ של NaN הוא מספר! בחלק השני, <code>+'a'</code> מנסה להמיר 'a' למספר ונכשל ומחזיר NaN, מה שיוצר את המחרוזת 'baNaNa'."
+    },
+    {
+      q: "מה הבעיה ב-useEffect הבא?",
+      code: "useEffect(async () => {\n  const data = await fetch('/api/data');\n}, []);",
+      a: "<b>אסור להפוך את useEffect עצמו ל-async!</b><br>useEffect מצפה להחזיר פונקציית ניקוי (cleanup function) באופן סינכרוני. פונקציית async תמיד מחזירה Promise. הפתרון: להגדיר פונקציית async בפנים ולקרוא לה."
+    },
+    {
+      visual: `<div style="background:rgba(102,126,234,0.1); padding:15px; border-radius:8px; margin-top:15px; border-right:3px solid #667eea; text-align:center;">
+<div style="color:#667eea; font-weight:bold; margin-bottom:10px;">Event Loop & await</div>
+<div style="display:flex; justify-content:space-around;">
+  <div>🙋‍♂️ <b>User 1 (await DB)</b><br><span style="color:#ff6b6b;">Paused (Waiting)</span></div>
+  <div>⏩ <b>Event Loop</b><br><span style="color:#4ade80;">Free to serve!</span></div>
+  <div>🙋‍♀️ <b>User 2 (GET /home)</b><br><span style="color:#4ade80;">Served Instantly</span></div>
+</div>
+</div>`,
+      q: "האם await חוסם את השרת ב-Node.js?",
+      code: "async function handler(req, res) {\n  const data = await DB.find();\n  res.send(data);\n}",
+      a: "<b>לא!</b><br>ב-Node.js, <code>await</code> אינו חוסם את ה-Main Thread. הוא רק עוצר את הביצוע <b>של הפונקציה הספציפית הזו</b>. בינתיים, השרת חופשי לחלוטין לטפל בבקשות של משתמשים אחרים בזכות ה-Event Loop."
+    },
+    {
+      q: "מה עדיף ב-MongoDB: Embed או Referencing?",
+      code: "{ title: 'Post', comments: [{ text: 'Great!' }] }\n// OR\n{ title: 'Post', commentIds: ['5f123...'] }",
+      a: "אם הרשימה קצרה וחסומה (עד עשרות, למשל כתובות או לייקים קטנים) -> <b>Embed</b> (חוסך שאילתות).<br>אם הרשימה עלולה לגדול לאין שיעור (אלפי תגובות, לוגים) -> <b>Referencing</b> (מונע פיצוץ מסמך ה-16MB)."
+    },
+    {
+      q: "איזה Middleware הוא קריטי לאבטחת Express API מול React?",
+      code: "app.use(cors({ origin: 'http://localhost:3000' }));",
+      a: "<b>CORS</b>. חובה כדי שדפדפנים יסכימו לקבל תשובות מהשרת בדומיין שונה (Port שונה גם נחשב דומיין שונה!). חשוב גם להגדיר <code>credentials: true</code> אם עובדים עם HttpOnly Cookies."
+    },
+    {
+      q: "מה יודפס בקונסול? (Array Destructuring)",
+      code: "const arr = [10, 20];\nconst [a, b, c = 30] = arr;\nconsole.log(c);",
+      a: "<code>30</code>.<br>מכיוון שבמערך יש רק 2 איברים, המשתנה <code>c</code> יקבל את ערך ברירת המחדל שהוגדר לו."
+    },
+    {
+      q: "מה הסכנה ב-Express Middleware בלי next()?",
+      code: "app.use((req, res, next) => {\n  console.log(req.url);\n});",
+      a: "הבקשה תיתקע לנצח (Time Out)! הלקוח לא יקבל שום תשובה. כל Middleware חייב להסתיים בקריאה ל-<code>res.send()</code>, או ב-<code>next()</code> כדי להעביר את השרביט ל-Middleware הבא."
+    },
+    {
+      q: "איך שומרים על JWT Token בצורה בטוחה בלקוח?",
+      code: "localStorage.setItem('token', token);\n// OR\nres.cookie('token', token, { httpOnly: true });",
+      a: "<b>רק HttpOnly Cookie!</b><br>שמירה ב-localStorage חושפת את הטוקן למתקפות XSS (סביבה שבה קוד JS זדוני יכול לשאוב את המידע ולהשתלט על החשבון). עוגיית HttpOnly חסומה לקריאה מ-JS."
+    },
+    {
+      q: "מה ההבדל בין 401 ל-403?",
+      code: "res.status(401).send('Error');\nres.status(403).send('Error');",
+      a: "<b>401 Unauthorized</b> = המשתמש לא מחובר כלל. דרוש Login.<br><b>403 Forbidden</b> = מחובר אבל אין הרשאה לפעולה (admin בלבד)."
+    },
+    {
+      q: "מה הבעיה בקוד הבא? (useEffect dependency)",
+      code: "function Timer({ userId }) {\n  const [data, setData] = useState(null);\n  useEffect(() => {\n    fetch('/api/' + userId).then(r => r.json()).then(setData);\n  }, []); // מערך ריק!\n}",
+      a: "המערך הריק [] אומר 'הרץ פעם אחת'. אבל אם userId משתנה — ה-fetch לא ירוץ שוב!<br>הפתרון: <code>[userId]</code> ב-dependencies. כל שינוי ב-userId יגרור fetch חדש."
+    },
+    {
+      q: "מה ההבדל בין null ל-undefined?",
+      code: "let a;\nlet b = null;\nconsole.log(a, b);\nconsole.log(a == b, a === b);",
+      a: "<code>undefined undefined</code>, <code>true false</code>.<br><b>undefined</b>: הוצהר משתנה אבל לא הוקצה לו ערך — JS הגדיר אוטומטית.<br><b>null</b>: העדר מכוון — המתכנת אמר 'אין ערך'. <code>==</code> מחשיב אותם שווים, <code>===</code> לא."
+    },
+    {
+      q: "מה יודפס? (Promise.all vs Promise.allSettled)",
+      code: "Promise.all([\n  Promise.resolve(1),\n  Promise.reject('Error'),\n  Promise.resolve(3)\n]).catch(e => console.log('all:', e));\n\nPromise.allSettled([\n  Promise.resolve(1),\n  Promise.reject('Error')\n]).then(r => console.log('settled:', r.length));",
+      a: "<code>all: Error</code> ואז <code>settled: 2</code>.<br><b>Promise.all</b>: נכשל מיד אם Promise אחד נכשל.<br><b>Promise.allSettled</b>: מחכה לכולם וגם אם נכשלו — מחזיר מערך עם הסטטוס של כל אחד."
+    },
+    {
+      q: "מה יחזיר הקוד? (Optional Chaining)",
+      code: "const user = { profile: null };\nconsole.log(user?.profile?.name);\nconsole.log(user?.address?.city ?? 'Tel Aviv');",
+      a: "<code>undefined</code>, <code>'Tel Aviv'</code>.<br><code>?.</code> עוצר ומחזיר undefined אם הערך null/undefined — בלי לזרוק שגיאה.<br><code>??</code> (Nullish Coalescing) מחזיר את הצד הימני אם הצד השמאלי הוא null או undefined בלבד."
+    },
+    {
+      q: "מה הפלט? (Prototype Chain)",
+      code: "function Animal(name) { this.name = name; }\nAnimal.prototype.speak = function() { return this.name + ' speaks'; };\nconst dog = new Animal('Rex');\nconsole.log(dog.speak());\nconsole.log(dog.hasOwnProperty('name'));\nconsole.log(dog.hasOwnProperty('speak'));",
+      a: "<code>Rex speaks</code>, <code>true</code>, <code>false</code>.<br>name הוא own property (הוגדר בconstructor). speak מוגדר על prototype — לא own property. JS מחפש שם ב-prototype chain אוטומטית."
+    }
+  ];
+
+  function getCategory(title) {
+    const lower = title.toLowerCase();
+    if (lower.includes('react') || lower.includes('hook') || lower.includes('effect') || lower.includes('state')) return 'React';
+    if (lower.includes('mongoose') || lower.includes('db') || lower.includes('database') || lower.includes('node') || lower.includes('express') || lower.includes('middleware')) return 'Backend / DB';
+    if (lower.includes('cors') || lower.includes('token') || lower.includes('jwt') || lower.includes('401') || lower.includes('403') || lower.includes('auth')) return 'Architecture / Auth';
+    return 'JS Core';
+  }
+
+  const container = document.getElementById('questions-container');
+  let currentFilter = 'All';
+
+  function renderQuestions() {
+    container.innerHTML = '';
+    let visibleCount = 0;
+    
+    questions.forEach((q, i) => {
+      const cat = getCategory(q.q);
+      if (currentFilter !== 'All' && currentFilter !== cat) return;
+      
+      visibleCount++;
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.innerHTML = `
+        <div class="q-title">
+          <div class="q-number">${i + 1}</div>
+          <div style="flex:1;">
+            ${q.q}
+            <span style="font-size:0.6em; background:rgba(255,255,255,0.1); padding:2px 8px; border-radius:12px; margin-right:10px; vertical-align:middle; color:#cbd5e1;">${cat}</span>
+          </div>
+        </div>
+        
+    <details class="custom-details code-details">
+      <summary>💻 הצג קוד דוגמה</summary>
+      <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">${q.code}</div>
+    </details>
+    
+        ${q.visual ? q.visual : ""}
+        <details>
+          <summary>הצג תשובה והסבר</summary>
+          <div class="answer">${q.a}</div>
+        </details>
+      `;
+      container.appendChild(card);
+    });
+    
+    if (visibleCount === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8;">לא נמצאו שאלות בקטגוריה זו.</div>';
+    }
+  }
+
+  function filterCategory(cat) {
+    currentFilter = cat;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      if (btn.textContent.includes(cat === 'Architecture / Auth' ? 'אבטחה' : cat) || (cat === 'All' && btn.textContent === 'הכל')) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+    renderQuestions();
+  }
+
+  // Initial render
+  renderQuestions();
+</script>
+
+<script src="theme-toggle.js"></script>
+<script src="breadcrumbs.js"></script>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

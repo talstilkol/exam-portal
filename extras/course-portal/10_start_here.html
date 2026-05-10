@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 מאיפה מתחילים? מסלולי למידה</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #e0e0e0; padding: 30px; min-height: 100vh; }
+    .container { max-width: 900px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 40px; }
+    h1 { font-size: 2.8em; color: #4ecdc4; margin-bottom: 10px; }
+    p.subtitle { color: #94a3b8; font-size: 1.2em; }
+    .back-link { display: inline-block; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; margin-bottom: 20px; transition: 0.3s; }
+    .back-link:hover { background: rgba(255,217,61,0.2); }
+    
+    .question-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 40px; border-radius: 15px; text-align: center; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .question-box h2 { color: #fff; margin-bottom: 30px; font-size: 2em; }
+    
+    .level-btns { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .level-btn { flex: 1; min-width: 200px; padding: 25px; border-radius: 15px; border: 2px solid transparent; background: rgba(0,0,0,0.3); color: white; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .level-btn:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); }
+    .level-btn.active { border-color: #ffd93d; background: rgba(255,217,61,0.15); box-shadow: 0 0 20px rgba(255,217,61,0.2); transform: scale(1.05); }
+    
+    .level-btn .icon { font-size: 3em; }
+    .level-btn .title { font-size: 1.3em; font-weight: bold; }
+    .level-btn .desc { font-size: 0.9em; color: #a0aebc; }
+    
+    .path-result { display: none; margin-top: 40px; animation: fadeIn 0.5s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .path-result h3 { font-size: 1.8em; color: #ffd93d; margin-bottom: 20px; text-align: center; border-bottom: 2px solid rgba(255,217,61,0.3); padding-bottom: 10px; }
+    
+    .timeline { position: relative; max-width: 800px; margin: 0 auto; padding: 20px 0; }
+    .timeline::after { content: ''; position: absolute; width: 4px; background: rgba(255,255,255,0.1); top: 0; bottom: 0; left: 50%; margin-left: -2px; border-radius: 4px; }
+    
+    .timeline-item { padding: 10px 40px; position: relative; width: 50%; display: flex; align-items: center; }
+    .timeline-item.left { left: 0; justify-content: flex-end; }
+    .timeline-item.right { left: 50%; justify-content: flex-start; }
+    
+    .timeline-icon { position: absolute; width: 40px; height: 40px; right: -20px; background: #0f3460; border: 4px solid #4ecdc4; border-radius: 50%; z-index: 1; display: flex; align-items: center; justify-content: center; font-size: 1.2em; font-weight: bold; color: white; }
+    .timeline-item.right .timeline-icon { left: -20px; right: auto; }
+    
+    .timeline-content { padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); width: 100%; transition: all 0.3s; position: relative; }
+    .timeline-item:hover .timeline-content { transform: scale(1.03); background: rgba(78,205,196,0.1); border-color: #4ecdc4; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+    .timeline-item:hover .timeline-icon { background: #4ecdc4; box-shadow: 0 0 15px #4ecdc4; }
+    
+    .timeline-content h4 { color: #fff; margin-bottom: 8px; font-size: 1.2em; display: flex; align-items: center; gap: 8px; }
+    .timeline-content p { color: #a0a0a0; font-size: 0.95em; margin-bottom: 15px; }
+    .timeline-content .btn { display: inline-block; padding: 6px 12px; background: #38bdf8; color: #000; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 0.9em; transition: 0.2s; }
+    .timeline-content .btn:hover { background: #0ea5e9; }
+    
+    .btn-exam { background: #ff6b6b !important; color: white !important; }
+    .btn-exam:hover { background: #ef4444 !important; }
+    
+    .info-box { background: rgba(56, 189, 248, 0.1); border-right: 4px solid #38bdf8; padding: 20px; border-radius: 8px; margin: 40px 0; }
+    .info-box h4 { color: #38bdf8; margin-bottom: 10px; }
+    
+    /* Mobile */
+    @media (max-width: 768px) {
+      .timeline::after { left: 31px; }
+      .timeline-item { width: 100%; padding-left: 70px; padding-right: 25px; }
+      .timeline-item.left, .timeline-item.right { left: 0; justify-content: flex-start; text-align: right; }
+      .timeline-icon { left: 11px; right: auto; }
+      .timeline-item.left .timeline-icon { left: 11px; }
+    }
+  </style>
+  <link rel="stylesheet" href="light-mode.css">
+</head>
+<body>
+
+<div class="container">
+  <a href="00_dashboard.html" class="back-link">← חזרה לדשבורד</a>
+  
+  <header>
+    <h1>🗺️ מאיפה מתחילים?</h1>
+    <p class="subtitle">הדרך המהירה והיעילה ביותר לעבור את המבחן.</p>
+  </header>
+
+  <div class="info-box">
+    <h4>💡 מה זה בכלל Full-Stack ב-30 שניות?</h4>
+    <p>אפליקציה מלאה מורכבת מ-3 חלקים: <strong>חזית (Frontend/React)</strong> - מה שהמשתמש רואה ולוחץ עליו, <strong>שרת (Backend/Node.js)</strong> - המוח שמקבל את הבקשות ומבצע חישובים/בדיקות אימות, ו<strong>מסד נתונים (DB/MongoDB)</strong> - המקום שבו המידע (כמו יוזרים ופוסטים) נשמר לצמיתות. את הכל מחבר ה-<strong>API</strong> שהוא שפת התקשורת ביניהם.</p>
+  </div>
+
+  <div class="question-box" id="survey-box">
+    <h2 id="survey-q">שאלה 1 מתוך 3:<br>האם אתה מרגיש בנוח לכתוב HTML & CSS מאפס?</h2>
+    <div class="level-btns">
+      <button class="level-btn" onclick="answerSurvey(true)">
+        <span class="icon">👍</span>
+        <span class="title">כן, בקלות</span>
+      </button>
+      <button class="level-btn" onclick="answerSurvey(false)">
+        <span class="icon">👎</span>
+        <span class="title">לא ממש / בקושי</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="result-container" class="path-result">
+    <h3 id="path-title">המסלול שלך</h3>
+    <p style="text-align:center; color:#94a3b8; margin-bottom:30px;" id="path-desc">עקוב אחר הצעדים הבאים לפי הסדר כדי להבטיח הבנה מלאה.</p>
+    
+    <div class="timeline" id="timeline">
+      <!-- Injected via JS -->
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let score = 0;
+  let currentQ = 1;
+
+  function answerSurvey(isYes) {
+    if (isYes) score++;
+    
+    const qEl = document.getElementById('survey-q');
+    
+    if (currentQ === 1) {
+      currentQ++;
+      qEl.innerHTML = 'שאלה 2 מתוך 3:<br>האם אי פעם בנית קומפוננטה ב-React עם useState?';
+    } else if (currentQ === 2) {
+      currentQ++;
+      qEl.innerHTML = 'שאלה 3 מתוך 3:<br>האם אתה יודע מה זה Middleware ב-Node.js?';
+    } else {
+      document.getElementById('survey-box').style.display = 'none';
+      if (score === 0) selectLevel('beginner');
+      else if (score === 1 || score === 2) selectLevel('intermediate');
+      else selectLevel('advanced');
+    }
+  }
+
+  const paths = {
+    beginner: [
+      { num: 1, title: 'התמונה הגדולה', desc: 'קרא את ההסבר הכללי על שרת-לקוח. הבן את ההבדל בין צד שרת לצד לקוח.', link: '01_master_theory.html#bigpicture' },
+      { num: 2, title: 'יסודות JS מודרני', desc: 'התמקד ב-let/const, פונקציות חץ, מערכים ו-destructuring. אל תתקדם בלי להבין את אלה.', link: '01_master_theory.html#js-basics' },
+      { num: 3, title: 'אסינכרוניות הבסיס', desc: 'הבנת Promises ו-async/await היא קריטית. צפה באינפוגרפיקה של ה-Event Loop.', link: '01_master_theory.html#async' },
+      { num: 4, title: 'מבוא ל-React', desc: 'מה זה Component? מה ההבדל בין State ל-Props? קרא רק את הבסיס ואת useState.', link: '01_master_theory.html#react' },
+      { num: 5, title: 'תרגול ראשוני', desc: 'נסה לפתור את 10 השאלות הראשונות בסימולטור (בחר נושא JS).', link: '09_mini_quiz.html', isExam: true }
+    ],
+    intermediate: [
+      { num: 1, title: 'נושאי ליבה ב-JS', desc: 'וודא שאתה מבין היטב Closures, Hoisting ואת ההבדל בין Copy Reference ל-Value.', link: '01_master_theory.html#closures' },
+      { num: 2, title: 'React Hooks לעומק', desc: 'קרא על useEffect (כולל מערך התלויות) ו-useRef. איך מונעים רינדורים מיותרים.', link: '01_master_theory.html#hooks' },
+      { num: 3, title: 'Node.js & Express', desc: 'איך עובד שרת? מה זה Middleware? איך בונים REST API בסיסי.', link: '01_master_theory.html#express' },
+      { num: 4, title: 'בסיסי נתונים ו-Auth', desc: 'קריאה על MongoDB (Mongoose) והבנת תהליך אימות בעזרת JWT.', link: '01_master_theory.html#database' },
+      { num: 5, title: 'שינון בעזרת כרטיסיות', desc: 'התחל לעבוד עם ה-Flashcards. עבור על לפחות 20 כרטיסיות כדי לקבע ידע.', link: '08_flashcards_quiz.html', isExam: true }
+    ],
+    advanced: [
+      { num: 1, title: 'שאלות מכשילות בראיונות', desc: 'קפוץ ישר לעמוד השאלות המכשילות. נסה לנחש את הפלט לפני שאתה קורא את ההסבר.', link: '12_tricky_questions.html' },
+      { num: 2, title: 'נושאי קצה (Final Frontier)', desc: 'מעבר על Memory Leaks, Node Streams ו-Docker.', link: '17_final_frontier.html' },
+      { num: 3, title: 'ארכיטקטורה ובדיקות', desc: 'מעבר זריז על Redux/Zustand, VDOM Diffing ומבוא ל-Testing (Jest).', link: '07_advanced_topics.html' },
+      { num: 4, title: 'אסטרטגיה למבחן', desc: 'צ\'קליסט פריסה (Deployment) ואיך לגשת לתרגילי בית.', link: '06_strategy.html' },
+      { num: 5, title: 'סימולטור אמת: 150 דקות', desc: 'הפעל את המבחן האמיתי. בלי עזרים. 50+ שאלות אקראיות.', link: '09_mini_quiz.html', isExam: true }
+    ]
+  };
+
+
+  function selectLevel(level, btnElement) {
+    // Reset buttons
+    document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+    if (btnElement) btnElement.classList.add('active');
+    
+    const titles = {
+      beginner: '🌱 מסלול טירון (Beginner)',
+      intermediate: '🚀 מסלול בינוני (Intermediate)',
+      advanced: '🥷 מסלול מתקדם (Advanced)'
+    };
+    
+    document.getElementById('path-title').textContent = titles[level];
+    
+    const timeline = document.getElementById('timeline');
+    timeline.innerHTML = '';
+    
+    paths[level].forEach((step, index) => {
+      const isLeft = index % 2 === 0;
+      
+      const item = document.createElement('div');
+      item.className = `timeline-item ${isLeft ? 'left' : 'right'}`;
+      
+      item.innerHTML = `
+        <div class="timeline-icon">${step.num}</div>
+        <div class="timeline-content">
+          <h4>${step.title}</h4>
+          <p>${step.desc}</p>
+          <a href="${step.link}" class="btn ${step.isExam ? 'btn-exam' : ''}">${step.isExam ? '📝 התחל תרגול' : '📖 קרא פרק'}</a>
+        </div>
+      `;
+      
+      // Staggered animation
+      item.style.animation = `fadeIn 0.5s ease ${index * 0.15}s both`;
+      timeline.appendChild(item);
+    });
+    
+    const resultBox = document.getElementById('result-container');
+    resultBox.style.display = 'block';
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+
+<script src="theme-toggle.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

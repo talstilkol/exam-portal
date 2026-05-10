@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎙️ סימולטור ראיונות מתקדם</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #e0e0e0; min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+    
+    .back-link { align-self: flex-start; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; }
+    .back-link:hover { background: rgba(255,217,61,0.25); }
+
+    header { text-align: center; margin-bottom: 30px; }
+    h1 { color: #4ecdc4; font-size: 2.5em; margin-bottom: 10px; }
+    p.subtitle { color: #94a3b8; font-size: 1.1em; }
+
+    .interview-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; width: 100%; max-width: 800px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; }
+    
+    .question-box { margin-bottom: 25px; }
+    .q-badge { background: #eab308; color: #000; padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9em; display: inline-block; margin-bottom: 10px; }
+    .q-text { font-size: 1.6em; font-weight: bold; line-height: 1.4; color: white; }
+
+    .answer-box { width: 100%; }
+    textarea { width: 100%; height: 150px; background: rgba(0,0,0,0.3); border: 2px solid rgba(78,205,196,0.3); border-radius: 10px; padding: 15px; color: white; font-size: 1.1em; resize: vertical; transition: 0.3s; }
+    textarea:focus { outline: none; border-color: #4ecdc4; box-shadow: 0 0 15px rgba(78,205,196,0.2); background: rgba(0,0,0,0.5); }
+
+    .controls { display: flex; justify-content: space-between; margin-top: 20px; }
+    .btn { padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1em; cursor: pointer; transition: 0.2s; color: white; }
+    .btn-submit { background: linear-gradient(135deg, #4ecdc4, #20b2aa); }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(78,205,196,0.3); }
+    .btn-skip { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
+    .btn-skip:hover { background: rgba(255,255,255,0.2); }
+
+    /* Feedback */
+    .feedback-box { display: none; margin-top: 25px; padding: 20px; border-radius: 12px; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .feedback-box.success { background: rgba(16,185,129,0.15); border: 1px solid #10b981; }
+    .feedback-box.fail { background: rgba(239,68,68,0.15); border: 1px solid #ef4444; }
+    
+    .feedback-title { font-size: 1.4em; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .success .feedback-title { color: #10b981; }
+    .fail .feedback-title { color: #ef4444; }
+    
+    .keywords-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+    .kw-tag { padding: 5px 12px; border-radius: 20px; font-size: 0.9em; font-weight: bold; }
+    .kw-tag.found { background: #10b981; color: white; }
+    .kw-tag.missed { background: #ef4444; color: white; text-decoration: line-through; opacity: 0.7; }
+    
+    .ideal-answer { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border-right: 4px solid #38bdf8; font-size: 0.95em; color: #cbd5e1; line-height: 1.5; margin-top: 15px; }
+    .ideal-answer strong { color: #38bdf8; }
+    
+    .next-btn-container { text-align: left; margin-top: 20px; display: none; }
+  </style>
+</head>
+<body>
+
+<a href="00_dashboard.html" class="back-link">← חזרה לדשבורד</a>
+
+<header>
+  <h1>🎙️ סימולטור ראיונות</h1>
+  <p class="subtitle">ענה במילים שלך. האלגוריתם יבדוק אם הזכרת את מושגי המפתח.</p>
+</header>
+
+<div class="interview-card">
+  <div class="question-box">
+    <div class="q-badge" id="q-category">טוען...</div>
+    <div class="q-text" id="q-text">מכין את המראיין...</div>
+  </div>
+
+  <div class="answer-box">
+    <textarea id="answer-input" placeholder="הקלד את התשובה שלך כאן... (כמו שהיית עונה בראיון קולי)"></textarea>
+  </div>
+
+  <div class="controls" id="controls">
+    <button class="btn btn-skip" onclick="nextQuestion()">דלג (לא יודע)</button>
+    <button class="btn btn-submit" onclick="gradeAnswer()">שלח לבדיקה ✔️</button>
+  </div>
+
+  <div class="feedback-box" id="feedback-box">
+    <div class="feedback-title" id="fb-title"></div>
+    <p style="margin-bottom:10px;">מילות מפתח נדרשות:</p>
+    <div class="keywords-list" id="kw-list"></div>
+    
+    <div class="ideal-answer">
+      <strong>תשובה אידיאלית:</strong><br>
+      <span id="ideal-ans"></span>
+    </div>
+    
+    <div class="next-btn-container" id="next-btn-container">
+      <button class="btn btn-submit" onclick="nextQuestion()">לשאלה הבאה →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mock Interview Database
+  const interviewQuestions = [
+    {
+      category: 'JS Core',
+      q: 'מה זה Closure (סגירה)? תוכל להסביר לי במילים שלך מתי נשתמש בזה?',
+      keywords: ['פונקציה', 'זוכרת', 'סביבה', 'scope', 'לקסיקלית', 'lexical', 'הוריה', 'משתנים מבחוץ'],
+      requiredMatches: 2,
+      ideal: 'Closure זה מצב שבו פונקציה פנימית "זוכרת" את הסביבה (Lexical Scope) שבה היא נוצרה, ויש לה גישה למשתנים של הפונקציה העוטפת אותה (הוריה), אפילו אחרי שהפונקציה העוטפת סיימה לרוץ. נשתמש בזה לפרטיות (Data Privacy) או ב-Event Listeners.'
+    },
+    {
+      category: 'React',
+      q: 'למה אנחנו צריכים להשתמש במערך התלויות (Dependency Array) ב-useEffect? מה יקרה אם לא נשים אותו בכלל?',
+      keywords: ['ללא הפסקה', 'כל רינדור', 'render', 'אינסופי', 'לולאה', 'infinity loop', 'רק מתי', 'שינוי'],
+      requiredMatches: 2,
+      ideal: 'מערך התלויות אומר ל-React מתי להריץ שוב את ה-Effect (רק כשהמשתנים במערך משתנים). אם לא נשים אותו בכלל, ה-Effect ירוץ אחרי *כל* רינדור של הקומפוננטה. אם ה-Effect גם משנה State, זה ייצור לולאת רינדורים אינסופית (Infinite Loop) שתקריס את האפליקציה.'
+    },
+    {
+      category: 'Async',
+      q: 'מה ההבדל בין Promise.all לבין סתם לשים כמה await אחד אחרי השני?',
+      keywords: ['מקביל', 'במקביל', 'parallel', 'טורי', 'אחד אחרי השני', 'זמן', 'מהיר', 'יחכה'],
+      requiredMatches: 2,
+      ideal: 'כשאנחנו כותבים await אחד אחרי השני, זה רץ באופן טורי (סדרתי) - הבקשה השנייה לא תתחיל עד שהראשונה תסתיים. לעומת זאת, Promise.all מריץ את כל הבקשות במקביל! מה שחוסך המון זמן. נשתמש בו כשהבקשות לא תלויות אחת בשנייה.'
+    },
+    {
+      category: 'Node.js',
+      q: 'תסביר לי מה התפקיד של Middleware ב-Express?',
+      keywords: ['באמצע', 'בין', 'בקשה', 'תשובה', 'req', 'res', 'next', 'בדיקה', 'auth', 'אימות'],
+      requiredMatches: 2,
+      ideal: 'Middleware היא פונקציה שיושבת "באמצע", בין קבלת הבקשה (req) לבין שליחת התשובה (res). יש לה גישה לאובייקטים הללו ולפונקציית next(). היא משמשת לבדיקות מקדימות כמו אימות (Authentication), רישום לוגים (Logging), או שינוי הבקשה לפני שהיא מגיעה ל-Controller הסופי.'
+    },
+    {
+      category: 'Database',
+      q: 'למה צריך Indexes במסד נתונים כמו MongoDB?',
+      keywords: ['חיפוש', 'מהיר', 'סריקה', 'O(1)', 'B-Tree', 'מילון', 'אינדקס', 'סורק הכל', 'collection scan'],
+      requiredMatches: 2,
+      ideal: 'אינדקס משפר דרמטית את מהירות השאילתות. בלי אינדקס, MongoDB חייב לסרוק את כל המסמכים באוסף (Collection Scan) כדי למצוא התאמה, מה שמאוד איטי בבסיס נתונים גדול. עם אינדקס (כמו תוכן עניינים בספר), הוא ניגש ישירות למידע בעזרת מבנה נתונים כגון B-Tree.'
+    }
+  ];
+
+  let currentQ = null;
+
+  function loadRandomQuestion() {
+    document.getElementById('answer-input').value = '';
+    document.getElementById('feedback-box').style.display = 'none';
+    document.getElementById('controls').style.display = 'flex';
+    document.getElementById('next-btn-container').style.display = 'none';
+
+    currentQ = interviewQuestions[Math.floor(Math.random() * interviewQuestions.length)];
+    
+    document.getElementById('q-category').textContent = currentQ.category;
+    document.getElementById('q-text').textContent = currentQ.q;
+  }
+
+  function gradeAnswer() {
+    const userInput = document.getElementById('answer-input').value.toLowerCase();
+    if(userInput.trim().length < 10) {
+      alert("התשובה קצרה מדי. פרט יותר.");
+      return;
+    }
+
+    let matches = 0;
+    const kwListEl = document.getElementById('kw-list');
+    kwListEl.innerHTML = '';
+
+    currentQ.keywords.forEach(kw => {
+      const isFound = userInput.includes(kw.toLowerCase());
+      if (isFound) matches++;
+      
+      const tag = document.createElement('span');
+      tag.className = `kw-tag ${isFound ? 'found' : 'missed'}`;
+      tag.textContent = kw;
+      kwListEl.appendChild(tag);
+    });
+
+    const isPassed = matches >= currentQ.requiredMatches;
+    
+    const fbBox = document.getElementById('feedback-box');
+    const fbTitle = document.getElementById('fb-title');
+    
+    fbBox.className = `feedback-box ${isPassed ? 'success' : 'fail'}`;
+    fbBox.style.display = 'block';
+    
+    document.getElementById('ideal-ans').textContent = currentQ.ideal;
+    document.getElementById('controls').style.display = 'none';
+    document.getElementById('next-btn-container').style.display = 'block';
+
+    if(isPassed) {
+      fbTitle.innerHTML = '✅ מעולה! עברת את השאלה.';
+    } else {
+      fbTitle.innerHTML = '❌ חסרים מושגי מפתח. קרא שוב את התשובה האידיאלית.';
+    }
+  }
+
+  function nextQuestion() {
+    loadRandomQuestion();
+  }
+
+  // Init
+  document.addEventListener('DOMContentLoaded', loadRandomQuestion);
+</script>
+</body>
+</html>

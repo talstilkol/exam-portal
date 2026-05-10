@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗺️ המפה הגדולה — כל החומר במבט אחד</title>
+  <link rel="stylesheet" href="light-mode.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:'Segoe UI','Arial Hebrew',system-ui,sans-serif;
+    background:linear-gradient(180deg,#0a0e27 0%,#16213e 40%,#1a1a2e 100%);
+    background-attachment:fixed;
+    color:#e8e8e8;
+    line-height:1.7;
+    min-height:100vh;
+    padding:20px;
+  }
+  .container { max-width:1600px; margin:0 auto; }
+
+  /* === HEADER === */
+  header {
+    text-align:center;
+    padding:60px 20px 40px;
+    background:radial-gradient(ellipse at center,rgba(78,205,196,0.18),rgba(255,107,107,0.08) 60%,transparent);
+    border-radius:24px;
+    margin-bottom:30px;
+    border:2px solid rgba(78,205,196,0.2);
+  }
+  header h1 { font-size:3.5em; color:#fff; margin-bottom:14px; text-shadow:0 4px 20px rgba(78,205,196,0.5); }
+  header h1 .emoji { display:inline-block; transform:rotate(-8deg); }
+  header p { color:rgba(255,255,255,0.85); font-size:1.4em; max-width:900px; margin:0 auto; }
+  header .tag { display:inline-block; background:rgba(255,217,61,0.15); border:1px solid rgba(255,217,61,0.4); color:#ffd93d; padding:6px 18px; border-radius:30px; margin-top:18px; font-size:0.95em; }
+
+  .back-link { display:inline-block; margin-bottom:20px; padding:10px 22px; background:rgba(78,205,196,0.15); border:1px solid rgba(78,205,196,0.4); border-radius:30px; color:#4ecdc4; text-decoration:none; transition:all .25s; }
+  .back-link:hover { background:rgba(78,205,196,0.3); transform:translateX(5px); }
+
+  /* === LEGEND === */
+  .legend {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:14px;
+    margin:30px 0;
+    padding:20px;
+    background:rgba(255,255,255,0.04);
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.08);
+  }
+  .legend-item { display:flex; align-items:center; gap:10px; font-size:0.95em; }
+  .legend-dot { width:14px; height:14px; border-radius:50%; flex-shrink:0; }
+
+  /* === GIANT MAP === */
+  .giant-map {
+    background:linear-gradient(180deg,#87ceeb 0%,#e0f6ff 30%,#90c890 65%,#5d8a3a 100%);
+    border-radius:24px;
+    padding:40px;
+    margin:30px 0;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5),inset 0 0 100px rgba(255,255,255,0.1);
+    position:relative;
+    overflow:hidden;
+  }
+  .giant-map svg { width:100%; height:auto; display:block; }
+
+  /* === KINGDOM REGIONS === */
+  .regions-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(380px,1fr));
+    gap:24px;
+    margin:40px 0;
+  }
+  .region-card {
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(10px);
+    border:2px solid;
+    border-radius:20px;
+    padding:28px;
+    transition:all .3s;
+    cursor:pointer;
+    text-decoration:none;
+    color:inherit;
+    display:block;
+  }
+  .region-card:hover { transform:translateY(-8px); box-shadow:0 20px 40px rgba(0,0,0,0.3); }
+  .region-icon { font-size:3em; margin-bottom:14px; display:block; }
+  .region-card h3 { font-size:1.5em; margin-bottom:10px; }
+  .region-card .subtitle { font-size:0.9em; opacity:0.7; margin-bottom:14px; }
+  .region-card ul { list-style:none; }
+  .region-card li { padding:6px 0; padding-right:24px; position:relative; font-size:0.95em; }
+  .region-card li::before { content:"▸"; position:absolute; right:0; opacity:0.6; }
+  .region-card .meta { margin-top:14px; padding-top:14px; border-top:1px dashed rgba(255,255,255,0.15); font-size:0.85em; opacity:0.7; }
+
+  /* Region color themes */
+  .r-frontend { border-color:rgba(78,205,196,0.5); }
+  .r-frontend h3 { color:#4ecdc4; }
+  .r-backend { border-color:rgba(255,179,71,0.5); }
+  .r-backend h3 { color:#ffb347; }
+  .r-database { border-color:rgba(155,89,182,0.5); }
+  .r-database h3 { color:#bb8fce; }
+  .r-auth { border-color:rgba(231,76,60,0.5); }
+  .r-auth h3 { color:#ec7063; }
+  .r-algorithms { border-color:rgba(255,217,61,0.5); }
+  .r-algorithms h3 { color:#ffd93d; }
+  .r-strategy { border-color:rgba(72,201,176,0.5); }
+  .r-strategy h3 { color:#48c9b0; }
+  .r-traps { border-color:rgba(255,107,107,0.5); }
+  .r-traps h3 { color:#ff6b6b; }
+  .r-snippets { border-color:rgba(127,179,213,0.5); }
+  .r-snippets h3 { color:#7fb3d5; }
+
+  /* === JOURNEY TIMELINE === */
+  .journey {
+    margin:50px 0;
+    padding:40px;
+    background:rgba(255,255,255,0.04);
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.08);
+  }
+  .journey h2 { color:#ffd93d; font-size:2em; text-align:center; margin-bottom:30px; }
+  .timeline {
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:14px;
+    position:relative;
+  }
+  .timeline::before {
+    content:"";
+    position:absolute;
+    top:48px;
+    left:5%;
+    right:5%;
+    height:4px;
+    background:linear-gradient(90deg,#ff6b6b,#ffd93d,#4ecdc4,#bb8fce);
+    border-radius:2px;
+    z-index:0;
+  }
+  .timeline-step { text-align:center; position:relative; z-index:1; }
+  .timeline-step .num { width:60px; height:60px; line-height:60px; background:linear-gradient(135deg,#4ecdc4,#16213e); border-radius:50%; margin:0 auto 12px; font-weight:bold; font-size:1.4em; color:white; box-shadow:0 6px 20px rgba(78,205,196,0.4); border:3px solid rgba(255,255,255,0.2); }
+  .timeline-step .title { color:#ffd93d; font-weight:bold; font-size:1em; margin-bottom:6px; }
+  .timeline-step .desc { font-size:0.85em; opacity:0.7; }
+  @media (max-width:900px) { .timeline { grid-template-columns:repeat(2,1fr); } .timeline::before { display:none; } }
+
+  /* === TOPIC GRID (full inventory) === */
+  .topic-section { margin:50px 0; }
+  .topic-section h2 { color:#4ecdc4; font-size:2.2em; margin-bottom:8px; padding-bottom:14px; border-bottom:2px solid rgba(78,205,196,0.3); }
+  .topic-section .lede { opacity:0.75; margin-bottom:24px; font-size:1.05em; }
+  .topic-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:16px;
+  }
+  .topic-card {
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:14px;
+    padding:18px;
+    transition:all .25s;
+  }
+  .topic-card:hover { background:rgba(255,255,255,0.08); border-color:rgba(78,205,196,0.4); transform:translateY(-3px); }
+  .topic-card .topic-icon { font-size:1.8em; margin-bottom:8px; }
+  .topic-card h4 { color:#fff; font-size:1.1em; margin-bottom:8px; }
+  .topic-card p { font-size:0.9em; opacity:0.8; line-height:1.5; }
+  .topic-card .analogy { margin-top:10px; padding:8px 12px; background:rgba(255,217,61,0.1); border-right:3px solid #ffd93d; border-radius:6px; font-size:0.85em; }
+
+  /* === FOOTER === */
+  footer { text-align:center; padding:40px; opacity:0.6; font-size:0.9em; }
+</style>
+  <link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+
+<div class="container">
+
+  <a href="00_dashboard.html" class="back-link">← חזרה לדשבורד</a>
+  <a href="IDE_project.html" class="back-link" style="margin-right:10px;background:rgba(88,166,255,0.15);border-color:rgba(88,166,255,0.4);color:#58a6ff;">💻 פתח IDE</a>
+  <a href="DEBUG_errors.html" class="back-link" style="margin-right:10px;background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.4);color:#fca5a5;">🛠️ מילון שגיאות</a>
+  <a href="BUILD_walkthrough.html" class="back-link" style="margin-right:10px;background:rgba(132,204,22,0.15);border-color:rgba(132,204,22,0.4);color:#bef264;">🛠️ בנה מאפס</a>
+
+  <header>
+    <h1><span class="emoji">🗺️</span> המפה הגדולה</h1>
+    <p>מסע ויזואלי דרך כל החומר — מ-HTML הבסיסי ועד לפריסה לעולם. כל נושא, כל מלכודת, כל אסטרטגיה — במבט אחד.</p>
+    <div class="tag">⏱️ זמן קריאה: 10 דק׳ · 🎯 כיסוי: 100% מהחומר</div>
+  </header>
+
+  <!-- ============= DIDACTIC MASTER FLOW: Full-Stack HTTP Journey ============= -->
+  <style>
+    .master-flow { background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%); border-radius:24px; padding:36px; margin:30px 0; box-shadow:0 20px 60px rgba(0,0,0,0.5); border:2px solid rgba(78,205,196,0.2); }
+    .master-flow h2 { color:#4ecdc4; font-size:2em; text-align:center; margin-bottom:8px; padding:0; border:none; }
+    .master-flow .mf-sub { text-align:center; color:#cbd5e1; margin-bottom:30px; font-size:1.1em; }
+    .master-flow .mf-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; }
+    .mf-card { background:#fff; border-radius:14px; padding:20px; position:relative; transition:all .25s; text-decoration:none; color:#0f172a; display:block; border-top:5px solid; }
+    .mf-card:hover { transform:translateY(-4px); box-shadow:0 14px 30px rgba(0,0,0,0.5); }
+    .mf-card.f1 { border-color:#0ea5e9; }
+    .mf-card.f2 { border-color:#22c55e; }
+    .mf-card.f3 { border-color:#eab308; }
+    .mf-card.f4 { border-color:#f97316; }
+    .mf-card.f5 { border-color:#ec4899; }
+    .mf-card.f6 { border-color:#a855f7; }
+    .mf-card.f7 { border-color:#ef4444; }
+    .mf-card .mf-step { display:inline-block; width:30px; height:30px; line-height:30px; text-align:center; border-radius:50%; color:#fff; font-weight:bold; margin-bottom:10px; }
+    .mf-card.f1 .mf-step { background:#0ea5e9; }
+    .mf-card.f2 .mf-step { background:#22c55e; }
+    .mf-card.f3 .mf-step { background:#eab308; }
+    .mf-card.f4 .mf-step { background:#f97316; }
+    .mf-card.f5 .mf-step { background:#ec4899; }
+    .mf-card.f6 .mf-step { background:#a855f7; }
+    .mf-card.f7 .mf-step { background:#ef4444; }
+    .mf-card h3 { color:#0f172a; font-size:1.15em; margin-bottom:6px; padding:0; border:none; }
+    .mf-card .mf-where { color:#64748b; font-size:0.78em; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:8px; }
+    .mf-card .mf-desc { color:#334155; font-size:0.88em; margin-bottom:10px; line-height:1.55; }
+    .mf-card pre { background:#0f172a; color:#a7f3d0; padding:10px 12px; border-radius:7px; font-size:0.78em; overflow-x:auto; margin:0; line-height:1.55; font-family:'SF Mono','Monaco','Consolas',monospace; direction:ltr; text-align:left; }
+    .mf-card pre .k { color:#f472b6; }
+    .mf-card pre .s { color:#fde68a; }
+    .mf-card pre .c { color:#64748b; font-style:italic; }
+    .mf-card pre .v { color:#93c5fd; }
+    .mf-card .mf-link { display:inline-block; margin-top:10px; color:#0ea5e9; font-size:0.85em; font-weight:600; }
+  </style>
+
+  <div class="master-flow">
+    <h2>🌐 מסע הבקשה — מ-Click ל-Response ב-7 שלבים</h2>
+    <p class="mf-sub">זה הסיפור שמתחבא מאחורי <strong style="color:#4ecdc4;">כל</strong> אפליקציה Full-Stack בעולם.</p>
+
+    <div class="mf-grid">
+      <a href="01_master_theory.html#html" class="mf-card f1">
+        <span class="mf-step">1</span>
+        <div class="mf-where">📍 Frontend · HTML</div>
+        <h3>🖱️ User לוחץ</h3>
+        <div class="mf-desc">לחיצה על כפתור = onClick event handler מופעל.</div>
+<pre><span class="k">&lt;button</span>
+  <span class="v">onClick</span>=<span class="s">{save}</span><span class="k">&gt;</span>שמור<span class="k">&lt;/button&gt;</span></pre>
+        <span class="mf-link">→ למד HTML</span>
+      </a>
+
+      <a href="01_master_theory.html#react" class="mf-card f2">
+        <span class="mf-step">2</span>
+        <div class="mf-where">📍 Frontend · React</div>
+        <h3>⚛️ State updates</h3>
+        <div class="mf-desc">useState משתנה. React מתזמן רינדור מחדש.</div>
+<pre><span class="k">const</span> [d, setD] =
+  <span class="v">useState</span>([]);
+setLoading(<span class="k">true</span>);</pre>
+        <span class="mf-link">→ למד React</span>
+      </a>
+
+      <a href="01_master_theory.html#async" class="mf-card f3">
+        <span class="mf-step">3</span>
+        <div class="mf-where">📍 Network · HTTP</div>
+        <h3>📡 fetch שולח</h3>
+        <div class="mf-desc">בקשה HTTP (POST/GET) יוצאת לשרת. async ממתין.</div>
+<pre><span class="k">await</span> <span class="v">fetch</span>(<span class="s">'/api'</span>, {
+  method: <span class="s">'POST'</span>,
+  body: <span class="v">JSON</span>.stringify(d)
+})</pre>
+        <span class="mf-link">→ למד Async</span>
+      </a>
+
+      <a href="01_master_theory.html#express" class="mf-card f4">
+        <span class="mf-step">4</span>
+        <div class="mf-where">📍 Backend · Express</div>
+        <h3>🚂 השרת מקבל</h3>
+        <div class="mf-desc">Routes מנתבים. Middleware בודק auth + body.</div>
+<pre>app.<span class="v">post</span>(<span class="s">'/api'</span>,
+  auth, <span class="k">async</span>(req,res)=&gt;{
+    <span class="k">const</span> d = req.body;
+});</pre>
+        <span class="mf-link">→ למד Express</span>
+      </a>
+
+      <a href="01_master_theory.html#database" class="mf-card f5">
+        <span class="mf-step">5</span>
+        <div class="mf-where">📍 Backend · MongoDB</div>
+        <h3>📦 שמירה ב-DB</h3>
+        <div class="mf-desc">Mongoose בודק Schema. אם תקין — נשמר.</div>
+<pre><span class="k">const</span> u = <span class="k">new</span> <span class="v">User</span>(d);
+<span class="k">await</span> u.<span class="v">save</span>();
+res.<span class="v">json</span>(u);</pre>
+        <span class="mf-link">→ למד MongoDB</span>
+      </a>
+
+      <a href="01_master_theory.html#hooks" class="mf-card f6">
+        <span class="mf-step">6</span>
+        <div class="mf-where">📍 Frontend · React</div>
+        <h3>🎨 Re-render</h3>
+        <div class="mf-desc">React מקבל JSON, מעדכן state, ה-DOM משתנה.</div>
+<pre><span class="k">const</span> data =
+  <span class="k">await</span> res.<span class="v">json</span>();
+setData(data);</pre>
+        <span class="mf-link">→ למד Hooks</span>
+      </a>
+
+      <a href="01_master_theory.html#auth" class="mf-card f7">
+        <span class="mf-step">7</span>
+        <div class="mf-where">📍 Cross-cutting · Auth</div>
+        <h3>🔐 Auth + Deploy</h3>
+        <div class="mf-desc">JWT בכל בקשה. Vercel/Netlify מהפכים את הקוד לאתר חי.</div>
+<pre>headers: {
+  <span class="v">Authorization</span>:
+   <span class="s">`Bearer ${tk}`</span>
+}</pre>
+        <span class="mf-link">→ למד Auth</span>
+      </a>
+    </div>
+
+    <div style="margin-top:24px;padding:18px;background:rgba(78,205,196,0.08);border-radius:12px;border-right:4px solid #4ecdc4;color:#cbd5e1;">
+      💡 <strong style="color:#4ecdc4;">המפתח להבנת Full-Stack:</strong> כל הנושאים בחומר הם פירוט של אחד מ-7 השלבים האלה.
+    </div>
+  </div>
+
+  <!-- ============= TRACE: How concepts connect in a real project ============= -->
+  <style>
+    .trace-section { background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%); border-radius:24px; padding:36px; margin:30px 0; box-shadow:0 20px 60px rgba(0,0,0,0.5); border:2px solid rgba(168,85,247,0.25); }
+    .trace-section h2 { color:#d2a8ff; font-size:2em; text-align:center; margin-bottom:8px; padding:0; border:none; }
+    .trace-section .ts-sub { text-align:center; color:#cbd5e1; margin-bottom:30px; font-size:1.05em; }
+    .trace-list { display:flex; flex-direction:column; gap:18px; }
+    .trace-item { background:#fff; border-radius:14px; overflow:hidden; }
+    .trace-item summary { list-style:none; cursor:pointer; padding:18px 22px; display:flex; align-items:center; gap:14px; user-select:none; transition:background .2s; }
+    .trace-item summary:hover { background:#f8fafc; }
+    .trace-item summary::-webkit-details-marker { display:none; }
+    .trace-item .ti-num { width:34px; height:34px; line-height:34px; background:#a855f7; color:#fff; border-radius:50%; text-align:center; font-weight:bold; flex-shrink:0; }
+    .trace-item .ti-question { flex:1; color:#0f172a; font-size:1.08em; font-weight:600; }
+    .trace-item .ti-arrow { color:#7d8590; transition:transform .2s; }
+    .trace-item details[open] .ti-arrow { transform:rotate(90deg); color:#a855f7; }
+    .trace-item .ti-body { padding:0 22px 20px; color:#334155; }
+    .trace-flow { display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+    .trace-step { display:flex; gap:12px; align-items:flex-start; padding:12px 14px; background:#f1f5f9; border-radius:8px; border-right:4px solid #a855f7; }
+    .trace-step .ts-num { width:24px; height:24px; line-height:24px; background:#a855f7; color:#fff; border-radius:50%; text-align:center; font-size:0.78em; font-weight:bold; flex-shrink:0; }
+    .trace-step .ts-content { flex:1; }
+    .trace-step .ts-loc { color:#a855f7; font-family:monospace; font-size:0.78em; font-weight:600; margin-bottom:3px; }
+    .trace-step .ts-loc a { color:#a855f7; text-decoration:underline; }
+    .trace-step .ts-text { font-size:0.92em; line-height:1.55; }
+    .trace-step .ts-text code { background:#0f172a; color:#a7f3d0; padding:1px 6px; border-radius:4px; font-size:0.88em; }
+    .trace-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+    .trace-tag { padding:3px 10px; background:rgba(168,85,247,0.1); color:#a855f7; border-radius:12px; font-size:0.78em; border:1px solid rgba(168,85,247,0.25); }
+  </style>
+
+  <section class="trace-section">
+    <h2>🔗 איך הכל מתחבר בפרויקט אמיתי</h2>
+    <p class="ts-sub">לחץ על שאלה — ראה איך פעולה אחת של המשתמש עוברת דרך כל הקבצים בפרויקט.</p>
+
+    <div class="trace-list">
+
+      <details class="trace-item">
+        <summary>
+          <span class="ti-num">1</span>
+          <span class="ti-question">🖱️ המשתמש לוחץ "Login" — מה קורה בפועל?</span>
+          <span class="ti-arrow">▶</span>
+        </summary>
+        <div class="ti-body">
+          <p style="margin-bottom:8px;">סדר ביצוע מקצה לקצה — דרך 6 קבצים:</p>
+          <div class="trace-flow">
+            <div class="trace-step"><span class="ts-num">1</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#client/src/pages/Login.tsx">📄 client/src/pages/Login.tsx</a></div><div class="ts-text">הטופס תופס onSubmit, קורא <code>login(email, password)</code> מה-hook.</div></div></div>
+            <div class="trace-step"><span class="ts-num">2</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#client/src/hooks/useAuth.ts">🪝 hooks/useAuth.ts</a></div><div class="ts-text">קורא ל-<code>api.post('/auth/login', ...)</code></div></div></div>
+            <div class="trace-step"><span class="ts-num">3</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#client/src/api/client.ts">📡 api/client.ts</a></div><div class="ts-text">בונה fetch עם headers, שולח HTTP POST.</div></div></div>
+            <div class="trace-step"><span class="ts-num">4</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#server/src/server.ts">🚂 server/src/server.ts</a></div><div class="ts-text">CORS + express.json() → מנתב ל-<code>authRouter</code>.</div></div></div>
+            <div class="trace-step"><span class="ts-num">5</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#server/src/routes/auth.ts">🔓 routes/auth.ts</a></div><div class="ts-text">מוצא User → <code>comparePassword</code> (bcrypt) → חותם JWT.</div></div></div>
+            <div class="trace-step"><span class="ts-num">6</span><div class="ts-content"><div class="ts-loc">← חוזר ל-Login.tsx</div><div class="ts-text">localStorage.setItem(token) + navigate('/')</div></div></div>
+          </div>
+          <div class="trace-tags">
+            <span class="trace-tag">React Forms</span>
+            <span class="trace-tag">Custom Hooks</span>
+            <span class="trace-tag">fetch</span>
+            <span class="trace-tag">Express Router</span>
+            <span class="trace-tag">bcrypt</span>
+            <span class="trace-tag">JWT</span>
+            <span class="trace-tag">localStorage</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="trace-item">
+        <summary>
+          <span class="ti-num">2</span>
+          <span class="ti-question">➕ הוספת משימה חדשה — איך מגיע ל-DB?</span>
+          <span class="ti-arrow">▶</span>
+        </summary>
+        <div class="ti-body">
+          <div class="trace-flow">
+            <div class="trace-step"><span class="ts-num">1</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#client/src/components/TaskForm.tsx">📝 components/TaskForm.tsx</a></div><div class="ts-text">controlled input → <code>onSubmit</code> שולח ל-API.</div></div></div>
+            <div class="trace-step"><span class="ts-num">2</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#client/src/api/client.ts">📡 api/client.ts</a></div><div class="ts-text">מצרף Authorization Bearer אוטומטית מה-localStorage.</div></div></div>
+            <div class="trace-step"><span class="ts-num">3</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#server/src/middleware/auth.ts">🛡️ middleware/auth.ts</a></div><div class="ts-text"><code>jwt.verify()</code> → אם תקין, מצרף <code>req.userId</code>.</div></div></div>
+            <div class="trace-step"><span class="ts-num">4</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#server/src/routes/tasks.ts">📋 routes/tasks.ts</a></div><div class="ts-text"><code>Task.create({ ...body, user: req.userId })</code></div></div></div>
+            <div class="trace-step"><span class="ts-num">5</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#server/src/models/Task.ts">✅ models/Task.ts</a></div><div class="ts-text">Mongoose בודק validation (required, enum) → שומר ב-MongoDB.</div></div></div>
+            <div class="trace-step"><span class="ts-num">6</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#client/src/pages/Dashboard.tsx">📊 Dashboard.tsx</a></div><div class="ts-text"><code>setTasks(prev =&gt; [new, ...prev])</code> — functional update!</div></div></div>
+          </div>
+          <div class="trace-tags">
+            <span class="trace-tag">Forms</span>
+            <span class="trace-tag">JWT Headers</span>
+            <span class="trace-tag">Middleware</span>
+            <span class="trace-tag">Mongoose Validation</span>
+            <span class="trace-tag">Functional Update</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="trace-item">
+        <summary>
+          <span class="ti-num">3</span>
+          <span class="ti-question">🔄 רענון הדף — איך המשתמש נשאר מחובר?</span>
+          <span class="ti-arrow">▶</span>
+        </summary>
+        <div class="ti-body">
+          <div class="trace-flow">
+            <div class="trace-step"><span class="ts-num">1</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#client/src/main.tsx">🚀 main.tsx</a></div><div class="ts-text">הדפדפן טוען את הדף מחדש. main.tsx מפעיל את App.</div></div></div>
+            <div class="trace-step"><span class="ts-num">2</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#client/src/App.tsx">⚛️ App.tsx</a></div><div class="ts-text"><code>useAuth()</code> מופעל → קורא token מ-localStorage.</div></div></div>
+            <div class="trace-step"><span class="ts-num">3</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#client/src/hooks/useAuth.ts">🪝 useAuth.ts</a></div><div class="ts-text"><code>useState(() =&gt; localStorage.getItem('token'))</code> — initializer פעם אחת.</div></div></div>
+            <div class="trace-step"><span class="ts-num">4</span><div class="ts-content"><div class="ts-loc">PrivateRoute</div><div class="ts-text">אם token קיים → מציג Dashboard. אחרת → redirect ל-Login.</div></div></div>
+            <div class="trace-step"><span class="ts-num">5</span><div class="ts-content"><div class="ts-loc"><a href="IDE_project.html#client/src/pages/Dashboard.tsx">📊 Dashboard.tsx</a></div><div class="ts-text">useEffect עם [] → fetch של המשימות → השרת בודק token שוב → מחזיר נתונים.</div></div></div>
+          </div>
+          <div class="trace-tags">
+            <span class="trace-tag">localStorage</span>
+            <span class="trace-tag">React Router</span>
+            <span class="trace-tag">PrivateRoute</span>
+            <span class="trace-tag">useEffect</span>
+            <span class="trace-tag">Stateless Auth</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="trace-item">
+        <summary>
+          <span class="ti-num">4</span>
+          <span class="ti-question">❌ Failed to fetch — איפה לבדוק קודם?</span>
+          <span class="ti-arrow">▶</span>
+        </summary>
+        <div class="ti-body">
+          <p>הסדר הנכון לאיתור באג:</p>
+          <div class="trace-flow">
+            <div class="trace-step"><span class="ts-num">1</span><div class="ts-content"><div class="ts-loc">DevTools → Network tab</div><div class="ts-text">איזה status code? 401? 404? 500? CORS?</div></div></div>
+            <div class="trace-step"><span class="ts-num">2</span><div class="ts-content"><div class="ts-loc">Terminal של השרת</div><div class="ts-text">האם יש הודעת שגיאה שם? (StackTrace) — לרוב התשובה כאן.</div></div></div>
+            <div class="trace-step"><span class="ts-num">3</span><div class="ts-content"><div class="ts-loc"><a href="DEBUG_errors.html">🛠️ מילון השגיאות</a></div><div class="ts-text">חפש את הודעת השגיאה — סביר שכבר יש פתרון.</div></div></div>
+            <div class="trace-step"><span class="ts-num">4</span><div class="ts-content"><div class="ts-loc">בדוק ENV</div><div class="ts-text">MONGO_URI? JWT_SECRET? — לפעמים פשוט משתנה חסר.</div></div></div>
+            <div class="trace-step"><span class="ts-num">5</span><div class="ts-content"><div class="ts-loc">בדוק שהשרת רץ</div><div class="ts-text"><code>curl http://localhost:3000/api/health</code> — אם זה כושל, השרת לא בכלל מאזין.</div></div></div>
+          </div>
+          <div class="trace-tags">
+            <span class="trace-tag">Debugging</span>
+            <span class="trace-tag">DevTools</span>
+            <span class="trace-tag">Network</span>
+            <span class="trace-tag">Errors</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="trace-item">
+        <summary>
+          <span class="ti-num">5</span>
+          <span class="ti-question">🚀 אני רוצה לעלות לאוויר — מה השלבים?</span>
+          <span class="ti-arrow">▶</span>
+        </summary>
+        <div class="ti-body">
+          <div class="trace-flow">
+            <div class="trace-step"><span class="ts-num">1</span><div class="ts-content"><div class="ts-loc">git push</div><div class="ts-text">העלה את הקוד ל-GitHub. וודא ש-<code>.gitignore</code> כולל node_modules + .env.</div></div></div>
+            <div class="trace-step"><span class="ts-num">2</span><div class="ts-content"><div class="ts-loc">MongoDB Atlas (Cloud)</div><div class="ts-text">פתח חשבון חינמי, צור cluster, קבל connection string.</div></div></div>
+            <div class="trace-step"><span class="ts-num">3</span><div class="ts-content"><div class="ts-loc">Backend → Render / Railway / Fly.io</div><div class="ts-text">חיבור ל-GitHub repo. הגדר ENV vars (MONGO_URI, JWT_SECRET).</div></div></div>
+            <div class="trace-step"><span class="ts-num">4</span><div class="ts-content"><div class="ts-loc">Frontend → Vercel / Netlify</div><div class="ts-text">חיבור ל-GitHub. קבע VITE_API_URL ל-URL של ה-backend.</div></div></div>
+            <div class="trace-step"><span class="ts-num">5</span><div class="ts-content"><div class="ts-loc">CORS בשרת</div><div class="ts-text">עדכן <code>origin</code> ל-domain של ה-Vercel: <code>https://myapp.vercel.app</code></div></div></div>
+            <div class="trace-step"><span class="ts-num">6</span><div class="ts-content"><div class="ts-loc">בדיקה</div><div class="ts-text">פתח את ה-URL הציבורי, בדוק login + CRUD. אם יש 404 ברענון — ראה <a href="DEBUG_errors.html">מילון שגיאות</a>.</div></div></div>
+          </div>
+          <div class="trace-tags">
+            <span class="trace-tag">DevOps</span>
+            <span class="trace-tag">Deploy</span>
+            <span class="trace-tag">CDN</span>
+            <span class="trace-tag">CORS</span>
+            <span class="trace-tag">ENV</span>
+          </div>
+        </div>
+      </details>
+
+    </div>
+
+    <div style="margin-top:24px;padding:18px;background:rgba(168,85,247,0.08);border-radius:12px;border-right:4px solid #a855f7;color:#cbd5e1;">
+      💡 <strong style="color:#d2a8ff;">למה זה חשוב?</strong> במבחן (ובחיים) — לא שואלים "מה זה JWT". שואלים "המשתמש לוחץ Login, מה קורה?". התשובה הטובה ביותר היא לפרק לשלבים ולהציג את הקבצים. עכשיו אתה יודע 5 דפוסים כאלה.
+    </div>
+  </section>
+
+  <!-- ============= (Decorative SVG hidden) ============= -->
+  <div style="display:none;">
+    <svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI','Arial Hebrew',sans-serif">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#87ceeb"/>
+          <stop offset="100%" stop-color="#e0f6ff"/>
+        </linearGradient>
+        <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#a3d977"/>
+          <stop offset="100%" stop-color="#5d8a3a"/>
+        </linearGradient>
+        <linearGradient id="river" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5dade2"/>
+          <stop offset="100%" stop-color="#2e86c1"/>
+        </linearGradient>
+        <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stop-color="#fff9c4"/>
+          <stop offset="50%" stop-color="#ffd93d"/>
+          <stop offset="100%" stop-color="#ff9800" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="shadow"><feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity="0.3"/></filter>
+      </defs>
+
+      <!-- Sky & sun -->
+      <rect width="1600" height="500" fill="url(#sky)"/>
+      <circle cx="1400" cy="120" r="80" fill="url(#sun)"/>
+      <circle cx="1400" cy="120" r="50" fill="#ffd93d" opacity="0.9"/>
+
+      <!-- Cloud (Vercel/CDN) -->
+      <g transform="translate(1100,100)">
+        <ellipse cx="60" cy="30" rx="80" ry="22" fill="white" opacity="0.95"/>
+        <ellipse cx="20" cy="20" rx="30" ry="20" fill="white" opacity="0.95"/>
+        <ellipse cx="100" cy="20" rx="30" ry="20" fill="white" opacity="0.95"/>
+        <text x="60" y="38" text-anchor="middle" font-size="14" font-weight="bold" fill="#16213e" direction="rtl">☁️ Vercel/CDN</text>
+        <text x="60" y="76" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold" direction="rtl">פריסה לעולם</text>
+      </g>
+
+      <!-- Ground -->
+      <path d="M 0 500 L 1600 500 L 1600 900 L 0 900 Z" fill="url(#ground)"/>
+
+      <!-- River HTTP -->
+      <path d="M 800 500 Q 750 600 820 700 Q 880 800 800 900" fill="none" stroke="url(#river)" stroke-width="60" stroke-linecap="round"/>
+      <text x="850" y="650" font-size="20" font-weight="bold" fill="#fff" filter="url(#shadow)" direction="rtl">🌊 נהר HTTP</text>
+      <text x="855" y="675" font-size="13" fill="#fff" direction="rtl">GET · POST · PUT · DELETE</text>
+
+      <!-- ============= FRONTEND CITY (LEFT) ============= -->
+      <g transform="translate(80,360)">
+        <!-- City label -->
+        <rect x="0" y="-40" width="280" height="32" rx="16" fill="rgba(78,205,196,0.95)"/>
+        <text x="140" y="-18" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff" direction="rtl">🏙️ עיר ה-Frontend</text>
+
+        <!-- Building 1: HTML -->
+        <rect x="10" y="100" width="50" height="180" fill="#e74c3c" stroke="#c0392b" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="18" y="115" width="14" height="14" fill="#ffd93d"/>
+        <rect x="38" y="115" width="14" height="14" fill="#ffd93d"/>
+        <rect x="18" y="140" width="14" height="14" fill="#ffd93d"/>
+        <rect x="38" y="140" width="14" height="14" fill="#ffd93d"/>
+        <rect x="28" y="240" width="14" height="40" fill="#5d4037"/>
+        <text x="35" y="295" text-anchor="middle" font-size="14" font-weight="bold" fill="#16213e">HTML</text>
+        <text x="35" y="90" text-anchor="middle" font-size="22">📄</text>
+
+        <!-- Building 2: CSS -->
+        <rect x="80" y="60" width="60" height="220" fill="#3498db" stroke="#21618c" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="90" y="80" width="40" height="3" fill="#fff"/>
+        <rect x="90" y="100" width="40" height="3" fill="#fff"/>
+        <rect x="90" y="120" width="40" height="3" fill="#fff"/>
+        <rect x="100" y="240" width="20" height="40" fill="#fff" opacity="0.6"/>
+        <text x="110" y="295" text-anchor="middle" font-size="14" font-weight="bold" fill="#16213e">CSS</text>
+        <text x="110" y="50" text-anchor="middle" font-size="22">🎨</text>
+
+        <!-- Building 3: JavaScript -->
+        <rect x="160" y="20" width="80" height="260" fill="#f1c40f" stroke="#d4ac0d" stroke-width="2" filter="url(#shadow)"/>
+        <text x="200" y="80" text-anchor="middle" font-size="36" font-weight="900" fill="#16213e">JS</text>
+        <rect x="170" y="100" width="60" height="3" fill="#16213e"/>
+        <rect x="170" y="120" width="60" height="3" fill="#16213e"/>
+        <rect x="170" y="140" width="60" height="3" fill="#16213e"/>
+        <rect x="170" y="160" width="40" height="3" fill="#16213e"/>
+        <rect x="190" y="240" width="20" height="40" fill="#16213e" opacity="0.5"/>
+        <text x="200" y="295" text-anchor="middle" font-size="14" font-weight="bold" fill="#16213e">JavaScript</text>
+        <text x="200" y="10" text-anchor="middle" font-size="22">⚡</text>
+
+        <!-- Building 4: React -->
+        <rect x="260" y="80" width="60" height="200" fill="#16213e" stroke="#0f3460" stroke-width="2" filter="url(#shadow)"/>
+        <g transform="translate(290,150)">
+          <ellipse cx="0" cy="0" rx="22" ry="8" fill="none" stroke="#61dafb" stroke-width="2"/>
+          <ellipse cx="0" cy="0" rx="22" ry="8" fill="none" stroke="#61dafb" stroke-width="2" transform="rotate(60)"/>
+          <ellipse cx="0" cy="0" rx="22" ry="8" fill="none" stroke="#61dafb" stroke-width="2" transform="rotate(120)"/>
+          <circle r="4" fill="#61dafb"/>
+        </g>
+        <text x="290" y="295" text-anchor="middle" font-size="14" font-weight="bold" fill="#16213e">React</text>
+
+        <!-- Tower: TypeScript -->
+        <rect x="340" y="40" width="44" height="240" fill="#3178c6" stroke="#1e5fa8" stroke-width="2" filter="url(#shadow)"/>
+        <text x="362" y="100" text-anchor="middle" font-size="20" font-weight="900" fill="#fff">TS</text>
+        <polygon points="340,40 362,15 384,40" fill="#3178c6" stroke="#1e5fa8" stroke-width="2"/>
+        <text x="362" y="295" text-anchor="middle" font-size="14" font-weight="bold" fill="#16213e">TypeScript</text>
+      </g>
+
+      <!-- ============= BACKEND FACTORY (RIGHT) ============= -->
+      <g transform="translate(1000,360)">
+        <rect x="0" y="-40" width="280" height="32" rx="16" fill="rgba(255,179,71,0.95)"/>
+        <text x="140" y="-18" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff" direction="rtl">🏭 אזור ה-Backend</text>
+
+        <!-- Node.js Factory -->
+        <rect x="10" y="120" width="130" height="160" fill="#68a063" stroke="#3c6e29" stroke-width="2" filter="url(#shadow)"/>
+        <polygon points="10,120 75,80 140,120" fill="#3c6e29" stroke="#2c5018" stroke-width="2"/>
+        <rect x="40" y="160" width="20" height="120" fill="#2c5018"/>
+        <rect x="80" y="180" width="20" height="20" fill="#fff9c4"/>
+        <rect x="105" y="180" width="20" height="20" fill="#fff9c4"/>
+        <rect x="80" y="210" width="20" height="20" fill="#fff9c4"/>
+        <rect x="105" y="210" width="20" height="20" fill="#fff9c4"/>
+        <!-- Smoke stack -->
+        <rect x="100" y="60" width="14" height="40" fill="#666"/>
+        <circle cx="107" cy="50" r="10" fill="#fff" opacity="0.6"/>
+        <circle cx="115" cy="35" r="14" fill="#fff" opacity="0.5"/>
+        <text x="75" y="295" text-anchor="middle" font-size="14" font-weight="bold" fill="#16213e">Node + Express</text>
+
+        <!-- Auth Tower -->
+        <rect x="160" y="80" width="50" height="200" fill="#7f1d1d" stroke="#451a1a" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="170" y="100" width="30" height="30" fill="#ffd93d"/>
+        <text x="185" y="125" text-anchor="middle" font-size="22">🔐</text>
+        <rect x="178" y="160" width="14" height="14" fill="#16213e"/>
+        <rect x="178" y="190" width="14" height="14" fill="#16213e"/>
+        <rect x="178" y="220" width="14" height="14" fill="#16213e"/>
+        <text x="185" y="295" text-anchor="middle" font-size="14" font-weight="bold" fill="#16213e">JWT/bcrypt</text>
+
+        <!-- MongoDB Warehouse -->
+        <rect x="225" y="140" width="160" height="140" fill="#4db33d" stroke="#3a8a2c" stroke-width="2" filter="url(#shadow)"/>
+        <rect x="225" y="120" width="160" height="20" fill="#3a8a2c"/>
+        <text x="305" y="200" text-anchor="middle" font-size="32">📦</text>
+        <rect x="240" y="220" width="30" height="40" fill="#fff" opacity="0.7"/>
+        <rect x="285" y="220" width="30" height="40" fill="#fff" opacity="0.7"/>
+        <rect x="330" y="220" width="30" height="40" fill="#fff" opacity="0.7"/>
+        <text x="305" y="135" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">MongoDB</text>
+        <text x="305" y="295" text-anchor="middle" font-size="14" font-weight="bold" fill="#16213e">המחסן (DB)</text>
+      </g>
+
+      <!-- Bridge over the river (HTTP requests crossing) -->
+      <rect x="380" y="488" width="640" height="14" fill="#8b6f47" stroke="#5d4e35" stroke-width="2"/>
+      <line x1="430" y1="488" x2="430" y2="520" stroke="#5d4e35" stroke-width="3"/>
+      <line x1="500" y1="488" x2="500" y2="520" stroke="#5d4e35" stroke-width="3"/>
+      <line x1="600" y1="488" x2="600" y2="520" stroke="#5d4e35" stroke-width="3"/>
+      <line x1="700" y1="488" x2="700" y2="520" stroke="#5d4e35" stroke-width="3"/>
+      <line x1="800" y1="488" x2="800" y2="520" stroke="#5d4e35" stroke-width="3"/>
+      <line x1="900" y1="488" x2="900" y2="520" stroke="#5d4e35" stroke-width="3"/>
+      <line x1="970" y1="488" x2="970" y2="520" stroke="#5d4e35" stroke-width="3"/>
+      <text x="700" y="478" text-anchor="middle" font-size="20" font-weight="bold" fill="#16213e" direction="rtl">🌉 גשר ה-API</text>
+      <!-- Cars on bridge = requests -->
+      <rect x="450" y="478" width="24" height="10" rx="2" fill="#3498db"/>
+      <rect x="600" y="478" width="24" height="10" rx="2" fill="#e74c3c"/>
+      <rect x="800" y="478" width="24" height="10" rx="2" fill="#2ecc71"/>
+
+      <!-- ============= ALGORITHMS BEACH (BOTTOM-LEFT) ============= -->
+      <g transform="translate(80,720)">
+        <rect x="0" y="-30" width="240" height="28" rx="14" fill="rgba(255,217,61,0.95)"/>
+        <text x="120" y="-10" text-anchor="middle" font-size="16" font-weight="bold" fill="#16213e" direction="rtl">🏖️ חוף האלגוריתמים</text>
+        <ellipse cx="120" cy="40" rx="160" ry="40" fill="#f4e4b8"/>
+        <text x="40" y="50" font-size="32">🌴</text>
+        <text x="120" y="55" font-size="28">🐚</text>
+        <text x="190" y="50" font-size="32">🏝️</text>
+        <text x="80" y="100" font-size="20">🔢</text>
+        <text x="120" y="105" font-size="20">🔁</text>
+        <text x="160" y="100" font-size="20">🪟</text>
+      </g>
+
+      <!-- ============= STRATEGY MOUNTAIN (BOTTOM-RIGHT) ============= -->
+      <g transform="translate(1300,680)">
+        <polygon points="0,160 70,40 140,160" fill="#7f8c8d" stroke="#5d6d7e" stroke-width="2" filter="url(#shadow)"/>
+        <polygon points="40,90 70,40 100,90 80,75 70,80 60,72" fill="#fff"/>
+        <text x="70" y="190" text-anchor="middle" font-size="14" font-weight="bold" fill="#16213e" direction="rtl">⛰️ הר האסטרטגיה</text>
+        <text x="70" y="210" text-anchor="middle" font-size="11" fill="#16213e" direction="rtl">⏱️ 4 שעות · 11 כללים</text>
+      </g>
+
+      <!-- ============= ROAD/PATH connecting things ============= -->
+      <path d="M 50 700 Q 400 650 700 600" fill="none" stroke="#fff" stroke-width="6" stroke-dasharray="14 8" opacity="0.85"/>
+      <path d="M 700 600 Q 1100 650 1300 800" fill="none" stroke="#fff" stroke-width="6" stroke-dasharray="14 8" opacity="0.85"/>
+
+      <!-- ============= GRANDMA HERO ============= -->
+      <g transform="translate(720,560)">
+        <!-- Body -->
+        <ellipse cx="0" cy="40" rx="22" ry="32" fill="#9b59b6"/>
+        <!-- Dress pattern -->
+        <circle cx="-10" cy="30" r="3" fill="#f4d4ff"/>
+        <circle cx="8" cy="42" r="3" fill="#f4d4ff"/>
+        <circle cx="-5" cy="58" r="3" fill="#f4d4ff"/>
+        <!-- Head -->
+        <circle cx="0" cy="-5" r="20" fill="#fde0c5"/>
+        <!-- Hair (white/grey) -->
+        <ellipse cx="0" cy="-18" rx="22" ry="12" fill="#ecf0f1"/>
+        <!-- Glasses -->
+        <circle cx="-8" cy="-4" r="6" fill="none" stroke="#16213e" stroke-width="2"/>
+        <circle cx="8" cy="-4" r="6" fill="none" stroke="#16213e" stroke-width="2"/>
+        <line x1="-2" y1="-4" x2="2" y2="-4" stroke="#16213e" stroke-width="2"/>
+        <!-- Smile -->
+        <path d="M -5 6 Q 0 10 5 6" fill="none" stroke="#16213e" stroke-width="2" stroke-linecap="round"/>
+        <!-- Cane -->
+        <path d="M 25 30 Q 30 25 32 30 L 32 90" fill="none" stroke="#8b6f47" stroke-width="4" stroke-linecap="round"/>
+        <!-- Map in hand -->
+        <rect x="-40" y="20" width="20" height="14" fill="#fff9c4" stroke="#16213e" stroke-width="1.5" transform="rotate(-15 -30 27)"/>
+        <!-- Speech bubble -->
+        <g transform="translate(35,-30)">
+          <rect x="0" y="0" width="170" height="46" rx="10" fill="#fff" stroke="#16213e" stroke-width="2"/>
+          <polygon points="-8,15 0,10 0,25" fill="#fff" stroke="#16213e" stroke-width="2"/>
+          <text x="85" y="20" text-anchor="middle" font-size="13" font-weight="bold" fill="#16213e" direction="rtl">בואו נצא למסע</text>
+          <text x="85" y="38" text-anchor="middle" font-size="12" fill="#16213e" direction="rtl">דרך ממלכת ה-Full Stack 🗺️</text>
+        </g>
+      </g>
+
+      <!-- Title in upper banner -->
+      <g transform="translate(800,40)">
+        <rect x="-260" y="0" width="520" height="50" rx="25" fill="rgba(0,0,0,0.7)"/>
+        <text x="0" y="32" text-anchor="middle" font-size="24" font-weight="bold" fill="#ffd93d" direction="rtl">🏰 ממלכת ה-Full Stack — המפה המלאה</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ============= LEGEND ============= -->
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:#4ecdc4"></span> Frontend</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#ffb347"></span> Backend</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#bb8fce"></span> Database</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#ec7063"></span> Authentication</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#ffd93d"></span> אלגוריתמים</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#48c9b0"></span> אסטרטגיה</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#ff6b6b"></span> מלכודות</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#7fb3d5"></span> סניפטים</div>
+  </div>
+
+  <!-- ============= JOURNEY TIMELINE ============= -->
+  <div class="journey">
+    <h2>🛤️ מסלול המסע — 7 תחנות</h2>
+    <div class="timeline">
+      <a href="11_start_here.html" class="timeline-step" style="text-decoration:none;color:inherit">
+        <div class="num">0</div>
+        <div class="title">התחלה</div>
+        <div class="desc">הכרת המסע</div>
+      </a>
+      <a href="MAP_master.html" class="timeline-step" style="text-decoration:none;color:inherit">
+        <div class="num">1</div>
+        <div class="title">המפה</div>
+        <div class="desc">סקירה כללית</div>
+      </a>
+      <a href="01_master_theory.html" class="timeline-step" style="text-decoration:none;color:inherit">
+        <div class="num">2</div>
+        <div class="title">תיאוריה</div>
+        <div class="desc">עיר ה-Full Stack</div>
+      </a>
+      <a href="02_missing_topics.html" class="timeline-step" style="text-decoration:none;color:inherit">
+        <div class="num">3</div>
+        <div class="title">השלמות</div>
+        <div class="desc">היער האבוד</div>
+      </a>
+      <a href="04_algorithms.html" class="timeline-step" style="text-decoration:none;color:inherit">
+        <div class="num">4</div>
+        <div class="title">אלגוריתמים</div>
+        <div class="desc">חוף הקוד</div>
+      </a>
+      <a href="03_exam_solutions.html" class="timeline-step" style="text-decoration:none;color:inherit">
+        <div class="num">5</div>
+        <div class="title">מבחנים</div>
+        <div class="desc">4 ממלכות</div>
+      </a>
+      <a href="06_strategy.html" class="timeline-step" style="text-decoration:none;color:inherit">
+        <div class="num">6</div>
+        <div class="title">אסטרטגיה</div>
+        <div class="desc">הר ההכנה</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ============= REGION CARDS ============= -->
+  <div class="topic-section">
+    <h2>🏘️ אזורי הממלכה</h2>
+    <p class="lede">לחץ על אזור כדי להיכנס פנימה</p>
+
+    <div class="regions-grid">
+
+      <a href="01_master_theory.html#html-css" class="region-card r-frontend">
+        <span class="region-icon">🎨</span>
+        <h3>עיר ה-Frontend</h3>
+        <div class="subtitle">החזית — מה שהמשתמש רואה</div>
+        <ul>
+          <li>HTML — המבנה (כמו השלד של בית)</li>
+          <li>CSS — העיצוב (הצבעים והריהוט)</li>
+          <li>JavaScript — ההתנהגות (החשמל)</li>
+          <li>React — בנייה לבנים-לבנים</li>
+          <li>TypeScript — טפסים מסודרים</li>
+        </ul>
+        <div class="meta">📂 01_master_theory.html · 5 נושאים</div>
+      </a>
+
+      <a href="01_master_theory.html#backend" class="region-card r-backend">
+        <span class="region-icon">🏭</span>
+        <h3>אזור ה-Backend</h3>
+        <div class="subtitle">המפעל מאחורי הקלעים</div>
+        <ul>
+          <li>Node.js — המנוע</li>
+          <li>Express — מסלולי הייצור (Routes)</li>
+          <li>Middleware — תחנות ביקורת</li>
+          <li>REST API — שפת התקשורת</li>
+        </ul>
+        <div class="meta">📂 01_master_theory.html</div>
+      </a>
+
+      <a href="01_master_theory.html#mongo" class="region-card r-database">
+        <span class="region-icon">📦</span>
+        <h3>מחסן ה-Database</h3>
+        <div class="subtitle">איפה הכל נשמר</div>
+        <ul>
+          <li>MongoDB — ארגזים גמישים (NoSQL)</li>
+          <li>Mongoose — הפקיד שמסדר</li>
+          <li>Schema — הטופס הריק</li>
+          <li>CRUD — הוספה/קריאה/עדכון/מחיקה</li>
+        </ul>
+        <div class="meta">📂 01_master_theory.html</div>
+      </a>
+
+      <a href="01_master_theory.html#auth" class="region-card r-auth">
+        <span class="region-icon">🔐</span>
+        <h3>מגדל האבטחה</h3>
+        <div class="subtitle">השומרים בכניסה</div>
+        <ul>
+          <li>JWT — צמיד הכניסה</li>
+          <li>bcrypt — מטחנת סיסמאות</li>
+          <li>Protected Routes — דלתות נעולות</li>
+          <li>Login/Register — קבלה במלון</li>
+        </ul>
+        <div class="meta">📂 01_master_theory.html</div>
+      </a>
+
+      <a href="04_algorithms.html" class="region-card r-algorithms">
+        <span class="region-icon">🏖️</span>
+        <h3>חוף האלגוריתמים</h3>
+        <div class="subtitle">10 בעיות קלאסיות</div>
+        <ul>
+          <li>מטריצות, פלינדרומים, פיבונאצ׳י</li>
+          <li>Sliding Window, Two Pointers</li>
+          <li>מיון, חיפוש, סינון כפילויות</li>
+          <li>היפוך מחרוזות, ספירת תווים</li>
+        </ul>
+        <div class="meta">📂 04_algorithms.html · 10 שאלות</div>
+      </a>
+
+      <a href="03_exam_solutions.html" class="region-card r-frontend">
+        <span class="region-icon">🏰</span>
+        <h3>4 ממלכות המבחן</h3>
+        <div class="subtitle">פרויקטים מלאים לדוגמה</div>
+        <ul>
+          <li>✈️ Flight Control — מערכת טיסות</li>
+          <li>🏦 Bank Accounts — חשבונות בנק</li>
+          <li>📦 Warehouse — לוגיסטיקה</li>
+          <li>💱 Currency Calculator — המרת מטבעות</li>
+        </ul>
+        <div class="meta">📂 03_exam_solutions.html</div>
+      </a>
+
+      <a href="02_missing_topics.html" class="region-card r-traps">
+        <span class="region-icon">🌲</span>
+        <h3>היער של הנושאים האבודים</h3>
+        <div class="subtitle">מה שאף אחד לא לימד אותך</div>
+        <ul>
+          <li>Classes & Inheritance</li>
+          <li>slice vs splice (המלכודת!)</li>
+          <li>localStorage / Cookies</li>
+          <li>try/catch · Context API</li>
+          <li>Generics · Router</li>
+        </ul>
+        <div class="meta">📂 02_missing_topics.html</div>
+      </a>
+
+      <a href="06_strategy.html" class="region-card r-strategy">
+        <span class="region-icon">⛰️</span>
+        <h3>הר האסטרטגיה</h3>
+        <div class="subtitle">איך לעבור את המבחן</div>
+        <ul>
+          <li>⏱️ חלוקת 4 שעות</li>
+          <li>📋 צ׳קליסט הגשה</li>
+          <li>🎯 11 כללי הזהב</li>
+          <li>⚠️ טעויות נפוצות + תיקונים</li>
+        </ul>
+        <div class="meta">📂 06_strategy.html</div>
+      </a>
+
+      <a href="05_snippets.html" class="region-card r-snippets">
+        <span class="region-icon">🛒</span>
+        <h3>שוק הסניפטים</h3>
+        <div class="subtitle">קוד מוכן להעתקה</div>
+        <ul>
+          <li>React Templates · Hooks Patterns</li>
+          <li>Express + MongoDB Setup</li>
+          <li>JWT Auth · React Router</li>
+          <li>Tailwind · Git Commands</li>
+        </ul>
+        <div class="meta">📂 05_snippets.html</div>
+      </a>
+
+      <a href="07_advanced_topics.html" class="region-card r-traps">
+        <span class="region-icon">🧙</span>
+        <h3>קריפט המתקדמים</h3>
+        <div class="subtitle">לסטודנטים מתקדמים</div>
+        <ul>
+          <li>Advanced React Patterns</li>
+          <li>Performance Optimization</li>
+          <li>Advanced TypeScript</li>
+        </ul>
+        <div class="meta">📂 07_advanced_topics.html</div>
+      </a>
+
+      <a href="12_tricky_questions.html" class="region-card r-traps">
+        <span class="region-icon">🪤</span>
+        <h3>אזור המלכודות</h3>
+        <div class="subtitle">השאלות הכי קשות במבחן</div>
+        <ul>
+          <li>typeof null === "object"</li>
+          <li>NaN === NaN → false</li>
+          <li>const אינו immutable</li>
+          <li>Stale Closures · Mutation</li>
+        </ul>
+        <div class="meta">📂 12_tricky_questions.html</div>
+      </a>
+
+      <a href="08_flashcards_quiz.html" class="region-card r-snippets">
+        <span class="region-icon">🎴</span>
+        <h3>אולם החזרות</h3>
+        <div class="subtitle">תרגול וחזרה</div>
+        <ul>
+          <li>Flashcards מתחלפים</li>
+          <li>Quiz אינטראקטיבי</li>
+          <li>שאלות חזרה ממוקדות</li>
+        </ul>
+        <div class="meta">📂 08_flashcards_quiz.html · 09_mini_quiz.html</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ============= MENTAL MODELS LIBRARY ============= -->
+  <div class="topic-section">
+    <h2>🧠 ספריית המשלים — איך לזכור הכל</h2>
+    <p class="lede">כל קונספט טכני קשור למשל מהחיים. ככה זה נדבק בזיכרון.</p>
+
+    <div class="topic-grid">
+      <div class="topic-card"><div class="topic-icon">🏠</div><h4>HTML = שלד הבית</h4><p>תגיות הן חדרים: head=מרתף, body=סלון</p></div>
+      <div class="topic-card"><div class="topic-icon">🎁</div><h4>CSS Box = מתנה עטופה</h4><p>תוכן→padding→border→margin</p></div>
+      <div class="topic-card"><div class="topic-icon">📦</div><h4>משתנים = קופסאות</h4><p>let=תבלינים · const=שעון סבא · var=ארגז עזיבה</p></div>
+      <div class="topic-card"><div class="topic-icon">🍳</div><h4>Event Loop = מסעדה</h4><p>שף+מלצר+תנורים=ניהול הזמנות</p></div>
+      <div class="topic-card"><div class="topic-icon">🍕</div><h4>Promise = הזמנת פיצה</h4><p>קבלה=pending · הגיע=resolved · ביטלו=rejected</p></div>
+      <div class="topic-card"><div class="topic-icon">🎒</div><h4>Closure = תיק לטיול</h4><p>הפונקציה זוכרת את "הסביבה" שגדלה בה</p></div>
+      <div class="topic-card"><div class="topic-icon">📋</div><h4>TypeScript = טופס בנק</h4><p>שדות מוגדרים מראש · המהדר דוחה טעויות</p></div>
+      <div class="topic-card"><div class="topic-icon">👨‍👩‍👧</div><h4>React Tree = עץ משפחה</h4><p>App=סבא · Components=נכדים · Props=ירושה</p></div>
+      <div class="topic-card"><div class="topic-icon">📻</div><h4>Context = רדיו ציבורי</h4><p>במקום להעביר מסר דרך 5 ידיים</p></div>
+      <div class="topic-card"><div class="topic-icon">🚛</div><h4>Node = משאית עבודה</h4><p>אותו מנוע V8 — בלי גלגלים יפים</p></div>
+      <div class="topic-card"><div class="topic-icon">🛂</div><h4>Middleware = שדה תעופה</h4><p>בקשה עוברת דרך תחנות ביקורת</p></div>
+      <div class="topic-card"><div class="topic-icon">📚</div><h4>NoSQL = ארגז כובעים</h4><p>SQL=קלסר אחיד · NoSQL=גמיש</p></div>
+      <div class="topic-card"><div class="topic-icon">🏨</div><h4>JWT = צמיד מלון</h4><p>חתום, לא ניתן לזיוף, מציגים בכניסה</p></div>
+      <div class="topic-card"><div class="topic-icon">🥩</div><h4>bcrypt = מטחנת בשר</h4><p>אי אפשר להחזיר מהסלמי לבשר</p></div>
+      <div class="topic-card"><div class="topic-icon">🌳</div><h4>Git = עץ ענפים</h4><p>main=גזע · branch=ענף · merge=חיבור חזרה</p></div>
+      <div class="topic-card"><div class="topic-icon">☁️</div><h4>Deploy = מאפיה אוטומטית</h4><p>git push → CI → CDN לכל העולם</p></div>
+      <div class="topic-card"><div class="topic-icon">🎂</div><h4>slice vs splice</h4><p>slice=צילום עוגה · splice=חיתוך אמיתי</p></div>
+      <div class="topic-card"><div class="topic-icon">🚇</div><h4>Sliding Window</h4><p>חלון רכבת זז על המסילה</p></div>
+      <div class="topic-card"><div class="topic-icon">🪤</div><h4>typeof null = "object"</h4><p>באג היסטורי משנת 1995 שלא תוקן</p></div>
+      <div class="topic-card"><div class="topic-icon">🔑</div><h4>By Ref = מפתח לארון</h4><p>2 מפתחות לאותו ארון משנים את אותו תוכן</p></div>
+    </div>
+  </div>
+
+  <!-- ============= TRAP WALL ============= -->
+  <div class="topic-section">
+    <h2>⚠️ קיר המלכודות — 10 הטעויות הקריטיות</h2>
+    <p class="lede">אם אתה זוכר רק 10 דברים מכל החומר — אלה הם.</p>
+
+    <div class="topic-grid">
+      <div class="topic-card" style="border-color:rgba(231,76,60,0.5);">
+        <div class="topic-icon">🪤 1</div><h4>typeof null === "object"</h4>
+        <p>זה לא bug שלך — זו "תכונה" של JS משנת 95.</p>
+        <div class="analogy">✅ השתמש: <code>val === null</code></div>
+      </div>
+      <div class="topic-card" style="border-color:rgba(231,76,60,0.5);">
+        <div class="topic-icon">🪤 2</div><h4>NaN === NaN → false</h4>
+        <p>NaN הוא היחיד ב-JS שלא שווה לעצמו.</p>
+        <div class="analogy">✅ השתמש: <code>Number.isNaN(x)</code></div>
+      </div>
+      <div class="topic-card" style="border-color:rgba(231,76,60,0.5);">
+        <div class="topic-icon">🪤 3</div><h4>const אינו immutable</h4>
+        <p>const נועל את <strong>הכתובת</strong>, לא את התוכן.<br><code>const arr=[1]; arr.push(2)</code> — חוקי!</p>
+      </div>
+      <div class="topic-card" style="border-color:rgba(231,76,60,0.5);">
+        <div class="topic-icon">🪤 4</div><h4>{} === {} → false</h4>
+        <p>אובייקטים מושווים לפי כתובת בזיכרון, לא תוכן.</p>
+      </div>
+      <div class="topic-card" style="border-color:rgba(231,76,60,0.5);">
+        <div class="topic-icon">🪤 5</div><h4>Mutation ב-React State</h4>
+        <p><code>arr.push(x)</code> לא יגרום לרינדור!</p>
+        <div class="analogy">✅ <code>setArr([...arr, x])</code></div>
+      </div>
+      <div class="topic-card" style="border-color:rgba(231,76,60,0.5);">
+        <div class="topic-icon">🪤 6</div><h4>Stale Closure ב-useEffect</h4>
+        <p>שכחת dependency → ה-Effect "תקוע" עם ערך ישן.</p>
+      </div>
+      <div class="topic-card" style="border-color:rgba(231,76,60,0.5);">
+        <div class="topic-icon">🪤 7</div><h4>var ב-for loop</h4>
+        <p><code>for(var i=0;i&lt;3;i++) setTimeout(()=&gt;log(i))</code> — מדפיס 3,3,3.</p>
+        <div class="analogy">✅ השתמש ב-<code>let</code></div>
+      </div>
+      <div class="topic-card" style="border-color:rgba(231,76,60,0.5);">
+        <div class="topic-icon">🪤 8</div><h4>slice vs splice</h4>
+        <p>slice לא משנה את המקור — splice כן!<br><code>arr.splice(0,1)</code> מוחק מ-arr.</p>
+      </div>
+      <div class="topic-card" style="border-color:rgba(231,76,60,0.5);">
+        <div class="topic-icon">🪤 9</div><h4>Promise.all עם reject</h4>
+        <p>אם אחד נכשל — כל ה-Promise.all נכשל (Fail-fast).</p>
+        <div class="analogy">✅ <code>Promise.allSettled</code> מחזיר את כולם</div>
+      </div>
+      <div class="topic-card" style="border-color:rgba(231,76,60,0.5);">
+        <div class="topic-icon">🪤 10</div><h4>target vs currentTarget</h4>
+        <p><code>e.target</code> = הילד שלחצו עליו<br><code>e.currentTarget</code> = ההורה שמאזין</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============= GOLDEN RULES ============= -->
+  <div class="topic-section">
+    <h2>👑 11 כללי הזהב</h2>
+    <p class="lede">תזכרו את אלה — הם יחסכו לכם נקודות במבחן.</p>
+
+    <div class="topic-grid">
+      <div class="topic-card"><div class="topic-icon">1️⃣</div><h4>תמיד <code>===</code> ולא <code>==</code></h4><p>השוואה מדויקת בלי casting אוטומטי</p></div>
+      <div class="topic-card"><div class="topic-icon">2️⃣</div><h4>Functional update לסטייט</h4><p><code>setCount(c =&gt; c+1)</code></p></div>
+      <div class="topic-card"><div class="topic-icon">3️⃣</div><h4>keys לפי id, לא index</h4><p>אחרת — בעיות במחיקה/הוספה</p></div>
+      <div class="topic-card"><div class="topic-icon">4️⃣</div><h4>Cleanup ב-useEffect</h4><p>בכל subscribe → return unsubscribe</p></div>
+      <div class="topic-card"><div class="topic-icon">5️⃣</div><h4>try/catch בכל async</h4><p>אחרת — unhandled rejection 💥</p></div>
+      <div class="topic-card"><div class="topic-icon">6️⃣</div><h4>Validation לפני save</h4><p>בלי בדיקות = bugs ב-DB</p></div>
+      <div class="topic-card"><div class="topic-icon">7️⃣</div><h4>אסור Mutation</h4><p>תמיד spread או structuredClone</p></div>
+      <div class="topic-card"><div class="topic-icon">8️⃣</div><h4>Type ל-useState</h4><p><code>useState&lt;User&gt;(...)</code></p></div>
+      <div class="topic-card"><div class="topic-icon">9️⃣</div><h4>Conditional rendering ברור</h4><p><code>{cond &amp;&amp; &lt;X/&gt;}</code> או ternary</p></div>
+      <div class="topic-card"><div class="topic-icon">🔟</div><h4>שמות משתנים משמעותיים</h4><p>לא <code>x</code> או <code>data1</code></p></div>
+      <div class="topic-card"><div class="topic-icon">⓫</div><h4>commit מוקדם ותכוף</h4><p>קל לחזור אחורה אם משהו נשבר</p></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>🗺️ המפה הגדולה · גרסה 1.0 · נוצרה לעבור 100/100</p>
+    <p style="margin-top:10px"><a href="00_dashboard.html" style="color:#4ecdc4">← חזרה לדשבורד</a></p>
+  </footer>
+
+</div>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

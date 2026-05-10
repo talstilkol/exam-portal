@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מדריך מאסטר Full-Stack — עם טולטיפים</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', 'Arial Hebrew', system-ui, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    background-attachment: fixed;
+    color: #e0e0e0;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .container { max-width: 1300px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    padding: 50px 20px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #c44569 100%);
+    border-radius: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+  header h1 { font-size: 2.8em; color: white; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+  header p { color: rgba(255,255,255,0.95); font-size: 1.3em; margin-bottom: 20px; }
+  header .badge-new { display: inline-block; background: #ffd93d; color: #333; padding: 6px 15px; border-radius: 20px; font-weight: bold; margin-top: 10px; }
+
+  .header-stats { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 25px; }
+  .stat { background: rgba(255,255,255,0.2); padding: 12px 25px; border-radius: 12px; backdrop-filter: blur(10px); }
+  .stat-number { font-size: 2em; font-weight: bold; color: white; }
+  .stat-label { color: rgba(255,255,255,0.9); font-size: 0.9em; }
+
+  /* ===== הסבר על המנגנון בראש המסך ===== */
+  .tooltip-info {
+    background: linear-gradient(135deg, rgba(255,217,61,0.15), rgba(255,154,158,0.15));
+    border: 2px dashed #ffd93d;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    color: #fff;
+    font-size: 1.05em;
+  }
+  .tooltip-info::before {
+    content: "💡 איך להשתמש במדריך הזה";
+    display: block;
+    color: #ffd93d;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  /* ===== TOOLTIP מנגנון - גרסה משופרת עם JS ===== */
+  .term {
+    color: #ffd93d;
+    border-bottom: 2px dotted #ffd93d;
+    cursor: help;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    padding: 0 2px;
+  }
+
+  .term:hover, .term:focus {
+    background: rgba(255,217,61,0.15);
+    color: #fff;
+    outline: none;
+  }
+
+  /* טולטיפ אחד גלובלי שמיקומו מחושב ב-JS */
+  #global-tooltip {
+    position: fixed;
+    background: #1a1a2e;
+    color: #fff;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 2px solid #ffd93d;
+    font-size: 0.9em;
+    font-weight: normal;
+    line-height: 1.6;
+    width: max-content;
+    max-width: min(350px, calc(100vw - 40px));
+    text-align: right;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 99999;
+    visibility: hidden;
+    direction: rtl;
+  }
+
+  #global-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #global-tooltip .grandma-icon {
+    position: absolute;
+    background: #ff6b6b;
+    color: white;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    top: -13px;
+    right: 15px;
+  }
+
+  /* ===== TOC ===== */
+  .toc {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+  }
+
+  .toc h2 { color: #4ecdc4; margin-bottom: 20px; font-size: 1.6em; }
+  .toc h3 { color: #ffd93d; margin: 25px 0 15px; font-size: 1.2em; padding-bottom: 8px; border-bottom: 2px solid rgba(255,217,61,0.3); }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+  }
+
+  .toc a {
+    color: #ffd93d;
+    text-decoration: none;
+    padding: 12px 16px;
+    background: rgba(255,217,61,0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255,217,61,0.2);
+    font-weight: 500;
+  }
+
+  .toc a:hover {
+    background: rgba(255,217,61,0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255,217,61,0.3);
+  }
+
+  .toc-toggle { display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; }
+
+  .toc-tab {
+    flex: 1;
+    min-width: 200px;
+    padding: 15px 25px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(78,205,196,0.3);
+    border-radius: 12px;
+    color: #e0e0e0;
+    font-size: 1.05em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-weight: bold;
+  }
+
+  .toc-tab.active {
+    background: linear-gradient(135deg, #4ecdc4, #44a8a3);
+    color: white;
+    border-color: #4ecdc4;
+    box-shadow: 0 4px 15px rgba(78,205,196,0.4);
+  }
+
+  .toc-tab:hover:not(.active) { background: rgba(78,205,196,0.15); }
+
+  .toc-content { display: none; }
+  .toc-content.active { display: block; }
+
+  .diff-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-inline-start: 8px;
+  }
+  .diff-easy { background: #28a745; color: white; }
+  .diff-medium { background: #ffc107; color: #333; }
+  .diff-hard { background: #ff6b6b; color: white; }
+  .diff-extreme { background: #6f42c1; color: white; }
+
+  /* ===== Sections ===== */
+  section {
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 15px;
+    padding: 35px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    scroll-margin-top: 30px;
+  }
+
+  section h2 {
+    color: #4ecdc4;
+    font-size: 2em;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid rgba(78,205,196,0.3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  section h3 {
+    color: #ffd93d;
+    margin: 25px 0 15px;
+    font-size: 1.4em;
+    padding-right: 15px;
+    border-right: 4px solid #ffd93d;
+  }
+
+  section h4 { color: #ff9a9e; margin: 20px 0 12px; font-size: 1.15em; }
+
+  /* ===== Level boxes ===== */
+  .level-box {
+    padding: 20px;
+    border-radius: 12px;
+    margin: 15px 0;
+    border-right: 5px solid;
+  }
+  .grandma {
+    background: linear-gradient(135deg, rgba(255,154,158,0.15), rgba(250,208,196,0.15));
+    border-color: #ff9a9e;
+  }
+  .grandma::before {
+    content: "👵 רמת סבתא";
+    display: inline-block;
+    background: #ff6b6b;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  .programmer {
+    background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.15));
+    border-color: #667eea;
+  }
+  .programmer::before {
+    content: "👨‍💻 רמת מתכנת";
+    display: inline-block;
+    background: #667eea;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  /* ===== Code blocks ===== */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 18px 20px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    direction: ltr;
+    text-align: left;
+    overflow-x: auto;
+    margin: 15px 0;
+    color: #e6edf3;
+    font-size: 0.95em;
+    line-height: 1.6;
+    white-space: pre;
+  }
+
+  code.inline {
+    background: rgba(78,205,196,0.15);
+    color: #4ecdc4;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.95em;
+    direction: ltr;
+    display: inline-block;
+  }
+
+  /* ===== Tables ===== */
+  .table-wrapper { overflow-x: auto; margin: 20px 0; border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; }
+  th { background: linear-gradient(135deg, #4ecdc4, #44a8a3); color: white; padding: 15px; text-align: right; font-weight: bold; white-space: nowrap; }
+  td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  tr:hover td { background: rgba(78,205,196,0.05); }
+  tr:last-child td { border-bottom: none; }
+
+  /* ===== Info boxes ===== */
+  .important { background: rgba(255,107,107,0.15); border-right: 4px solid #ff6b6b; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .important::before { content: "💡 "; font-size: 1.3em; }
+  .warning { background: rgba(220,53,69,0.15); border-right: 4px solid #dc3545; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .warning::before { content: "⚠️ "; font-size: 1.3em; }
+  .tip { background: rgba(40,167,69,0.15); border-right: 4px solid #28a745; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .tip::before { content: "✅ "; font-size: 1.3em; }
+  .exam { background: rgba(111,66,193,0.15); border-right: 4px solid #6f42c1; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .exam::before { content: "🎓 "; font-size: 1.3em; }
+
+  .highlight { background: linear-gradient(180deg, transparent 60%, rgba(255,217,61,0.4) 60%); padding: 0 4px; color: #fff; font-weight: bold; }
+
+  .quick-ref { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 20px 0; }
+  .quick-ref-item { background: rgba(255,217,61,0.08); border: 1px solid rgba(255,217,61,0.3); border-radius: 8px; padding: 15px; transition: all 0.3s ease; }
+  .quick-ref-item:hover { background: rgba(255,217,61,0.15); transform: translateY(-2px); }
+  .quick-ref-item .qr-cmd { font-family: monospace; color: #ffd93d; font-weight: bold; direction: ltr; text-align: right; margin-bottom: 5px; }
+  .quick-ref-item .qr-desc { color: #c0c0c0; font-size: 0.9em; }
+
+  .scroll-top { position: fixed; bottom: 30px; left: 30px; background: linear-gradient(135deg, #4ecdc4, #44a8a3); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(78,205,196,0.4); border: none; font-size: 1.8em; opacity: 0; transition: all 0.3s ease; z-index: 1000; }
+  .scroll-top.visible { opacity: 1; }
+  .scroll-top:hover { transform: scale(1.1); }
+
+  footer { text-align: center; padding: 40px 30px; color: rgba(255,255,255,0.6); font-size: 0.95em; }
+  footer p { margin: 8px 0; }
+
+  @media (max-width: 768px) {
+    header h1 { font-size: 1.8em; }
+    section { padding: 20px 15px; }
+    table { font-size: 0.85em; }
+    th, td { padding: 10px 8px; }
+    .toc-toggle { flex-direction: column; }
+    .term::after { max-width: 280px; font-size: 0.8em; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>🎓 מדריך מאסטר Full-Stack</h1>
+    <p>HTML · CSS · JS · TS · React · Node · DB · Auth · DevOps</p>
+    <div class="badge-new">✨ עם טולטיפים מרחפים על כל מושג חדש!</div>
+    <div class="header-stats">
+      <div class="stat"><div class="stat-number">25+</div><div class="stat-label">נושאים</div></div>
+      <div class="stat"><div class="stat-number">200+</div><div class="stat-label">מושגים מוסברים</div></div>
+      <div class="stat"><div class="stat-number">100</div><div class="stat-label">ציון יעד</div></div>
+    </div>
+  </header>
+
+  <div class="tooltip-info">
+    <p>בכל מקום שבו תראה <span class="term" data-tip="הנה דוגמה לטולטיפ! ככה זה עובד.">מושג מודגש בצהוב עם קו תחתון מקווקו</span> — תרחף עליו עם העכבר ותראה הסבר ברמת סבתא.</p>
+    <p style="margin-top:10px;">המנגנון מופעל אוטומטית. אין צורך ללחוץ — רק להעביר עכבר.</p>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc">
+    <h2>📚 תוכן עניינים</h2>
+    <div class="toc-toggle">
+      <button class="toc-tab active" onclick="showTOC('order')">📖 לפי סדר לימוד</button>
+      <button class="toc-tab" onclick="showTOC('difficulty')">⚡ לפי דרגת קושי</button>
+    </div>
+
+    <div id="toc-order" class="toc-content active">
+      <h3>🎯 הסדר המומלץ — מהבסיס למתקדם</h3>
+      <div class="toc-grid">
+        <a href="#bigpicture"><span>1. התמונה הגדולה</span><span class="diff-badge diff-easy">קל</span></a>
+        <a href="#html"><span>2. HTML</span><span class="diff-badge diff-easy">קל</span></a>
+        <a href="#css"><span>3. CSS</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#js-basics"><span>4. JavaScript בסיסי</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#reference"><span>5. Reference vs Value</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#equality"><span>6. השוואות</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#functions"><span>7. פונקציות</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#async"><span>8. Async + Event Loop</span><span class="diff-badge diff-hard">קשה</span></a>
+        <a href="#closures"><span>9. Closures</span><span class="diff-badge diff-extreme">קשה מאוד</span></a>
+        <a href="#dom"><span>10. DOM ואירועים</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#ts"><span>11. TypeScript</span><span class="diff-badge diff-hard">קשה</span></a>
+        <a href="#react"><span>12. React</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#hooks"><span>13. React Hooks</span><span class="diff-badge diff-hard">קשה</span></a>
+        <a href="#node"><span>14. Node.js</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#express"><span>15. Express</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#nextjs"><span>16. Next.js</span><span class="diff-badge diff-hard">קשה</span></a>
+        <a href="#database"><span>17. Database</span><span class="diff-badge diff-hard">קשה</span></a>
+        <a href="#auth"><span>18. Auth & Security</span><span class="diff-badge diff-hard">קשה</span></a>
+        <a href="#devops"><span>19. DevOps בסיסי</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#cheatsheet"><span>📋 דף עזר</span><span class="diff-badge diff-easy">סיכום</span></a>
+      </div>
+    </div>
+
+    <div id="toc-difficulty" class="toc-content">
+      <h3>🟢 קל</h3>
+      <div class="toc-grid">
+        <a href="#bigpicture"><span>התמונה הגדולה</span><span class="diff-badge diff-easy">קל</span></a>
+        <a href="#html"><span>HTML</span><span class="diff-badge diff-easy">קל</span></a>
+        <a href="#cheatsheet"><span>דף עזר</span><span class="diff-badge diff-easy">סיכום</span></a>
+      </div>
+      <h3>🟡 בינוני</h3>
+      <div class="toc-grid">
+        <a href="#css"><span>CSS</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#js-basics"><span>JS בסיסי</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#reference"><span>Reference vs Value</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#equality"><span>השוואות</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#functions"><span>פונקציות</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#dom"><span>DOM</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#react"><span>React</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#node"><span>Node.js</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#express"><span>Express</span><span class="diff-badge diff-medium">בינוני</span></a>
+        <a href="#devops"><span>DevOps</span><span class="diff-badge diff-medium">בינוני</span></a>
+      </div>
+      <h3>🟠 קשה</h3>
+      <div class="toc-grid">
+        <a href="#async"><span>Async</span><span class="diff-badge diff-hard">קשה</span></a>
+        <a href="#ts"><span>TypeScript</span><span class="diff-badge diff-hard">קשה</span></a>
+        <a href="#hooks"><span>React Hooks</span><span class="diff-badge diff-hard">קשה</span></a>
+        <a href="#nextjs"><span>Next.js</span><span class="diff-badge diff-hard">קשה</span></a>
+        <a href="#database"><span>Database</span><span class="diff-badge diff-hard">קשה</span></a>
+        <a href="#auth"><span>Auth</span><span class="diff-badge diff-hard">קשה</span></a>
+      </div>
+      <h3>🔴 קשה מאוד</h3>
+      <div class="toc-grid">
+        <a href="#closures"><span>Closures + Bugs</span><span class="diff-badge diff-extreme">קשה מאוד</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ 1. THE BIG PICTURE ============ -->
+  <section id="bigpicture">
+    <h2>1️⃣ התמונה הגדולה <span class="diff-badge diff-easy">קל</span></h2>
+
+    <div class="level-box grandma">
+      <p>תארי לך מסעדה: <span class="term" data-tip="הצד שהמשתמשת רואה — הדף, הכפתורים, התפריט. בנוי מ-HTML, CSS, JavaScript, ולרוב React.">Frontend</span> זה הדלפק והתפריט שהלקוחה רואה. <span class="term" data-tip="המטבח האחורי — המקום שמכין את האוכל. אף אחד לא רואה אותו ישירות. בנוי מ-Node.js, Express, או Next.js.">Backend</span> זה המטבח שמכין את האוכל. <span class="term" data-tip="המחסן שבו שומרים את כל המתכונים והמלאי. כשהמטבח צריך מידע — הוא הולך לשם. בנוי מ-MongoDB, PostgreSQL וכו'.">Database</span> זה המחסן שבו שומרים את המתכונים והמלאי.</p>
+    </div>
+
+    <h3>מי אחראי על מה</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>כלי</th><th>מה הוא עושה</th><th>דימוי</th></tr></thead>
+        <tbody>
+          <tr><td><span class="term" data-tip="ספרייה לבניית ממשקי משתמש. במקום לכתוב HTML ידנית, את כותבת קומפוננטות שאחראיות על חלקי המסך השונים.">React</span></td><td>בונה את ממשק המשתמש</td><td>הדלפק והקופה</td></tr>
+          <tr><td><span class="term" data-tip="סביבה שמאפשרת להריץ JavaScript בצד שרת (לא רק בדפדפן). זה מה שמאפשר לבנות backend ב-JS.">Node.js</span></td><td>מריץ JavaScript בצד שרת</td><td>המשרד האחורי</td></tr>
+          <tr><td><span class="term" data-tip="Framework מעל React שבונה אפליקציה שלמה — עמודים, API, SSR, SEO. הכל ב-package אחד.">Next.js</span></td><td>אפליקציה מלאה (Frontend+Backend)</td><td>כל החנות</td></tr>
+          <tr><td><span class="term" data-tip="המקום שבו שומרים מידע לטווח ארוך. כשהמשתמש מתנתק והמחשב נכבה — המידע נשאר.">Database</span></td><td>שומר מידע</td><td>מחסן</td></tr>
+          <tr><td><span class="term" data-tip="Authentication = מי אתה. Authorization = מה מותר לך לעשות. ביחד: לוודא שמשתמשים מורשים ושאין גישה למידע של אחרים.">Auth</span></td><td>בודק זהות והרשאות</td><td>מפתח + רשימת מורשים</td></tr>
+          <tr><td><span class="term" data-tip="התהליך של לקיחת קוד מהמחשב שלך, אריזה שלו, והעלאה לשרת באינטרנט שכולם יכולים לגשת אליו.">DevOps</span></td><td>מעלה לאינטרנט</td><td>השליח</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>זרימה כללית</h3>
+    <div class="code-block">משתמש לוחץ באתר
+       ↓ (HTTP request)
+Frontend / React (המסך)
+       ↓ (API call)
+Backend / Node / Next (השרת)
+       ↓ (Query)
+Database (הזיכרון)
+       ↑ (תגובה)
+חוזר חזרה במסך</div>
+
+    <h3>חמשת חוקי הזהב</h3>
+    <ol style="padding-right:25px;margin:15px 0;">
+      <li>ברירת מחדל <code class="inline">const</code>. רק כשצריך להחליף ערך — <code class="inline">let</code>. כמעט אף פעם לא <code class="inline">var</code>.</li>
+      <li>Functions / Arrays / Objects הם <span class="term" data-tip="במקום להעתיק את כל האובייקט, מועבר רק 'מצביע' אליו. אם משנים דרך משתנה אחד — כולם רואים את השינוי.">references</span>.</li>
+      <li><span class="term" data-tip="Spread = '...' מעתיק רק את השכבה החיצונית. אובייקטים מקוננים נשארים משותפים.">Spread</span> הוא shallow copy.</li>
+      <li>React state — לא עושים <span class="term" data-tip="שינוי ישיר של אובייקט קיים, במקום ליצור אחד חדש. ב-React זה גורם לבאגים כי React לא מזהה שמשהו השתנה.">mutation</span>. יוצרים reference חדש.</li>
+      <li>Event Loop: sync → microtasks → macrotasks.</li>
+    </ol>
+  </section>
+
+  <!-- ============ 2. HTML ============ -->
+  <section id="html">
+    <h2>2️⃣ HTML — שלד הדף <span class="diff-badge diff-easy">קל</span></h2>
+
+    <div class="level-box grandma">
+      <p>HTML זה <span class="highlight">השלד</span> של הדף. כמו עצמות בגוף — הוא מחזיק את כל המבנה.</p>
+    </div>
+
+    <h3>תגיות חיוניות</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>תגית</th><th>תפקיד</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">&lt;div&gt;</code></td><td>מיכל גנרי (block)</td></tr>
+          <tr><td><code class="inline">&lt;span&gt;</code></td><td>טקסט inline</td></tr>
+          <tr><td><code class="inline">&lt;a href=""&gt;</code></td><td>קישור</td></tr>
+          <tr><td><code class="inline">&lt;img alt=""&gt;</code></td><td>תמונה (alt חובה!)</td></tr>
+          <tr><td><code class="inline">&lt;button&gt;</code></td><td>כפתור</td></tr>
+          <tr><td><code class="inline">&lt;input&gt;</code></td><td>שדה קלט</td></tr>
+          <tr><td><code class="inline">&lt;form&gt;</code></td><td>טופס</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>תגיות סמנטיות</h3>
+    <p style="margin-bottom:12px;"><span class="term" data-tip="תגיות עם משמעות. במקום div לכל דבר — להשתמש בתגיות שמתארות מה הן (header, nav, article). זה עוזר ל-SEO ולקוראי מסך.">תגיות סמנטיות</span> מסבירות את המשמעות של החלק:</p>
+    <div class="quick-ref">
+      <div class="quick-ref-item"><div class="qr-cmd">&lt;header&gt;</div><div class="qr-desc">ראש הדף</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">&lt;nav&gt;</div><div class="qr-desc">תפריט ניווט</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">&lt;main&gt;</div><div class="qr-desc">תוכן ראשי</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">&lt;section&gt;</div><div class="qr-desc">חלק נושאי</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">&lt;article&gt;</div><div class="qr-desc">תוכן עצמאי</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">&lt;footer&gt;</div><div class="qr-desc">תחתית הדף</div></div>
+    </div>
+
+    <h3>נגישות</h3>
+    <div class="code-block">&lt;img src="cat.jpg" alt="חתול שחור על ספה"&gt;     &lt;!-- alt חובה --&gt;
+&lt;button aria-label="סגור"&gt;X&lt;/button&gt;            &lt;!-- aria-label --&gt;
+&lt;div role="alert"&gt;שגיאה!&lt;/div&gt;                  &lt;!-- role --&gt;</div>
+
+    <p style="margin-top:15px;"><span class="term" data-tip="Accessibility (a11y) = התאמה למשתמשים עם מוגבלויות. עיוורים שמשתמשים בקוראי מסך, אנשים שלא יכולים להשתמש בעכבר, וכו'. נושא חובה במבחן.">a11y</span> = נגישות. כל אתר רציני חייב לעבור סטנדרטים בסיסיים.</p>
+  </section>
+
+  <!-- ============ 3. CSS ============ -->
+  <section id="css">
+    <h2>3️⃣ CSS — עיצוב ו-Layout <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <h3>Selectors — class מול id</h3>
+    <p style="margin-bottom:15px;"><span class="term" data-tip="class = תווית שאפשר להדביק על הרבה אלמנטים. למשל .button מיועד לכל הכפתורים בדף. סלקטור class מתחיל בנקודה.">class</span> ו-<span class="term" data-tip="id = שם ייחודי של אלמנט אחד. רק אלמנט אחד בדף יכול להיות עם id מסוים. סלקטור id מתחיל ב-#.">id</span> הם שתי הדרכים העיקריות לבחור אלמנטים.</p>
+
+    <h4>ההבדל המרכזי</h4>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th></th><th>class</th><th>id</th></tr></thead>
+        <tbody>
+          <tr><td>כמה פעמים?</td><td>כמה שרוצים</td><td>פעם אחת בלבד!</td></tr>
+          <tr><td>סימון ב-CSS</td><td><code class="inline">.name</code></td><td><code class="inline">#name</code></td></tr>
+          <tr><td>סימון ב-HTML</td><td><code class="inline">class="name"</code></td><td><code class="inline">id="name"</code></td></tr>
+          <tr><td><span class="term" data-tip="Specificity = איזה rule גובר על אחר ב-CSS. id חזק יותר מ-class. רוצים rule שגובר? צריך specificity גבוהה יותר.">Specificity</span></td><td>10 נקודות</td><td>100 נקודות</td></tr>
+          <tr><td>שימוש מומלץ</td><td>עיצוב, סגנונות</td><td>jump links, JS hooks</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block">// HTML
+&lt;div class="card"&gt;...&lt;/div&gt;       // class — אפשר ב-100 מקומות
+&lt;div class="card"&gt;...&lt;/div&gt;
+&lt;div id="header"&gt;...&lt;/div&gt;        // id — רק פעם אחת!
+
+// CSS
+.card { background: blue; }       // נקודה לפני class
+#header { color: red; }           // # לפני id</div>
+
+    <h3>Selectors מורחבים</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Selector</th><th>בוחר</th><th>דוגמה</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">.class</code></td><td>לפי class</td><td><code class="inline">.button</code></td></tr>
+          <tr><td><code class="inline">#id</code></td><td>לפי id</td><td><code class="inline">#header</code></td></tr>
+          <tr><td><code class="inline">a b</code></td><td>b בתוך a (descendant)</td><td><code class="inline">.card p</code></td></tr>
+          <tr><td><code class="inline">a > b</code></td><td>b ילד ישיר של a</td><td><code class="inline">ul > li</code></td></tr>
+          <tr><td><code class="inline">a + b</code></td><td>b אחי מיד אחרי a</td><td><code class="inline">h1 + p</code></td></tr>
+          <tr><td><code class="inline">[attr]</code></td><td>לפי attribute</td><td><code class="inline">[type="text"]</code></td></tr>
+          <tr><td><span class="term" data-tip="Pseudo-class = מצב מיוחד של אלמנט (hover, focus, disabled). מתחיל ב-: (נקודתיים).">:hover</span></td><td>בעת ריחוף עכבר</td><td><code class="inline">.btn:hover</code></td></tr>
+          <tr><td><code class="inline">:nth-child(n)</code></td><td>הילד ה-n</td><td><code class="inline">li:nth-child(2)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Box Model</h3>
+    <p>כל אלמנט הוא <span class="term" data-tip="כל אלמנט ב-CSS הוא קופסה עם 4 שכבות: content (תוכן), padding (ריפוד פנימי), border (גבול), margin (מרווח חיצוני).">קופסה</span> עם 4 שכבות:</p>
+    <div class="code-block">.box {
+  width: 200px;        /* רוחב התוכן */
+  padding: 20px;       /* ריפוד פנימי */
+  border: 2px solid;   /* גבול */
+  margin: 10px;        /* מרווח חיצוני */
+}
+
+* { box-sizing: border-box; }   /* תמיד! */</div>
+
+    <p><span class="term" data-tip="box-sizing: border-box אומר שה-width כולל את ה-padding וה-border. בלעדיו, אם תגדירי width: 100px ו-padding: 20px, הקופסה תהיה 140px בפועל.">box-sizing: border-box</span> זה כמעט תמיד מה שתרצי.</p>
+
+    <h3>CSS Units</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>יחידה</th><th>משמעות</th><th>שימוש</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">px</code></td><td>פיקסלים — גודל מוחלט</td><td>גדלים קבועים</td></tr>
+          <tr><td><code class="inline">%</code></td><td>אחוז מההורה</td><td>רוחב יחסי</td></tr>
+          <tr><td><span class="term" data-tip="em = יחסי לפונט של ההורה. אם ההורה הוא 16px, אז 1em = 16px. שימושי ל-spacing יחסי.">em</span></td><td>יחסי לפונט ההורה</td><td>spacing יחסי</td></tr>
+          <tr><td><span class="term" data-tip="rem = יחסי לפונט root (HTML). תמיד אותו מספר בכל הדף. הכי מומלץ ל-typography.">rem</span></td><td>יחסי ל-root</td><td>typography עקבית</td></tr>
+          <tr><td><code class="inline">vh / vw</code></td><td>אחוז מהמסך</td><td>full-screen</td></tr>
+          <tr><td><span class="term" data-tip="fr (fraction) = יחידה של Grid. 1fr 2fr = העמודה השנייה כפולה ברוחב מהראשונה.">fr</span></td><td>חלק יחסי ב-grid</td><td>Grid layouts</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Flexbox</h3>
+    <p><span class="term" data-tip="Flexbox = layout בכיוון אחד (שורה או עמודה). מצוין ליישור פריטים, חלוקת רווח, ויצירת menus.">Flexbox</span> זה layout בכיוון אחד:</p>
+    <div class="code-block">.container {
+  display: flex;
+  justify-content: center;    /* יישור בציר ראשי */
+  align-items: center;        /* יישור בציר משני */
+  gap: 20px;                  /* מרווח בין ילדים */
+  flex-direction: row;        /* row | column */
+  flex-wrap: wrap;
+}</div>
+
+    <h3>Grid</h3>
+    <p><span class="term" data-tip="Grid = layout בשני כיוונים (שורות ועמודות יחד). מצוין ל-layouts מורכבים, dashboards, גלריות.">Grid</span> זה layout דו-ממדי:</p>
+    <div class="code-block">.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* responsive auto */
+.responsive {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}</div>
+
+    <h3>Position</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>ערך</th><th>התנהגות</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">static</code></td><td>ברירת מחדל</td></tr>
+          <tr><td><code class="inline">relative</code></td><td>יחסי למיקום הרגיל</td></tr>
+          <tr><td><code class="inline">absolute</code></td><td>יחסי לאב הקרוב עם position</td></tr>
+          <tr><td><code class="inline">fixed</code></td><td>יחסי למסך — לא זז בגלילה</td></tr>
+          <tr><td><span class="term" data-tip="sticky = relative עד נקודה מסוימת בגלילה, ואז הופך ל-fixed. שימושי לכותרות שנשארות בראש בזמן גלילה.">sticky</span></td><td>relative עד נקודה, אז fixed</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Display</h3>
+    <div class="quick-ref">
+      <div class="quick-ref-item"><div class="qr-cmd">block</div><div class="qr-desc">שורה משלו, רוחב מלא</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">inline</div><div class="qr-desc">בתוך שורה, ללא גודל</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">inline-block</div><div class="qr-desc">inline + יכול גודל</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">flex</div><div class="qr-desc">flexbox container</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">grid</div><div class="qr-desc">grid container</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">none</div><div class="qr-desc">מוסתר לחלוטין</div></div>
+    </div>
+
+    <h3>Specificity</h3>
+    <div class="code-block">/* מי מנצח? */
+1. !important       (אסור!)
+2. inline style     style="..."
+3. #id              100 נקודות
+4. .class :hover    10 נקודות
+5. tag              1 נקודה</div>
+    <div class="warning">לא להשתמש ב-<code class="inline">!important</code> — סימן לקוד שבור!</div>
+  </section>
+
+  <!-- ============ 4. JS BASICS ============ -->
+  <section id="js-basics">
+    <h2>4️⃣ JavaScript — יסודות <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <h3>const / let / var</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th></th><th>const</th><th>let</th><th>var</th></tr></thead>
+        <tbody>
+          <tr><td><span class="term" data-tip="Scope = איפה משתנה קיים ונגיש. block scope = רק בתוך {}. function scope = בכל הפונקציה.">Scope</span></td><td>block</td><td>block</td><td>function</td></tr>
+          <tr><td>שינוי ערך</td><td>❌</td><td>✅</td><td>✅</td></tr>
+          <tr><td><span class="term" data-tip="Hoisting = JS 'מרים' הצהרות משתנים לראש ה-scope לפני ההרצה. var עולה כ-undefined, let/const עולים אבל ב-TDZ.">Hoisting</span></td><td>TDZ</td><td>TDZ</td><td>undefined</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block">// בעיה עם var
+{
+  let x = 1;
+  var y = 2;
+}
+console.log(y);  // 2 — נוזל החוצה!
+console.log(x);  // ReferenceError</div>
+
+    <h3>טיפוסי נתונים</h3>
+    <p>JS מבחין בין <span class="term" data-tip="Primitives = ערכים פשוטים ובלתי משתנים. number, string, boolean, null, undefined, symbol, bigint. הם 'by value' — כל משתנה מקבל עותק שלו.">primitives</span> לבין <span class="term" data-tip="Objects (כולל arrays ו-functions) הם 'by reference' — כשמעבירים אותם, מועבר רק מצביע. שינוי דרך משתנה אחד נראה דרך כולם.">objects</span>:</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>טיפוס</th><th>קטגוריה</th><th>typeof</th></tr></thead>
+        <tbody>
+          <tr><td>string</td><td>primitive</td><td>'string'</td></tr>
+          <tr><td>number</td><td>primitive</td><td>'number'</td></tr>
+          <tr><td>boolean</td><td>primitive</td><td>'boolean'</td></tr>
+          <tr><td>null</td><td>primitive</td><td>'object' ⚠️ באג</td></tr>
+          <tr><td>undefined</td><td>primitive</td><td>'undefined'</td></tr>
+          <tr><td>object</td><td>object</td><td>'object'</td></tr>
+          <tr><td>array</td><td>object</td><td>'object' ⚠️</td></tr>
+          <tr><td>function</td><td>object</td><td>'function'</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Array Methods</h3>
+    <div class="code-block">const nums = [1, 2, 3, 4, 5];
+
+nums.map(n =&gt; n * 2);              // [2,4,6,8,10] חדש
+nums.filter(n =&gt; n % 2 === 0);     // [2, 4]
+nums.reduce((acc, n) =&gt; acc + n, 0); // 15
+nums.find(n =&gt; n &gt; 2);              // 3
+nums.some(n =&gt; n &gt; 4);              // true
+nums.every(n =&gt; n &gt; 0);             // true
+nums.includes(3);                    // true
+nums.sort((a, b) =&gt; b - a);         // משנה את המקור!</div>
+
+    <h3>Spread / Rest / Destructuring</h3>
+    <div class="code-block">// Spread — פתיחה
+const arr2 = [...arr1, 4, 5];
+const obj2 = {...obj1, b: 2};
+
+// Rest — איסוף
+const [first, ...others] = [1, 2, 3, 4];
+
+// Destructuring
+const {name, age} = user;
+const {name: userName} = user;          // עם שינוי שם
+const {age = 18} = user;                 // ברירת מחדל</div>
+
+    <h3>Optional Chaining + Nullish Coalescing</h3>
+    <div class="code-block">// Optional chaining (?.) — לא קורס
+const city = user?.address?.city;
+
+// Nullish coalescing (??) — רק null/undefined
+const x = 0 ?? 10;       // 0 (לא 10!)
+const y = 0 || 10;       // 10 (טעות!)</div>
+
+    <p><span class="term" data-tip="Falsy = ערך שמוערך כ-false: false, 0, '', null, undefined, NaN. תופעלי הפעלה: || חושב שהכל falsy = ריק. ?? חושב רק null/undefined ריקים.">Falsy</span> values: 0, '', false, null, undefined, NaN.</p>
+  </section>
+
+  <!-- ============ 5. REFERENCE VS VALUE ============ -->
+  <section id="reference">
+    <h2>5️⃣ Reference vs Value <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <div class="level-box grandma">
+      <p>תארי לך פתק עם מספר טלפון. אם תיתני <span class="highlight">העתק של הפתק</span> לחברה — היא תוכל לקרוע אותו ושלך יישאר. זה <strong>by value</strong>. אבל אם תיתני לה את <span class="highlight">הכתובת של הבית</span> שלך, ושתיכן תיכנסו לאותו בית — אם היא תזיז ספה, גם את תראי. זה <strong>by reference</strong>.</p>
+    </div>
+
+    <h3>Primitives by Value</h3>
+    <div class="code-block">let a = 10;
+let b = a;        // b מקבל עותק
+b = 20;
+console.log(a);   // 10 — לא השתנה</div>
+
+    <h3>Objects by Reference</h3>
+    <div class="code-block">let obj1 = { name: 'תל' };
+let obj2 = obj1;          // אותו אובייקט!
+obj2.name = 'דן';
+console.log(obj1.name);   // 'דן' — השתנה גם!
+console.log(obj1 === obj2);  // true</div>
+
+    <h3>השוואת אובייקטים</h3>
+    <div class="code-block">{a: 1} === {a: 1}    // false! ❌ (references שונים)
+[] === []             // false!
+
+const x = {a: 1};
+const y = x;
+x === y;              // true (אותו reference)</div>
+
+    <h3>Shallow vs Deep Copy</h3>
+    <p><span class="term" data-tip="Shallow copy = העתק רק של השכבה החיצונית. אובייקטים מקוננים נשארים משותפים. נוצר ב-{...obj} או [...arr].">Shallow</span> מול <span class="term" data-tip="Deep copy = העתק מלא של כל השכבות. נוצר ב-structuredClone() או JSON.parse(JSON.stringify()).">Deep</span>:</p>
+
+    <div class="code-block">const original = {
+  name: 'תל',
+  address: { city: 'ת"א' }
+};
+
+// Shallow ❌
+const copy = { ...original };
+copy.address.city = 'חיפה';
+console.log(original.address.city);  // 'חיפה' (!)
+
+// Deep ✅
+const deepCopy = structuredClone(original);
+deepCopy.address.city = 'חיפה';
+console.log(original.address.city);  // 'ת"א'</div>
+
+    <h3>איך זה משפיע על React?</h3>
+    <div class="code-block">// ❌ באג קלאסי — mutation
+const [user, setUser] = useState({ name: 'תל', age: 30 });
+user.age = 31;          // mutate!
+setUser(user);          // React לא יזהה שינוי!
+
+// ✅ נכון
+setUser({ ...user, age: 31 });</div>
+
+    <div class="exam">
+      <strong>למבחן:</strong> כל <code class="inline">{}</code>, <code class="inline">[]</code>, ו-function inline ב-React גורמים ל-reference חדש בכל render. זו הסיבה ש-<code class="inline">useMemo</code> ו-<code class="inline">useCallback</code> קיימים.
+    </div>
+  </section>
+
+  <!-- ============ 6. EQUALITY ============ -->
+  <section id="equality">
+    <h2>6️⃣ השוואות — == / === / NaN <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <h3>== vs ===</h3>
+    <div class="code-block">// == עושה type coercion (להימנע!)
+1 == '1'           // true ⚠️
+0 == false         // true ⚠️
+null == undefined  // true ⚠️
+
+// === בודק טיפוס + ערך (תמיד!)
+1 === '1'          // false ✅
+0 === false        // false ✅</div>
+
+    <h3>NaN — המספר המוזר</h3>
+    <p><span class="term" data-tip="NaN = Not a Number. נוצר כשפעולה מתמטית נכשלת, כמו 0/0 או Number('abc'). הוא מהמספרים אבל לא שווה לעצמו!">NaN</span> מתנהג מוזר:</p>
+    <div class="code-block">NaN === NaN              // false!
+Number.isNaN(NaN)        // true ✅ (הדרך הנכונה)
+isNaN('abc')             // true ⚠️ (גם strings!)
+Number.isNaN('abc')      // false ✅ (רק NaN ממש)</div>
+
+    <h3>typeof — מלכודות</h3>
+    <div class="code-block">typeof null          // 'object' ⚠️ באג היסטורי
+typeof []            // 'object' ⚠️ לא 'array'
+typeof NaN           // 'number' ⚠️
+typeof function(){}  // 'function'
+
+// הדרך הנכונה לבדוק:
+Array.isArray([])           // true ✅
+value === null              // true רק ל-null
+Number.isNaN(value)         // true רק ל-NaN ממש</div>
+
+    <div class="exam">
+      <strong>למבחן:</strong> תמיד <code class="inline">===</code>. ל-NaN — <code class="inline">Number.isNaN()</code>. למערך — <code class="inline">Array.isArray()</code>.
+    </div>
+  </section>
+
+  <!-- ============ 7. FUNCTIONS ============ -->
+  <section id="functions">
+    <h2>7️⃣ פונקציות — Arrow vs Regular <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <h3>השוואה</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>תכונה</th><th>Regular</th><th>Arrow</th></tr></thead>
+        <tbody>
+          <tr><td>תחביר</td><td><code class="inline">function f(){}</code></td><td><code class="inline">() =&gt; {}</code></td></tr>
+          <tr><td><span class="term" data-tip="this = ההקשר של הפונקציה. ב-Regular הוא דינמי לפי איך נקראת. ב-Arrow הוא סטטי — תמיד מהסביבה החיצונית.">this</span></td><td>דינמי</td><td>סטטי (lexical)</td></tr>
+          <tr><td><span class="term" data-tip="arguments = אובייקט מיוחד עם כל הפרמטרים שהועברו לפונקציה. קיים רק ב-regular.">arguments</span></td><td>יש</td><td>אין</td></tr>
+          <tr><td>Hoisting</td><td>כן</td><td>לא</td></tr>
+          <tr><td>Constructor (new)</td><td>אפשרי</td><td>אסור!</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>this — ההבדל הקריטי</h3>
+    <div class="code-block">const obj = {
+  name: 'תל',
+  
+  regular: function() {
+    console.log(this.name);   // 'תל' ✅
+  },
+  
+  arrow: () =&gt; {
+    console.log(this.name);   // undefined ❌
+  }
+};</div>
+
+    <h3>מתי לבחור?</h3>
+    <ul style="padding-right:25px;margin:15px 0;">
+      <li><strong>Arrow:</strong> callbacks, event handlers, פונקציות קצרות, צריך לשמור this</li>
+      <li><strong>Regular:</strong> methods של object, constructors, צריך arguments</li>
+    </ul>
+  </section>
+
+  <!-- ============ 8. ASYNC + EVENT LOOP ============ -->
+  <section id="async">
+    <h2>8️⃣ Async ו-Event Loop <span class="diff-badge diff-hard">קשה</span></h2>
+
+    <div class="level-box grandma">
+      <p>JS עובד <span class="highlight">בתור אחד</span> — קופאית בסופר. היא יכולה לטפל רק בלקוח אחד בכל פעם. אבל יש לה רשימה: קודם דברים דחופים (<span class="term" data-tip="Microtasks = משימות קטנות ודחופות. בעיקר Promise.then. רצות מיד אחרי כל קוד sync.">microtasks</span>), ואז דברים פחות דחופים (<span class="term" data-tip="Macrotasks = משימות גדולות יותר. setTimeout, setInterval, I/O. רצות אחרי microtasks, אחת בכל סבב.">macrotasks</span>).</p>
+    </div>
+
+    <h3>סדר ההרצה</h3>
+    <div class="code-block">console.log('1');                                      // sync
+setTimeout(() =&gt; console.log('2'), 0);                 // macrotask
+Promise.resolve().then(() =&gt; console.log('3'));        // microtask
+console.log('4');                                      // sync
+
+// סדר: 1, 4, 3, 2
+
+// 1. sync code: 1, 4
+// 2. microtasks: 3
+// 3. macrotasks: 2</div>
+
+    <h3>Promise</h3>
+    <p><span class="term" data-tip="Promise = הבטחה לערך עתידי. יכולה להיות במצב pending, fulfilled, או rejected. שימושי לפעולות אסינכרוניות.">Promise</span> זה אובייקט שמייצג ערך עתידי:</p>
+    <div class="code-block">const promise = new Promise((resolve, reject) =&gt; {
+  setTimeout(() =&gt; resolve('הצלחה!'), 1000);
+});
+
+promise
+  .then(result =&gt; console.log(result))
+  .catch(error =&gt; console.error(error))
+  .finally(() =&gt; console.log('סיים'));</div>
+
+    <h3>async / await</h3>
+    <div class="code-block">async function getUser() {
+  try {
+    const res = await fetch('/api/user');
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+}</div>
+
+    <h3>הרצה מקבילית</h3>
+    <div class="code-block">// ❌ טורי — איטי (3 שניות)
+const a = await fetchA();
+const b = await fetchB();
+
+// ✅ מקבילי — מהיר (1 שנייה)
+const [a, b] = await Promise.all([fetchA(), fetchB()]);
+
+// אם אחד נכשל = הכל נכשל
+// Promise.allSettled — לא נכשל
+const results = await Promise.allSettled([fetchA(), fetchB()]);</div>
+
+    <h3>Promise Combinators</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>מתודה</th><th>מתי מסתיימת</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">Promise.all</code></td><td>כשכולן הצליחו / ראשון נכשל</td></tr>
+          <tr><td><code class="inline">Promise.allSettled</code></td><td>כשכולן הסתיימו (גם אם נכשלו)</td></tr>
+          <tr><td><code class="inline">Promise.race</code></td><td>הראשון להסתיים</td></tr>
+          <tr><td><code class="inline">Promise.any</code></td><td>הראשון שהצליח</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Race condition ב-React</h3>
+    <div class="code-block">// ❌ בעיה
+useEffect(() =&gt; {
+  fetch(`/api/users/${userId}`).then(setUser);
+}, [userId]);
+
+// ✅ פתרון: cleanup
+useEffect(() =&gt; {
+  let cancelled = false;
+  fetch(`/api/users/${userId}`)
+    .then(r =&gt; r.json())
+    .then(d =&gt; { if (!cancelled) setUser(d); });
+  return () =&gt; { cancelled = true; };
+}, [userId]);
+
+// ✅ מתקדם: AbortController
+useEffect(() =&gt; {
+  const controller = new AbortController();
+  fetch(url, { signal: controller.signal });
+  return () =&gt; controller.abort();
+}, [url]);</div>
+  </section>
+
+  <!-- ============ 9. CLOSURES ============ -->
+  <section id="closures">
+    <h2>9️⃣ Closures + הבאגים ב-React <span class="diff-badge diff-extreme">קשה מאוד</span></h2>
+
+    <div class="level-box grandma">
+      <p>תארי לך פתק עם הוראה. כשאת רושמת — את "צילמת" את כל מה שהיה במטבח באותו רגע. גם אם אחר כך תשני את המטבח — הפתק יזכור את המצב הישן.</p>
+    </div>
+
+    <p><span class="term" data-tip="Closure = פונקציה שזוכרת את הסביבה (משתנים) שבה היא נוצרה, גם כשהיא רצה במקום אחר. זה המנגנון שמייצר את רוב הבאגים ב-React.">Closure</span> = פונקציה שזוכרת את הסביבה שלה.</p>
+
+    <h3>דוגמה בסיסית</h3>
+    <div class="code-block">function createCounter() {
+  let count = 0;          // משתנה פנימי
+  
+  return function() {
+    count++;              // הפונקציה זוכרת את count!
+    return count;
+  };
+}
+
+const counter = createCounter();
+counter();   // 1
+counter();   // 2</div>
+
+    <h3>באג #1: setTimeout עם state ישן</h3>
+    <div class="code-block">function Counter() {
+  const [count, setCount] = useState(0);
+  
+  const handleClick = () =&gt; {
+    setTimeout(() =&gt; {
+      setCount(count + 1);   // ⚠️ ה-closure תופס count ישן!
+    }, 3000);
+  };
+}
+
+// ✅ פתרון: functional update
+const handleClick = () =&gt; {
+  setTimeout(() =&gt; {
+    setCount(prev =&gt; prev + 1);   // תמיד עדכני
+  }, 3000);
+};</div>
+
+    <h3>באג #2: setInterval עם deps חסרות</h3>
+    <div class="code-block">// ❌ באג
+useEffect(() =&gt; {
+  const id = setInterval(() =&gt; {
+    setSeconds(seconds + 1);    // תמיד 0!
+  }, 1000);
+  return () =&gt; clearInterval(id);
+}, []);  // ⚠️ deps ריק
+
+// ✅ פתרון: functional update
+useEffect(() =&gt; {
+  const id = setInterval(() =&gt; {
+    setSeconds(prev =&gt; prev + 1);
+  }, 1000);
+  return () =&gt; clearInterval(id);
+}, []);</div>
+
+    <h3>באג #3: לולאה עם var</h3>
+    <div class="code-block">// ❌ var (function-scoped)
+for (var i = 0; i &lt; 3; i++) {
+  setTimeout(() =&gt; console.log(i), 100);
+}
+// תוצאה: 3, 3, 3 ⚠️
+
+// ✅ let (block-scoped)
+for (let i = 0; i &lt; 3; i++) {
+  setTimeout(() =&gt; console.log(i), 100);
+}
+// תוצאה: 0, 1, 2 ✅</div>
+
+    <h3>חוקי סבתא ל-Closures</h3>
+    <ol style="padding-right:25px;margin:15px 0;">
+      <li>פונקציה שמוחזרת/מועברת — זוכרת את הסביבה שלה</li>
+      <li>ב-React: כל render יוצר closures חדשים. הישנים <strong>לא מתעדכנים</strong></li>
+      <li>state בתוך setTimeout/Promise → <strong>functional update</strong></li>
+      <li>useEffect משתמש במשתנה → <strong>תוסיף ל-deps</strong></li>
+      <li>תמיד <code class="inline">let</code>/<code class="inline">const</code></li>
+    </ol>
+  </section>
+
+  <!-- ============ 10. DOM ============ -->
+  <section id="dom">
+    <h2>🔟 DOM ואירועים <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <p>ה-<span class="term" data-tip="DOM = Document Object Model. ייצוג של עץ ה-HTML כאובייקטים שאפשר לשנות ב-JS. הדפדפן יוצר אותו מהHTML.">DOM</span> זה איך JS מדבר עם הדף.</p>
+
+    <h3>בחירת אלמנטים</h3>
+    <div class="code-block">document.getElementById('myId');
+document.querySelector('.myClass');
+document.querySelectorAll('.myClass');</div>
+
+    <h3>innerHTML vs textContent</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>שיטה</th><th>פלט</th><th>בטוח?</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">innerHTML</code></td><td>מפרש HTML</td><td>❌ סיכון <span class="term" data-tip="XSS = Cross-Site Scripting. תקיפת אבטחה שבה תוקף מזריק קוד JS לדף. innerHTML מסוכן כי הוא מריץ HTML שנשלח מבחוץ.">XSS</span></td></tr>
+          <tr><td><code class="inline">textContent</code></td><td>טקסט בלבד</td><td>✅ בטוח ומהיר</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>אירועים</h3>
+    <div class="code-block">button.addEventListener('click', (event) =&gt; {
+  event.preventDefault();    // מבטל ברירת מחדל
+  event.stopPropagation();   // עוצר bubbling
+  
+  event.target;        // האלמנט שנלחץ
+  event.currentTarget; // האלמנט עם listener
+});</div>
+
+    <h3>Event Bubbling</h3>
+    <p><span class="term" data-tip="Bubbling = אירוע שעולה מהאלמנט הספציפי לאבות שלו. לחיצה על button בתוך div תפעיל גם את ה-listener של ה-div.">Bubbling</span> = אירוע מטפס למעלה:</p>
+    <div class="code-block">&lt;div onClick={parent}&gt;
+  &lt;button onClick={child}&gt;X&lt;/button&gt;
+&lt;/div&gt;
+// סדר: child → parent
+// stopPropagation עוצר את זה</div>
+
+    <h3>Event Delegation</h3>
+    <p><span class="term" data-tip="Event Delegation = listener אחד על האב במקום על כל ילד. יעיל יותר, ועובד גם על ילדים שנוספו דינמית.">Event Delegation</span> — listener אחד על האב:</p>
+    <div class="code-block">&lt;ul onClick={(e) =&gt; {
+  if (e.target.tagName === 'LI') {
+    console.log(e.target.textContent);
+  }
+}}&gt;
+  &lt;li&gt;A&lt;/li&gt;
+  &lt;li&gt;B&lt;/li&gt;
+&lt;/ul&gt;</div>
+  </section>
+
+  <!-- ============ 11. TYPESCRIPT ============ -->
+  <section id="ts">
+    <h2>1️⃣1️⃣ TypeScript <span class="diff-badge diff-hard">קשה</span></h2>
+
+    <p><span class="term" data-tip="TypeScript = JavaScript עם תוויות (טיפוסים). תופס שגיאות עוד לפני שהקוד רץ. מתקמפל ל-JS רגיל.">TypeScript</span> זה JS עם type system.</p>
+
+    <h3>טיפוסים בסיסיים</h3>
+    <div class="code-block">let name: string = 'תל';
+let age: number = 30;
+let isActive: boolean = true;
+let nums: number[] = [1, 2, 3];
+let pair: [string, number] = ['גיל', 30];   // tuple
+
+const add = (a: number, b: number): number =&gt; a + b;
+function greet(name: string, title?: string) { ... }</div>
+
+    <h3>type vs interface</h3>
+    <div class="code-block">type User = {
+  id: number;
+  name: string;
+  email?: string;
+};
+
+interface Animal {
+  name: string;
+  sound(): string;
+}
+
+// type גמיש יותר:
+type ID = number | string;
+type Status = 'pending' | 'ok' | 'error';</div>
+
+    <h3>Union vs Intersection</h3>
+    <div class="code-block">// Union (|): X או Y
+type ID = number | string;
+
+// Intersection (&amp;): X וגם Y
+type Person = { name: string };
+type Worker = { salary: number };
+type Employee = Person &amp; Worker;</div>
+
+    <h3>Type Guards</h3>
+    <p><span class="term" data-tip="Type Guard = פונקציה שבודקת בזמן ריצה אם ערך מסוג מסוים. מסומנת ב-'value is T' בחתימה.">Type Guard</span> = פונקציה עם <code class="inline">value is T</code>:</p>
+    <div class="code-block">function isUser(value: unknown): value is User {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as any).id === 'number' &&
+    typeof (value as any).name === 'string'
+  );
+}
+
+const data: unknown = await response.json();
+if (isUser(data)) {
+  console.log(data.name);   // ✅ TS יודע!
+}</div>
+
+    <h3>any / unknown / never</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>טיפוס</th><th>משמעות</th><th>שימוש</th></tr></thead>
+        <tbody>
+          <tr><td><span class="term" data-tip="any = הכל מותר. מכבה את TypeScript לחלוטין. סימן לקוד גרוע במבחן.">any</span></td><td>הכל מותר</td><td>❌ להימנע!</td></tr>
+          <tr><td><span class="term" data-tip="unknown = 'אני לא יודע'. בטוח יותר מ-any כי דורש בדיקה לפני שימוש.">unknown</span></td><td>לא יודעים — דורש בדיקה</td><td>✅ קלט מבחוץ</td></tr>
+          <tr><td><span class="term" data-tip="never = 'לעולם לא יקרה'. שימושי ל-exhaustiveness check — אם נוסיף ערך חדש ל-union, TS יזעק.">never</span></td><td>לעולם לא</td><td>✅ exhaustiveness</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Discriminated Union ⭐</h3>
+    <div class="code-block">// ❌ optional fields
+type ApiResponse = {
+  status: 'ok' | 'error' | 'pending';
+  data?: User[];
+  error?: { message: string };
+};
+
+// ✅ discriminated union
+type ApiResponse =
+  | { status: 'pending' }
+  | { status: 'error'; error: { message: string } }
+  | { status: 'ok'; data: User[] };
+
+function render(res: ApiResponse) {
+  if (res.status === 'pending') return 'מעבד...';
+  if (res.status === 'error') return res.error.message;  // ✅
+  return res.data.map(u =&gt; u.name);                       // ✅
+}</div>
+
+    <h3>Generics</h3>
+    <div class="code-block">function identity&lt;T&gt;(value: T): T {
+  return value;
+}
+
+function getProperty&lt;T, K extends keyof T&gt;(obj: T, key: K): T[K] {
+  return obj[key];
+}</div>
+
+    <h3>Utility Types</h3>
+    <div class="code-block">type User = { id: number; name: string; email: string };
+
+Partial&lt;User&gt;       // כל שדה optional
+Required&lt;User&gt;      // כל שדה חובה
+Pick&lt;User, 'name'&gt;  // רק name
+Omit&lt;User, 'id'&gt;    // הכל חוץ מ-id
+Record&lt;'admin' | 'user', string[]&gt;
+Readonly&lt;User&gt;
+ReturnType&lt;typeof fn&gt;</div>
+  </section>
+
+  <!-- ============ 12. REACT ============ -->
+  <section id="react">
+    <h2>1️⃣2️⃣ React <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <p><span class="term" data-tip="Component = יחידת UI עצמאית. מקבלת props ומחזירה JSX. הבסיס של React.">Component</span> = יחידת UI:</p>
+
+    <div class="code-block">type ButtonProps = {
+  label: string;
+  onClick: () =&gt; void;
+};
+
+export function Button({ label, onClick }: ButtonProps) {
+  return &lt;button onClick={onClick}&gt;{label}&lt;/button&gt;;
+}</div>
+
+    <h3>JSX</h3>
+    <p><span class="term" data-tip="JSX = JavaScript XML. תחביר שנראה כמו HTML אבל הוא JS. מתקמפל ל-React.createElement().">JSX</span> כללים:</p>
+    <ol style="padding-right:25px;margin:15px 0;">
+      <li>אלמנט אחד עליון (או Fragment <code class="inline">&lt;&gt;</code>)</li>
+      <li><code class="inline">className</code> במקום <code class="inline">class</code></li>
+      <li>camelCase ב-attributes</li>
+      <li><code class="inline">{}</code> לביטויים</li>
+      <li>כל list דורש <code class="inline">key</code></li>
+    </ol>
+
+    <h3>Props vs State</h3>
+    <p><span class="term" data-tip="Props = נתונים שמועברים מהאב לילד. הילד לא יכול לשנות אותם. read-only.">Props</span> מול <span class="term" data-tip="State = זיכרון פנימי של קומפוננטה. שינוי שלו גורם ל-re-render. מנוהל ע'י useState.">State</span>:</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th></th><th>Props</th><th>State</th></tr></thead>
+        <tbody>
+          <tr><td>מי קובע?</td><td>האב</td><td>הקומפוננטה עצמה</td></tr>
+          <tr><td>שינוי?</td><td>read-only</td><td>setX()</td></tr>
+          <tr><td>גורם re-render?</td><td>כן (משינוי באב)</td><td>כן</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Conditional Rendering</h3>
+    <div class="code-block">{isLoading ? &lt;Spinner /&gt; : &lt;Content /&gt;}
+{error && &lt;Alert message={error} /&gt;}
+
+if (!data) return &lt;Loading /&gt;;</div>
+
+    <h3>Lists & Keys</h3>
+    <div class="code-block">{users.map(user =&gt; (
+  &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;
+))}
+
+// ❌ אל תשתמש ב-index אם הרשימה משתנה!</div>
+  </section>
+
+  <!-- ============ 13. HOOKS ============ -->
+  <section id="hooks">
+    <h2>1️⃣3️⃣ React Hooks <span class="diff-badge diff-hard">קשה</span></h2>
+
+    <p><span class="term" data-tip="Hook = פונקציה מיוחדת שמתחילה ב-use. נותנת לקומפוננטות פונקציונליות יכולות שהיו קיימות רק ב-class components.">Hooks</span> חייבים: רק ברמה הראשונה, רק בקומפוננטות.</p>
+
+    <h3>useState</h3>
+    <div class="code-block">const [count, setCount] = useState(0);
+
+setCount(count + 1);              // ❌ לא בטוח
+setCount(prev =&gt; prev + 1);       // ✅ בטוח
+
+setUser({ ...user, name: 'חדש' }); // אובייקטים — תמיד copy</div>
+
+    <h3>useEffect</h3>
+    <div class="code-block">// פעם אחת (mount)
+useEffect(() =&gt; { ... }, []);
+
+// כש-deps משתנה
+useEffect(() =&gt; { ... }, [userId]);
+
+// Cleanup
+useEffect(() =&gt; {
+  const timer = setInterval(tick, 1000);
+  return () =&gt; clearInterval(timer);   // unmount או לפני re-run
+}, []);</div>
+
+    <h3>useRef — שני שימושים</h3>
+    <div class="code-block">// 1. גישה ל-DOM
+const inputRef = useRef&lt;HTMLInputElement&gt;(null);
+useEffect(() =&gt; inputRef.current?.focus(), []);
+
+// 2. ערך בלי re-render
+const renderCount = useRef(0);
+renderCount.current += 1;</div>
+
+    <h3>useMemo / useCallback</h3>
+    <p><span class="term" data-tip="useMemo = שומר תוצאת חישוב יקר בין renders. רץ מחדש רק אם deps השתנו.">useMemo</span> ל-ערכים, <span class="term" data-tip="useCallback = שומר reference יציב של פונקציה בין renders. שימושי כשמעבירים לקומפוננטות עם React.memo.">useCallback</span> לפונקציות:</p>
+
+    <div class="code-block">const expensive = useMemo(() =&gt; heavyCalc(items), [items]);
+const handleClick = useCallback(() =&gt; doSomething(id), [id]);</div>
+
+    <h3>Custom Hook</h3>
+    <div class="code-block">function useFetch&lt;T&gt;(url: string) {
+  const [data, setData] = useState&lt;T | null&gt;(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState&lt;Error | null&gt;(null);
+
+  useEffect(() =&gt; {
+    let cancelled = false;
+    fetch(url)
+      .then(r =&gt; r.json())
+      .then(d =&gt; { if (!cancelled) { setData(d); setLoading(false); }})
+      .catch(e =&gt; { if (!cancelled) { setError(e); setLoading(false); }});
+    return () =&gt; { cancelled = true; };
+  }, [url]);
+
+  return { data, loading, error };
+}</div>
+
+    <h3>useReducer</h3>
+    <div class="code-block">type State = { count: number };
+type Action = { type: 'inc' } | { type: 'dec' };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'inc': return { count: state.count + 1 };
+    case 'dec': return { count: state.count - 1 };
+  }
+}
+
+const [state, dispatch] = useReducer(reducer, { count: 0 });
+dispatch({ type: 'inc' });</div>
+  </section>
+
+  <!-- ============ 14. NODE.JS ============ -->
+  <section id="node">
+    <h2>1️⃣4️⃣ Node.js <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <p><span class="term" data-tip="Node.js = runtime של JS שעובד מחוץ לדפדפן. בנוי על V8 (engine של Chrome). מאפשר לכתוב servers, CLI tools, scripts ב-JS.">Node.js</span> = JS בצד שרת.</p>
+
+    <h3>Modules: CommonJS vs ESM</h3>
+    <div class="code-block">// CommonJS (ישן, ברירת מחדל ב-Node)
+const fs = require('fs');
+module.exports = { foo };
+
+// ES Modules (מודרני)
+import fs from 'fs';
+export { foo };
+export default foo;</div>
+
+    <h3>npm ו-package.json</h3>
+    <p><span class="term" data-tip="npm = Node Package Manager. כלי להתקנת חבילות (libraries) ולניהול פרויקט. package.json הוא הקובץ שמתעד את הפרויקט.">npm</span>:</p>
+    <div class="code-block">npm init -y                    // צור package.json
+npm install express            // התקן חבילה
+npm install -D typescript      // dev dependency
+npm run dev                    // הרץ script
+npm uninstall package</div>
+
+    <h3>HTTP Server בסיסי</h3>
+    <div class="code-block">const http = require('http');
+
+const server = http.createServer((req, res) =&gt; {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Hello Node!');
+});
+
+server.listen(3000);</div>
+
+    <h3>Async / Event Loop ב-Node</h3>
+    <p>Node.js הוא <span class="term" data-tip="Non-blocking = פעולות I/O (קריאת קבצים, רשת, DB) לא חוסמות את התהליך הראשי. במקום זה, JS ממשיך וחוזר לטפל כשהפעולה מסתיימת.">Non-blocking</span>:</p>
+    <div class="code-block">// ❌ Blocking (ישן)
+const data = fs.readFileSync('file.txt');
+
+// ✅ Non-blocking
+const data = await fs.promises.readFile('file.txt');
+
+// או:
+fs.readFile('file.txt', (err, data) =&gt; { ... });</div>
+
+    <h3>Environment Variables</h3>
+    <div class="code-block">// .env
+DATABASE_URL=mongodb://...
+API_KEY=secret123
+
+// קוד
+require('dotenv').config();
+const url = process.env.DATABASE_URL;</div>
+
+    <div class="warning">
+      <span class="term" data-tip=".env = קובץ עם מידע רגיש (סיסמאות, API keys). חייב להיות ב-.gitignore!">.env</span> אסור להעלות ל-git!
+    </div>
+  </section>
+
+  <!-- ============ 15. EXPRESS ============ -->
+  <section id="express">
+    <h2>1️⃣5️⃣ Express <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <p><span class="term" data-tip="Express = framework מינימליסטי ל-Node שמקל על בניית servers ו-APIs. הסטנדרט הדה-פאקטו של Node.">Express</span> = framework לבניית API:</p>
+
+    <div class="code-block">const express = require('express');
+const app = express();
+
+app.use(express.json());      // parse JSON body
+
+app.get('/api/users', (req, res) =&gt; {
+  res.json([{ id: 1, name: 'תל' }]);
+});
+
+app.post('/api/users', (req, res) =&gt; {
+  const { name } = req.body;
+  res.status(201).json({ id: 2, name });
+});
+
+app.listen(3000);</div>
+
+    <h3>req: params / query / body / headers</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>סוג</th><th>איפה ב-URL</th><th>דוגמה</th></tr></thead>
+        <tbody>
+          <tr><td><span class="term" data-tip="params = ערכים שנמצאים ב-URL עצמו, אחרי : בנתיב. למשל /users/:id ואז /users/42 → id=42.">params</span></td><td>בנתיב</td><td><code class="inline">/users/:id</code> → <code class="inline">/users/42</code></td></tr>
+          <tr><td><span class="term" data-tip="query = פרמטרים אחרי ? ב-URL. למשל /users?sort=age&limit=10. שימושי לסינון, מיון, pagination.">query</span></td><td>אחרי <code class="inline">?</code></td><td><code class="inline">/users?sort=age</code></td></tr>
+          <tr><td><span class="term" data-tip="body = הנתונים שנשלחים בגוף הבקשה (לא ב-URL). שימושי בעיקר ב-POST/PUT, לטפסים ול-JSON.">body</span></td><td>בגוף הבקשה</td><td>POST data</td></tr>
+          <tr><td><span class="term" data-tip="headers = metadata על הבקשה. Content-Type, Authorization, User-Agent וכו'. לא נראים בURL.">headers</span></td><td>metadata</td><td>Authorization</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Middleware</h3>
+    <p><span class="term" data-tip="Middleware = פונקציה שרצה בין הבקשה לתגובה. שימושית ל-logging, auth, validation, parsing. רצות בסדר.">Middleware</span> = פונקציה בין request ל-response:</p>
+    <div class="code-block">// פונקציית middleware
+function logger(req, res, next) {
+  console.log(`${req.method} ${req.url}`);
+  next();   // המשך לבא בתור
+}
+
+app.use(logger);                     // לכל הבקשות
+app.get('/users', logger, handler);  // לroute ספציפי
+
+// Auth middleware
+function requireAuth(req, res, next) {
+  const token = req.headers.authorization;
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  next();
+}</div>
+
+    <h3>Error Handling</h3>
+    <div class="code-block">// 4 ארגומנטים = error handler
+app.use((err, req, res, next) =&gt; {
+  console.error(err);
+  res.status(500).json({ error: 'Server error' });
+});</div>
+
+    <h3>HTTP Status Codes</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>קוד</th><th>משמעות</th></tr></thead>
+        <tbody>
+          <tr><td>200</td><td>OK</td></tr>
+          <tr><td>201</td><td>Created</td></tr>
+          <tr><td>204</td><td>No Content</td></tr>
+          <tr><td>400</td><td>Bad Request</td></tr>
+          <tr><td>401</td><td>Unauthorized (לא מחובר)</td></tr>
+          <tr><td>403</td><td>Forbidden (אין הרשאה)</td></tr>
+          <tr><td>404</td><td>Not Found</td></tr>
+          <tr><td>500</td><td>Server Error</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 16. NEXT.JS ============ -->
+  <section id="nextjs">
+    <h2>1️⃣6️⃣ Next.js <span class="diff-badge diff-hard">קשה</span></h2>
+
+    <p><span class="term" data-tip="Next.js = framework מעל React שבונה אפליקציה שלמה. נותן לך עמודים, API, routing, SSR, SEO — הכל ב-package אחד.">Next.js</span> = React + הכל מוכן.</p>
+
+    <h3>App Router</h3>
+    <div class="code-block">app/
+├── page.tsx           → /
+├── about/
+│   └── page.tsx       → /about
+├── blog/
+│   ├── page.tsx       → /blog
+│   └── [slug]/
+│       └── page.tsx   → /blog/:slug
+├── layout.tsx         → wrapper לכל העמודים
+└── api/
+    └── users/
+        └── route.ts   → /api/users</div>
+
+    <h3>Server vs Client Components</h3>
+    <p><span class="term" data-tip="Server Components = נטענים בשרת. יכולים לגשת ישר ל-DB, אבל לא יכולים useState או onClick.">Server Components</span> מול <span class="term" data-tip="Client Components = נטענים בדפדפן. תומכים ב-state ואירועים. צריך 'use client' בראש הקובץ.">Client Components</span>:</p>
+
+    <div class="code-block">// Server Component (ברירת מחדל)
+async function Page() {
+  const users = await db.users.findMany();   // ישר מ-DB!
+  return &lt;ul&gt;{users.map(u =&gt; ...)}&lt;/ul&gt;;
+}
+
+// Client Component
+'use client';
+function Counter() {
+  const [count, setCount] = useState(0);     // useState עובד
+  return &lt;button onClick={...}&gt;{count}&lt;/button&gt;;
+}</div>
+
+    <h3>CSR / SSR / SSG / ISR</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>שיטה</th><th>איפה רץ?</th><th>מתי?</th></tr></thead>
+        <tbody>
+          <tr><td><span class="term" data-tip="CSR = Client Side Rendering. הדפדפן מקבל HTML ריק ואז ה-JS יוצר את התוכן. איטי בפעם הראשונה, מהיר אחר כך.">CSR</span></td><td>דפדפן</td><td>אחרי טעינה</td></tr>
+          <tr><td><span class="term" data-tip="SSR = Server Side Rendering. השרת מייצר HTML מלא ושולח לדפדפן. טוב ל-SEO, מהיר בפעם הראשונה.">SSR</span></td><td>שרת</td><td>בכל בקשה</td></tr>
+          <tr><td><span class="term" data-tip="SSG = Static Site Generation. ה-HTML נוצר בbuild time וה-CDN מגיש אותו. הכי מהיר.">SSG</span></td><td>שרת</td><td>בbuild time</td></tr>
+          <tr><td><span class="term" data-tip="ISR = Incremental Static Regeneration. כמו SSG אבל מתעדכן ברקע כל X שניות.">ISR</span></td><td>שרת</td><td>בbuild + מתעדכן</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>API Route Handlers</h3>
+    <div class="code-block">// app/api/users/route.ts
+export async function GET(request: Request) {
+  const users = await db.users.findMany();
+  return Response.json(users);
+}
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  const user = await db.users.create({ data: body });
+  return Response.json(user, { status: 201 });
+}</div>
+
+    <h3>Server Actions</h3>
+    <p><span class="term" data-tip="Server Actions = פונקציות שרצות בשרת אבל נקראות מהקליינט כאילו הן רגילות. תחליף ל-API routes לפעולות פשוטות.">Server Actions</span>:</p>
+    <div class="code-block">'use server';
+
+async function createPost(formData: FormData) {
+  const title = formData.get('title');
+  await db.posts.create({ data: { title } });
+}
+
+// בקליינט
+&lt;form action={createPost}&gt;
+  &lt;input name="title" /&gt;
+  &lt;button&gt;שמור&lt;/button&gt;
+&lt;/form&gt;</div>
+  </section>
+
+  <!-- ============ 17. DATABASE ============ -->
+  <section id="database">
+    <h2>1️⃣7️⃣ Database <span class="diff-badge diff-hard">קשה</span></h2>
+
+    <h3>SQL vs NoSQL</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th></th><th><span class="term" data-tip="SQL = Structured Query Language. בסיסי נתונים יחסיים — טבלאות עם שורות ועמודות. דוגמאות: PostgreSQL, MySQL.">SQL</span></th><th><span class="term" data-tip="NoSQL = Not Only SQL. בסיסי נתונים ללא טבלאות קבועות. בדרך כלל documents (JSON-like). דוגמאות: MongoDB.">NoSQL</span></th></tr></thead>
+        <tbody>
+          <tr><td>מבנה</td><td>טבלאות</td><td>documents</td></tr>
+          <tr><td>Schema</td><td>קשיח</td><td>גמיש</td></tr>
+          <tr><td>שאילתות</td><td>SQL</td><td>API/MQL</td></tr>
+          <tr><td>קשרים</td><td>JOIN</td><td>embed/populate</td></tr>
+          <tr><td>דוגמה</td><td>PostgreSQL</td><td>MongoDB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>MongoDB + Mongoose</h3>
+    <p><span class="term" data-tip="Mongoose = ODM (Object Document Mapper) ל-MongoDB. מאפשר להגדיר schemas ב-JS ולבצע פעולות בקלות.">Mongoose</span>:</p>
+    <div class="code-block">const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, unique: true },
+  age: Number,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const User = mongoose.model('User', userSchema);
+
+// CRUD
+await User.create({ name: 'תל', email: 't@x.com' });
+const users = await User.find({ age: { $gte: 18 } });
+await User.findByIdAndUpdate(id, { age: 31 });
+await User.findByIdAndDelete(id);</div>
+
+    <h3>populate</h3>
+    <div class="code-block">// Schema עם reference
+const postSchema = new mongoose.Schema({
+  title: String,
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+});
+
+// קבלת הפוסט עם המחבר המלא
+const post = await Post.findById(id).populate('author');
+console.log(post.author.name);   // ✅ הביא את כל ה-User</div>
+
+    <h3>PostgreSQL + Prisma</h3>
+    <p><span class="term" data-tip="Prisma = ORM מודרני ל-Node. מגדירים schema בקובץ schema.prisma, ו-Prisma יוצר types ו-queries אוטומטית.">Prisma</span>:</p>
+    <div class="code-block">// schema.prisma
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  posts     Post[]
+}
+
+model Post {
+  id       Int    @id @default(autoincrement())
+  title    String
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId Int
+}</div>
+
+    <div class="code-block">// קוד
+const user = await prisma.user.create({
+  data: { email: 't@x.com', name: 'תל' }
+});
+
+const usersWithPosts = await prisma.user.findMany({
+  include: { posts: true }
+});</div>
+
+    <h3>Relations</h3>
+    <p><span class="term" data-tip="One-to-many = יחס של אחד לרבים. לדוגמה: משתמש יש לו הרבה פוסטים, אבל לכל פוסט יש משתמש אחד.">One-to-many</span> ו-<span class="term" data-tip="Many-to-many = יחס של רבים לרבים. לדוגמה: סטודנטים וקורסים — סטודנט בכמה קורסים, וקורס יש לו כמה סטודנטים.">Many-to-many</span>:</p>
+    <div class="code-block">// 1:1 — User ↔ Profile
+// 1:N — User → Posts
+// N:M — Students ↔ Courses (דרך טבלת קישור)</div>
+  </section>
+
+  <!-- ============ 18. AUTH ============ -->
+  <section id="auth">
+    <h2>1️⃣8️⃣ Auth & Security <span class="diff-badge diff-hard">קשה</span></h2>
+
+    <h3>Authentication vs Authorization</h3>
+    <p><span class="term" data-tip="Authentication = מי אתה. בדיקה שמישהו הוא באמת מי שהוא טוען להיות (login, password).">Authentication</span> מול <span class="term" data-tip="Authorization = מה מותר לך. אחרי שאתה מזוהה, מה אתה יכול לעשות (admin? guest?).">Authorization</span>:</p>
+    <div class="quick-ref">
+      <div class="quick-ref-item"><div class="qr-cmd">Authentication</div><div class="qr-desc">"מי אתה?" (login)</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">Authorization</div><div class="qr-desc">"מה מותר לך?" (admin/user)</div></div>
+    </div>
+
+    <h3>Session vs Token</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th></th><th><span class="term" data-tip="Session = השרת שומר את המידע על המשתמש המחובר ושולח cookie עם session ID. השרת זוכר את המצב.">Session</span></th><th><span class="term" data-tip="JWT = JSON Web Token. השרת חותם token עם המידע, והוא נשלח עם כל בקשה. השרת לא צריך לזכור — הוא בודק את החתימה.">JWT (Token)</span></th></tr></thead>
+        <tbody>
+          <tr><td>איפה המידע?</td><td>בשרת</td><td>בtoken עצמו</td></tr>
+          <tr><td>שליחה</td><td>cookie</td><td>Authorization header</td></tr>
+          <tr><td>מצב</td><td>stateful</td><td>stateless</td></tr>
+          <tr><td>scaling</td><td>קשה (sticky session)</td><td>קל</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>זרימת Login עם JWT</h3>
+    <ol style="padding-right:25px;margin:15px 0;">
+      <li>משתמש שולח email + password</li>
+      <li>שרת בודק מול DB</li>
+      <li>אם תקין → יוצר JWT עם userId</li>
+      <li>שולח חזרה את ה-token</li>
+      <li>הקליינט שומר (localStorage / cookie)</li>
+      <li>בכל בקשה — שולח <code class="inline">Authorization: Bearer &lt;token&gt;</code></li>
+      <li>שרת בודק את החתימה ומחלץ userId</li>
+    </ol>
+
+    <h3>Hashing סיסמאות</h3>
+    <p><span class="term" data-tip="Hashing = פונקציה חד-כיוונית שהופכת סיסמה למחרוזת ייחודית. אי אפשר לשחזר את הסיסמה מההאש. bcrypt הוא הסטנדרט.">Hashing</span> סיסמאות:</p>
+    <div class="code-block">const bcrypt = require('bcrypt');
+
+// שמירה
+const hash = await bcrypt.hash(password, 10);
+await User.create({ email, password: hash });
+
+// בדיקה
+const user = await User.findOne({ email });
+const valid = await bcrypt.compare(password, user.password);
+
+// ❌ לא לשמור סיסמאות בפלאש!
+// ❌ לא לשמור hash הפיך כמו MD5/SHA1!</div>
+
+    <h3>חוקי אבטחה בסיסיים</h3>
+    <ul style="padding-right:25px;margin:15px 0;">
+      <li>HTTPS תמיד</li>
+      <li>סיסמאות עם bcrypt (לא MD5/SHA)</li>
+      <li>Rate limiting (להגן מ-brute force)</li>
+      <li><span class="term" data-tip="CORS = Cross-Origin Resource Sharing. מנגנון שמגביל איזה דומיינים יכולים לגשת ל-API שלך. צריך להגדיר נכון.">CORS</span> מוגדר נכון</li>
+      <li><span class="term" data-tip="SQL Injection = תקיפה שבה קוד SQL מוכנס ל-input של משתמש. פותרים עם parameterized queries.">SQL Injection</span> — פתרון: parameterized queries / ORM</li>
+      <li><span class="term" data-tip="XSS = Cross-Site Scripting. תקיפה שבה JS זדוני מוכנס לדף. פותרים עם escaping של תוכן משתמש.">XSS</span> — escape user input</li>
+      <li><span class="term" data-tip="CSRF = Cross-Site Request Forgery. אתר זדוני שולח בקשה בשם המשתמש לאתר אחר. פותרים עם CSRF tokens.">CSRF</span> — tokens</li>
+      <li>אסור לשמור סיסמאות / API keys בקוד</li>
+    </ul>
+  </section>
+
+  <!-- ============ 19. DEVOPS ============ -->
+  <section id="devops">
+    <h2>1️⃣9️⃣ DevOps בסיסי <span class="diff-badge diff-medium">בינוני</span></h2>
+
+    <h3>Vercel</h3>
+    <p><span class="term" data-tip="Vercel = פלטפורמה לdeploy של אתרים, במיוחד Next.js. מחברים ל-GitHub ובכל push זה מתעדכן אוטומטית.">Vercel</span> = deploy בלחיצת כפתור.</p>
+
+    <h3>Docker</h3>
+    <p><span class="term" data-tip="Docker = כלי לאריזת אפליקציה עם כל התלויות שלה ב-container. אותו container רץ אותו דבר בכל מקום (dev/prod).">Docker</span>:</p>
+    <div class="code-block"># Dockerfile
+FROM node:20
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]</div>
+
+    <h3>CI/CD</h3>
+    <p><span class="term" data-tip="CI = Continuous Integration. בכל push, הקוד נבנה ונבדק אוטומטית. CD = Continuous Deployment — אם הכל עובר, גם נדחף לפרודקשן.">CI/CD</span>:</p>
+    <div class="code-block"># .github/workflows/ci.yml
+name: CI
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm ci
+      - run: npm test
+      - run: npm run build</div>
+
+    <h3>Testing</h3>
+    <div class="quick-ref">
+      <div class="quick-ref-item"><div class="qr-cmd">Unit</div><div class="qr-desc">פונקציה אחת</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">Integration</div><div class="qr-desc">כמה רכיבים יחד</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">E2E</div><div class="qr-desc">מסלול שלם של משתמש</div></div>
+    </div>
+
+    <h3>Git — פקודות בסיסיות</h3>
+    <div class="code-block">git init
+git add .
+git commit -m "message"
+git push origin main
+git pull
+git checkout -b feature/new
+git merge feature/new</div>
+  </section>
+
+  <!-- ============ CHEATSHEET ============ -->
+  <section id="cheatsheet">
+    <h2>📋 דף עזר מהיר</h2>
+
+    <h3>JS Quick Wins</h3>
+    <div class="quick-ref">
+      <div class="quick-ref-item"><div class="qr-cmd">===</div><div class="qr-desc">תמיד! לא ==</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">??</div><div class="qr-desc">רק null/undefined</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">?.</div><div class="qr-desc">לא קורס</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">[...arr]</div><div class="qr-desc">העתק מערך</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">{...obj}</div><div class="qr-desc">shallow copy</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">structuredClone()</div><div class="qr-desc">deep copy</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">[...new Set(arr)]</div><div class="qr-desc">הסר כפילויות</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">Number.isNaN()</div><div class="qr-desc">בדוק NaN</div></div>
+    </div>
+
+    <h3>React Quick Wins</h3>
+    <div class="quick-ref">
+      <div class="quick-ref-item"><div class="qr-cmd">setX(prev =&gt; ...)</div><div class="qr-desc">תמיד עדכני</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">key={item.id}</div><div class="qr-desc">תמיד id יציב</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">deps נכונים</div><div class="qr-desc">כל variable שבשימוש</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">cleanup ב-useEffect</div><div class="qr-desc">return () =&gt; ...</div></div>
+    </div>
+
+    <h3>TypeScript</h3>
+    <div class="quick-ref">
+      <div class="quick-ref-item"><div class="qr-cmd">discriminated union</div><div class="qr-desc">לא optional fields</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">x is T</div><div class="qr-desc">type predicate</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">unknown</div><div class="qr-desc">לא any!</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">never</div><div class="qr-desc">exhaustiveness</div></div>
+    </div>
+
+    <h3>Backend</h3>
+    <div class="quick-ref">
+      <div class="quick-ref-item"><div class="qr-cmd">bcrypt</div><div class="qr-desc">hashing סיסמאות</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">JWT</div><div class="qr-desc">tokens</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">middleware</div><div class="qr-desc">auth, logging, validation</div></div>
+      <div class="quick-ref-item"><div class="qr-cmd">.env</div><div class="qr-desc">סודות (לא ל-git!)</div></div>
+    </div>
+
+    <div class="exam">
+      <strong>אסטרטגיית מבחן:</strong>
+      <ol style="margin-top:10px;padding-right:25px;">
+        <li>קרא את כל השאלה — תזהה מלכודות</li>
+        <li>כתוב טיפוסים <strong>קודם</strong>, אז לוגיקה</li>
+        <li>תמיד <code class="inline">===</code>, אף פעם לא <code class="inline">==</code></li>
+        <li>ב-React — functional update לכל setState עם state קודם</li>
+        <li>תקרא שוב — חיפוש <code class="inline">any</code>, <code class="inline">var</code></li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <p>💡 רחף עם העכבר על מילים מסומנות בצהוב לקבלת הסבר ברמת סבתא</p>
+    <p>📚 שמור את המדריך וחזור אליו לפני המבחן</p>
+    <p>🎓 הצלחה במבחן!</p>
+  </footer>
+
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="חזרה למעלה">↑</button>
+
+<!-- טולטיפ גלובלי שמשמש את כל המושגים -->
+<div id="global-tooltip">
+  <div class="grandma-icon">👵</div>
+  <div id="tooltip-content"></div>
+</div>
+
+<script>
+  function showTOC(type) {
+    document.querySelectorAll('.toc-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.toc-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('toc-' + type).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    if (window.scrollY > 300) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+    // הסתר טולטיפ בזמן גלילה
+    hideTooltip();
+  });
+
+  // ============ TOOLTIP מנגנון דינמי ============
+  const tooltip = document.getElementById('global-tooltip');
+  const tooltipContent = document.getElementById('tooltip-content');
+  let currentTerm = null;
+
+  function showTooltip(term, event) {
+    const tipText = term.getAttribute('data-tip');
+    if (!tipText) return;
+
+    currentTerm = term;
+    tooltipContent.textContent = tipText;
+    tooltip.classList.add('visible');
+
+    // חישוב מיקום אופטימלי
+    requestAnimationFrame(() => {
+      positionTooltip(term);
+    });
+  }
+
+  function positionTooltip(term) {
+    const termRect = term.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const margin = 10;
+
+    // חישוב מיקום אנכי - מעל או מתחת
+    const spaceAbove = termRect.top;
+    const spaceBelow = viewportHeight - termRect.bottom;
+    const showBelow = spaceAbove < tooltipRect.height + 20 && spaceBelow > spaceAbove;
+
+    let top;
+    if (showBelow) {
+      top = termRect.bottom + 12;
+    } else {
+      top = termRect.top - tooltipRect.height - 12;
+    }
+
+    // ודא שלא יוצא מלמעלה/למטה
+    if (top < margin) top = margin;
+    if (top + tooltipRect.height > viewportHeight - margin) {
+      top = viewportHeight - tooltipRect.height - margin;
+    }
+
+    // חישוב מיקום אופקי - ניסיון למרכז על המילה
+    let left = termRect.left + (termRect.width / 2) - (tooltipRect.width / 2);
+
+    // ודא שלא יוצא מימין
+    if (left + tooltipRect.width > viewportWidth - margin) {
+      left = viewportWidth - tooltipRect.width - margin;
+    }
+    // ודא שלא יוצא משמאל
+    if (left < margin) {
+      left = margin;
+    }
+
+    tooltip.style.top = top + 'px';
+    tooltip.style.left = left + 'px';
+  }
+
+  function hideTooltip() {
+    tooltip.classList.remove('visible');
+    currentTerm = null;
+  }
+
+  // הוספת event listeners לכל ה-terms
+  document.querySelectorAll('.term').forEach(term => {
+    term.addEventListener('mouseenter', (e) => showTooltip(term, e));
+    term.addEventListener('mouseleave', hideTooltip);
+
+    // תמיכה בנגיעה (mobile/tablet)
+    term.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (currentTerm === term) {
+        hideTooltip();
+      } else {
+        showTooltip(term, e);
+      }
+    });
+
+    // נגישות - תמיכה במקלדת
+    term.setAttribute('tabindex', '0');
+    term.addEventListener('focus', (e) => showTooltip(term, e));
+    term.addEventListener('blur', hideTooltip);
+  });
+
+  // סגירה בלחיצה בכל מקום אחר
+  document.addEventListener('click', (e) => {
+    if (!e.target.classList.contains('term')) {
+      hideTooltip();
+    }
+  });
+
+  // עדכון מיקום בעת שינוי גודל חלון
+  window.addEventListener('resize', () => {
+    if (currentTerm) {
+      positionTooltip(currentTerm);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>118 טעויות נפוצות | Full-Stack Portal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',sans-serif;line-height:1.7}
+header{background:#161b22;border-bottom:1px solid #30363d;padding:1rem 2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+header h1{font-size:1.3rem;color:#f85149}
+.back-btn{background:#21262d;border:1px solid #30363d;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;text-decoration:none;font-size:.85rem}
+.search-bar{margin-left:auto;display:flex;gap:.5rem}
+#search{background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:.4rem .8rem;border-radius:6px;width:220px;font-size:.85rem}
+.container{max-width:1000px;margin:0 auto;padding:1.5rem}
+.stats{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.stat{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:.8rem 1.2rem;text-align:center}
+.stat .n{font-size:1.8rem;font-weight:700;color:#f85149}
+.stat .l{font-size:.75rem;color:#8b949e}
+.section{background:#161b22;border:1px solid #30363d;border-radius:12px;margin-bottom:1.5rem;overflow:hidden}
+.section-header{background:#21262d;padding:1rem 1.5rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.section-header:hover{background:#30363d}
+.section-header h2{font-size:1rem;color:#e6edf3}
+.section-count{background:#30363d;color:#8b949e;border-radius:20px;padding:.1rem .6rem;font-size:.8rem}
+.section-body{padding:1rem 1.5rem;display:none}
+.section.open .section-body{display:block}
+.pitfall{display:flex;gap:.8rem;padding:.6rem 0;border-bottom:1px solid #21262d;align-items:flex-start}
+.pitfall:last-child{border-bottom:none}
+.pitfall-num{background:#21262d;color:#8b949e;border-radius:4px;padding:.1rem .4rem;font-size:.75rem;min-width:2rem;text-align:center;flex-shrink:0;margin-top:.15rem}
+.pitfall-text{font-size:.88rem;color:#e6edf3}
+.pitfall-text strong{color:#f85149}
+.pitfall-text .fix{color:#3fb950;font-size:.82rem;margin-top:.2rem}
+.hidden{display:none!important}
+.tag{display:inline-block;background:#21262d;border:1px solid #30363d;border-radius:4px;padding:.1rem .4rem;font-size:.72rem;color:#79c0ff;margin-bottom:.3rem}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-btn" href="00_dashboard.html">← דשבורד</a>
+  <h1>🚫 118 טעויות נפוצות — SVCollege Full-Stack</h1>
+  <div class="search-bar">
+    <input id="search" type="text" placeholder="חפש טעות...">
+  </div>
+</header>
+<div class="container">
+
+<div class="stats">
+  <div class="stat"><div class="n">118</div><div class="l">סה"כ טעויות</div></div>
+  <div class="stat"><div class="n">10</div><div class="l">נושאים</div></div>
+  <div class="stat"><div class="n" id="visible-count">118</div><div class="l">מוצגות</div></div>
+</div>
+
+<div class="section open" data-topic="ai">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🤖 AI Engineering — OpenAI, Vercel AI SDK, RAG, Agents</h2>
+    <span class="section-count">19 טעויות</span>
+  </div>
+  <div class="section-body">
+    <div class="tag">lesson_ai_engineering</div>
+    ${[
+  ["לקרוא ל-OpenAI API ישירות מהדפדפן","חשוף OPENAI_API_KEY למשתמשים","תמיד דרך server-side route"],
+  ["להשתמש ב-Vercel AI SDK בצד לקוח","SDK שייך לשרת","הזז ל-API route"],
+  ["LangChain לפעולה פשוטה","overhead כבד","קריאה אחת ישירה עדיפה"],
+  ["תמיד המודל הכי חזק","latency ועלות גבוהים","בחר לפי משימה"],
+  ["כל הכללים ב-user message","מבנה prompt חלש","system message לכללים, user לקלט"],
+  ["לבקש JSON בלי לאמת","hallucination עלול לשבור","parse + validate תמיד"],
+  ["ערבוב streaming עם JSON מלא","parser לא מוכן","בחר: stream או response מלא"],
+  ["להדביק כל הידע ל-prompt","token budget מתמלא","retrieval וסינון קודם"],
+  ["לחשוב embedding = תשובה","הוא רק ייצוג לחיפוש","embeddings + retrieval + LLM"],
+  ["vector ללא metadata","לא יודע מאיפה התשובה","שמור source + מזהה"],
+  ["להניח RAG תמיד נכון","retrieval גרוע = תשובה גרועה","בדוק retrieval quality"],
+  ["חתוך כל 500 תווים","חוצה הקשר/קוד","chunking לפי structure"],
+  ["כל matches למודל בלי threshold","noise מרובה","סינון + דירוג"],
+  ["tool calling ללא validation","פעולות מסוכנות","validation + permissions + audit"],
+  ["כל tool call = agent","מינוח רופף","agent = loop + decisions + stop"],
+  ["prompt בלבד לגבולות","ניתן לעקוף","אכוף גם בקוד"],
+  ["כל פלט כאמת","hallucination","הצג מקור + confidence"],
+  ["בדיקה ידנית בלבד","לא scalable","evaluation framework אוטומטי"],
+  ["fine-tuning לידע מתעדכן","יקר ולא עוזר","RAG לידע דינמי"]
+  ].map((p,i) => `
+    <div class="pitfall" data-text="${p[0]} ${p[1]} ${p[2]}">
+      <span class="pitfall-num">${i+1}</span>
+      <div class="pitfall-text"><strong>${p[0]}</strong> — ${p[1]}<div class="fix">✅ ${p[2]}</div></div>
+    </div>`).join('')}
+  </div>
+</div>
+
+<div class="section" data-topic="auth">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🔐 Auth &amp; Security — JWT, OAuth, bcrypt, CORS</h2>
+    <span class="section-count">19 טעויות</span>
+  </div>
+  <div class="section-body">
+    <div class="tag">lesson_auth_security</div>
+    ${[
+  ["לבלבל authentication עם authorization","authentication = מי אתה, authorization = מה מותר","בדוק בנפרד"],
+  ["token תקין = מורשה","token מוכיח זהות בלבד","בדוק בעלות על משאב"],
+  ["מידע רגיש ב-session","גודל session","הכנס רק id"],
+  ["cookie ללא flags","חשופה ל-XSS/CSRF","httpOnly + secure + sameSite"],
+  ["JWT עם מידע סודי","payload גלוי","שים רק id ו-role"],
+  ["access token ארוך","סיכון גבוה","TTL קצר + refresh token"],
+  ["refresh token באותו מקום כמו access","אם נחשף — שניהם נגנבים","httpOnly cookie בנפרד"],
+  ["token exchange צד לקוח עם secret","secret חשוף","תמיד server-side"],
+  ["provider auth = ללא authorization","provider מאמת, לא מרשה","הוסף בדיקות עצמאיות"],
+  ["סיסמה כ-plaintext","אסון","bcrypt תמיד"],
+  ["hash מהיר לסיסמאות","brute force קל","bcrypt cost 10-12"],
+  ["CSRF רק ב-login","כל פעולת state","הגן על PUT/POST/DELETE"],
+  ["CORS origin: '*' עם credentials","מאפשר כל אתר","origin ספציפי עם credentials"],
+  ["guard רק בחלק מה-routes","פיצול לא עקבי","global guard + whitelist"],
+  ["Supabase רק UI","client-side בלבד","RLS + server-side check"],
+  ["Firebase userId מהלקוח","ניתן לזייף","verify provider token"],
+  ["authorization = שם provider","שביר","rules עסקיים עצמאיים"],
+  ["session ללא תפוגה","session לא פגה","הגדר maxAge"],
+  ["XSS מאפשר גניבת session","chain of attacks","httpOnly + CSP"]
+  ].map((p,i) => `
+    <div class="pitfall" data-text="${p[0]} ${p[1]} ${p[2]}">
+      <span class="pitfall-num">${i+1}</span>
+      <div class="pitfall-text"><strong>${p[0]}</strong> — ${p[1]}<div class="fix">✅ ${p[2]}</div></div>
+    </div>`).join('')}
+  </div>
+</div>
+
+<div class="section" data-topic="nestjs">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🏗️ Nest.js — Modules, Controllers, Providers, DI</h2>
+    <span class="section-count">16 טעויות</span>
+  </div>
+  <div class="section-body">
+    <div class="tag">lesson_nestjs</div>
+    ${[
+  ["לחשוב ש-Nest מחליף Node","Nest רץ על Node","Nest = שכבת ארגון מעל Express"],
+  ["כל providers ב-AppModule","coupling גבוה","modules לפי domain"],
+  ["business logic בcontroller","controller עסוק מדי","delegate לservice"],
+  ["new Service() ידנית","לא DI","תן ל-Nest להזריק"],
+  ["validation ב-controller","ערבוב אחריות","ValidationPipe + DTO"],
+  ["תלות כ-import ידני","קשה לבדוק","DI container"],
+  ["decorator = קסם","אי הבנה","metadata שמחבר HTTP לקוד"],
+  ["body ללא DTO","כל שדה נכנס","הגדר CreateXDto"],
+  ["DTO ללא ValidationPipe","בדיקות לא רצות","app.useGlobalPipes"],
+  ["הרשאות ידנית בכל method","לא עקבי","Guard אחד גלובלי"],
+  ["id מ-URL = מספר","TypeScript annotation לא מספיק","ParseIntPipe"],
+  ["guard לפעולות כלליות","guard להחלטה, middleware לפעולה","בחר נכון"],
+  ["interceptor = guard","בלבול","guard מחליט, interceptor עוטף"],
+  ["errors ידנית בכל route","לא עקבי","exception filter גלובלי"],
+  ["כל service ניגש לכל DB","coupling גבוה","repository pattern"],
+  ["בדיקה רק דרך server מלא","איטי ושביר","TestingModule + unit tests"]
+  ].map((p,i) => `
+    <div class="pitfall" data-text="${p[0]} ${p[1]} ${p[2]}">
+      <span class="pitfall-num">${i+1}</span>
+      <div class="pitfall-text"><strong>${p[0]}</strong> — ${p[1]}<div class="fix">✅ ${p[2]}</div></div>
+    </div>`).join('')}
+  </div>
+</div>
+
+<div class="section" data-topic="nextjs">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>⚡ Next.js — App Router, SSR, Server Components, SEO</h2>
+    <span class="section-count">18 טעויות</span>
+  </div>
+  <div class="section-body">
+    <div class="tag">lesson_nextjs</div>
+    ${[
+  ["Next מחליף React","Next משתמש ב-React","Next = framework מעל React"],
+  ["ערבוב Pages Router ו-App Router","conventions שונות","בחר אחד, דעת conventions"],
+  ["component רגיל = route","רק page.jsx הוא route","page/layout/route בלבד"],
+  ["id מ-URL ללא validation","SQL injection / 500","Number(id) + notFound()"],
+  ["header/sidebar בכל page","שכפול","layout.jsx משותף"],
+  ["state ב-server component","שגיאת runtime","הוסף 'use client'"],
+  ["useState ב-server component","לא עובד בשרת","client component boundary"],
+  ["כל עץ ל-'use client'","bundle גדול","רק leaves שצריכים interactivity"],
+  ["route handler מחזיר JSX","שגיאה","החזר Response.json()"],
+  ["API route = בטוח","עדיין צריך auth","validation + authorization תמיד"],
+  ["server action = ללא validation","client יכול לזייף","validate + auth בכל action"],
+  ["SSR לכל page","עלות שרת","SSG/ISR לתוכן יציב"],
+  ["SSG לתוכן פרטי","כולם מקבלים אותו HTML","SSR/dynamic לפרטי"],
+  ["ISR לתוכן real-time","stale data","SSR או revalidation נמוך"],
+  ["כל עמודים אותו title","SEO גרוע","generateMetadata per-page"],
+  ["SEO = רק keywords","מיושן","ביצועים + מבנה + נגישות"],
+  ["תמונות ללא width/height","layout shift","Image component + מידות"],
+  ["secrets בקוד","חשיפה","env vars + לא NEXT_PUBLIC_ לסודות"]
+  ].map((p,i) => `
+    <div class="pitfall" data-text="${p[0]} ${p[1]} ${p[2]}">
+      <span class="pitfall-num">${i+1}</span>
+      <div class="pitfall-text"><strong>${p[0]}</strong> — ${p[1]}<div class="fix">✅ ${p[2]}</div></div>
+    </div>`).join('')}
+  </div>
+</div>
+
+<div class="section" data-topic="sql">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🗄️ SQL / PostgreSQL / ORM — Prisma, Drizzle</h2>
+    <span class="section-count">17 טעויות</span>
+  </div>
+  <div class="section-body">
+    <div class="tag">lesson_sql_orm</div>
+    ${[
+  ["ORM מבטל צורך ב-SQL","ORM מייצר SQL","הבן את ה-SQL שנוצר"],
+  ["PostgreSQL = קובץ JSON","DB רלציוני עם schema","שימוש בconstraints ו-JOIN"],
+  ["כל קובץ JS = database","לא persistent","database אמיתי: ACID, concurrency"],
+  ["מידע לא קשור בטבלה אחת","ערבוב","entity אחד לטבלה"],
+  ["row ללא constraints","נתונים שבורים","NOT NULL, CHECK, FK"],
+  ["column חובה ללא DEFAULT","migration נכשל","ADD COLUMN nullable, אז backfill"],
+  ["שדה משתנה כ-PK","קשרים שבורים","surrogate key (id integer)"],
+  ["ids ללא FK","orphan records","REFERENCES + ON DELETE"],
+  ["שכפול במקום קשר","עדכונים כפולים","normalize + JOIN"],
+  ["JOIN ללא ON מדויק","Cartesian product","תמיד ON ברור"],
+  ["schema שינוי ישיר ב-production","downtime + שבירה","migration מסודרת"],
+  ["DROP COLUMN מיידי","קוד ישן עוד רץ","expand-contract pattern"],
+  ["ORM תמיד מהיר","abstraction leak","EXPLAIN + index"],
+  ["Prisma = חובה","כלי, לא תקן","Drizzle / raw SQL גם אפשרי"],
+  ["Drizzle = קסם","SQL עדיין שם","הבן schema + query cost"],
+  ["UPDATE/DELETE ללא WHERE","כל הטבלה!","WHERE תמיד"],
+  ["כמה טבלאות ללא transaction","inconsistency","BEGIN/COMMIT"]
+  ].map((p,i) => `
+    <div class="pitfall" data-text="${p[0]} ${p[1]} ${p[2]}">
+      <span class="pitfall-num">${i+1}</span>
+      <div class="pitfall-text"><strong>${p[0]}</strong> — ${p[1]}<div class="fix">✅ ${p[2]}</div></div>
+    </div>`).join('')}
+  </div>
+</div>
+
+<div class="section" data-topic="devops">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🐳 DevOps — Docker, CI/CD, Vercel</h2>
+    <span class="section-count">17 טעויות</span>
+  </div>
+  <div class="section-body">
+    <div class="tag">lesson_devops_deploy</div>
+    ${[
+  ["dev server = production","build/env/cache שונים","בדוק production build"],
+  ["secrets ב-JS / ב-Git",".env חשוף","env vars בפלטפורמה"],
+  ["env vars קיימים ב-Vercel אוטומטית","צריך להגדיר ידנית","הגדר בVercel dashboard"],
+  ["לדלג על preview","בעיות בproduction","בדוק כל PR ב-preview"],
+  ["npm run dev = בדיקה מספיקה","אין build check","npm run build"],
+  ["Docker = VM","container = process isolation בלבד","משתף kernel"],
+  ["COPY לפני npm ci","שובר cache","COPY package*.json → npm ci → COPY ."],
+  ["image = container","image = תבנית","container = instance רץ"],
+  ["מידע בcontainer","אבוד עם מחיקה","volume / external DB"],
+  ["Docker Compose = production","dev tool בעיקר","K8s/ECS לproduction"],
+  ["localhost מcontainer לDB אחר","לא עובד","service name ב-compose network"],
+  ["DB ללא volume","נתונים אובדים","volumes: db_data"],
+  ["health check תמיד ok","מסתיר כשל","בדוק DB connection אמיתי"],
+  ["CI רק אחרי merge","מאוחר מדי","CI לפני merge (branch protection)"],
+  ["CD ידני","inconsistency","automate עם CI success"],
+  ["smoke test = E2E","smoke = בדיקת שער","E2E נפרד ומלא"],
+  ["זיכרון במקום checklist","שכחות","release checklist כתוב"]
+  ].map((p,i) => `
+    <div class="pitfall" data-text="${p[0]} ${p[1]} ${p[2]}">
+      <span class="pitfall-num">${i+1}</span>
+      <div class="pitfall-text"><strong>${p[0]}</strong> — ${p[1]}<div class="fix">✅ ${p[2]}</div></div>
+    </div>`).join('')}
+  </div>
+</div>
+
+<div class="section" data-topic="design">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🎨 Design Systems — Tailwind, shadcn/UI, Radix</h2>
+    <span class="section-count">12 טעויות</span>
+  </div>
+  <div class="section-body">
+    <div class="tag">lesson_design_systems</div>
+    ${[
+  ["shadcn = npm package","מעתיקים קוד לפרויקט","npx shadcn-ui add"],
+  ["modal מ-div פשוט","ללא focus trap/Esc/ARIA","Radix Dialog"],
+  ["button → div clickable","אובד semantic","השתמש ב-button"],
+  ["hex/px ידניים בכל מקום","חוסר עקביות","design tokens"],
+  ["className ad-hoc לכל שימוש","לא reusable","variants מוגדרים"],
+  ["string + לclassnames","קשה לקרוא","cn() helper"],
+  ["variant ללא default","קומפוננטה לא צפויה","cva עם defaultVariants"],
+  ["button בתוך a","nested interactive","asChild pattern"],
+  ["placeholder במקום label","נגישות פגועה","label תמיד"],
+  ["dark mode ידנית לכל רכיב","שכפול","CSS variables / tokens"],
+  ["Button חדש בכל feature","לא shared","component registry"],
+  ["בדיקת className בלבד","לא בדיקה אמיתית","test behavior + accessibility"]
+  ].map((p,i) => `
+    <div class="pitfall" data-text="${p[0]} ${p[1]} ${p[2]}">
+      <span class="pitfall-num">${i+1}</span>
+      <div class="pitfall-text"><strong>${p[0]}</strong> — ${p[1]}<div class="fix">✅ ${p[2]}</div></div>
+    </div>`).join('')}
+  </div>
+</div>
+
+</div>
+<script>
+function toggleSection(header){
+  header.closest('.section').classList.toggle('open');
+}
+const search = document.getElementById('search');
+const countEl = document.getElementById('visible-count');
+search.addEventListener('input', () => {
+  const q = search.value.trim().toLowerCase();
+  let count = 0;
+  document.querySelectorAll('.pitfall').forEach(p => {
+    const match = !q || p.dataset.text.toLowerCase().includes(q);
+    p.classList.toggle('hidden', !match);
+    if(match) count++;
+  });
+  document.querySelectorAll('.section').forEach(s => {
+    const vis = [...s.querySelectorAll('.pitfall')].some(p => !p.classList.contains('hidden'));
+    s.classList.toggle('hidden', !vis);
+    if(vis) s.classList.add('open');
+  });
+  countEl.textContent = count;
+});
+</script>
+</body>
+</html>

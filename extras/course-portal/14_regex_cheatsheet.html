@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>צלילות עומק: Regex, Package.json, Deployment</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #e2e8f0; line-height: 1.6; padding: 20px; }
+    .container { max-width: 900px; margin: 0 auto; background: #1e293b; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    h1 { color: #38bdf8; text-align: center; margin-bottom: 30px; font-size: 2.5em; border-bottom: 2px solid #334155; padding-bottom: 15px; }
+    h2 { color: #f472b6; margin: 40px 0 15px 0; font-size: 1.8em; display: flex; align-items: center; gap: 10px; }
+    h3 { color: #fbbf24; margin: 20px 0 10px 0; }
+    p { margin-bottom: 15px; }
+    
+    .code-block { background: #0f172a; padding: 20px; border-radius: 10px; border-left: 4px solid #38bdf8; font-family: monospace; direction: ltr; text-align: left; overflow-x: auto; margin-bottom: 20px; color: #a5b4fc; }
+    .code-comment { color: #64748b; }
+    
+    table { width: 100%; border-collapse: collapse; margin-bottom: 25px; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; }
+    th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid #334155; }
+    th { background: #334155; color: #38bdf8; font-weight: bold; }
+    tr:hover { background: rgba(255,255,255,0.05); }
+    
+    .checklist-item { display: flex; align-items: flex-start; gap: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 15px; border-radius: 8px; margin-bottom: 10px; transition: transform 0.2s; }
+    .checklist-item:hover { transform: translateX(-5px); background: rgba(16, 185, 129, 0.15); }
+    .check-icon { font-size: 1.5em; color: #10b981; }
+    
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; margin-left: 5px; }
+    .badge-blue { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+    .badge-pink { background: rgba(244, 114, 182, 0.2); color: #f472b6; }
+    
+    .back-link { display: inline-block; margin-bottom: 20px; color: #38bdf8; text-decoration: none; padding: 8px 16px; background: rgba(56, 189, 248, 0.1); border-radius: 8px; transition: background 0.3s; }
+    .back-link:hover { background: rgba(56, 189, 248, 0.2); }
+  </style>
+  <link rel="stylesheet" href="sidebar.css">
+  <link rel="stylesheet" href="light-mode.css">
+</head>
+<body>
+
+<a href="00_dashboard.html" class="back-link">← חזרה לדשבורד</a>
+
+<div class="container">
+  <h1>🤿 צלילות עומק למבחן המעשי</h1>
+  <p style="text-align:center; color:#94a3b8; margin-top:-20px; margin-bottom:40px;">ריכוז נושאים מתקדמים שחובה להכיר ברמת הפרויקט: Regex, ניהול תלויות והעלאה לפרודקשן.</p>
+
+  <!-- REGEX -->
+  <section>
+    <h2><span style="font-size:1.2em;">🔍</span> Regex (ביטויים רגולריים)</h2>
+    <p>ביטויים רגולריים (Regular Expressions) הם תבניות טקסט עוצמתיות לחיפוש, זיהוי והחלפה של מחרוזות. במבחן משתמשים בהם לרוב עבור <strong>ולידציות צד שרת (Mongoose) וצד לקוח (React).</strong></p>
+    
+    <h3>סימנים בסיסיים</h3>
+    <table>
+      <thead><tr><th>סימן</th><th>משמעות</th><th>דוגמה למאצ'</th></tr></thead>
+      <tbody>
+        <tr><td dir="ltr"><code>^</code> ו- <code>$</code></td><td>תחילת וסוף מחרוזת (חובה לולידציה מדויקת)</td><td><code>^hello$</code> (רק המילה hello)</td></tr>
+        <tr><td dir="ltr"><code>[a-z]</code></td><td>כל אות קטנה באנגלית</td><td><code>[A-Z0-9]</code> (אותיות גדולות ומספרים)</td></tr>
+        <tr><td dir="ltr"><code>\d</code></td><td>ספרה (Digit) - זהה ל-<code>[0-9]</code></td><td><code>\d\d\d</code> (3 ספרות ברצף)</td></tr>
+        <tr><td dir="ltr"><code>\w</code></td><td>אות, ספרה או קו תחתון (Word character)</td><td><code>\w+</code> (מילה אחת לפחות)</td></tr>
+        <tr><td dir="ltr"><code>.</code></td><td>כל תו בעולם (חוץ משורת רווח)</td><td><code>.*</code> (הכל)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>כמתים (Quantifiers - כמות הפעמים)</h3>
+    <table>
+      <thead><tr><th>סימן</th><th>משמעות</th></tr></thead>
+      <tbody>
+        <tr><td dir="ltr"><code>+</code></td><td>פעם 1 או יותר (חובה שיופיע)</td></tr>
+        <tr><td dir="ltr"><code>*</code></td><td>0 פעמים או יותר (אופציונלי ויכול לחזור)</td></tr>
+        <tr><td dir="ltr"><code>?</code></td><td>0 או 1 פעמים (אופציונלי לחלוטין)</td></tr>
+        <tr><td dir="ltr"><code>{n,m}</code></td><td>בין n ל-m פעמים. למשל <code>\d{2,4}</code> (בין 2 ל-4 ספרות)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>צ'יטשיט חובה למבחן (העתק-הדבק)</h3>
+    <div class="code-block">
+<span class="code-comment">// 1. אימייל תקין (Mongoose & Frontend)</span>
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+<span class="code-comment">// 2. סיסמה חזקה (לפחות 8 תווים, אות גדולה, אות קטנה, ומספר)</span>
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+
+<span class="code-comment">// 3. מספר טלפון ישראלי (05X-XXXXXXX או 05XXXXXXXX)</span>
+const phoneRegex = /^05\d-?\d{7}$/;
+
+<span class="code-comment">// 4. טקסט בעברית בלבד (עם רווחים)</span>
+const hebrewRegex = /^[\u0590-\u05FF\s]+$/;
+    </div>
+  </section>
+
+  <!-- PACKAGE.JSON -->
+  <section style="margin-top: 50px;">
+    <h2><span style="font-size:1.2em;">📦</span> קובץ ה-package.json</h2>
+    <p>הלב הפועם של כל פרויקט Node/React. מנהל את הסקריפטים והתלויות (Dependencies) של הפרויקט. מבנה הקובץ קריטי לפרויקט שעובד כמו שצריך.</p>
+    
+    <div class="code-block">
+{
+  "name": "my-backend-app",
+  "version": "1.0.0",
+  <span style="color:#f472b6;">"type": "module",</span> <span class="code-comment">// חובה! כדי להשתמש ב- import/export (במקום require)</span>
+  <span style="color:#38bdf8;">"scripts"</span>: {
+    <span class="code-comment">// הסקריפט ש-Vercel או חבר צוות יריץ כדי להתחיל</span>
+    "start": "node server.js",
+    <span class="code-comment">// סקריפט הפיתוח. משתמש ב-nodemon כדי שירת את השרת על כל שמירה</span>
+    "dev": "nodemon server.js",
+    <span class="code-comment">// במקרה של Frontend (Vite) יש גם:</span>
+    "build": "vite build"
+  },
+  <span style="color:#fbbf24;">"dependencies"</span>: {
+    <span class="code-comment">// ספריות חובה שהאפליקציה צריכה כדי לרוץ (הולכות לשרת/לפרודקשן)</span>
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  <span style="color:#10b981;">"devDependencies"</span>: {
+    <span class="code-comment">// ספריות שצריך *רק* לפיתוח (לא יעלו לפרודקשן)</span>
+    "nodemon": "^3.0.1"
+  }
+}
+    </div>
+
+    <h3>פקודות npm קריטיות:</h3>
+    <ul>
+      <li style="margin-bottom:8px;"><code style="background:#0f172a; padding:2px 6px; border-radius:4px; color:#a5b4fc;">npm init -y</code> - יצירת <code>package.json</code> בסיסי (השלב הראשון תמיד!)</li>
+      <li style="margin-bottom:8px;"><code style="background:#0f172a; padding:2px 6px; border-radius:4px; color:#a5b4fc;">npm i express mongoose cors dotenv</code> - התקנת תלויות חובה ל-Backend</li>
+      <li style="margin-bottom:8px;"><code style="background:#0f172a; padding:2px 6px; border-radius:4px; color:#a5b4fc;">npm i -D nodemon</code> - התקנת חבילה כ-devDependency (הדגל <code>-D</code>)</li>
+      <li><code style="background:#0f172a; padding:2px 6px; border-radius:4px; color:#a5b4fc;">npm run dev</code> - הרצת סקריפט ספציפי תחת "scripts"</li>
+    </ul>
+  </section>
+
+  <!-- DEPLOYMENT CHECKLIST -->
+  <section style="margin-top: 50px;">
+    <h2><span style="font-size:1.2em;">🚀</span> צ'קליסט העלאה לפרודקשן (Deploy)</h2>
+    <p>השלבים האחרונים כדי לוודא שהפרויקט שלכם מרונדר ללא שגיאות ב-Vercel / Render.</p>
+    
+    <div class="checklist-item">
+      <div class="check-icon">✓</div>
+      <div>
+        <h3 style="margin-top:0; color:#10b981;">1. הסתרת מפתחות סודיים (.env)</h3>
+        <p>ודאו שאין סיסמאות Database או JWT Secrets כתובים בקוד השרת. תמיד השתמשו ב-<code>process.env.MONGO_URI</code>.</p>
+        <div style="font-size:0.85em; background:rgba(0,0,0,0.2); padding:8px; border-radius:4px;">
+          <strong>חשוב:</strong> בקובץ <code>.gitignore</code> חובה להוסיף <code>.env</code> כדי שלא יעלה ל-GitHub! בממשק של Vercel תצטרכו להגדיר את משתני הסביבה (Environment Variables) ידנית.
+        </div>
+      </div>
+    </div>
+    
+    <div class="checklist-item">
+      <div class="check-icon">✓</div>
+      <div>
+        <h3 style="margin-top:0; color:#10b981;">2. כתובות (URLs) דינמיות ב-Frontend</h3>
+        <p>אל תעשו <code>fetch('http://localhost:3000/api/users')</code>! בפרודקשן, ה-localhost לא קיים.</p>
+        <div style="font-size:0.85em; background:rgba(0,0,0,0.2); padding:8px; border-radius:4px;">
+          <strong>הפתרון:</strong>
+          <code>const API_URL = import.meta.env.PROD ? 'https://my-backend.vercel.app' : 'http://localhost:3000';</code><br>
+          ואז להשתמש ב- <code>fetch(`${API_URL}/api/users`)</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="checklist-item">
+      <div class="check-icon">✓</div>
+      <div>
+        <h3 style="margin-top:0; color:#10b981;">3. הגדרות ה-PORT ב-Backend</h3>
+        <p>שרתי פרודקשן מספקים פורט משלהם, לכן השרת שלכם חייב להאזין לאותו הפורט.</p>
+        <div style="font-size:0.85em; background:rgba(0,0,0,0.2); padding:8px; border-radius:4px;">
+          <code>const port = process.env.PORT || 3000;</code><br>
+          <code>app.listen(port, () => console.log('Server is running'));</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="checklist-item">
+      <div class="check-icon">✓</div>
+      <div>
+        <h3 style="margin-top:0; color:#10b981;">4. הגדרת CORS</h3>
+        <p>ודאו שה-Backend מאפשר לקבל בקשות מה-Frontend שהרגע העליתם (שנמצא בדומיין אחר).</p>
+        <div style="font-size:0.85em; background:rgba(0,0,0,0.2); padding:8px; border-radius:4px;">
+          <code>app.use(cors({ origin: ['https://my-frontend.vercel.app', 'http://localhost:5173'] }));</code>
+        </div>
+      </div>
+    </div>
+    
+    <div class="checklist-item">
+      <div class="check-icon">✓</div>
+      <div>
+        <h3 style="margin-top:0; color:#10b981;">5. טיפול בשגיאות SPA (בריאקט / Vite)</h3>
+        <p>כשמעלים אפליקציית React / Vite ל-Vercel, ריענון דף יכול לגרום ל-404 בגלל ש-Vercel מחפש קובץ HTML באותו השם.</p>
+        <div style="font-size:0.85em; background:rgba(0,0,0,0.2); padding:8px; border-radius:4px;">
+          <strong>הפתרון:</strong> צרו קובץ בשם <code>vercel.json</code> בתיקייה הראשית של ה-Frontend שלכם:
+          <pre style="direction:ltr; margin-top:5px;">{
+  "rewrites":  [
+    {"source": "/(.*)", "destination": "/index.html"}
+  ]
+}</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script src="progress-engine.js"></script>
+<script src="sidebar.js"></script>
+<script>
+  if (window.ProgressEngine) {
+    window.ProgressEngine.recordCorrect('General'); // Record a visit essentially
+  }
+</script>
+</body>
+</html>

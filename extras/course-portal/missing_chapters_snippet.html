@@ -1,0 +1,137 @@
+
+<!-- ============ 23. SQL & PostgreSQL ============ -->
+<section id="sql" class="concept-section" data-layer="database">
+  <h2>23. מסדי נתונים רלציוניים (SQL & PostgreSQL)</h2>
+  <div class="concept-explanation">
+    בניגוד ל-MongoDB (NoSQL), מסדי נתונים כמו PostgreSQL מסדרים את המידע בטבלאות קשיחות עם קשרים הדוקים (Relations) ביניהן.
+  </div>
+  <h3>23.1 טבלאות לעומת אוספים</h3>
+  <div class="details-content">
+    <table>
+      <tr><th>מושג</th><th>NoSQL (MongoDB)</th><th>SQL (PostgreSQL)</th></tr>
+      <tr><td>שמירת נתונים</td><td>Collections (אוספים) של מסמכי JSON</td><td>Tables (טבלאות) עם שורות ועמודות</td></tr>
+      <tr><td>סכמה (Schema)</td><td>גמיש, אפשר לדחוף כל שדה בכל רגע</td><td>נוקשה, חייבים להגדיר עמודות מראש</td></tr>
+      <tr><td>קשרים (Relations)</td><td>לא טבעי, דורש פעולת populate (קצת איטי)</td><td>טבעי ומהיר מאוד בעזרת פקודת JOIN</td></tr>
+    </table>
+    <div class="code-container">
+      <div class="code-block">
+-- שליפת נתונים רלציוניים בשפת SQL
+SELECT users.name, orders.total
+FROM users
+JOIN orders ON users.id = orders.user_id
+WHERE users.country = 'Israel';
+      </div>
+      <div class="code-explanation">
+        <ol>
+          <li><span class="hl">SELECT:</span> בוחר אילו שדות אנו רוצים לקבל.</li>
+          <li><span class="hl">JOIN:</span> מחבר את טבלת הלקוחות לטבלת ההזמנות לפי מזהה זהה. זה ה"קסם" של SQL.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 24. Nest.js ============ -->
+<section id="nestjs" class="concept-section" data-layer="backend">
+  <h2>24. Nest.js - ארכיטקטורה ברמת Enterprise</h2>
+  <div class="concept-explanation">
+    Nest.js הוא פריימוורק מעל Express, שכופה סדר וארכיטקטורה ברורה מאוד (דומה ל-Angular) בעזרת Decorators ו-Dependency Injection.
+  </div>
+  <h3>24.1 מושגי הליבה של Nest.js</h3>
+  <div class="details-content">
+    <ul class="auto-bullets">
+      <li><strong>Controllers:</strong> אחראים אך ורק על קבלת הבקשה מהלקוח (HTTP Routes) והחזרת תשובה. לא כותבים כאן לוגיקה עסקית!</li>
+      <li><strong>Providers (Services):</strong> כאן יושבת ה"לוגיקה העסקית" העיקרית של האפליקציה (שליפה מהדאטאבייס, חישובים).</li>
+      <li><strong>Modules:</strong> אוסף של קונטרולרים וסרביסים הקשורים לאותו נושא (למשל UsersModule).</li>
+    </ul>
+    <div class="code-container">
+      <div class="code-block">
+// users.controller.ts
+import { Controller, Get } from '@nestjs/common';
+import { UsersService } from './users.service';
+
+@Controller('users')
+export class UsersController {
+  // Dependency Injection - נסט מזריק את הסרביס אוטומטית!
+  constructor(private readonly usersService: UsersService) {}
+
+  @Get() // מאזין לבקשות GET /users
+  findAll() {
+    return this.usersService.getAllUsers(); // קורא ללוגיקה מהסרביס
+  }
+}
+      </div>
+      <div class="code-explanation">
+        <ol>
+          <li><span class="hl">@Controller:</span> דקורטור שאומר לנסט שזוהי מחלקה שמטפלת בראוטים.</li>
+          <li><span class="hl">Dependency Injection:</span> במקום לעשות `new UsersService()`, אנחנו מבקשים את זה ב-constructor ונסט מביא לנו עותק מוכן.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 25. AI Engineering ============ -->
+<section id="ai-engineering" class="concept-section" data-layer="general">
+  <h2>25. AI Engineering (פיתוח עם וסביב בינה מלאכותית)</h2>
+  <div class="concept-explanation">
+    כיום מצופה ממפתח פול-סטאק לדעת גם להשתמש בכלי AI כדי לתכנת מהר יותר (Cursor, Copilot), וגם לדעת לשלב מודלים בתוך האפליקציה (Vercel AI SDK, OpenAI).
+  </div>
+  <h3>25.1 מושגי מפתח בעולם ה-AI</h3>
+  <div class="details-content">
+    <ul class="auto-bullets">
+      <li><strong>Prompt Engineering:</strong> היכולת לנסח בקשה בצורה מדויקת כדי לקבל קוד תקין, לרוב כוללת מתן הקשר, דוגמאות וחוקים.</li>
+      <li><strong>RAG (Retrieval-Augmented Generation):</strong> שיטה לתת ל-AI מידע מהדאטאבייס העסקי שלך (שלא אומן עליו) כדי שיענה תשובות רלוונטיות לעסק שלך.</li>
+      <li><strong>Hallucinations:</strong> כאשר ה-AI "ממציא" תשובה בביטחון מלא. תמיד חייבים לוודא קוד שנוצר.</li>
+    </ul>
+    <div class="code-container">
+      <div class="code-block">
+// שימוש ב-Vercel AI SDK כדי לקבל תשובה מ-OpenAI ב-Next.js
+import { generateText } from 'ai';
+import { openai } from '@ai-sdk/openai';
+
+export async function POST(req) {
+  const { prompt } = await req.json();
+  
+  const { text } = await generateText({
+    model: openai('gpt-4'),
+    prompt: `Act as a senior dev. Answer this: ${prompt}`,
+  });
+  
+  return Response.json({ result: text });
+}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 26. Design Systems ============ -->
+<section id="design-systems" class="concept-section" data-layer="frontend">
+  <h2>26. Design Systems & Tailwind</h2>
+  <div class="concept-explanation">
+    במקום לכתוב CSS מותאם אישית מאפס לכל כפתור, משתמשים במערכות עיצוב שנותנות עקביות ומהירות פיתוח (Tailwind, shadcn/UI).
+  </div>
+  <h3>26.1 Tailwind CSS ו-shadcn/UI</h3>
+  <div class="details-content">
+    <ul class="auto-bullets">
+      <li><strong>Tailwind CSS:</strong> ספריה מבוססת Utilities. במקום לייצר קלאס בשם <code>.btn</code>, נכתוב <code>bg-blue-500 text-white p-2</code>. זה מונע קבצי CSS ענקיים.</li>
+      <li><strong>shadcn/UI:</strong> זה לא ספריית רכיבים שמתקינים כ-NPM Package, אלא אוסף של רכיבים יפהפיים ונגישים שאתה **מעתיק ומדביק** (באמצעות CLI) ישירות לתוך הפרויקט שלך, כדי שתוכל לשנות אותם איך שבא לך!</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 27. Tooling & Git ============ -->
+<section id="tooling-git" class="concept-section" data-layer="network">
+  <h2>27. כלי פיתוח, Git וזרימת עבודה</h2>
+  <div class="concept-explanation">
+    איך עובדים בצוות בלי לדרוס קוד אחד של השני.
+  </div>
+  <h3>27.1 תהליך העבודה הסטנדרטי (Git Workflow)</h3>
+  <div class="details-content">
+    <ul class="auto-bullets">
+      <li><strong>Branching:</strong> לעולם לא כותבים קוד על ענף ה-<code>main</code>. פותחים ענף נפרד לכל פיצ'ר (לדוגמה: <code>feature/login-page</code>).</li>
+      <li><strong>Pull Request (PR):</strong> אחרי שמסיימים, מבקשים למזג את הקוד חזרה ל-main. מפתח אחר בצוות אמור לאשר זאת (Code Review).</li>
+      <li><strong>Merge Conflicts:</strong> קורה כששני מפתחים שינו בדיוק את אותה שורה בקובץ. הפתרון: לקרוא בעיון ולבחור אילו שינויים לשמור (Accept Current, Accept Incoming או לשלב את שניהם).</li>
+    </ul>
+  </div>
+</section>

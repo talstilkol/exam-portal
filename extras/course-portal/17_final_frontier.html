@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 Final Frontier — נושאי קצה</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0d1117; color: #e6edf3; line-height: 1.7; min-height: 100vh; padding: 20px; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #1f2937, #111827); border: 2px solid #4ecdc4; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(78,205,196,0.2); }
+  header h1 { font-size: 2.5em; color: #4ecdc4; margin-bottom: 10px; }
+  header p { color: #94a3b8; font-size: 1.1em; }
+  .back-link { display: inline-block; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; }
+  .back-link:hover { background: rgba(255,217,61,0.25); }
+  .toc { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 25px; margin-bottom: 30px; }
+  .toc h2 { color: #4ecdc4; margin-bottom: 15px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .toc a { color: #ffd93d; text-decoration: none; padding: 10px 14px; background: rgba(255,217,61,0.08); border-radius: 8px; transition: all 0.3s; border: 1px solid rgba(255,217,61,0.2); display: block; }
+  .toc a:hover { background: rgba(255,217,61,0.2); transform: translateY(-2px); }
+  section { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 35px; margin-bottom: 25px; scroll-margin-top: 30px; }
+  section h2 { color: #4ecdc4; font-size: 1.9em; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 3px solid rgba(78,205,196,0.3); }
+  section h3 { color: #ffd93d; margin: 25px 0 15px; font-size: 1.3em; border-right: 4px solid #ffd93d; padding-right: 12px; }
+  .code-block { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; font-family: 'Consolas', monospace; direction: ltr; text-align: left; overflow-x: auto; margin: 15px 0; color: #e6edf3; font-size: 0.93em; line-height: 1.6; white-space: pre; }
+  .code-block[contenteditable] { outline: 1px dashed rgba(78,205,196,0.3); cursor: text; }
+  .level-box { padding: 18px 22px; border-radius: 12px; margin: 15px 0; border-right: 5px solid; }
+  .grandma { background: rgba(255,154,158,0.1); border-color: #ff9a9e; }
+  .grandma::before { content: "👵 רמת סבתא"; display:block; color:#ff9a9e; font-size:0.85em; font-weight:bold; margin-bottom:8px; }
+  .pro { background: rgba(78,205,196,0.08); border-color: #4ecdc4; }
+  .pro::before { content: "👨‍💻 רמת מתכנת"; display:block; color:#4ecdc4; font-size:0.85em; font-weight:bold; margin-bottom:8px; }
+  .warning-box { background: rgba(220,53,69,0.12); border-right: 4px solid #dc3545; padding: 15px 20px; border-radius: 8px; margin: 15px 0; color: #fca5a5; }
+  .warning-box::before { content: "⚠️ "; }
+  .tip-box { background: rgba(40,167,69,0.12); border-right: 4px solid #28a745; padding: 15px 20px; border-radius: 8px; margin: 15px 0; color: #86efac; }
+  .tip-box::before { content: "✅ "; }
+  .exam-box { background: rgba(111,66,193,0.15); border-right: 4px solid #a855f7; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .exam-box::before { content: "🎓 שאלת מבחן: "; font-weight: bold; color: #d8b4fe; }
+  .compare-table { width: 100%; border-collapse: collapse; margin: 20px 0; border-radius: 10px; overflow: hidden; }
+  .compare-table th { background: rgba(78,205,196,0.2); color: #4ecdc4; padding: 12px 15px; text-align: right; }
+  .compare-table td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .compare-table tr:hover td { background: rgba(78,205,196,0.04); }
+  .run-btn { background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9em; font-weight: bold; margin-top: 8px; transition: all 0.2s; }
+  .run-btn:hover { background: #218838; transform: translateY(-1px); }
+  .output-box { background: #0a0a0a; border: 1px solid #30363d; border-radius: 6px; padding: 12px; margin-top: 8px; font-family: monospace; font-size: 0.88em; color: #4ecdc4; min-height: 40px; direction: ltr; text-align: left; white-space: pre; }
+  @media (max-width: 768px) { section { padding: 20px 15px; } header h1 { font-size: 1.8em; } }
+</style>
+<link rel="stylesheet" href="light-mode.css">
+<link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+<div class="container">
+
+  <a href="00_dashboard.html" class="back-link">← דשבורד</a>
+
+  <header>
+    <h1>🚀 Final Frontier</h1>
+    <p>ארבעה נושאי קצה שמבדילים בין ציון 85 לציון 100</p>
+    <p style="color:#ffd93d; margin-top:12px; font-size:0.95em;">React Memoization · Memory Leaks · Node.js Streams · Docker</p>
+  </header>
+
+  <nav class="toc">
+    <h2>📚 תוכן עניינים</h2>
+    <div class="toc-grid">
+      <a href="#memoization">1. ⚛️ React Memoization</a>
+      <a href="#memory-leaks">2. 🧠 Memory Leaks & GC</a>
+      <a href="#streams">3. 🌊 Node.js Streams</a>
+      <a href="#docker">4. 🐳 Docker</a>
+      <a href="#nextjs">5. ▲ Next.js SSR/SSG</a>
+      <a href="#prisma">6. 🗃️ Prisma ORM</a>
+    </div>
+  </nav>
+
+  <!-- ====== SECTION 1: React Memoization ====== -->
+  <section id="memoization">
+    <h2>⚛️ React Memoization — מניעת רינדורים מיותרים</h2>
+
+    <div class="level-box grandma">
+      <p>React מרנדר (מצייר מחדש) את הקומפוננטה בכל פעם שה-state שלה משתנה. לפעמים קומפוננטה מרונדרת <strong>בלי צורך</strong> — וזה איטי. Memoization = <strong>לזכור תוצאה</strong> ולא לחשב שוב אם הקלט לא השתנה.</p>
+    </div>
+
+    <div class="level-box pro">
+      <p>שלוש כלים עיקריים: <code>React.memo</code> (מונע רינדור של קומפוננטה שלמה), <code>useMemo</code> (מונע חישוב יקר), <code>useCallback</code> (מונע יצירת פונקציה חדשה בכל רינדור).</p>
+    </div>
+
+    <h3>React.memo — עוטף קומפוננטה</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">// בלי memo — מרנדר בכל פעם שה-Parent מרנדר
+const ChildComponent = ({ name }) => {
+  console.log('Child rendered!');
+  return <div>שלום {name}</div>;
+};
+
+// עם memo — מרנדר רק אם ה-prop השתנה
+const ChildComponent = React.memo(({ name }) => {
+  console.log('Child rendered!');
+  return <div>שלום {name}</div>;
+});
+
+// Parent
+function Parent() {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;&gt;
+      &lt;button onClick={() => setCount(c => c + 1)}&gt;Count: {count}&lt;/button&gt;
+      &lt;ChildComponent name="תל" /&gt;  {/* לא מרנדר שוב! */}
+    &lt;/&gt;
+  );
+}</div>
+
+    <h3>useMemo — זוכר תוצאת חישוב</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">function ProductList({ products, filter }) {
+  // בלי useMemo — מחושב מחדש בכל רינדור (יקר!)
+  // const filtered = products.filter(p => p.category === filter);
+
+  // עם useMemo — מחושב מחדש רק כש-products או filter משתנה
+  const filtered = useMemo(() => {
+    console.log('Filtering...');
+    return products.filter(p => p.category === filter);
+  }, [products, filter]);  // ← dependencies
+
+  return (
+    &lt;ul&gt;
+      {filtered.map(p => &lt;li key={p.id}&gt;{p.name}&lt;/li&gt;)}
+    &lt;/ul&gt;
+  );
+}</div>
+
+    <h3>useCallback — זוכר פונקציה</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">function Parent() {
+  const [count, setCount] = useState(0);
+
+  // בלי useCallback — פונקציה חדשה נוצרת בכל רינדור
+  // const handleClick = () => console.log('clicked');
+
+  // עם useCallback — אותה פונקציה, לא גורם ל-Child לרנדר מחדש
+  const handleClick = useCallback(() => {
+    console.log('clicked');
+  }, []);  // [] = לא משתנה לעולם
+
+  return &lt;MemoChild onClick={handleClick} /&gt;;
+}
+
+const MemoChild = React.memo(({ onClick }) => {
+  console.log('Child rendered');
+  return &lt;button onClick={onClick}&gt;לחץ&lt;/button&gt;;
+});</div>
+
+    <h3>📊 השוואה מהירה</h3>
+    <table class="compare-table">
+      <thead><tr><th>כלי</th><th>עוטף</th><th>שימוש</th></tr></thead>
+      <tbody>
+        <tr><td><code>React.memo</code></td><td>קומפוננטה</td><td>מונע רינדור אם props לא השתנו</td></tr>
+        <tr><td><code>useMemo</code></td><td>ערך/חישוב</td><td>מונע חישוב יקר (sort, filter, map)</td></tr>
+        <tr><td><code>useCallback</code></td><td>פונקציה</td><td>מונע יצירת פונקציה חדשה</td></tr>
+      </tbody>
+    </table>
+
+    <div class="warning-box">אל תשתמש בכל מקום! Memoization עצמה יקרה. השתמש רק כשיש <strong>חישוב יקר אמיתי</strong> או כשיש <strong>בעיית ביצועים מוכחת</strong>.</div>
+
+    <div class="exam-box">מה ההבדל בין useMemo ל-useCallback? (useMemo = מזכיר ערך מוחזר. useCallback = מזכיר את הפונקציה עצמה).</div>
+  </section>
+
+  <!-- ====== SECTION 2: Memory Leaks ====== -->
+  <section id="memory-leaks">
+    <h2>🧠 Memory Leaks & Garbage Collection</h2>
+
+    <div class="level-box grandma">
+      <p>כל משתנה ש-JavaScript יוצר תופס מקום בזיכרון. כשאין לו יותר שימוש, ה-GC (Garbage Collector) מנקה אותו. <strong>Memory Leak</strong> = הזיכרון לא מנוקה למרות שאין לו שימוש — כי יש <strong>Reference חבוי</strong> שמחזיק אותו.</p>
+    </div>
+
+    <h3>הסיבות הנפוצות ל-Memory Leak</h3>
+
+    <div class="code-block">// ❌ 1. Event Listener שלא מוסר
+function attachListener() {
+  const bigData = new Array(1000000).fill('🔴');
+  
+  document.addEventListener('click', () => {
+    console.log(bigData.length); // bigData לא יגוּדל כל עוד ה-listener קיים!
+  });
+}
+
+// ✅ תיקון — לשמור reference ולהסיר
+function attachListener() {
+  const bigData = new Array(1000000).fill('🟢');
+  
+  const handler = () => console.log(bigData.length);
+  document.addEventListener('click', handler);
+  
+  // לנקות כשלא צריך
+  return () => document.removeEventListener('click', handler);
+}
+
+// ❌ 2. setInterval בלי clearInterval
+function startTimer() {
+  const data = fetchHugeData();
+  setInterval(() => process(data), 1000); // data לא יגוּדל לעולם!
+}
+
+// ✅ תיקון
+function startTimer() {
+  const data = fetchHugeData();
+  const id = setInterval(() => process(data), 1000);
+  return () => clearInterval(id);  // cleanup
+}</div>
+
+    <h3>Memory Leak ב-React (useEffect)</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">// ❌ בעיה — setState אחרי שה-component unmounted
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetch(`/api/users/${userId}`)
+      .then(r => r.json())
+      .then(data => setUser(data)); // 💥 אם נסגר לפני שה-fetch הסתיים!
+  }, [userId]);
+}
+
+// ✅ תיקון — AbortController
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    
+    fetch(`/api/users/${userId}`, { signal: controller.signal })
+      .then(r => r.json())
+      .then(data => setUser(data))
+      .catch(err => {
+        if (err.name !== 'AbortError') console.error(err);
+      });
+
+    return () => controller.abort(); // cleanup!
+  }, [userId]);
+}</div>
+
+    <h3>WeakMap / WeakRef — References חלשים</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">// WeakMap — לא מונע GC מלנקות את ה-key!
+const cache = new WeakMap();
+
+function processElement(el) {
+  if (cache.has(el)) return cache.get(el);
+  
+  const result = heavyComputation(el);
+  cache.set(el, result);
+  return result;
+  // כשה-element נמחק מה-DOM, ה-entry ב-WeakMap מנוקה אוטומטית!
+}
+
+// Map רגילה — תחזיק את ה-element לנצח (leak)
+const badCache = new Map();
+badCache.set(el, result);  // el לא יגוּדל גם אחרי שנמחק מה-DOM</div>
+
+    <div class="exam-box">למה Closure עלול לגרום ל-Memory Leak? (כי פונקציית Closure מחזיקה reference לסביבה החיצונית שלה — כולל משתנים גדולים — גם כשלא צריך אותם יותר).</div>
+  </section>
+
+  <!-- ====== SECTION 3: Node.js Streams ====== -->
+  <section id="streams">
+    <h2>🌊 Node.js Streams & Buffers</h2>
+
+    <div class="level-box grandma">
+      <p>דמיין שאתה מוזג מים מבקבוק לכוס. אפשר לשפוך הכל בבת אחת (= <code>fs.readFile</code>) — אבל אם הבקבוק ענק, הכוס תשפך. <strong>Stream</strong> = שופכים טיפה-טיפה, בלי לטעון הכל לזיכרון.</p>
+    </div>
+
+    <div class="level-box pro">
+      <p>Streams חיוניים לכל פעולת קלט/פלט גדולה: קריאת קבצים, upload/download, WebSockets, תשובות HTTP. יש 4 סוגי Streams: Readable, Writable, Duplex, Transform.</p>
+    </div>
+
+    <h3>fs.readFile vs fs.createReadStream</h3>
+    <div class="code-block">const fs = require('fs');
+
+// ❌ readFile — טוען את כל הקובץ לRAM!
+// לקובץ של 1GB — צריך 1GB+ זיכרון
+fs.readFile('huge.csv', 'utf-8', (err, data) => {
+  console.log(data); // 1GB בזיכרון!
+});
+
+// ✅ createReadStream — מעבד chunk-by-chunk
+// זיכרון קבוע גם לקובץ של 100GB!
+const stream = fs.createReadStream('huge.csv', {
+  encoding: 'utf-8',
+  highWaterMark: 64 * 1024  // 64KB chunks
+});
+
+stream.on('data', (chunk) => {
+  process(chunk);  // מעבד כל חתיכה
+});
+
+stream.on('end', () => console.log('Done!'));
+stream.on('error', (err) => console.error(err));</div>
+
+    <h3>pipe — ניקוז Stream לStream</h3>
+    <div class="code-block">const fs = require('fs');
+const zlib = require('zlib');
+
+// Stream Pipeline: קרא קובץ → דחוס → שמור
+// הכל ב-64KB בכל פעם, לא משנה גודל הקובץ!
+fs.createReadStream('input.txt')
+  .pipe(zlib.createGzip())          // Transform Stream — דחיסה
+  .pipe(fs.createWriteStream('output.txt.gz'))
+  .on('finish', () => console.log('Compressed!'));
+
+// ✅ stream.pipeline (Node 10+) — יותר בטוח מ-pipe
+const { pipeline } = require('stream/promises');
+
+await pipeline(
+  fs.createReadStream('input.txt'),
+  zlib.createGzip(),
+  fs.createWriteStream('output.txt.gz')
+);</div>
+
+    <h3>Streams ב-Express — response Streaming</h3>
+    <div class="code-block">// במקום לטעון קובץ PDF ענק לזיכרון ולשלוח:
+app.get('/download', (req, res) => {
+  const filePath = './reports/huge-report.pdf';
+  
+  // ✅ Stream ישירות לתשובה — חוסך RAM בשרת
+  res.setHeader('Content-Type', 'application/pdf');
+  fs.createReadStream(filePath).pipe(res);
+});
+
+// Buffer — מחזיק בינאריים בזיכרון
+const buf = Buffer.from('Hello', 'utf-8');
+console.log(buf);         // &lt;Buffer 48 65 6c 6c 6f&gt;
+console.log(buf.toString('utf-8'));  // 'Hello'
+console.log(buf.toString('base64')); // 'SGVsbG8='</div>
+
+    <table class="compare-table">
+      <thead><tr><th>גישה</th><th>זיכרון</th><th>מתאים ל</th></tr></thead>
+      <tbody>
+        <tr><td><code>fs.readFile</code></td><td>גודל הקובץ כולו</td><td>קבצים קטנים (&lt;10MB)</td></tr>
+        <tr><td><code>createReadStream</code></td><td>chunk בלבד (~64KB)</td><td>קבצים גדולים, CSV, JSON ענקי</td></tr>
+        <tr><td><code>pipe/pipeline</code></td><td>chunk בלבד</td><td>שרשור פעולות (קרא→דחוס→שמור)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="exam-box">מה ההבדל בין Buffer ל-Stream? (Buffer = נתונים בינאריים בזיכרון. Stream = ממשק לקריאה/כתיבה של נתונים ב-chunks לאורך זמן).</div>
+  </section>
+
+  <!-- ====== SECTION 4: Docker ====== -->
+  <section id="docker">
+    <h2>🐳 Docker Containerization</h2>
+
+    <div class="level-box grandma">
+      <p>Docker = <strong>קופסה קסומה</strong> שאומרת "אצלי זה עובד ➔ אצלכם זה גם יעבוד". הקופסה מכילה את הקוד, Node.js, התלויות — הכל. מריצים אותה בכל מחשב/שרת בלי הפתעות.</p>
+    </div>
+
+    <h3>Dockerfile — מתכון לקופסה</h3>
+    <div class="code-block"># ── server/Dockerfile ──────────────────────────────
+
+# 1. Image בסיס (Operating System + Node)
+FROM node:20-alpine
+
+# 2. תיקיית עבודה בתוך ה-container
+WORKDIR /app
+
+# 3. העתק package.json ותתקן תלויות
+COPY package*.json ./
+RUN npm install --production
+
+# 4. העתק את שאר הקוד
+COPY . .
+
+# 5. חשוף את ה-port
+EXPOSE 5000
+
+# 6. הרץ את השרת
+CMD ["node", "src/server.js"]</div>
+
+    <h3>docker-compose.yml — כמה containers ביחד</h3>
+    <div class="code-block">version: '3.8'
+
+services:
+  # שרת Node.js
+  server:
+    build: ./server
+    ports:
+      - "5000:5000"        # host:container
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydb
+      - JWT_SECRET=my-secret
+    depends_on:
+      - mongo
+
+  # MongoDB Container
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db  # נתונים נשמרים גם אחרי restart
+
+  # React Frontend
+  client:
+    build: ./client
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+
+volumes:
+  mongo-data:</div>
+
+    <h3>פקודות Docker חיוניות</h3>
+    <div class="code-block"># בנה image מה-Dockerfile
+docker build -t my-app .
+
+# הרץ container
+docker run -p 5000:5000 my-app
+
+# docker-compose — מעלה את כל ה-stack
+docker-compose up --build   # בנה + הרץ
+docker-compose down          # עצור + הסר
+
+# מעקב
+docker ps                    # containers פעילים
+docker logs my-app           # לוגים
+docker exec -it my-app sh    # כנס ל-container</div>
+
+    <h3>📊 VM vs Container</h3>
+    <table class="compare-table">
+      <thead><tr><th>תכונה</th><th>VM</th><th>Docker Container</th></tr></thead>
+      <tbody>
+        <tr><td>גודל</td><td>GBs</td><td>MBs</td></tr>
+        <tr><td>זמן הפעלה</td><td>דקות</td><td>שניות</td></tr>
+        <tr><td>OS</td><td>OS מלא</td><td>משתף kernel עם Host</td></tr>
+        <tr><td>Isolation</td><td>מלא</td><td>כמעט מלא</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box">ה-Dockerfile שלמעלה הוא ה-<strong>תבנית הסטנדרטית</strong> לפרויקט Full-Stack בסיסי. שנן אותו!</div>
+
+    <div class="exam-box">מה זה Container ומה ההבדל מ-VM? + כתוב Dockerfile פשוט ל-Node.js app.</div>
+  </section>
+
+  <!-- ====== SECTION 5: Next.js ====== -->
+  <section id="nextjs">
+    <h2>▲ Next.js — SSR &amp; SSG</h2>
+
+    <div class="level-box grandma">
+      <p>React בנה SPA — הדף ריק עד שJS נטען. Next.js מוסיף: רינדור בשרת (SSR) ודפים סטטיים (SSG) — מהיר יותר, SEO טוב יותר.</p>
+    </div>
+
+    <h3>SSR vs SSG vs CSR</h3>
+    <table class="compare-table">
+      <thead><tr><th>שיטה</th><th>מתי HTML נבנה?</th><th>מתאים ל</th></tr></thead>
+      <tbody>
+        <tr><td>CSR (React)</td><td>בdפדפן, אחרי JS</td><td>dashboards, apps פרטיות</td></tr>
+        <tr><td>SSG (Static)</td><td>build time — פעם אחת</td><td>בלוג, docs, landing page</td></tr>
+        <tr><td>SSR (Server)</td><td>בכל request בשרת</td><td>חנות, feed ב-real-time</td></tr>
+      </tbody>
+    </table>
+
+    <h3>getServerSideProps — SSR</h3>
+    <div class="code-block">// pages/products/[id].js
+export async function getServerSideProps(context) {
+  const { id } = context.params;
+  const res = await fetch(`https://api.example.com/products/${id}`);
+  const product = await res.json();
+
+  return {
+    props: { product },  // מועבר לcomponent
+  };
+}
+
+export default function ProductPage({ product }) {
+  return &lt;h1&gt;{product.name}&lt;/h1&gt;;
+}</div>
+
+    <h3>getStaticProps + getStaticPaths — SSG</h3>
+    <div class="code-block">// pages/blog/[slug].js
+
+// מגדיר אילו paths לבנות ב-build time
+export async function getStaticPaths() {
+  const posts = await fetchAllPosts();
+  return {
+    paths: posts.map(p => ({ params: { slug: p.slug } })),
+    fallback: false,  // 404 לpaths לא-מוגדרים
+  };
+}
+
+// מביא data לכל path
+export async function getStaticProps({ params }) {
+  const post = await fetchPost(params.slug);
+  return { props: { post } };
+}
+
+export default function BlogPost({ post }) {
+  return &lt;article&gt;{post.content}&lt;/article&gt;;
+}</div>
+
+    <h3>App Router (Next.js 13+) — Server Components</h3>
+    <div class="code-block">// app/users/page.js — Server Component כברירת מחדל
+// אין 'use client' — רץ בשרת בלבד, אפס JS לclient
+
+async function UsersPage() {
+  // גישה ישירה לDB — בלי API route!
+  const users = await prisma.user.findMany();
+  return (
+    &lt;ul&gt;
+      {users.map(u => &lt;li key={u.id}&gt;{u.name}&lt;/li&gt;)}
+    &lt;/ul&gt;
+  );
+}
+
+// app/counter/page.js — Client Component
+'use client';  // חובה כשמשתמשים ב-hooks/events
+import { useState } from 'react';
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+  return &lt;button onClick={() => setCount(c => c+1)}&gt;{count}&lt;/button&gt;;
+}</div>
+
+    <div class="exam-box">מה ההבדל בין SSR לSSG? SSG נבנה פעם אחת ב-build — מהיר מאוד. SSR נבנה בכל request — תמיד מעודכן אבל איטי יותר.</div>
+  </section>
+
+  <!-- ====== SECTION 6: Prisma ====== -->
+  <section id="prisma">
+    <h2>🗃️ Prisma ORM</h2>
+
+    <div class="level-box grandma">
+      <p>Prisma = מתרגם בין TypeScript לDB. במקום SQL גולמי, כותבים TypeScript ו-Prisma בונה את ה-SQL. Type-safe, auto-complete, ו-migrations אוטומטיות.</p>
+    </div>
+
+    <h3>schema.prisma — הגדרת מודל</h3>
+    <div class="code-block">// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"  // או mongodb, mysql, sqlite
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  posts     Post[]   // relation
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id       Int    @id @default(autoincrement())
+  title    String
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId Int
+}</div>
+
+    <h3>Prisma Client — CRUD</h3>
+    <div class="code-block">import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+// Create
+const user = await prisma.user.create({
+  data: { email: 'tal@example.com', name: 'Tal' }
+});
+
+// Read — עם filter
+const adults = await prisma.user.findMany({
+  where: { age: { gte: 18 } },
+  orderBy: { name: 'asc' },
+  take: 10,  // pagination
+});
+
+// Read עם relation — כמו JOIN
+const userWithPosts = await prisma.user.findUnique({
+  where: { id: 1 },
+  include: { posts: true }  // כמו populate() ב-Mongoose
+});
+
+// Update
+await prisma.user.update({
+  where: { id: 1 },
+  data: { name: 'Tal Updated' }
+});
+
+// Delete
+await prisma.user.delete({ where: { id: 1 } });</div>
+
+    <h3>Prisma Migrate — סנכרון Schema עם DB</h3>
+    <div class="code-block"># יוצר migration file + מעדכן DB
+npx prisma migrate dev --name add_user_table
+
+# הפעל Prisma Studio (UI ויזואלי לDB)
+npx prisma studio</div>
+
+    <div class="tip-box">Prisma vs Mongoose: Prisma מיועד ל-SQL (PostgreSQL, MySQL) עם type safety מלא. Mongoose מיועד ל-MongoDB. שניהם ORM/ODM אבל לסוגי DB שונים.</div>
+
+    <div class="exam-box">מה יתרון Prisma על SQL גולמי? Type safety — TypeScript יידע בזמן compile אם query שגוי. Auto-complete. Migrations אוטומטיות.</div>
+  </section>
+
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:30px;left:30px;width:55px;height:55px;border-radius:50%;background:linear-gradient(135deg,#4ecdc4,#44a8a3);color:white;border:none;font-size:1.8em;cursor:pointer;box-shadow:0 4px 15px rgba(78,205,196,0.4);display:none;">↑</button>
+
+</div>
+<script src="theme-toggle.js"></script>
+<script src="sidebar.js"></script>
+<script src="global-search.js"></script>
+<script>
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    if(btn) btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+  });
+</script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

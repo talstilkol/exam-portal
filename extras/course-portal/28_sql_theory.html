@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SQL / PostgreSQL / ORM | Full-Stack Portal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',sans-serif;line-height:1.8}
+header{background:#161b22;border-bottom:1px solid #30363d;padding:1rem 2rem;display:flex;align-items:center;gap:1rem}
+header h1{font-size:1.3rem;color:#336791}
+.header-inner{color:#e6edf3}
+.back-btn{background:#21262d;border:1px solid #30363d;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;text-decoration:none;font-size:.85rem}
+.container{max-width:960px;margin:0 auto;padding:1.5rem}
+.concept{background:#161b22;border:1px solid #30363d;border-radius:12px;margin-bottom:1.2rem;overflow:hidden}
+.concept-header{background:#21262d;padding:.9rem 1.3rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.concept-header:hover{background:#30363d}
+.concept-header h2{font-size:.98rem;color:#e6edf3;display:flex;align-items:center;gap:.6rem}
+.diff{display:inline-block;border-radius:4px;padding:.1rem .5rem;font-size:.72rem;font-weight:700}
+.d3{background:#1a2f1a;color:#56d364;border:1px solid #56d364}
+.d4{background:#1f3a1f;color:#3fb950;border:1px solid #3fb950}
+.d5{background:#2d2016;color:#f0883e;border:1px solid #f0883e}
+.d6{background:#2d1616;color:#f85149;border:1px solid #f85149}
+.concept-body{padding:1.3rem;display:none}
+.concept.open .concept-body{display:block}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.7rem;margin:.7rem 0}
+.level{background:#0d1117;border-radius:8px;padding:.7rem;border:1px solid #21262d;font-size:.85rem}
+.level-label{font-size:.7rem;color:#8b949e;font-weight:700;text-transform:uppercase;margin-bottom:.2rem}
+.code-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:.9rem;margin:.7rem 0;font-family:'Courier New',monospace;font-size:.8rem;overflow-x:auto;white-space:pre;color:#e6edf3}
+.kw{color:#ff7b72}
+.mistake{background:#1f1117;border-left:3px solid #f85149;padding:.6rem .9rem;border-radius:0 8px 8px 0;margin:.4rem 0;font-size:.85rem}
+.why{background:#112316;border-left:3px solid #3fb950;padding:.6rem .9rem;border-radius:0 8px 8px 0;margin:.4rem 0;font-size:.85rem}
+table{width:100%;border-collapse:collapse;margin:.7rem 0;font-size:.82rem}
+th{background:#21262d;color:#79c0ff;padding:.5rem .7rem;text-align:right;border:1px solid #30363d}
+td{padding:.45rem .7rem;border:1px solid #30363d;vertical-align:top}
+tr:nth-child(even) td{background:#0d1117}
+td:first-child{font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-btn" href="00_dashboard.html">← דשבורד</a>
+  <h1 class="header-inner">🗄️ SQL / PostgreSQL / ORM — Prisma &amp; Drizzle</h1>
+</header>
+<div class="container">
+
+<div class="concept open">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>📜 SQL — יסודות <span class="diff d3">קושי 3</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">👵 סבתא</div>כמו לבקש מהספרנית: "תני לי כל ספרי רובין הוד". SQL = שפת הבקשה לבסיס הנתונים.</div>
+      <div class="level"><div class="level-label">🪖 חייל</div>4 פעולות: SELECT (קריאה), INSERT (יצירה), UPDATE (עדכון), DELETE (מחיקה).</div>
+      <div class="level"><div class="level-label">🎓 סטודנט</div>Declarative: מתאר מה רוצים, לא איך. Query planner מחליט על execution plan (scan, index, JOIN order).</div>
+    </div>
+    <div class="code-block"><span class="kw">SELECT</span> id, title, price
+<span class="kw">FROM</span> courses
+<span class="kw">WHERE</span> active = true
+<span class="kw">ORDER BY</span> title
+<span class="kw">LIMIT</span> 10;</div>
+    <div class="mistake">להניח ש-ORM מבטל צורך ב-SQL — ORM מייצר SQL, בעיות ביצועים נפתרות דרך הבנת השאילתה.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🐘 PostgreSQL + טבלאות <span class="diff d4">קושי 4</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="code-block"><span class="kw">CREATE TABLE</span> users (
+  id      integer  <span class="kw">GENERATED ALWAYS AS IDENTITY PRIMARY KEY</span>,
+  email   text     <span class="kw">NOT NULL UNIQUE</span>,
+  name    text     <span class="kw">NOT NULL</span>,
+  created_at timestamptz <span class="kw">NOT NULL DEFAULT</span> now()
+);
+
+<span class="kw">CREATE TABLE</span> courses (
+  id      integer  <span class="kw">GENERATED ALWAYS AS IDENTITY PRIMARY KEY</span>,
+  title   text     <span class="kw">NOT NULL</span>,
+  active  boolean  <span class="kw">NOT NULL DEFAULT</span> true
+);</div>
+    <div class="levels">
+      <div class="level"><div class="level-label">טיפים</div>text במקום varchar(255), numeric לכסף, timestamp WITH TIME ZONE, audit columns created_at/updated_at</div>
+      <div class="level"><div class="level-label">PostgreSQL יתרונות</div>MVCC, WAL, JSON/JSONB, full-text search, PostGIS, window functions, CTEs רקורסיביות</div>
+    </div>
+    <div class="mistake">PostgreSQL = קובץ JSON גדול — החוזק הוא schema, constraints, JOIN ו-query planner.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🔗 Relations + Foreign Key + JOIN <span class="diff d5">קושי 5</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <table>
+      <tr><th>סוג קשר</th><th>מימוש</th><th>דוגמה</th></tr>
+      <tr><td>1:1</td><td>FK + UNIQUE</td><td>user ↔ profile</td></tr>
+      <tr><td>1:N</td><td>FK בילד</td><td>user → posts</td></tr>
+      <tr><td>N:M</td><td>junction table</td><td>students ↔ courses דרך enrollments</td></tr>
+    </table>
+    <div class="code-block"><span class="kw">CREATE TABLE</span> enrollments (
+  student_id integer <span class="kw">NOT NULL REFERENCES</span> students(id),
+  course_id  integer <span class="kw">NOT NULL REFERENCES</span> courses(id),
+  enrolled_at timestamptz <span class="kw">DEFAULT</span> now(),
+  <span class="kw">PRIMARY KEY</span> (student_id, course_id)
+);
+
+<span class="kw">-- JOIN query</span>
+<span class="kw">SELECT</span> s.email, c.title
+<span class="kw">FROM</span> enrollments e
+<span class="kw">JOIN</span> students s <span class="kw">ON</span> s.id = e.student_id
+<span class="kw">JOIN</span> courses c <span class="kw">ON</span> c.id = e.course_id
+<span class="kw">WHERE</span> c.active = true;</div>
+    <table>
+      <tr><th>JOIN סוג</th><th>מחזיר</th></tr>
+      <tr><td>INNER JOIN</td><td>רק התאמות בשני הצדדים</td></tr>
+      <tr><td>LEFT JOIN</td><td>כל השמאל + התאמות (NULL אם אין)</td></tr>
+      <tr><td>CROSS JOIN</td><td>Cartesian product — כפולה ⚠️</td></tr>
+    </table>
+    <div class="mistake">שכפול מידע במקום קשר — גורם לעדכונים כפולים ונתונים סותרים.</div>
+    <div class="mistake">JOIN ללא ON — Cartesian product = millions of rows!</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>📋 Migration <span class="diff d5">קושי 5</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">מה זה</div>שינוי גרסתי ומבוקר ב-schema: יצירה/הוספה/שינוי עמודה, index, constraint.</div>
+      <div class="level"><div class="level-label">כלים</div>Prisma migrate, Drizzle Kit, Knex, Flyway. כל migration רץ פעם אחת.</div>
+    </div>
+    <div class="code-block"><span class="kw">-- migration: הוספת column</span>
+<span class="kw">ALTER TABLE</span> courses
+<span class="kw">ADD COLUMN</span> slug text;
+
+<span class="kw">-- backfill</span>
+<span class="kw">UPDATE</span> courses
+<span class="kw">SET</span> slug = lower(replace(title, ' ', '-'))
+<span class="kw">WHERE</span> slug <span class="kw">IS NULL</span>;
+
+<span class="kw">-- לאחר backfill — הוסף constraint</span>
+<span class="kw">ALTER TABLE</span> courses <span class="kw">ALTER COLUMN</span> slug <span class="kw">SET NOT NULL</span>;
+<span class="kw">ALTER TABLE</span> courses <span class="kw">ADD CONSTRAINT</span> courses_slug_key <span class="kw">UNIQUE</span> (slug);</div>
+    <div class="mistake">DROP COLUMN מיידי — קוד ישן עוד רץ במקביל. Expand-contract pattern.</div>
+    <div class="mistake">שינוי schema ישיר ב-production בלי migration מסודרת.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>⚡ Transaction + ACID <span class="diff d6">קושי 6</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">ACID</div><strong>A</strong>tomicity · <strong>C</strong>onsistency · <strong>I</strong>solation · <strong>D</strong>urability</div>
+      <div class="level"><div class="level-label">מהות</div>קבוצת פעולות שמצליחות יחד או נכשלות יחד — לא מצב חלקי.</div>
+    </div>
+    <div class="code-block"><span class="kw">BEGIN</span>;
+<span class="kw">UPDATE</span> accounts <span class="kw">SET</span> balance = balance - 100 <span class="kw">WHERE</span> id = 1;
+<span class="kw">UPDATE</span> accounts <span class="kw">SET</span> balance = balance + 100 <span class="kw">WHERE</span> id = 2;
+<span class="kw">COMMIT</span>; <span class="kw">-- או ROLLBACK אם יש שגיאה</span>
+
+<span class="kw">-- Prisma transaction:</span>
+await prisma.$transaction([
+  prisma.account.update({ where: { id: 1 }, data: { balance: { decrement: 100 } } }),
+  prisma.account.update({ where: { id: 2 }, data: { balance: { increment: 100 } } }),
+]);</div>
+    <div class="mistake">לעדכן כמה טבלאות בלי transaction — inconsistency אחרי שגיאה באמצע.</div>
+    <div class="mistake">UPDATE/DELETE ללא WHERE — כל הטבלה מושפעת!</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🔧 ORM — Prisma vs Drizzle <span class="diff d5">קושי 5</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <table>
+      <tr><th>ציר</th><th>Prisma</th><th>Drizzle</th></tr>
+      <tr><td>סגנון</td><td>DSL נפרד (schema.prisma)</td><td>TypeScript-first, SQL-like API</td></tr>
+      <tr><td>Engine</td><td>Rust binary נפרד</td><td>in-process — קל יותר</td></tr>
+      <tr><td>Edge runtime</td><td>Accelerate / Driver Adapters</td><td>native support</td></tr>
+      <tr><td>Migrations</td><td>prisma migrate dev/deploy</td><td>drizzle-kit generate/push</td></tr>
+      <tr><td>Complex queries</td><td>$queryRaw לעקוף</td><td>טבעי יותר, SQL-like</td></tr>
+      <tr><td>מתאים כש</td><td>type safety ו-DX מקסימלי</td><td>Edge, שליטה בSQL</td></tr>
+    </table>
+    <div class="code-block"><span class="kw">// Prisma</span>
+const course = await prisma.course.create({
+  data: { title: 'SQL Basics', active: true }
+});
+const courses = await prisma.course.findMany({
+  where: { active: true }, orderBy: { title: 'asc' }
+});
+
+<span class="kw">// Drizzle</span>
+const courses = await db
+  .select({ title: courses.title })
+  .from(courses)
+  .where(eq(courses.active, true));</div>
+    <div class="mistake">לחשוב ש-ORM תמיד מהיר — לפעמים צריך EXPLAIN ו-index.</div>
+    <div class="mistake">Prisma = חובה — זה כלי. אפשר Drizzle או raw SQL לפי צרכים.</div>
+  </div>
+</div>
+
+</div>
+<script>
+document.querySelectorAll('.concept-header').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
+</script>
+</body>
+</html>

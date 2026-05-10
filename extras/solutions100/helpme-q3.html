@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>פתרון 100 — HelpMe — תיאוריה (25 נק׳)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0f172a;--bg:#f8fafc;--accent:#7c3aed;--accent2:#2563eb;--good:#16a34a}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Heebo,Arial,sans-serif;background:linear-gradient(135deg,#fef9c3,#dbeafe);color:var(--ink);line-height:1.7;direction:rtl;padding:24px}
+  .wrap{max-width:1100px;margin:0 auto}
+  .hero{padding:24px 28px;border:3px solid #000;border-radius:18px;background:linear-gradient(135deg,#0f172a,#312e81 60%,#7c3aed);color:#fff;box-shadow:6px 6px 0 #000;margin-bottom:18px}
+  .hero h1{margin:0 0 8px;font-size:28px}
+  .hero .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .hero .pill{padding:4px 10px;border:2px solid #fff;border-radius:999px;font-size:12px;font-weight:900;background:rgba(255,255,255,.15)}
+  .hero .pill.gold{background:#facc15;color:#000;border-color:#000}
+  section.card{padding:18px 22px;border:2.5px solid #000;border-radius:16px;background:#fff;box-shadow:5px 5px 0 #000;margin-bottom:16px}
+  section.card h2{margin:0 0 10px;font-size:20px;color:#1f2937;display:flex;gap:8px;align-items:center}
+  ul.fixes{padding:0;margin:0;list-style:none;display:grid;gap:6px}
+  ul.fixes li{padding:8px 12px;border:2px solid #000;border-radius:8px;background:#f0fdf4;font-weight:600;font-size:13.5px;display:flex;gap:8px}
+  ul.fixes li .fix-mark{font-weight:900}
+  table.req{width:100%;border-collapse:collapse}
+  table.req td{padding:8px 12px;border-bottom:1.5px solid #cbd5e1;font-size:13.5px;vertical-align:top}
+  table.req .req-mark{width:24px;text-align:center;font-weight:900;font-size:16px}
+  table.req tr.req-yes .req-mark{color:#16a34a}
+  table.req tr.req-no .req-mark{color:#dc2626}
+  .md-content{padding:8px 4px;line-height:1.85;font-size:14.5px}
+  .md-content h1{font-size:24px;margin:16px 0 10px;color:#1e1b4b;border-bottom:2px solid #c7d2fe;padding-bottom:6px}
+  .md-content h2{font-size:20px;margin:18px 0 8px;color:#312e81}
+  .md-content h3{font-size:17px;margin:14px 0 6px;color:#4338ca}
+  .md-content h4{font-size:15px;margin:12px 0 4px;color:#5b21b6}
+  .md-content p{margin:6px 0}
+  .md-content code{background:#0f172a;color:#fcd34d;padding:1px 6px;border-radius:5px;font-family:Consolas,monospace;font-size:12.5px;direction:ltr;display:inline-block}
+  .md-content pre.md-code{background:#0f172a;color:#86efac;padding:12px;border-radius:10px;direction:ltr;text-align:left;font-family:Consolas,monospace;font-size:12.5px;line-height:1.55;overflow-x:auto;margin:10px 0}
+  .md-content pre.md-code code{background:transparent;color:inherit;padding:0;display:block}
+  .md-content blockquote{border-right:4px solid #7c3aed;padding:8px 14px;background:#f5f3ff;margin:8px 0;font-style:italic}
+  .md-content table.md-table{width:100%;border-collapse:collapse;margin:10px 0;background:#fff;box-shadow:0 4px 12px rgba(15,23,42,.08);border-radius:10px;overflow:hidden}
+  .md-content table.md-table th{background:#312e81;color:#fff;padding:8px 12px;text-align:right;font-weight:900}
+  .md-content table.md-table td{padding:8px 12px;border-bottom:1px solid #e5e7eb;vertical-align:top}
+  .md-content table.md-table tr:nth-child(even) td{background:#f8fafc}
+  .md-content ul.md-list, .md-content ol.md-list{padding-right:24px;margin:6px 0}
+  .md-content ul.md-list li, .md-content ol.md-list li{margin:3px 0}
+  .md-content hr{border:none;border-top:2px dashed #94a3b8;margin:18px 0}
+  .md-content a{color:#2563eb;text-decoration:underline}
+
+  @media print{body{background:#fff !important;padding:10px}section.card{box-shadow:none;border:1.5px solid #94a3b8;break-inside:avoid}section.card:hover{transform:none}.hero{background:#0f172a !important;box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}.annotated-code{border:1px solid #64748b}.code-line:hover::after{display:none}.back-link{display:none !important}}
+
+  /* === Phase C: Dark mode === */
+  @media(prefers-color-scheme:dark){
+    :root{--ink:#e2e8f0;--bg:#0f172a}
+    body{background:#0f172a;color:var(--ink)}
+    section.card{background:#1e293b;border-color:#334155;box-shadow:5px 5px 0 #000}
+    section.card h2{color:#e2e8f0}
+    ul.fixes li{background:#1a2e1a;border-color:#334155;color:#d1fae5}
+    table.req td{border-color:#334155;color:#cbd5e1}
+    .hero{box-shadow:6px 6px 0 #1e1b4b}
+    .md-content h1{color:#c7d2fe;border-color:#4338ca}
+    .md-content h2{color:#a5b4fc}
+    .md-content h3{color:#c4b5fd}
+    .md-content h4{color:#ddd6fe}
+    .md-content p,.md-content li{color:#cbd5e1}
+    .md-content blockquote{background:#1e1b4b;border-color:#7c3aed;color:#c7d2fe}
+    .md-content table.md-table{background:#1e293b;box-shadow:none}
+    .md-content table.md-table td{border-color:#334155;color:#cbd5e1}
+    .md-content table.md-table tr:nth-child(even) td{background:#0f172a}
+    .md-content a{color:#93c5fd}
+    .back-link{border-color:rgba(255,255,255,.3) !important;color:#93c5fd !important}
+  }
+  /* === Phase C: Responsive === */
+  @media(max-width:768px){
+    body{padding:12px}
+    .hero{padding:16px 18px;border-radius:12px}
+    .hero h1{font-size:20px}
+    .hero .meta{gap:5px}
+    .hero .pill{font-size:10px;padding:3px 7px}
+    section.card{padding:12px 14px;border-radius:12px}
+    section.card h2{font-size:16px}
+    ul.fixes li{font-size:12px;padding:6px 8px}
+    table.req td{padding:6px 8px;font-size:12px}
+    .annotated-code{padding:8px;font-size:11px;border-radius:8px}
+    .code-line[data-tip]:hover::after{max-width:260px;font-size:10px}
+    .ln{min-width:28px;font-size:11px}
+    .md-content{font-size:13px}
+    .md-content h1{font-size:19px}
+    .md-content h2{font-size:17px}
+    .md-content pre.md-code{font-size:11px;padding:8px}
+  }
+  /* === Phase C: Animations === */
+  section.card{transition:transform .15s,box-shadow .15s}
+  section.card:hover{transform:translateY(-2px);box-shadow:5px 7px 0 #000}
+  ul.fixes li{transition:background .15s}
+  ul.fixes li:hover{background:#dcfce7}
+  .back-link:hover{border-color:rgba(255,255,255,.7) !important;background:rgba(255,255,255,.1) !important}
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:0.01ms !important;transition-duration:0.01ms !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>🏆 פתרון לציון 100 — HelpMe — תיאוריה (25 נק׳)</h1>
+    <p style="margin:0;color:#dbeafe">תשובות מלאות ל-5 שאלות תיאוריה — HTTP methods, MongoDB, React, functions, recursion.</p>
+    <div class="meta">
+      <span class="pill gold">Theory</span>
+      <span class="pill">161 שורות</span>
+      <span class="pill">5 שאלות</span>
+      <span class="pill">qid: helpme-q3</span>
+    </div>
+    <a class="back-link" href="../qa-bundle-r3/helpme-q3.html" style="display:inline-block;margin-top:12px;padding:6px 14px;border:2px solid rgba(255,255,255,.4);border-radius:8px;color:#dbeafe;text-decoration:none;font-size:12px;font-weight:700;transition:.12s">← חזרה לשאלה המקורית</a>
+  </header>
+
+  <section class="card">
+    <h2>🔧 נקודות שתוקנו/הושלמו</h2>
+    <ul class="fixes">
+<li><span class="fix-mark">✅</span> GET vs POST vs PUT vs DELETE — טבלת השוואה עם idempotency, body, cacheable</li>
+<li><span class="fix-mark">✅</span> MongoDB: 3 יתרונות (schemaless, JSON-native, scaling) + 2 חסרונות (אין ACID, אין JOIN חזק)</li>
+<li><span class="fix-mark">✅</span> React vs vanilla: components, reactivity, virtual DOM + חיסרון bundle size</li>
+<li><span class="fix-mark">✅</span> function vs arrow: this binding (דינמי vs לקסיקלי) + arguments + constructor</li>
+<li><span class="fix-mark">✅</span> Recursion: base case + recursive case + factorial + fib + מתי כדאי/לא</li>
+<li><span class="fix-mark">✅</span> כל התשובות עם דוגמאות קוד מבוארות</li>
+</ul>
+  </section>
+
+  <section class="card">
+    <h2>✅ דרישה-מול-מימוש (טבלת בקרה)</h2>
+    <table class="req">
+<tr class="req-yes"><td class="req-mark">✓</td><td>GET/POST/PUT/DELETE כולל idempotency</td></tr>
+<tr class="req-yes"><td class="req-mark">✓</td><td>MongoDB 3 יתרונות + 2 חסרונות</td></tr>
+<tr class="req-yes"><td class="req-mark">✓</td><td>React vs HTML/JS/CSS</td></tr>
+<tr class="req-yes"><td class="req-mark">✓</td><td>function vs arrow — this binding</td></tr>
+<tr class="req-yes"><td class="req-mark">✓</td><td>Recursion — base case + דוגמאות</td></tr>
+</table>
+  </section>
+
+  <section class="card">
+    <h2>📦 התשובה המלאה</h2>
+    <div class="md-content">
+<h1>HelpMe — Theory Q3 (25 pts)</h1>
+<blockquote>5 שאלות תיאוריה. הנבחן עונה על Q3 <strong>או</strong> Q2 (לא שניהם). כאן עונים על כל 5 כדי שאפשר לבחור את השילוב החזק ביותר.</blockquote>
+<hr/>
+
+<h2>1. הבדל בין GET / POST / PUT / DELETE</h2>
+<table class="md-table"><thead><tr><th>מתודה</th><th>מה היא עושה?</th><th>Idempotent?</th><th>יש body?</th><th>Cacheable?</th></tr></thead><tbody>
+<tr><td><strong>GET</strong></td><td>מקבל מידע מהשרת ללא שינוי state</td><td>✅ כן</td><td>❌ לא (פרמטרים ב-URL)</td><td>✅ כן</td></tr>
+<tr><td><strong>POST</strong></td><td>יוצר משאב חדש או מבצע פעולה</td><td>❌ לא</td><td>✅ כן</td><td>❌ לא</td></tr>
+<tr><td><strong>PUT</strong></td><td>מחליף משאב שלם (replace full)</td><td>✅ כן</td><td>✅ כן</td><td>❌ לא</td></tr>
+<tr><td><strong>DELETE</strong></td><td>מוחק משאב</td><td>✅ כן</td><td>רוב הזמן לא</td><td>❌ לא</td></tr>
+</tbody></table>
+
+<p><strong>הבדלים מרכזיים</strong>:</p>
+<ul class="md-list">
+<li><strong>idempotent</strong> = מספר קריאות עם אותם פרמטרים נותנות אותה תוצאה. PUT/DELETE/GET — כן. POST — לא (כל קריאה יוצרת משאב חדש).</li>
+<li><strong>GET</strong> מציג פרמטרים ב-URL (visible, cacheable), <strong>POST/PUT</strong> ב-body (hidden, large payloads).</li>
+<li><strong>PUT</strong> מחליף משאב שלם (אם השדה לא נשלח, הוא יימחק); <strong>PATCH</strong> (לא במבחן) מעדכן חלקית.</li>
+</ul>
+
+<p><strong>דוגמה</strong>:</p>
+<pre class="md-code lang-js"><code>// GET
+fetch('/users/42')                         // קבל משתמש 42
+// POST
+fetch('/users', {method:'POST', body: ...}) // צור משתמש חדש
+// PUT
+fetch('/users/42', {method:'PUT', body: ...}) // החלף משתמש 42
+// DELETE
+fetch('/users/42', {method:'DELETE'})      // מחק משתמש 42</code></pre>
+
+<hr/>
+
+<h2>2. יתרונות וחסרונות של MongoDB</h2>
+<h3>✅ יתרונות (3+)</h3>
+<ol class="md-list">
+<li><strong>Schemaless / גמישות סכמה</strong> — אפשר לאחסן אובייקטים שונים באותו collection בלי הגדרת טבלה מראש. נוח לפרויקטים שמתפתחים מהר.</li>
+<li><strong>JSON-native</strong> — הנתונים נשמרים כ-BSON (קרוב מאוד ל-JSON), אז יש פחות מיפוי בין הקוד (JS) למסד הנתונים. קל לעבוד עם Node.js.</li>
+<li><strong>Horizontal scaling</strong> — תומך ב-sharding בקלות, אז כשגדלים פיזית יש דרך ברורה לפצל את הנתונים בין שרתים.</li>
+<li><strong>Aggregation pipeline</strong> — שפת שאילתות עוצמתית לעיבוד נתונים ב-pipeline (group, sort, project, lookup וכו').</li>
+<li><strong>Replication</strong> מובנה — replica sets לאמינות גבוהה.</li>
+</ol>
+
+<h3>⚠ חסרונות (2)</h3>
+<ol class="md-list">
+<li><strong>חסר transactions ACID טהורות</strong> (לפחות עד גרסה 4.0; גם אחרי, מוגבל ב-multi-document). לא מתאים לפיננסים/בנקים שדורשים atomicity מלא.</li>
+<li><strong>חסרים joins חזקים</strong> — <code>$lookup</code> קיים אבל איטי ומסובך לעומת SQL JOIN. אם יש הרבה יחסי 1:N — SQL יותר נוח.</li>
+<li><strong>שימוש בזיכרון</strong> — נוטה לאחסן מידע שלם ולא לעבוד בלחץ דיסק.</li>
+</ol>
+
+<hr/>
+
+<h2>3. למה React ולא HTML/JS/CSS פשוט?</h2>
+<p><strong>3 יתרונות של React</strong>:</p>
+<ol class="md-list">
+<li><strong>Components reusable</strong> — מחלקים את ה-UI לחתיכות עצמאיות שאפשר להרכיב מחדש (<code>&lt;Button/&gt;</code>, <code>&lt;Card/&gt;</code>, <code>&lt;Modal/&gt;</code>). DRY ו-maintainable.</li>
+<li><strong>State management מבוסס reactivity</strong> — useState/useEffect גורמים לרינדור אוטומטי כשנתון משתנה. אין צורך לזכור לעדכן DOM ידנית בכל מקום.</li>
+<li><strong>Virtual DOM + diffing</strong> — React מחשב את ההפרש בין מצבי UI ומעדכן רק את החלקים ששונו. ב-vanilla JS הייתי כותב ידנית <code>element.innerHTML = ...</code>.</li>
+</ol>
+<p><strong>1 חיסרון</strong>:</p>
+<ul class="md-list">
+<li><strong>bundle size + complexity</strong> — React מוסיף ~100KB של ספרייה ובניית קוד דרך bundler. לאתר סטטי קטן זה overkill — HTML/CSS פשוטים יספיקו.</li>
+</ul>
+
+<hr/>
+
+<h2>4. הבדל בין function ל-arrow function</h2>
+<table class="md-table"><thead><tr><th>תכונה</th><th><code>function</code> רגיל</th><th><code>=&gt;</code> arrow</th></tr></thead><tbody>
+<tr><td><strong><code>this</code> binding</strong></td><td>דינמי — נקבע לפי מי שקורא לפונקציה</td><td>לקסיקלי — יורש מהסקופ שמסביב</td></tr>
+<tr><td><strong><code>arguments</code></strong></td><td>יש (object דומה למערך)</td><td>אין — צריך rest <code>(...args) =&gt;</code></td></tr>
+<tr><td><strong>constructor</strong></td><td>אפשר <code>new MyFunc()</code></td><td>אסור — <code>new (() =&gt; {})</code> זורק שגיאה</td></tr>
+<tr><td><strong>hoisting</strong></td><td>מורם לראש (function declaration)</td><td>לא — צריך להגדיר לפני שימוש</td></tr>
+<tr><td><strong>method ב-object</strong></td><td><code>this</code> עובד טוב</td><td><code>this</code> יוצא מחוץ ל-object</td></tr>
+</tbody></table>
+
+<p><strong>דוגמה קריטית</strong>:</p>
+<pre class="md-code lang-js"><code>const obj = {
+  count: 5,
+  arrow: () =&gt; console.log(this.count),    // ❌ this = window, count = undefined
+  normal() { console.log(this.count); }    // ✅ this = obj, count = 5
+};</code></pre>
+
+<p><strong>מתי להשתמש בכל אחד</strong>:</p>
+<ul class="md-list">
+<li><code>function</code> — כשצריך <code>this</code> דינמי, בעיקר ל-methods של objects/classes.</li>
+<li>arrow — לקריאות גלויות, callbacks (<code>array.map(x =&gt; x*2)</code>), והיכן ש-<code>this</code> צריך להישאר זה של ההורה (למשל בתוך useEffect).</li>
+</ul>
+
+<hr/>
+
+<h2>5. הסבר על פונקציה רקורסיבית</h2>
+<p><strong>הגדרה</strong>: פונקציה שקוראת לעצמה עם input קטן יותר עד שמגיעה למקרה בסיס.</p>
+<p><strong>שני חלקים חיוניים</strong>:</p>
+<ol class="md-list">
+<li><strong>Base case</strong> — תנאי עצירה. בלעדיו → stack overflow.</li>
+<li><strong>Recursive case</strong> — קריאה לפונקציה עם input "קטן" יותר שמתקרב לבסיס.</li>
+</ol>
+
+<p><strong>דוגמה — factorial</strong>:</p>
+<pre class="md-code lang-js"><code>function factorial(n) {
+  if (n &lt;= 1) return 1;          // base case
+  return n * factorial(n - 1);   // recursive case
+}
+factorial(5); // → 5*4*3*2*1 = 120</code></pre>
+
+<p><strong>איך זה רץ</strong>:</p>
+<pre class="md-code lang-text"><code>factorial(5)
+ → 5 * factorial(4)
+ →   5 * 4 * factorial(3)
+ →     5 * 4 * 3 * factorial(2)
+ →       5 * 4 * 3 * 2 * factorial(1)
+ →         5 * 4 * 3 * 2 * 1
+ → 120</code></pre>
+
+<p><strong>דוגמה שניה — סדרת פיבונאצ'י</strong>:</p>
+<pre class="md-code lang-js"><code>function fib(n) {
+  if (n &lt; 2) return n;                   // base case
+  return fib(n - 1) + fib(n - 2);        // recursive case (×2)
+}
+fib(7); // → 13</code></pre>
+
+<p><strong>שתי בעיות אופייניות</strong>:</p>
+<ul class="md-list">
+<li><strong>חסר base case</strong> → recursion infinite → stack overflow.</li>
+<li><strong>לא קטן יותר</strong> (<code>factorial(n)</code> → <code>factorial(n)</code>) → גם stack overflow.</li>
+</ul>
+
+<p><strong>מתי כדאי להשתמש</strong>: עצים, גרפים, חלוקה-וכיבוש (mergesort, quicksort), בעיות שטבעם רקורסיבי כמו "מצא את כל הקבצים בתת-תיקייה".</p>
+<p><strong>מתי לא</strong>: כשיש lookup פשוט עם loop. רקורסיה בעמודה עמוקה (n&gt;10,000) תקפיץ stack overflow ב-JS — עדיף iterative.</p>
+
+<hr/>
+
+<h2>✅ סיכום מהיר לבחירה לפני המבחן</h2>
+<ul class="md-list">
+<li><strong>שאלה 1 (GET/POST/PUT/DELETE)</strong>: זכור idempotency + body + cacheable.</li>
+<li><strong>שאלה 2 (MongoDB)</strong>: 3 יתרונות (schemaless, JSON-native, scaling), 2 חסרונות (אין ACID חזק, אין JOIN חזק).</li>
+<li><strong>שאלה 3 (React vs vanilla)</strong>: components, reactivity, virtual DOM. חיסרון: bundle size.</li>
+<li><strong>שאלה 4 (function vs arrow)</strong>: this binding (דינמי vs לקסיקלי) הוא ההבדל הקריטי.</li>
+<li><strong>שאלה 5 (recursion)</strong>: base case + recursive case. דוגמה: factorial / fib.</li>
+</ul>
+</div>
+  </section>
+
+</div>
+</body>
+</html>

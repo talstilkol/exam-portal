@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ Active Recall - כרטיסיות חכמות</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); background-attachment: fixed; color: #e0e0e0; min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+  header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #6f42c1 0%, #a855f7 50%, #ec4899 100%); border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); width: 100%; max-width: 800px; }
+  header h1 { font-size: 2.5em; color: white; margin-bottom: 10px; }
+  header p { font-size: 1.1em; color: rgba(255,255,255,0.9); }
+  
+  .back-link { align-self: flex-start; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; }
+  .back-link:hover { background: rgba(255,217,61,0.25); }
+  
+  .flashcard-container { width: 100%; max-width: 600px; perspective: 1000px; margin-bottom: 30px; }
+  .flashcard { width: 100%; height: 350px; position: relative; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .flashcard.is-flipped { transform: rotateY(180deg); }
+  .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; border-radius: 20px; text-align: center; border: 2px solid rgba(255,255,255,0.1); }
+  .card-front { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+  .card-back { background: linear-gradient(135deg, #10b981, #059669); transform: rotateY(180deg); }
+  .card-category { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.3); padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: bold; }
+  .card-content { font-size: 1.6em; font-weight: bold; line-height: 1.4; color: white; }
+  .card-answer { font-size: 1.3em; line-height: 1.6; color: white; }
+  
+  .controls { display: flex; gap: 15px; justify-content: center; width: 100%; max-width: 600px; margin-bottom: 20px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .controls.visible { opacity: 1; pointer-events: auto; }
+  
+  .btn-srs { padding: 15px 20px; border: none; border-radius: 12px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.2s; color: white; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .btn-srs span { font-size: 0.8em; opacity: 0.8; font-weight: normal; }
+  
+  .btn-hard { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  .btn-medium { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .btn-easy { background: linear-gradient(135deg, #10b981, #059669); }
+  .btn-srs:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+  
+  .progress { font-size: 1.2em; color: #ffd93d; font-weight: bold; margin-bottom: 10px; display: flex; justify-content: space-between; width: 100%; max-width: 600px; }
+  .queue-count { color: #4ecdc4; font-size: 0.9em; }
+
+  .flip-hint { color: #aaa; margin-bottom: 15px; font-size: 0.9em; animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+  .finished-state { display: none; text-align: center; background: rgba(0,0,0,0.3); padding: 40px; border-radius: 20px; max-width: 600px; width: 100%; }
+  .finished-state h2 { color: #4ecdc4; margin-bottom: 20px; font-size: 2em; }
+</style>
+  <link rel="stylesheet" href="light-mode.css">
+  <link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+
+<a href="00_dashboard.html" class="back-link">← חזרה לדשבורד</a>
+
+<header>
+  <h1>⚡ מערכת Active Recall</h1>
+  <p>אלגוריתם Spaced Repetition מבטיח שזוכרים הכל לפני המבחן</p>
+</header>
+
+<div class="progress">
+  <span id="progress-text">טוען...</span>
+  <span class="queue-count" id="queue-text">בטור: 0</span>
+</div>
+
+<div class="flip-hint" id="flip-hint">לחץ על הכרטיס כדי לחשוף את התשובה</div>
+
+<div class="flashcard-container" id="fc-container">
+  <div class="flashcard" id="flashcard" onclick="flipCard()">
+    <div class="card-face card-front">
+      <div class="card-category" id="card-category">React</div>
+      <div class="card-content" id="card-question">שאלה</div>
+    </div>
+    <div class="card-face card-back">
+      <div class="card-category">תשובה</div>
+      <div class="card-answer" id="card-answer">תשובה</div>
+    </div>
+  </div>
+</div>
+
+<div class="controls" id="controls">
+  <button class="btn-srs btn-hard" onclick="answerCard('hard')">🔴 קשה <span>יחזור עוד מעט</span></button>
+  <button class="btn-srs btn-medium" onclick="answerCard('medium')">🟡 בינוני <span>יחזור בסוף</span></button>
+  <button class="btn-srs btn-easy" onclick="answerCard('easy')">🟢 קל <span>הוסר מהתור</span></button>
+</div>
+
+<div class="finished-state" id="finished-state">
+  <h2>🎉 סיימת את כל הכרטיסיות להיום!</h2>
+  <p>המוח שלך קלט הכל. תחזור מחר לריענון או שתאפס עכשיו.</p>
+  <br>
+  <button class="btn-srs btn-easy" style="width:200px;margin:auto;" onclick="resetQueue()">אתחל תור מחדש</button>
+</div>
+
+<!-- Load external generated flashcards data -->
+<script src="flashcards_data.js"></script>
+
+<script>
+  const hardcodedFallback = [
+    { cat: 'React', q: 'מה ההבדל בין useEffect בלי מערך לבין מערך ריק []?', a: 'בלי מערך: רץ אחרי **כל** רינדור.\nמערך ריק []: רץ **רק פעם אחת** בהטענה הראשונה.' },
+    { cat: 'JS Core', q: 'מה ההבדל בין slice ל-splice במערכים?', a: 'slice: חותך העתק ולא משנה את המקור.\nsplice: מבצע מוטציה (משנה את המקור ישירות). אסור ב-React!' },
+    { cat: 'Security', q: 'מה זה XSS ואיך React מגן מפניו?', a: 'הזרקת קוד JS זדוני.\nReact מגן ע"י ביצוע Escaping לטקסט.' },
+    { cat: 'Architecture', q: 'מה ההבדל בין Authorization ל-Authentication?', a: 'Authentication: מי אתה (Login).\nAuthorization: מה מותר לך לעשות (Role/Permissions).' }
+  ];
+
+  let allCards = [];
+  if (typeof flashcardsData !== 'undefined' && flashcardsData.length > 0) {
+      allCards = flashcardsData.map(f => ({
+          cat: f.tag || f.cat || 'מושג',
+          q: f.term || f.q,
+          a: f.definition || f.a
+      }));
+  } else {
+      allCards = hardcodedFallback;
+  }
+
+  const SRS_KEY = 'flashcardsSRSData';
+  const QUEUE_KEY = 'flashcardsSessionQueue';
+  let srsData = {};
+  let queue = [];
+  
+  const flashcard = document.getElementById('flashcard');
+  const qEl = document.getElementById('card-question');
+  const aEl = document.getElementById('card-answer');
+  const catEl = document.getElementById('card-category');
+  const progEl = document.getElementById('progress-text');
+  const queueEl = document.getElementById('queue-text');
+  const controls = document.getElementById('controls');
+  const hint = document.getElementById('flip-hint');
+  
+  let isFlipped = false;
+
+  function initApp() {
+    try {
+      const savedSrs = localStorage.getItem(SRS_KEY);
+      if (savedSrs) srsData = JSON.parse(savedSrs);
+      
+      const savedQueue = localStorage.getItem(QUEUE_KEY);
+      if (savedQueue) {
+        queue = JSON.parse(savedQueue);
+      }
+      
+      if (!queue || queue.length === 0) {
+        buildQueue();
+      }
+    } catch { buildQueue(); }
+    
+    renderCurrentCard();
+  }
+
+  function buildQueue() {
+    queue = [];
+    const now = Date.now();
+    let dueCards = [];
+    
+    // Find all due cards
+    for (let i = 0; i < allCards.length; i++) {
+       const state = srsData[i];
+       if (!state || state.nextReview <= now) {
+          dueCards.push(i);
+       }
+    }
+    
+    // Limit to max 50 cards per session to prevent overwhelm
+    queue = dueCards.sort(() => Math.random() - 0.5).slice(0, 50);
+    saveQueue();
+  }
+
+  function resetQueue(force = true) {
+    if (force && !confirm('האם לאפס את כל נתוני השינון ולהתחיל מאפס?')) return;
+    if (force) {
+      srsData = {};
+      localStorage.removeItem(SRS_KEY);
+    }
+    buildQueue();
+    renderCurrentCard();
+  }
+
+  function saveQueue() {
+    localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+  }
+
+  function renderCurrentCard() {
+    isFlipped = false;
+    flashcard.classList.remove('is-flipped');
+    controls.classList.remove('visible');
+    hint.style.display = 'block';
+    
+    if (queue.length === 0) {
+      document.getElementById('fc-container').style.display = 'none';
+      document.getElementById('finished-state').style.display = 'block';
+      progEl.textContent = 'הושלם להיום!';
+      queueEl.textContent = 'בטור: 0';
+      return;
+    }
+    
+    document.getElementById('fc-container').style.display = 'block';
+    document.getElementById('finished-state').style.display = 'none';
+
+    const cardIndex = queue[0];
+    const card = allCards[cardIndex];
+    
+    setTimeout(() => {
+      qEl.textContent = card.q;
+      aEl.innerHTML = card.a.replace(/\n/g, '<br>');
+      catEl.textContent = card.cat;
+      
+      progEl.textContent = `כרטיסיה מתוך תור היומי`;
+      queueEl.textContent = `נשארו בתור: ${queue.length}`;
+    }, 150);
+  }
+
+  function flipCard() {
+    if (queue.length === 0) return;
+    if (!isFlipped) {
+      isFlipped = true;
+      flashcard.classList.add('is-flipped');
+      hint.style.display = 'none';
+      controls.classList.add('visible');
+      
+      // Inject Anki-style buttons if not present
+      if (!controls.querySelector('.srs-btn-container')) {
+        controls.innerHTML = `
+          <div class="srs-btn-container" style="display:flex; gap:10px; margin-top:20px; width:100%;">
+            <button onclick="answerCard('hard')" style="flex:1; padding:12px; background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid #ef4444; border-radius:8px; cursor:pointer; font-weight:bold;">🔴 קשה (היום)</button>
+            <button onclick="answerCard('medium')" style="flex:1; padding:12px; background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid #f59e0b; border-radius:8px; cursor:pointer; font-weight:bold;">🟡 בינוני (מחר)</button>
+            <button onclick="answerCard('easy')" style="flex:1; padding:12px; background:rgba(16,185,129,0.2); color:#10b981; border:1px solid #10b981; border-radius:8px; cursor:pointer; font-weight:bold;">🟢 קל (שבוע+)</button>
+          </div>
+        `;
+      }
+    }
+  }
+
+  function answerCard(level) {
+    if (!isFlipped || queue.length === 0) return;
+    
+    const cardIndex = queue.shift();
+    const card = allCards[cardIndex];
+    let state = srsData[cardIndex] || { interval: 0, repetition: 0, efactor: 2.5, nextReview: 0 };
+    
+    if (level === 'hard') {
+      // Keep in queue for today
+      const insertAt = Math.min(3, queue.length);
+      queue.splice(insertAt, 0, cardIndex);
+      state.repetition = 0;
+      state.interval = 0;
+      if (typeof recordMistake === 'function') recordMistake(card.cat);
+    } 
+    else if (level === 'medium') {
+      // Move to end of queue for one last check today, schedule for tomorrow
+      queue.push(cardIndex);
+      state.repetition = Math.max(1, state.repetition);
+      state.interval = 1;
+      state.nextReview = Date.now() + 86400000; // Tomorrow
+    } 
+    else if (level === 'easy') {
+      // SM-2 calculations
+      if (state.repetition === 0) state.interval = 1;
+      else if (state.repetition === 1) state.interval = 6;
+      else state.interval = Math.round(state.interval * state.efactor);
+      
+      state.repetition++;
+      state.efactor = Math.max(1.3, state.efactor + 0.1);
+      state.nextReview = Date.now() + (state.interval * 86400000);
+      if (typeof recordCorrect === 'function') recordCorrect(card.cat);
+    }
+    
+    if (typeof trackFlashcardAnswered === 'function') trackFlashcardAnswered();
+    
+    srsData[cardIndex] = state;
+    localStorage.setItem(SRS_KEY, JSON.stringify(srsData));
+    saveQueue();
+    renderCurrentCard();
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') { 
+      e.preventDefault(); 
+      if (!isFlipped) flipCard(); 
+    }
+    else if (isFlipped) {
+      if (e.code === 'Digit1' || e.code === 'ArrowLeft') answerCard('hard');
+      if (e.code === 'Digit2' || e.code === 'ArrowUp') answerCard('medium');
+      if (e.code === 'Digit3' || e.code === 'ArrowRight') answerCard('easy');
+    }
+  });
+
+  // Swipe Gestures
+  let touchStartX = 0;
+  let touchStartY = 0;
+  
+  flashcard.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  });
+  
+  flashcard.addEventListener('touchend', e => {
+    if (!isFlipped) return; // Only process swipe if card is flipped and waiting for answer
+    
+    let touchEndX = e.changedTouches[0].screenX;
+    let touchEndY = e.changedTouches[0].screenY;
+    
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    
+    if (Math.abs(deltaX) > 80 || Math.abs(deltaY) > 80) { 
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal swipe
+        if (deltaX > 0) {
+          answerCard('easy'); // Swipe right
+        } else {
+          answerCard('hard'); // Swipe left
+        }
+      } else {
+        // Vertical swipe
+        if (deltaY < 0) {
+          answerCard('medium'); // Swipe up
+        }
+      }
+    }
+  });
+
+  initApp();
+</script>
+
+<script src="progress-engine.js"></script>
+<script src="theme-toggle.js"></script>
+<script src="breadcrumbs.js"></script>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

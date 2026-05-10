@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗺️ מפת מסלול הלמידה</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#0f0c29 0%,#1a1a2e 30%,#16213e 60%,#1a3a4a 100%);background-attachment:fixed;color:#e0e0e0;min-height:100vh;padding:20px}
+.container{max-width:900px;margin:0 auto}
+.back-link{display:inline-block;margin-bottom:20px;color:#ffd93d;text-decoration:none;padding:10px 20px;background:rgba(255,217,61,0.1);border-radius:8px;transition:all .3s}
+.back-link:hover{background:rgba(255,217,61,0.25)}
+header{text-align:center;padding:50px 20px 30px;background:linear-gradient(135deg,#667eea 0%,#764ba2 40%,#ec4899 100%);border-radius:24px;margin-bottom:50px;box-shadow:0 15px 50px rgba(118,75,162,0.4);position:relative;overflow:hidden}
+header::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(255,255,255,0.1),transparent 60%)}
+header h1{font-size:2.8em;color:white;margin-bottom:10px;position:relative;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
+header p{color:rgba(255,255,255,0.9);font-size:1.2em;position:relative}
+
+/* === TRAIL === */
+.trail{position:relative;padding:20px 0}
+.trail::before{content:'';position:absolute;right:50%;top:0;bottom:0;width:6px;background:linear-gradient(180deg,#4ecdc4,#667eea,#ffd93d,#ff6b6b,#764ba2);border-radius:3px;transform:translateX(50%);box-shadow:0 0 20px rgba(78,205,196,0.3)}
+
+.stage{position:relative;margin-bottom:60px}
+.stage-header{text-align:center;position:relative;z-index:2;margin-bottom:30px}
+.stage-badge{display:inline-block;padding:12px 30px;border-radius:50px;font-size:1.3em;font-weight:bold;color:white;box-shadow:0 6px 25px rgba(0,0,0,0.3);position:relative}
+.stage-badge::after{content:'';position:absolute;bottom:-15px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent}
+.stage-1 .stage-badge{background:linear-gradient(135deg,#4ecdc4,#2c7873)}.stage-1 .stage-badge::after{border-top:15px solid #2c7873}
+.stage-2 .stage-badge{background:linear-gradient(135deg,#667eea,#5a67d8)}.stage-2 .stage-badge::after{border-top:15px solid #5a67d8}
+.stage-3 .stage-badge{background:linear-gradient(135deg,#ffd93d,#f59e0b)}.stage-3 .stage-badge{color:#1a1a2e}.stage-3 .stage-badge::after{border-top:15px solid #f59e0b}
+.stage-4 .stage-badge{background:linear-gradient(135deg,#ff6b6b,#ee5a6f)}.stage-4 .stage-badge::after{border-top:15px solid #ee5a6f}
+.stage-5 .stage-badge{background:linear-gradient(135deg,#764ba2,#6f42c1)}.stage-5 .stage-badge::after{border-top:15px solid #6f42c1}
+
+.stops{display:flex;flex-direction:column;gap:18px}
+
+.stop{display:flex;align-items:stretch;gap:0;position:relative}
+.stop:nth-child(odd){flex-direction:row-reverse}
+
+.stop-connector{width:60px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.stop-connector::before{content:'';width:40px;height:4px;border-radius:2px;position:absolute}
+.stage-1 .stop-connector::before{background:#4ecdc4}
+.stage-2 .stop-connector::before{background:#667eea}
+.stage-3 .stop-connector::before{background:#ffd93d}
+.stage-4 .stop-connector::before{background:#ff6b6b}
+.stage-5 .stop-connector::before{background:#764ba2}
+
+.stop-dot{width:22px;height:22px;border-radius:50%;border:3px solid;position:absolute;z-index:2;background:#1a1a2e}
+.stage-1 .stop-dot{border-color:#4ecdc4;box-shadow:0 0 10px rgba(78,205,196,0.5)}
+.stage-2 .stop-dot{border-color:#667eea;box-shadow:0 0 10px rgba(102,126,234,0.5)}
+.stage-3 .stop-dot{border-color:#ffd93d;box-shadow:0 0 10px rgba(255,217,61,0.5)}
+.stage-4 .stop-dot{border-color:#ff6b6b;box-shadow:0 0 10px rgba(255,107,107,0.5)}
+.stage-5 .stop-dot{border-color:#764ba2;box-shadow:0 0 10px rgba(118,75,162,0.5)}
+
+.stop-card{flex:1;max-width:calc(50% - 60px);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 20px;transition:all .3s;text-decoration:none;color:inherit;display:block;position:relative}
+.stop-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.3);border-color:rgba(78,205,196,0.3);background:rgba(255,255,255,0.07)}
+.stop-card.completed {border-color: #28a745; background: rgba(40, 167, 69, 0.08); box-shadow: 0 0 15px rgba(40, 167, 69, 0.2);}
+.stop-card.completed::after {content:'✅'; position:absolute; top:15px; left:15px; font-size:1.5em; opacity:0.8;}
+.stop-dot.completed {background: #28a745; border-color: #28a745; box-shadow: 0 0 15px #28a745;}
+.stop-connector.completed::before {background: #28a745;}
+
+.stop-num{font-size:0.8em;font-weight:bold;margin-bottom:4px;opacity:0.7}
+.stop-icon{font-size:1.5em;margin-bottom:6px}
+.stop-title{font-size:1.05em;font-weight:bold;color:#fff;margin-bottom:6px}
+.stop-desc{font-size:0.85em;color:#a0a0a0;line-height:1.5;margin-bottom:8px}
+
+.mark-done-btn { display:inline-block; margin-top:10px; padding:4px 10px; font-size:0.8em; border-radius:5px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; cursor:pointer; transition:all 0.2s;}
+.mark-done-btn:hover { background:rgba(255,255,255,0.2); }
+.stop-card.completed .mark-done-btn { background:rgba(40,167,69,0.2); border-color:#28a745; color:#28a745; }
+.stop-tags{display:flex;flex-wrap:wrap;gap:5px}
+.stop-tag{padding:2px 8px;border-radius:10px;font-size:0.7em;font-weight:bold}
+.t1{background:rgba(78,205,196,0.15);color:#4ecdc4}
+.t2{background:rgba(102,126,234,0.15);color:#667eea}
+.t3{background:rgba(255,217,61,0.15);color:#ffd93d}
+.t4{background:rgba(255,107,107,0.15);color:#ff6b6b}
+.t5{background:rgba(118,75,162,0.15);color:#c084fc}
+.diff{padding:2px 8px;border-radius:10px;font-size:0.7em;font-weight:bold}
+.d-easy{background:#28a745;color:#fff}
+.d-med{background:#ffc107;color:#333}
+.d-hard{background:#ff6b6b;color:#fff}
+.d-ext{background:#dc3545;color:#fff}
+
+/* Tools section */
+.tools-section{margin-top:60px;text-align:center;position:relative;z-index:2}
+.tools-section h2{color:#ffd93d;font-size:1.6em;margin-bottom:25px}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px}
+.tool-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px;text-decoration:none;color:inherit;transition:all .3s;display:block}
+.tool-card:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,0.3);border-color:rgba(255,217,61,0.3)}
+.tool-card .icon{font-size:2em;margin-bottom:8px}
+.tool-card .title{color:#fff;font-weight:bold;margin-bottom:6px}
+.tool-card .desc{color:#a0a0a0;font-size:0.85em;line-height:1.5}
+
+.finish-line{text-align:center;margin:50px 0 30px;position:relative;z-index:2}
+.finish-badge{display:inline-block;padding:20px 40px;background:linear-gradient(135deg,#ffd93d,#f59e0b);border-radius:20px;font-size:1.5em;font-weight:bold;color:#1a1a2e;box-shadow:0 10px 40px rgba(255,217,61,0.3)}
+
+footer{text-align:center;padding:30px;color:rgba(255,255,255,0.4)}
+.scroll-top{position:fixed;bottom:30px;left:30px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;width:55px;height:55px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 15px rgba(102,126,234,0.4);border:none;font-size:1.8em;opacity:0;transition:all .3s;z-index:1000}
+.scroll-top.visible{opacity:1}
+
+@media(max-width:768px){
+  .stop{flex-direction:column!important;align-items:center}
+  .stop-card{max-width:100%}
+  .stop-connector{width:100%;height:30px}
+  .trail::before{display:none}
+  header h1{font-size:2em}
+}
+</style>
+  <link rel="stylesheet" href="light-mode.css">
+  <link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+<div class="container">
+<a href="00_dashboard.html" class="back-link">← חזרה לדשבורד</a>
+
+<header>
+<h1>🗺️ מסלול הלמידה</h1>
+<p>מהיסודות ועד לארכיטקטורה מתקדמת — עקוב אחרי השביל</p>
+</header>
+
+<div class="trail">
+
+<!-- ===== STAGE 1: FOUNDATIONS ===== -->
+<div class="stage stage-1">
+<div class="stage-header"><div class="stage-badge">🏗️ שלב 1 — יסודות</div></div>
+<div class="stops">
+
+<div class="stop">
+<a href="01_master_theory.html#bigpicture" class="stop-card">
+<div class="stop-num">1.</div>
+<div class="stop-icon">🌍</div>
+<div class="stop-title">התמונה הגדולה</div>
+<div class="stop-desc">Frontend, Backend, Database — מי אחראי על מה ואיך הכל מתחבר.</div>
+<div class="stop-tags"><span class="diff d-easy">קל</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#html" class="stop-card">
+<div class="stop-num">2.</div>
+<div class="stop-icon">🦴</div>
+<div class="stop-title">HTML — שלד הדף</div>
+<div class="stop-desc">תגיות, סמנטיקה, נגישות. השלד שעליו הכל בנוי.</div>
+<div class="stop-tags"><span class="diff d-easy">קל</span><span class="stop-tag t1">3 תתי-נושאים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#css" class="stop-card">
+<div class="stop-num">3.</div>
+<div class="stop-icon">🎨</div>
+<div class="stop-title">CSS — עיצוב ו-Layout</div>
+<div class="stop-desc">Selectors, Box Model, Flexbox, Grid, Position, Specificity.</div>
+<div class="stop-tags"><span class="diff d-med">בינוני</span><span class="stop-tag t1">7 תתי-נושאים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+</div></div>
+
+<!-- ===== STAGE 2: JS CORE ===== -->
+<div class="stage stage-2">
+<div class="stage-header"><div class="stage-badge">⚡ שלב 2 — JavaScript Core</div></div>
+<div class="stops">
+
+<div class="stop">
+<a href="01_master_theory.html#js-basics" class="stop-card">
+<div class="stop-num">4.</div>
+<div class="stop-icon">📦</div>
+<div class="stop-title">JavaScript — יסודות</div>
+<div class="stop-desc">const/let/var, טיפוסים, Array Methods, Spread, Optional Chaining.</div>
+<div class="stop-tags"><span class="diff d-med">בינוני</span><span class="stop-tag t2">5 תתי-נושאים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#reference" class="stop-card">
+<div class="stop-num">5.</div>
+<div class="stop-icon">🔗</div>
+<div class="stop-title">Reference vs Value</div>
+<div class="stop-desc">Primitives, Objects, Shallow/Deep Copy, ההשפעה על React.</div>
+<div class="stop-tags"><span class="diff d-med">בינוני</span><span class="stop-tag t2">5 תתי-נושאים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#equality" class="stop-card">
+<div class="stop-num">6.</div>
+<div class="stop-icon">⚖️</div>
+<div class="stop-title">השוואות == / === / NaN</div>
+<div class="stop-desc">Type coercion, NaN, typeof מלכודות — טעויות נפוצות.</div>
+<div class="stop-tags"><span class="diff d-med">בינוני</span><span class="stop-tag t2">3 תתי-נושאים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#functions" class="stop-card">
+<div class="stop-num">7.</div>
+<div class="stop-icon">⚙️</div>
+<div class="stop-title">פונקציות — Arrow vs Regular</div>
+<div class="stop-desc">this, hoisting, arguments — ההבדלים הקריטיים.</div>
+<div class="stop-tags"><span class="diff d-med">בינוני</span><span class="stop-tag t2">3 תתי-נושאים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+</div></div>
+
+<!-- ===== STAGE 3: ADVANCED JS ===== -->
+<div class="stage stage-3">
+<div class="stage-header"><div class="stage-badge">🔥 שלב 3 — JS מתקדם (הקשה!)</div></div>
+<div class="stops">
+
+<div class="stop">
+<a href="01_master_theory.html#async" class="stop-card">
+<div class="stop-num">8.</div>
+<div class="stop-icon">🔄</div>
+<div class="stop-title">Async & Event Loop</div>
+<div class="stop-desc">Micro/Macro tasks, Promises, async/await, Race Conditions.</div>
+<div class="stop-tags"><span class="diff d-hard">קשה</span><span class="stop-tag t3">6 תתי-נושאים</span><span class="stop-tag t4">🖼️ 3 ציורים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#closures" class="stop-card">
+<div class="stop-num">9.</div>
+<div class="stop-icon">🔒</div>
+<div class="stop-title">Closures + באגים ב-React</div>
+<div class="stop-desc">Stale closures, setTimeout bugs, setInterval bugs, חוקי סבתא.</div>
+<div class="stop-tags"><span class="diff d-ext">קשה מאוד</span><span class="stop-tag t3">5 תתי-נושאים</span><span class="stop-tag t4">🖼️ 4 ציורים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#dom" class="stop-card">
+<div class="stop-num">10.</div>
+<div class="stop-icon">🌳</div>
+<div class="stop-title">DOM ואירועים</div>
+<div class="stop-desc">querySelector, innerHTML, Events, Bubbling, target vs currentTarget.</div>
+<div class="stop-tags"><span class="diff d-med">בינוני</span><span class="stop-tag t3">3 תתי-נושאים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+</div></div>
+
+<!-- ===== STAGE 4: REACT ===== -->
+<div class="stage stage-4">
+<div class="stage-header"><div class="stage-badge">⚛️ שלב 4 — React & TypeScript</div></div>
+<div class="stops">
+
+<div class="stop">
+<a href="01_master_theory.html#ts" class="stop-card">
+<div class="stop-num">11.</div>
+<div class="stop-icon">🛡️</div>
+<div class="stop-title">TypeScript</div>
+<div class="stop-desc">Types, Interfaces, Generics, Type Guards — השריון של JS.</div>
+<div class="stop-tags"><span class="diff d-hard">קשה</span><span class="stop-tag t4">🖼️ 2 ציורים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#react" class="stop-card">
+<div class="stop-num">12.</div>
+<div class="stop-icon">⚛️</div>
+<div class="stop-title">React</div>
+<div class="stop-desc">Components, Props, JSX, Conditional Rendering, Lists & Keys.</div>
+<div class="stop-tags"><span class="diff d-med">בינוני</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#hooks" class="stop-card">
+<div class="stop-num">13.</div>
+<div class="stop-icon">🪝</div>
+<div class="stop-title">React Hooks</div>
+<div class="stop-desc">useState, useEffect, useRef, useMemo, useCallback, Lifecycle.</div>
+<div class="stop-tags"><span class="diff d-hard">קשה</span><span class="stop-tag t4">🖼️ 3 ציורים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+</div></div>
+
+<!-- ===== STAGE 5: BACKEND ===== -->
+<div class="stage stage-5">
+<div class="stage-header"><div class="stage-badge">🖥️ שלב 5 — שרת וארכיטקטורה</div></div>
+<div class="stops">
+
+<div class="stop">
+<a href="01_master_theory.html#node" class="stop-card">
+<div class="stop-num">14.</div>
+<div class="stop-icon">🟢</div>
+<div class="stop-title">Node.js</div>
+<div class="stop-desc">Runtime, require/import, modules, npm, file system.</div>
+<div class="stop-tags"><span class="diff d-med">בינוני</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#express" class="stop-card">
+<div class="stop-num">15.</div>
+<div class="stop-icon">🚂</div>
+<div class="stop-title">Express</div>
+<div class="stop-desc">Routing, Middleware, REST API, CRUD, Error Handling.</div>
+<div class="stop-tags"><span class="diff d-med">בינוני</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#nextjs" class="stop-card">
+<div class="stop-num">16.</div>
+<div class="stop-icon">▲</div>
+<div class="stop-title">Next.js</div>
+<div class="stop-desc">SSR, SSG, API Routes, App Router, Server Components.</div>
+<div class="stop-tags"><span class="diff d-hard">קשה</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#database" class="stop-card">
+<div class="stop-num">17.</div>
+<div class="stop-icon">🗄️</div>
+<div class="stop-title">Database</div>
+<div class="stop-desc">SQL vs NoSQL, MongoDB, Mongoose, CRUD, Relations.</div>
+<div class="stop-tags"><span class="diff d-hard">קשה</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#auth" class="stop-card">
+<div class="stop-num">18.</div>
+<div class="stop-icon">🔐</div>
+<div class="stop-title">Auth & Security</div>
+<div class="stop-desc">JWT, bcrypt, CORS, XSS, CSRF — אבטחת המערכת.</div>
+<div class="stop-tags"><span class="diff d-hard">קשה</span><span class="stop-tag t5">🖼️ 2 ציורים</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+<div class="stop">
+<a href="01_master_theory.html#devops" class="stop-card">
+<div class="stop-num">19.</div>
+<div class="stop-icon">🚀</div>
+<div class="stop-title">DevOps</div>
+<div class="stop-desc">Vercel, Docker, CI/CD, Environment Variables.</div>
+<div class="stop-tags"><span class="diff d-med">בינוני</span></div>
+</a>
+<div class="stop-connector"><div class="stop-dot"></div></div>
+</div>
+
+</div></div>
+
+</div><!-- end trail -->
+
+<!-- FINISH LINE -->
+<div class="finish-line">
+<div class="finish-badge">🏁 קו סיום — דף עזר מהיר + מבחנים</div>
+</div>
+
+<!-- TOOLS -->
+<div class="tools-section">
+<h2>🧰 כלי עזר במסלול</h2>
+<div class="tools-grid">
+<a href="04_algorithms.html" class="tool-card">
+<div class="icon">🧮</div>
+<div class="title">10 אלגוריתמים + הרצת קוד</div>
+<div class="desc">תרגול עם כפתור Run חי. ערוך והרץ ישירות בדפדפן.</div>
+</a>
+<a href="05_snippets.html" class="tool-card">
+<div class="icon">📋</div>
+<div class="title">סנפטים — Copy & Paste</div>
+<div class="desc">תבניות מוכנות: React, Express, Hooks, Router, Tailwind.</div>
+</a>
+<a href="03_exam_solutions.html" class="tool-card">
+<div class="icon">✈️</div>
+<div class="title">4 מבחנים אמיתיים</div>
+<div class="desc">בקרת טיסות, בנק, מחסן, מטבעות — פתרון שלב-אחרי-שלב.</div>
+</a>
+<a href="08_flashcards_quiz.html" class="tool-card">
+<div class="icon">🃏</div>
+<div class="title">כרטיסיות שינון</div>
+<div class="desc">36+ שאלות Active Recall עם כרטיסיות 3D.</div>
+</a>
+<a href="09_mini_quiz.html" class="tool-card">
+<div class="icon">⏱️</div>
+<div class="title">סימולטור מבחן</div>
+<div class="desc">10 שאלות מכשילות + טיימר 20 דק'. כמו במבחן האמיתי.</div>
+</a>
+<a href="02_missing_topics.html" class="tool-card">
+<div class="icon">🧩</div>
+<div class="title">נושאים חסרים</div>
+<div class="desc">השלמות מתקדמות ו-Deep Dives.</div>
+</a>
+</div>
+</div>
+
+<footer><p>🗺️ מפת מסלול — Full-Stack Master Guide</p><p>🎯 100/100 — בא לקראתך!</p></footer>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+window.addEventListener('scroll',()=>{const b=document.getElementById('scrollTop');window.scrollY>300?b.classList.add('visible'):b.classList.remove('visible')});
+
+// Interactive Tree Progress Tracking
+document.addEventListener('DOMContentLoaded', () => {
+  const SITEMAP_STORAGE_KEY = 'sitemapProgress';
+  let progress = {};
+  
+  try {
+    progress = JSON.parse(localStorage.getItem(SITEMAP_STORAGE_KEY)) || {};
+  } catch (e) {
+    progress = {};
+  }
+
+  const stops = document.querySelectorAll('.stop');
+  
+  stops.forEach((stop, index) => {
+    const card = stop.querySelector('.stop-card');
+    const dot = stop.querySelector('.stop-dot');
+    const connector = stop.querySelector('.stop-connector');
+    if (!card) return;
+    
+    // Use the href hash as the unique ID, or index if missing
+    const id = card.getAttribute('href').split('#')[1] || `stop-${index}`;
+    
+    // Add "Mark as Done" button
+    const btn = document.createElement('button');
+    btn.className = 'mark-done-btn';
+    btn.textContent = progress[id] ? 'סומן כהושלם ✓' : 'סמן כהושלם';
+    
+    // Prevent link click when clicking the button
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      progress[id] = !progress[id];
+      localStorage.setItem(SITEMAP_STORAGE_KEY, JSON.stringify(progress));
+      
+      updateNodeUI(id, progress[id], card, dot, connector, btn);
+    });
+    
+    card.appendChild(btn);
+    
+    // Initial UI update
+    if (progress[id]) {
+      updateNodeUI(id, true, card, dot, connector, btn);
+    }
+  });
+  
+  function updateNodeUI(id, isCompleted, card, dot, connector, btn) {
+    if (isCompleted) {
+      card.classList.add('completed');
+      if (dot) dot.classList.add('completed');
+      if (connector) connector.classList.add('completed');
+      btn.textContent = 'סומן כהושלם ✓';
+    } else {
+      card.classList.remove('completed');
+      if (dot) dot.classList.remove('completed');
+      if (connector) connector.classList.remove('completed');
+      btn.textContent = 'סמן כהושלם';
+    }
+  }
+});
+</script>
+<script src="concept-widget.js"></script>
+<script src="theme-toggle.js"></script>
+<script src="breadcrumbs.js"></script>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

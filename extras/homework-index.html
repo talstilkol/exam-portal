@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>שיעורי בית ושיעורים — צ'ק-ליסט</title>
+<style>
+:root{--bg:#f8fafc;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--shadow:5px 5px 0 #0f172a}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding:24px}
+.wrap{max-width:900px;margin:auto}
+.hero{background:linear-gradient(135deg,#111827,#312e81);color:#fff;border:3px solid #000;border-radius:22px;padding:28px;margin-bottom:24px;box-shadow:var(--shadow)}
+.hero h1{margin:0;font-size:clamp(26px,5vw,40px)}
+.hero p{margin:8px 0 0;color:#dbeafe}
+.section{background:var(--card);border:3px solid var(--border);border-radius:18px;margin-bottom:20px;overflow:hidden;box-shadow:var(--shadow)}
+.section-head{padding:14px 18px;background:linear-gradient(135deg,#111827,#1e3a8a);color:#fff;border-bottom:3px solid #000}
+.section-head h2{margin:0;font-size:22px}
+.section-body{padding:16px;overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{background:#111827;color:var(--gold);text-align:right;padding:10px;font-size:14px}
+td{border:1px solid #cbd5e1;padding:10px;vertical-align:top}
+tr:nth-child(even) td{background:#f1f5f9}
+.tag{display:inline-block;background:#111827;color:var(--gold);border:2px solid #000;border-radius:6px;padding:2px 8px;font-weight:800;font-size:11px}
+input[type=checkbox]{transform:scale(1.2);margin-left:6px;cursor:pointer}
+label{cursor:pointer;font-weight:700;font-size:13px}
+.progress{margin:16px 0 0;padding:14px;background:#ecfdf5;border:2px solid #000;border-radius:12px;font-weight:800;text-align:center;font-size:15px}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155}
+  .hero{background:linear-gradient(135deg,#020617,#1e1b4b)}
+  tr:nth-child(even) td{background:#0f172a}
+  td{border-color:#334155}
+  .progress{background:#064e3b;color:#a7f3d0}
+}
+@media(max-width:600px){
+  body{padding:12px}
+  .hero{padding:18px}
+  th,td{padding:7px;font-size:13px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>📘 שיעורי בית ושיעורים</h1>
+    <p>צ'ק-ליסט חזרה על כל חומרי הקורס. סמנו מה סיימתם — ההתקדמות נשמרת אוטומטית.</p>
+  </header>
+
+  <div class="progress" id="progress-bar">טוען...</div>
+
+  <section class="section">
+    <div class="section-head"><h2>📝 שיעורי בית / פרויקטים</h2></div>
+    <div class="section-body">
+      <table>
+        <thead><tr><th>חומר</th><th>מה חייבים לדעת</th><th>נושא</th><th>סימון</th></tr></thead>
+        <tbody>
+          <tr><td><strong>שיעורי בית 11</strong></td><td>מערכים, sort, חיתוך/חיפוש, Arrow functions, מחשבון מטבע UI/UX עם AI</td><td><span class="tag">JS Arrays / UI</span></td><td><label><input type="checkbox" data-check="hw-1"> חזרתי</label></td></tr>
+          <tr><td><strong>שיעורי בית 12</strong></td><td>map, forEach, filter, spread, גילאים, אותיות גדולות/קטנות</td><td><span class="tag">JS Arrays</span></td><td><label><input type="checkbox" data-check="hw-2"> חזרתי</label></td></tr>
+          <tr><td><strong>שיעורי בית 13</strong></td><td>DOM, אובייקטים, מחיר מוצר בזמן הקלדה, מערכת תלמידים קטנה</td><td><span class="tag">DOM / Objects</span></td><td><label><input type="checkbox" data-check="hw-3"> חזרתי</label></td></tr>
+          <tr><td><strong>שיעורי בית 18</strong></td><td>NodeJS Login/Signup, GET/POST, form, שמירת משתמש לקובץ בשרת</td><td><span class="tag">Node / Express</span></td><td><label><input type="checkbox" data-check="hw-4"> חזרתי</label></td></tr>
+          <tr><td><strong>שיעורי בית 22</strong></td><td>React basics: Vite, students.js, Header, Dashboard, Footer, AddStudent useState</td><td><span class="tag">React Basics</span></td><td><label><input type="checkbox" data-check="hw-5"> חזרתי</label></td></tr>
+          <tr><td><strong>שיעורי בית 23</strong></td><td>Smart House: חדרים, מוצרים, routing דינמי, validations, Vercel</td><td><span class="tag">React Project</span></td><td><label><input type="checkbox" data-check="hw-6"> חזרתי</label></td></tr>
+          <tr><td><strong>שיעורי בית 24</strong></td><td>Products Filter: fetch מ-dummyjson, useEffect, useRef, select קטגוריות</td><td><span class="tag">React Hooks</span></td><td><label><input type="checkbox" data-check="hw-7"> חזרתי</label></td></tr>
+          <tr><td><strong>פרויקט 25</strong></td><td>Best Movie: דירוג, top 3, סרטים רנדומליים, add/search/delete</td><td><span class="tag">React Project</span></td><td><label><input type="checkbox" data-check="hw-8"> חזרתי</label></td></tr>
+          <tr><td><strong>TypeScript 1</strong></td><td>Book type, enum genres, add/search/update, User unions/interfaces</td><td><span class="tag">TypeScript</span></td><td><label><input type="checkbox" data-check="hw-9"> חזרתי</label></td></tr>
+          <tr><td><strong>React + TS 2</strong></td><td>Budget Manager: transactions, summary, categories, edit/delete, Tailwind</td><td><span class="tag">React + TS</span></td><td><label><input type="checkbox" data-check="hw-10"> חזרתי</label></td></tr>
+          <tr><td><strong>חוברת JavaScript</strong></td><td>Task Manager מדורג: variables, conditions, arrays, DOM, events, storage, async/fetch</td><td><span class="tag">JS Full Practice</span></td><td><label><input type="checkbox" data-check="hw-11"> חזרתי</label></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>🎓 שיעורים</h2></div>
+    <div class="section-body">
+      <table>
+        <thead><tr><th>שיעור</th><th>תוכן קריטי</th><th>סימון</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Lesson 11</strong></td><td>מערכים, by value/reference, sort, splice, forEach, filter, arrow functions</td><td><label><input type="checkbox" data-check="lesson-1"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 13</strong></td><td>Objects, DOM methods, create/remove/append, Classes, inheritance</td><td><label><input type="checkbox" data-check="lesson-2"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 15</strong></td><td>try/catch/throw, closure, async, setTimeout, Promise</td><td><label><input type="checkbox" data-check="lesson-3"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 16</strong></td><td>NodeJS, V8, npm, CLI, package.json, require/module.exports</td><td><label><input type="checkbox" data-check="lesson-4"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 17</strong></td><td>HTTP, URL, REST API, Express, middleware, static files, forms</td><td><label><input type="checkbox" data-check="lesson-5"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 20</strong></td><td>Database, NoSQL, MongoDB, Atlas, collection/document, Mongoose</td><td><label><input type="checkbox" data-check="lesson-6"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 21</strong></td><td>React setup with Vite, files, components, JSX, props</td><td><label><input type="checkbox" data-check="lesson-7"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 22</strong></td><td>Hooks, useState, immutable vs mutable, props functions</td><td><label><input type="checkbox" data-check="lesson-8"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 23</strong></td><td>React Router, Link, useNavigate, Context API</td><td><label><input type="checkbox" data-check="lesson-9"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 24</strong></td><td>useEffect, useMemo, useRef, fetching without infinite loop</td><td><label><input type="checkbox" data-check="lesson-10"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 25</strong></td><td>Tailwind CSS, utility classes, responsive design</td><td><label><input type="checkbox" data-check="lesson-11"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 26</strong></td><td>TypeScript: types, enum, tuple, functions, objects</td><td><label><input type="checkbox" data-check="lesson-12"> הבנתי</label></td></tr>
+          <tr><td><strong>Lesson 26 part 2</strong></td><td>TypeScript + React: typed props/state/models</td><td><label><input type="checkbox" data-check="lesson-13"> הבנתי</label></td></tr>
+          <tr><td><strong>AI בפיתוח</strong></td><td>איך להשתמש ב-AI נכון: לנהל גרסאות, לוודא כל שורת קוד, לא לרוץ אחרי הכלי</td><td><label><input type="checkbox" data-check="lesson-14"> הבנתי</label></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+<script>
+const checks = document.querySelectorAll('input[data-check]');
+const total = checks.length;
+
+function updateProgress() {
+  const done = [...checks].filter(c => c.checked).length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progress-bar').textContent =
+    done === total ? '🎉 סיימת הכל! ' + done + '/' + total
+    : '📊 התקדמות: ' + done + '/' + total + ' (' + pct + '%)';
+}
+
+checks.forEach(ch => {
+  const key = 'sv-hw-' + ch.dataset.check;
+  ch.checked = localStorage.getItem(key) === '1';
+  ch.addEventListener('change', () => {
+    localStorage.setItem(key, ch.checked ? '1' : '0');
+    updateProgress();
+  });
+});
+updateProgress();
+</script>
+</body>
+</html>

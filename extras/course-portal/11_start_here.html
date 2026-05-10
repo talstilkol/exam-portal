@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📍 התחל מכאן — מסלולי למידה</title>
+<link rel="stylesheet" href="light-mode.css">
+<link rel="stylesheet" href="print-mobile.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); background-attachment: fixed; color: #e0e0e0; line-height: 1.7; min-height: 100vh; padding: 20px; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); border-radius: 20px; margin-bottom: 30px; }
+  header h1 { font-size: 2.5em; color: white; margin-bottom: 10px; }
+  header p { color: rgba(255,255,255,0.9); font-size: 1.2em; }
+  .back-link { display: inline-block; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; }
+  .paths-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 40px; }
+  .path-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; }
+  .path-card h2 { margin-bottom: 15px; border-bottom: 2px solid; padding-bottom: 10px; }
+  .path-card ul { margin: 10px 0 16px 0; padding-right: 20px; }
+  .path-card li { margin-bottom: 6px; }
+  .path-card li a { color: #4ecdc4; text-decoration: none; font-weight: bold; }
+  .path-card li a:hover { text-decoration: underline; }
+  .level-1 h2 { color: #4ade80; border-color: #4ade80; }
+  .level-2 h2 { color: #facc15; border-color: #facc15; }
+  .level-3 h2 { color: #f87171; border-color: #f87171; }
+  .start-btn { display: block; text-align: center; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 14px; }
+  .level-1 .start-btn { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid #4ade80; }
+  .level-2 .start-btn { background: rgba(250,204,21,0.15); color: #facc15; border: 1px solid #facc15; }
+  .level-3 .start-btn { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid #f87171; }
+  .code-peek { background: #0f172a; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 14px; margin: 12px 0; font-family: monospace; font-size: 0.82em; color: #a5f3fc; white-space: pre; overflow-x: auto; }
+  .quicklinks { background: rgba(0,0,0,0.2); border-radius: 15px; padding: 25px; margin-bottom: 30px; }
+  .quicklinks h2 { color: #a78bfa; margin-bottom: 16px; }
+  .ql-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+  .ql-btn { display: block; text-align: center; padding: 12px 10px; border-radius: 10px; text-decoration: none; background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.3); color: #c4b5fd; font-weight: bold; font-size: 0.9em; }
+  .ql-btn:hover { background: rgba(167,139,250,0.2); }
+  .glossary-section { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 30px; }
+  .glossary-section h2 { color: #4ecdc4; margin-bottom: 20px; text-align: center; font-size: 1.8em; }
+  .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .glossary-item { background: rgba(255,255,255,0.05); padding: 14px; border-radius: 8px; border-right: 4px solid #0ea5e9; }
+  .glossary-term { font-weight: bold; color: #0ea5e9; font-size: 1em; margin-bottom: 4px; display: block; }
+  .glossary-def { font-size: 0.88em; color: #ddd; }
+  .search-box { width: 100%; padding: 13px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-size: 1em; margin-bottom: 16px; outline: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="00_dashboard.html" class="back-link">← חזרה לדשבורד</a>
+  <header>
+    <h1>📍 התחל מכאן</h1>
+    <p>בחר מסלול למידה, ראה קוד לדוגמה, עיין במילון המונחים</p>
+  </header>
+
+  <div class="quicklinks">
+    <h2>⚡ קיצורי דרך לכל הדפים</h2>
+    <div class="ql-grid">
+      <a href="01_master_theory.html" class="ql-btn">📚 תיאוריה מלאה</a>
+      <a href="09_mini_quiz.html" class="ql-btn">🎯 סימולטור מבחן</a>
+      <a href="08_flashcards_quiz.html" class="ql-btn">🃏 כרטיסיות</a>
+      <a href="14_cheatsheet_a4.html" class="ql-btn">📋 דף נוסחאות</a>
+      <a href="04_algorithms.html" class="ql-btn">🧮 אלגוריתמים</a>
+      <a href="13_analytics.html" class="ql-btn">📊 ניתוח שגיאות</a>
+      <a href="17_final_frontier.html" class="ql-btn">🚀 נושאים מתקדמים</a>
+      <a href="03_exam_solutions.html" class="ql-btn">✅ פתרונות מבחנים</a>
+      <a href="12_tricky_questions.html" class="ql-btn">🧠 שאלות קשות</a>
+      <a href="02_missing_topics.html" class="ql-btn">🔍 נושאים חסרים</a>
+    </div>
+  </div>
+
+  <div class="paths-grid">
+    <div class="path-card level-1">
+      <h2>🌱 רמה 1 — ריענון בסיסי</h2>
+      <p>חלוד בבסיס? לא תכנתת הרבה זמן? התחל כאן.</p>
+      <ul>
+        <li><a href="15_visual_summary.html">🖼️ התמונה הגדולה</a></li>
+        <li><a href="01_master_theory.html#js-basics">📗 יסודות JavaScript</a></li>
+        <li><a href="01_master_theory.html#html">🌐 HTML &amp; DOM</a></li>
+        <li><a href="01_master_theory.html#react">⚛️ מבוא ל-React</a></li>
+      </ul>
+      <div class="code-peek">// var/let/const
+var x = 1;     // function scope + hoisting
+let y = 2;     // block scope
+const z = [];  // reference קבוע, תוכן יכול להשתנות
+z.push(1);     // OK!
+
+const add = (a, b) =&gt; a + b; // arrow function</div>
+      <a href="01_master_theory.html" class="start-btn">🚀 התחל ברמה 1</a>
+    </div>
+
+    <div class="path-card level-2">
+      <h2>🚀 רמה 2 — לקראת המבחן</h2>
+      <p>יש בסיס — רוצה לוודא שאתה מוכן לשאלות בינוניות-קשות.</p>
+      <ul>
+        <li><a href="01_master_theory.html#async">⏳ Async &amp; Event Loop</a></li>
+        <li><a href="01_master_theory.html#hooks">🪝 React Hooks</a></li>
+        <li><a href="01_master_theory.html#express">🟢 Express &amp; Node.js</a></li>
+        <li><a href="01_master_theory.html#database">🗃️ MongoDB &amp; Mongoose</a></li>
+      </ul>
+      <div class="code-peek">// async/await עם error handling
+async function getUser(id) {
+  try {
+    const res = await fetch('/api/user/' + id);
+    if (!res.ok) throw new Error(res.status);
+    return await res.json();
+  } catch (err) {
+    console.error('Failed:', err);
+  }
+}</div>
+      <a href="09_mini_quiz.html" class="start-btn">🎯 תרגל עם קוויז</a>
+    </div>
+
+    <div class="path-card level-3">
+      <h2>🔥 רמה 3 — ציון 100</h2>
+      <p>שולט בחומר, סוגר פינות אחרונות ונושאים מתקדמים.</p>
+      <ul>
+        <li><a href="17_final_frontier.html">💡 Memory Leaks &amp; Advanced</a></li>
+        <li><a href="01_master_theory.html#ts">📘 TypeScript Generics</a></li>
+        <li><a href="07_advanced_topics.html">🔒 Auth, JWT &amp; Testing</a></li>
+        <li><a href="12_tricky_questions.html">🧠 30 שאלות ראיון</a></li>
+      </ul>
+      <div class="code-peek">// TypeScript Generics + Utility Types
+function identity&lt;T&gt;(arg: T): T { return arg; }
+type Preview  = Pick&lt;User, 'id' | 'name'&gt;;
+type Partial_ = Partial&lt;User&gt;;
+
+// useEffect cleanup — מניעת memory leak
+useEffect(() =&gt; {
+  const id = setInterval(tick, 1000);
+  return () =&gt; clearInterval(id); // cleanup!
+}, []);</div>
+      <a href="09_mini_quiz.html" class="start-btn">⚔️ סימולטור מבחן מלא</a>
+    </div>
+  </div>
+
+  <section class="glossary-section">
+    <h2>📖 מילון מונחים — Top 20</h2>
+    <input type="text" id="glossary-search" class="search-box" placeholder="חפש מונח... API, DOM, Promise, JWT...">
+    <div class="glossary-grid" id="glossary-grid"></div>
+  </section>
+</div>
+
+<script>
+const terms = [
+  {t:"API",d:"גשר בין מערכות — HTTP לקבלת/שליחת נתונים."},
+  {t:"DOM",d:"ייצוג HTML כעץ בדפדפן. JS משנה אותו."},
+  {t:"JSON",d:"פורמט טקסטואלי להעברת נתונים. key-value."},
+  {t:"Callback",d:"פונקציה שמועברת כפרמטר ומופעלת אחרי אירוע."},
+  {t:"Promise",d:"אובייקט פעולה עתידית — Pending/Fulfilled/Rejected."},
+  {t:"Async/Await",d:"syntax לעבודה עם Promises — קריא כמו sync."},
+  {t:"Closure",d:"פונקציה שזוכרת scope יצירתה, גם אחרי סגירת החיצונית."},
+  {t:"State",d:"נתונים ב-React — שינוי גורם לרינדור. useState."},
+  {t:"Props",d:"נתונים מהורה לילד ב-React. Read-only."},
+  {t:"Virtual DOM",d:"העתק קל של DOM — React משווה ומחשב שינויים."},
+  {t:"Hook",d:"פונקציה שמתחילה ב-use (useState, useEffect)."},
+  {t:"Middleware",d:"פונקציה ב-Express: (req, res, next) — בין request לresponse."},
+  {t:"REST",d:"ארכיטקטורה לAPI — GET/POST/PUT/DELETE על resources."},
+  {t:"JWT",d:"JSON Web Token — token חתום. Header.Payload.Signature."},
+  {t:"CRUD",d:"Create, Read, Update, Delete — 4 פעולות בסיסיות."},
+  {t:"NoSQL",d:"מסד ללא טבלאות — MongoDB שומר documents כ-BSON."},
+  {t:"Schema",d:"מבנה נתונים ב-Mongoose — validation, types, defaults."},
+  {t:"Hoisting",d:"הרמת var/function לראש scope לפני ביצוע."},
+  {t:"SPA",d:"Single Page Application — דף אחד, עדכון דינמי."},
+  {t:"CORS",d:"אישור בקשות cross-origin. app.use(cors()) ב-Express."}
+];
+const grid = document.getElementById('glossary-grid');
+const search = document.getElementById('glossary-search');
+function render(f=''){
+  const lf=f.toLowerCase();
+  grid.innerHTML=terms.filter(i=>i.t.toLowerCase().includes(lf)||i.d.toLowerCase().includes(lf))
+    .map(i=>`<div class="glossary-item"><span class="glossary-term">${i.t}</span><span class="glossary-def">${i.d}</span></div>`).join('');
+}
+search.addEventListener('input',e=>render(e.target.value));
+render();
+</script>
+<script src="theme-toggle.js"></script>
+<script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

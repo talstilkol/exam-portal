@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>דף נוסחאות Full Stack - למבחן</title>
+  <style>
+    body { font-family: sans-serif; font-size: 10pt; line-height: 1.2; margin: 0; padding: 10px; background: #fff; color: #000; }
+    h1 { text-align: center; font-size: 14pt; margin: 0 0 10px 0; padding-bottom: 5px; border-bottom: 2px solid #000; }
+    h2 { font-size: 11pt; margin: 10px 0 5px 0; background: #eee; padding: 2px 5px; border-left: 3px solid #333; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .col { margin-bottom: 10px; }
+    code { font-family: monospace; font-size: 9pt; background: #f9f9f9; padding: 1px 3px; border: 1px solid #ccc; white-space: pre-wrap; display: inline-block; width: 100%; box-sizing: border-box; }
+    ul { margin: 5px 0; padding-right: 15px; }
+    li { margin-bottom: 3px; }
+    table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-top: 5px; }
+    table, th, td { border: 1px solid #aaa; }
+    th, td { padding: 3px; text-align: right; }
+    th { background: #eee; }
+    .highlight { font-weight: bold; }
+    @media print {
+      @page { margin: 1cm; }
+      body { padding: 0; }
+      .noprint { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="noprint" style="text-align:center; margin-bottom: 20px;">
+  <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">🖨️ הדפס דף נוסחאות</button>
+  <br><a href="00_dashboard.html">חזרה לדשבורד</a>
+</div>
+
+<h1>Cheat Sheet - Full Stack Development (להדפסה)</h1>
+
+<div class="grid">
+  
+  <div class="col">
+    <h2>1. JavaScript Core & ES6</h2>
+    <ul>
+      <li><span class="highlight">let/const vs var:</span> var הוא Function Scoped (hoisted כ-undefined), let/const הם Block Scoped (TDZ).</li>
+      <li><span class="highlight">== vs ===:</span> === בודק גם סוג (Type). == עושה Type Coercion. <code>null == undefined // true</code>.</li>
+      <li><span class="highlight">Closures:</span> פונקציה 'זוכרת' את ה-Lexical Scope שלה גם כשהיא רצה מחוץ לו. סכנת Memory Leaks.</li>
+      <li><span class="highlight">Arrow Functions:</span> אין להן <code>this</code> משלהן (יורשות מהסביבה), אי אפשר לקרוא להן עם <code>new</code>.</li>
+      <li><span class="highlight">Copy (Reference vs Value):</span> Primitives עוברים ב-Value. Objects/Arrays ב-Reference. <br>Shallow Copy: <code>{...obj}</code>. Deep Copy: <code>JSON.parse(JSON.stringify(obj))</code> או <code>structuredClone(obj)</code>.</li>
+    </ul>
+    
+    <h2>2. React & Hooks</h2>
+    <ul>
+      <li><span class="highlight">useState:</span> מחזיר <code>[value, setter]</code>. ה-setter הוא אסינכרוני. בעדכון תלוי-מצב קודם להשתמש ב-Callback: <code>setCount(c => c+1)</code>.</li>
+      <li><span class="highlight">useEffect:</span> <code>useEffect(() => { ... return cleanup; }, [deps])</code>.
+        <br>מערך ריק <code>[]</code> = פעם אחת ב-Mount. בלי מערך = כל רינדור.</li>
+      <li><span class="highlight">useMemo & useCallback:</span> <code>useMemo</code> שומר ערך חישוב (Value), <code>useCallback</code> שומר רפרנס לפונקציה (Function ref) כדי למנוע רינדורים מיותרים.</li>
+      <li><span class="highlight">Virtual DOM:</span> ריאקט שומר עץ בזיכרון, מבצע Diffing (Reconciliation) ורק אז משנה את ה-Real DOM (Batched Updates).</li>
+      <li><span class="highlight">Key Prop:</span> חובה במיפוי רשימות כדי לעזור לריאקט לזהות שינויים באופן מדויק.</li>
+    </ul>
+
+    <h2>3. HTML & CSS</h2>
+    <ul>
+      <li><span class="highlight">Specificity:</span> Inline > ID (1,0,0) > Class (0,1,0) > Tag (0,0,1).</li>
+      <li><span class="highlight">Box Model:</span> Content, Padding, Border, Margin. <code>box-sizing: border-box</code> כולל פדינג וגבול ברוחב הכולל.</li>
+      <li><span class="highlight">Positioning:</span> relative (נשאר ב-flow, יחסי לעצמו), absolute (יוצא מה-flow, יחסי ל-relative הראשון), fixed (יחסי למסך), sticky (עד גלילה).</li>
+      <li><span class="highlight">Flexbox:</span> Container (display:flex), Main Axis (justify-content), Cross Axis (align-items).</li>
+    </ul>
+
+    <h2>4. TypeScript</h2>
+    <ul>
+      <li><span class="highlight">Interfaces vs Types:</span> Interface לרוב לאובייקטים, תומך ב-Declaration Merging. Types תומכים ב-Unions/Intersections.</li>
+      <li><span class="highlight">Generics <code>&lt;T&gt;</code>:</span> "משתנה" של Type המועבר לפונקציה כדי להפוך אותה לדינמית תוך שמירה על Type Safety.</li>
+    </ul>
+
+    <h2>5. Asynchronous JS</h2>
+    <ul>
+      <li><span class="highlight">Event Loop:</span> Call Stack (Sync) ➔ Microtask Queue (Promises) ➔ Macrotask Queue (setTimeout/Events). Microtasks קודמים להכל.</li>
+      <li><span class="highlight">Promises:</span> States: Pending, Fulfilled, Rejected.
+        <br><code>Promise.all([p1,p2])</code>: מחכה לכולם, קורס אם 1 נופל.
+        <br><code>Promise.allSettled()</code>: תמיד מחכה לכולם.
+      </li>
+      <li><span class="highlight">async/await:</span> Syntactic sugar מעל Promises. חובה <code>try/catch</code> לטיפול בשגיאות.</li>
+    </ul>
+  </div>
+
+  <div class="col">
+    <h2>6. Node.js & Express</h2>
+    <ul>
+      <li><span class="highlight">Node:</span> Single-threaded, Non-blocking I/O (בזכות libuv).</li>
+      <li><span class="highlight">Express Middleware:</span> פונקציה <code>(req, res, next)</code>. חובה לקרוא ל-<code>next()</code> או להחזיר response. 
+      <br>שגיאות: פונקציה עם 4 פרמטרים <code>(err, req, res, next)</code> תתפס רק ב-Error Handler.</li>
+      <li><span class="highlight">CORS:</span> הגנת דפדפן לבקשות בין דומיינים. דורש <code>app.use(cors())</code> בשרת.</li>
+    </ul>
+
+    <h2>7. DB: MongoDB & Mongoose</h2>
+    <ul>
+      <li><span class="highlight">SQL vs NoSQL:</span> NoSQL (Mongo) - מסמכים BSON, סכימה גמישה (Collections). SQL - טבלאות קשיחות (ACID).</li>
+      <li><span class="highlight">Mongoose Schema:</span> <code>new mongoose.Schema({ name: {type: String, required: true, unique: true} })</code>.</li>
+      <li><span class="highlight">Relations (Populate):</span> ב-Schema: <code>type: mongoose.Schema.Types.ObjectId, ref: 'User'</code>. ב-query: <code>.populate('user')</code>.</li>
+    </ul>
+
+    <h2>8. Security & Auth (JWT)</h2>
+    <ul>
+      <li><span class="highlight">JWT (JSON Web Token):</span> Header.Payload.Signature. ה-Payload קריא לכולם! ال-Signature מגן משינויים.</li>
+      <li><span class="highlight">XSS (Cross-Site Scripting):</span> הזרקת סקריפט זדוני. פתרון: React escapes inputs אוטומטית.</li>
+      <li><span class="highlight">CSRF:</span> גניבת סשן. פתרון: <code>SameSite: Strict</code> או CSRF Tokens.</li>
+    </ul>
+
+    <h2>9. SQL & PostgreSQL</h2>
+    <ul>
+      <li><span class="highlight">Relational DB:</span> טבלאות מוגדרות מראש, קשרים חזקים (Foreign Keys). מבטיח עקביות (ACID).</li>
+      <li><span class="highlight">JOIN:</span> שילוב נתונים מכמה טבלאות לפי מפתח משותף (INNER JOIN, LEFT JOIN).</li>
+      <li><span class="highlight">Prisma ORM:</span> מאפשר עבודה Type-Safe מול SQL בעזרת פקודות JS במקום שאילתות RAW.</li>
+    </ul>
+
+    <h2>10. Nest.js Architecture</h2>
+    <ul>
+      <li><span class="highlight">Controllers:</span> אחראים על ניתוב בקשות HTTP (GET/POST) וקבלת קלט.</li>
+      <li><span class="highlight">Providers/Services:</span> מחזיקים את הלוגיקה העסקית. מוזרקים דרך Dependency Injection.</li>
+      <li><span class="highlight">Modules:</span> קופסאות שמאגדות Controllers ו-Providers יחד סביב דומיין מסוים (למשל UsersModule).</li>
+    </ul>
+
+    <h2>11. AI Engineering</h2>
+    <ul>
+      <li><span class="highlight">Vercel AI SDK:</span> מפשט עבודה עם מודלים, מאפשר Streaming קל משרת ללקוח.</li>
+      <li><span class="highlight">RAG (Retrieval-Augmented Gen):</span> חיפוש ידע רלוונטי (וקטורים) ושליחתו כ-Context למודל. מונע Hallucinations.</li>
+      <li><span class="highlight">Tool Calling:</span> נותן למודל לבחור כלי מהשרת, אך השרת מבצע בפועל. דורש Authorization קפדני בקוד.</li>
+    </ul>
+  </div>
+
+</div>
+<div style="font-size: 8pt; text-align: center; margin-top: 10px; color: #666;">נוצר באמצעות מנוע הלמידה Full-Stack Mastery | בהצלחה במבחן!</div>
+
+</body>
+</html>

@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 אלגוריתמים נפוצים</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); background-attachment: fixed; color: #e0e0e0; line-height: 1.7; min-height: 100vh; padding: 20px; }
+  .container { max-width: 1300px; margin: 0 auto; }
+  header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #4ecdc4 0%, #44a8a3 50%, #2c7873 100%); border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+  header h1 { font-size: 2.5em; color: white; margin-bottom: 10px; }
+  header p { color: rgba(255,255,255,0.95); font-size: 1.2em; }
+  .back-link { display: inline-block; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; }
+  .back-link:hover { background: rgba(255,217,61,0.25); }
+  .toc { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 30px; }
+  .toc h2 { color: #4ecdc4; margin-bottom: 20px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+  .toc a { color: #ffd93d; text-decoration: none; padding: 12px 16px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; border: 1px solid rgba(255,217,61,0.2); display: flex; align-items: center; justify-content: space-between; }
+  .toc a:hover { background: rgba(255,217,61,0.25); transform: translateY(-2px); }
+  section { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 35px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); scroll-margin-top: 30px; }
+  section h2 { color: #4ecdc4; font-size: 1.8em; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 3px solid rgba(78,205,196,0.3); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  section h3 { color: #ffd93d; margin: 25px 0 15px; font-size: 1.2em; padding-right: 15px; border-right: 4px solid #ffd93d; }
+  .code-block { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; font-family: 'Consolas', monospace; direction: ltr; text-align: left; overflow-x: auto; margin: 15px 0; color: #e6edf3; font-size: 0.92em; line-height: 1.6; white-space: pre; }
+  code.inline { background: rgba(78,205,196,0.15); color: #4ecdc4; padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.95em; direction: ltr; display: inline-block; }
+  .question-box { background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(196,69,105,0.1)); border: 2px solid rgba(255,107,107,0.3); border-radius: 12px; padding: 20px; margin: 15px 0; }
+  .question-box::before { content: "❓ השאלה: "; color: #ff6b6b; font-weight: bold; font-size: 1.1em; }
+  .approach-box { background: rgba(102,126,234,0.1); border-right: 4px solid #667eea; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .approach-box::before { content: "💭 הגישה: "; color: #667eea; font-weight: bold; }
+  .complexity { display: inline-block; background: rgba(255,217,61,0.15); color: #ffd93d; padding: 4px 12px; border-radius: 12px; font-size: 0.9em; margin-inline-start: 10px; font-weight: bold; }
+  .difficulty { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+  .diff-easy { background: #28a745; color: white; }
+  .diff-medium { background: #ffc107; color: #333; }
+  .diff-hard { background: #ff6b6b; color: white; }
+  .tip { background: rgba(40,167,69,0.15); border-right: 4px solid #28a745; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .tip::before { content: "✅ "; }
+  .scroll-top { position: fixed; bottom: 30px; left: 30px; background: linear-gradient(135deg, #4ecdc4, #44a8a3); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(78,205,196,0.4); border: none; font-size: 1.8em; opacity: 0; transition: all 0.3s ease; z-index: 1000; }
+  .scroll-top.visible { opacity: 1; }
+  
+  /* === Interactive Sandbox === */
+  .run-btn { background: linear-gradient(135deg, #28a745, #218838); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-top: 5px; font-family: inherit; font-weight: bold; transition: all 0.2s; box-shadow: 0 4px 15px rgba(40,167,69,0.3); }
+  .run-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40,167,69,0.4); }
+  .console-output { background: #000; color: #0f0; padding: 15px; border-radius: 8px; font-family: 'Consolas', monospace; direction: ltr; text-align: left; margin-top: 10px; margin-bottom: 25px; min-height: 50px; border-left: 4px solid #28a745; overflow-x: auto; font-size: 0.9em; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+  .code-block[contenteditable="true"] { outline: 2px dashed transparent; transition: outline 0.2s; }
+  .code-block[contenteditable="true"]:focus { outline: 2px dashed #ffd93d; background: #161b22; }
+  
+  @media (max-width: 768px) { section { padding: 20px 15px; } }
+</style>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="stylesheet" href="light-mode.css">
+  <link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+
+<div class="container">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;">
+    <a href="00_dashboard.html" class="back-link">← דשבורד</a>
+    <a href="IDE_project.html" class="back-link" style="background:rgba(88,166,255,0.15);border-color:rgba(88,166,255,0.4);color:#79c0ff;">💻 פתח IDE</a>
+    <a href="MAP_master.html" class="back-link" style="background:rgba(255,217,61,0.15);border-color:rgba(255,217,61,0.4);color:#ffd93d;">🗺️ המפה הגדולה</a>
+    <a href="DEBUG_errors.html" class="back-link" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.4);color:#fca5a5;">🛠️ מילון שגיאות</a>
+    <a href="BUILD_walkthrough.html" class="back-link" style="background:rgba(132,204,22,0.15);border-color:rgba(132,204,22,0.4);color:#bef264;">🛠️ בנה מאפס</a>
+  </div>
+
+  <header>
+    <h1>🧮 10 אלגוריתמים נפוצים</h1>
+    <p>הפתרונות לשאלות JS שמופיעות בכל מבחן</p>
+  </header>
+
+  <!-- ============= DIDACTIC HERO: 10 Algorithms — Input → Code → Output ============= -->
+  <style>
+    .alg-hero { background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%); border-radius:18px; padding:32px; margin-bottom:30px; box-shadow:0 12px 40px rgba(0,0,0,0.4); border:2px solid rgba(78,205,196,0.2); }
+    .alg-hero .ah-title { text-align:center; margin-bottom:24px; }
+    .alg-hero .ah-title h2 { color:#4ecdc4; font-size:1.8em; margin-bottom:8px; border:none; padding:0; }
+    .alg-hero .ah-title p { color:#cbd5e1; font-size:1.05em; }
+    .alg-hero .ah-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:16px; }
+    .ah-card { background:#fff; border-radius:12px; padding:18px; transition:all .25s; text-decoration:none; color:#0f172a; display:block; position:relative; overflow:hidden; }
+    .ah-card:hover { transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,0,0,0.4); }
+    .ah-card .ah-num { position:absolute; top:12px; left:12px; width:32px; height:32px; line-height:32px; text-align:center; border-radius:50%; color:#fff; font-weight:bold; font-size:0.95em; }
+    .ah-card.a1 .ah-num { background:#3b82f6; } .ah-card.a1 { border-top:4px solid #3b82f6; }
+    .ah-card.a2 .ah-num { background:#06b6d4; } .ah-card.a2 { border-top:4px solid #06b6d4; }
+    .ah-card.a3 .ah-num { background:#10b981; } .ah-card.a3 { border-top:4px solid #10b981; }
+    .ah-card.a4 .ah-num { background:#f59e0b; } .ah-card.a4 { border-top:4px solid #f59e0b; }
+    .ah-card.a5 .ah-num { background:#84cc16; } .ah-card.a5 { border-top:4px solid #84cc16; }
+    .ah-card.a6 .ah-num { background:#ef4444; } .ah-card.a6 { border-top:4px solid #ef4444; }
+    .ah-card.a7 .ah-num { background:#ec4899; } .ah-card.a7 { border-top:4px solid #ec4899; }
+    .ah-card.a8 .ah-num { background:#a855f7; } .ah-card.a8 { border-top:4px solid #a855f7; }
+    .ah-card.a9 .ah-num { background:#0ea5e9; } .ah-card.a9 { border-top:4px solid #0ea5e9; }
+    .ah-card.a10 .ah-num { background:#f97316; } .ah-card.a10 { border-top:4px solid #f97316; }
+    .ah-card h3 { color:#0f172a; font-size:1.05em; margin-bottom:6px; padding:0 0 0 44px; border:none; }
+    .ah-card .ah-meta { display:flex; gap:6px; margin-bottom:10px; padding-right:44px; }
+    .ah-card .ah-meta span { font-size:0.7em; padding:2px 7px; border-radius:4px; font-weight:600; }
+    .ah-card .ah-meta .complexity { background:#dbeafe; color:#1e40af; font-family:monospace; }
+    .ah-card .ah-meta .level-easy { background:#d1fae5; color:#065f46; }
+    .ah-card .ah-meta .level-med { background:#fef3c7; color:#92400e; }
+    .ah-card .ah-meta .level-hard { background:#fee2e2; color:#991b1b; }
+    .ah-card .ah-io { display:grid; grid-template-columns:1fr auto 1fr; gap:6px; align-items:center; padding:8px; background:#f1f5f9; border-radius:6px; margin-bottom:10px; font-family:monospace; font-size:0.78em; direction:ltr; }
+    .ah-card .ah-io .iol { color:#64748b; font-size:0.78em; margin-bottom:2px; }
+    .ah-card .ah-io .iov { color:#0f172a; font-weight:bold; }
+    .ah-card .ah-io .arr { color:#0ea5e9; font-weight:bold; font-size:1.2em; }
+    .ah-card .ah-trick { font-size:0.83em; color:#475569; line-height:1.5; margin-bottom:10px; padding:8px 10px; background:#fffbeb; border-right:3px solid #f59e0b; border-radius:5px; }
+    .ah-card .ah-trick strong { color:#92400e; }
+    .ah-card pre { background:#0f172a; color:#a7f3d0; padding:9px 11px; border-radius:6px; font-size:0.74em; overflow-x:auto; margin:0; line-height:1.55; font-family:'SF Mono','Monaco','Consolas',monospace; direction:ltr; text-align:left; }
+    .ah-card pre .k { color:#f472b6; }
+    .ah-card pre .s { color:#fde68a; }
+    .ah-card pre .c { color:#64748b; font-style:italic; }
+    .ah-card pre .v { color:#93c5fd; }
+    .ah-card .ah-link { display:inline-block; margin-top:9px; color:#0ea5e9; font-size:0.82em; font-weight:600; }
+  </style>
+
+  <section class="alg-hero">
+    <div class="ah-title">
+      <h2>🧮 10 אלגוריתמים — Input · Trick · Output</h2>
+      <p>לכל אלגוריתם: <strong style="color:#4ecdc4;">דוגמה קונקרטית, הטריק, הקוד, סיבוכיות.</strong> הבן את הטריק → פתור בקלות.</p>
+    </div>
+
+    <div class="ah-grid">
+
+      <a href="#alg1" class="ah-card a1">
+        <span class="ah-num">1</span>
+        <h3>ספירה במטריצה</h3>
+        <div class="ah-meta"><span class="complexity">O(n×m)</span><span class="level-easy">קל</span></div>
+        <div class="ah-io">
+          <div><div class="iol">in</div><div class="iov">[[1,2],[3,4]]</div></div>
+          <div class="arr">→</div>
+          <div><div class="iol">out</div><div class="iov">2 (זוגיים)</div></div>
+        </div>
+        <div class="ah-trick"><strong>הטריק:</strong> 2 לולאות מקוננות, מונה אחד.</div>
+<pre><span class="k">let</span> count = 0;
+<span class="k">for</span> (<span class="k">const</span> row <span class="k">of</span> matrix)
+  <span class="k">for</span> (<span class="k">const</span> n <span class="k">of</span> row)
+    <span class="k">if</span> (n%2===0) count++;</pre>
+        <span class="ah-link">→ פתח</span>
+      </a>
+
+      <a href="#alg2" class="ah-card a2">
+        <span class="ah-num">2</span>
+        <h3>מיון ספרות</h3>
+        <div class="ah-meta"><span class="complexity">O(n log n)</span><span class="level-easy">קל</span></div>
+        <div class="ah-io">
+          <div><div class="iol">in</div><div class="iov">4231</div></div>
+          <div class="arr">→</div>
+          <div><div class="iol">out</div><div class="iov">1234</div></div>
+        </div>
+        <div class="ah-trick"><strong>הטריק:</strong> num → string → split → sort → join → number.</div>
+<pre><span class="v">Number</span>(
+  <span class="v">String</span>(n).<span class="v">split</span>(<span class="s">''</span>)
+    .<span class="v">sort</span>().<span class="v">join</span>(<span class="s">''</span>)
+);</pre>
+        <span class="ah-link">→ פתח</span>
+      </a>
+
+      <a href="#alg3" class="ah-card a3">
+        <span class="ah-num">3</span>
+        <h3>פלינדרום בינארי</h3>
+        <div class="ah-meta"><span class="complexity">O(log n)</span><span class="level-med">בינוני</span></div>
+        <div class="ah-io">
+          <div><div class="iol">in</div><div class="iov">9 → "1001"</div></div>
+          <div class="arr">→</div>
+          <div><div class="iol">out</div><div class="iov">true</div></div>
+        </div>
+        <div class="ah-trick"><strong>הטריק:</strong> <code>n.toString(2)</code> → השווה למחרוזת הפוכה.</div>
+<pre><span class="k">const</span> bin = n.<span class="v">toString</span>(2);
+<span class="k">return</span> bin ===
+  bin.<span class="v">split</span>(<span class="s">''</span>)
+    .<span class="v">reverse</span>().<span class="v">join</span>(<span class="s">''</span>);</pre>
+        <span class="ah-link">→ פתח</span>
+      </a>
+
+      <a href="#alg4" class="ah-card a4">
+        <span class="ah-num">4</span>
+        <h3>סדרת פיבונאצ'י</h3>
+        <div class="ah-meta"><span class="complexity">O(n)</span><span class="level-med">בינוני</span></div>
+        <div class="ah-io">
+          <div><div class="iol">in</div><div class="iov">n=6</div></div>
+          <div class="arr">→</div>
+          <div><div class="iol">out</div><div class="iov">[0,1,1,2,3,5]</div></div>
+        </div>
+        <div class="ah-trick"><strong>הטריק:</strong> כל איבר = סכום שני הקודמים.</div>
+<pre><span class="k">const</span> fib = [0, 1];
+<span class="k">for</span> (<span class="k">let</span> i=2; i&lt;n; i++)
+  fib.<span class="v">push</span>(
+    fib[i-1] + fib[i-2]);</pre>
+        <span class="ah-link">→ פתח</span>
+      </a>
+
+      <a href="#alg5" class="ah-card a5">
+        <span class="ah-num">5</span>
+        <h3>זוגי / אי-זוגי</h3>
+        <div class="ah-meta"><span class="complexity">O(n)</span><span class="level-easy">קל</span></div>
+        <div class="ah-io">
+          <div><div class="iol">in</div><div class="iov">[1,2,3,4,5]</div></div>
+          <div class="arr">→</div>
+          <div><div class="iol">out</div><div class="iov">{e:2, o:3}</div></div>
+        </div>
+        <div class="ah-trick"><strong>הטריק:</strong> <code>n%2===0</code> = זוגי. reduce לשניהם.</div>
+<pre>arr.<span class="v">reduce</span>((acc, n) =&gt; {
+  n%2 ? acc.o++ : acc.e++;
+  <span class="k">return</span> acc;
+}, {e:0, o:0});</pre>
+        <span class="ah-link">→ פתח</span>
+      </a>
+
+      <a href="#alg6" class="ah-card a6">
+        <span class="ah-num">6</span>
+        <h3>רצפים שסכומם N (Sliding Window)</h3>
+        <div class="ah-meta"><span class="complexity">O(n)</span><span class="level-hard">קשה</span></div>
+        <div class="ah-io">
+          <div><div class="iol">in</div><div class="iov">[1,2,3,4], 5</div></div>
+          <div class="arr">→</div>
+          <div><div class="iol">out</div><div class="iov">[[1,4],[2,3]]</div></div>
+        </div>
+        <div class="ah-trick"><strong>הטריק:</strong> חלון נע — sum ≥ target → start++; sum &lt; target → end++.</div>
+<pre><span class="k">while</span> (end &lt; n) {
+  sum += arr[end++];
+  <span class="k">while</span> (sum &gt; t)
+    sum -= arr[start++];
+  <span class="k">if</span> (sum === t) save();
+}</pre>
+        <span class="ah-link">→ פתח</span>
+      </a>
+
+      <a href="#alg7" class="ah-card a7">
+        <span class="ah-num">7</span>
+        <h3>ערכים משותפים (בלי includes)</h3>
+        <div class="ah-meta"><span class="complexity">O(n+m)</span><span class="level-med">בינוני</span></div>
+        <div class="ah-io">
+          <div><div class="iol">in</div><div class="iov">[1,2,3], [2,3,4]</div></div>
+          <div class="arr">→</div>
+          <div><div class="iol">out</div><div class="iov">[2,3]</div></div>
+        </div>
+        <div class="ah-trick"><strong>הטריק:</strong> Set מהראשון → filter על השני.</div>
+<pre><span class="k">const</span> s = <span class="k">new</span> <span class="v">Set</span>(arr1);
+<span class="k">return</span> arr2.<span class="v">filter</span>(
+  n =&gt; s.<span class="v">has</span>(n));</pre>
+        <span class="ah-link">→ פתח</span>
+      </a>
+
+      <a href="#alg8" class="ah-card a8">
+        <span class="ah-num">8</span>
+        <h3>הסרת כפילויות</h3>
+        <div class="ah-meta"><span class="complexity">O(n)</span><span class="level-easy">קל</span></div>
+        <div class="ah-io">
+          <div><div class="iol">in</div><div class="iov">[1,1,2,3,3]</div></div>
+          <div class="arr">→</div>
+          <div><div class="iol">out</div><div class="iov">[1,2,3]</div></div>
+        </div>
+        <div class="ah-trick"><strong>הטריק:</strong> Set מסיר אוטומטית. spread חזרה למערך.</div>
+<pre><span class="k">return</span> [...<span class="k">new</span> <span class="v">Set</span>(arr)];
+
+<span class="c">// או:</span>
+arr.<span class="v">filter</span>((v,i,a) =&gt;
+  a.<span class="v">indexOf</span>(v) === i);</pre>
+        <span class="ah-link">→ פתח</span>
+      </a>
+
+      <a href="#alg9" class="ah-card a9">
+        <span class="ah-num">9</span>
+        <h3>היפוך מחרוזת</h3>
+        <div class="ah-meta"><span class="complexity">O(n)</span><span class="level-easy">קל</span></div>
+        <div class="ah-io">
+          <div><div class="iol">in</div><div class="iov">"hello"</div></div>
+          <div class="arr">→</div>
+          <div><div class="iol">out</div><div class="iov">"olleh"</div></div>
+        </div>
+        <div class="ah-trick"><strong>הטריק:</strong> string → array → reverse → string.</div>
+<pre>str.<span class="v">split</span>(<span class="s">''</span>)
+  .<span class="v">reverse</span>()
+  .<span class="v">join</span>(<span class="s">''</span>);</pre>
+        <span class="ah-link">→ פתח</span>
+      </a>
+
+      <a href="#alg10" class="ah-card a10">
+        <span class="ah-num">10</span>
+        <h3>ספירת תווים</h3>
+        <div class="ah-meta"><span class="complexity">O(n)</span><span class="level-med">בינוני</span></div>
+        <div class="ah-io">
+          <div><div class="iol">in</div><div class="iov">"hello"</div></div>
+          <div class="arr">→</div>
+          <div><div class="iol">out</div><div class="iov">{h:1,e:1,l:2,o:1}</div></div>
+        </div>
+        <div class="ah-trick"><strong>הטריק:</strong> object כ-Map. <code>obj[char] = (obj[char]||0)+1</code>.</div>
+<pre><span class="k">const</span> count = {};
+<span class="k">for</span> (<span class="k">const</span> c <span class="k">of</span> str)
+  count[c] = (count[c]||0)+1;</pre>
+        <span class="ah-link">→ פתח</span>
+      </a>
+
+    </div>
+
+    <div style="margin-top:24px;padding:18px;background:rgba(78,205,196,0.08);border-radius:12px;border-right:4px solid #4ecdc4;color:#cbd5e1;">
+      💡 <strong style="color:#4ecdc4;">3 דפוסים שחוזרים:</strong> (1) <code>split→sort→join</code> · (2) <code>Sliding Window</code> · (3) <code>Object/Set כ-frequency map</code>. שלוט בשלושה — נצח את כולם.
+    </div>
+  </section>
+
+  <!-- (Old beach hidden) -->
+  <section style="display:none;">
+    <svg viewBox="0 0 1200 460" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+      <defs>
+        <linearGradient id="m4sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5dade2"/><stop offset="100%" stop-color="#2e86c1"/></linearGradient>
+        <linearGradient id="m4sand" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f4e4b8"/><stop offset="100%" stop-color="#e8d5a0"/></linearGradient>
+        <filter id="m4sh"><feDropShadow dx="2" dy="3" stdDeviation="2" flood-opacity="0.3"/></filter>
+      </defs>
+      <!-- Sky & sun -->
+      <rect width="1200" height="200" fill="#87ceeb"/>
+      <circle cx="1080" cy="80" r="40" fill="#ffd93d"/>
+      <!-- Sea -->
+      <rect y="200" width="1200" height="100" fill="url(#m4sea)"/>
+      <!-- Waves -->
+      <path d="M 0 210 Q 50 205 100 210 T 200 210 T 300 210 T 400 210 T 500 210 T 600 210 T 700 210 T 800 210 T 900 210 T 1000 210 T 1100 210 T 1200 210" fill="none" stroke="#fff" stroke-width="2" opacity="0.6"/>
+      <!-- Sand -->
+      <rect y="290" width="1200" height="170" fill="url(#m4sand)"/>
+
+      <!-- 10 Islands/Stations along beach -->
+      <!-- Station 1: Matrix -->
+      <a href="#alg1"><g style="cursor:pointer" filter="url(#m4sh)">
+        <ellipse cx="80" cy="320" rx="44" ry="14" fill="#d4a574"/>
+        <g transform="translate(60,290)">
+          <rect width="12" height="12" fill="#ff6b6b"/><rect x="14" width="12" height="12" fill="#ff6b6b"/><rect x="28" width="12" height="12" fill="#ff6b6b"/>
+          <rect y="14" width="12" height="12" fill="#ffd93d"/><rect x="14" y="14" width="12" height="12" fill="#ffd93d"/><rect x="28" y="14" width="12" height="12" fill="#ffd93d"/>
+        </g>
+        <text x="80" y="365" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">1.מטריצה</text>
+      </g></a>
+      <!-- Station 2: Sort digits -->
+      <a href="#alg2"><g style="cursor:pointer" filter="url(#m4sh)">
+        <ellipse cx="200" cy="335" rx="42" ry="13" fill="#d4a574"/>
+        <text x="200" y="320" text-anchor="middle" font-size="22">🔢</text>
+        <text x="200" y="365" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">2.מיון ספרות</text>
+      </g></a>
+      <!-- Station 3: Palindrome -->
+      <a href="#alg3"><g style="cursor:pointer" filter="url(#m4sh)">
+        <ellipse cx="320" cy="325" rx="44" ry="14" fill="#d4a574"/>
+        <text x="320" y="318" text-anchor="middle" font-size="22">🪞</text>
+        <text x="320" y="365" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">3.פלינדרום</text>
+      </g></a>
+      <!-- Station 4: Fibonacci -->
+      <a href="#alg4"><g style="cursor:pointer" filter="url(#m4sh)">
+        <ellipse cx="440" cy="335" rx="42" ry="13" fill="#d4a574"/>
+        <text x="440" y="325" text-anchor="middle" font-size="22">🐚</text>
+        <text x="440" y="365" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">4.Fibonacci</text>
+      </g></a>
+      <!-- Station 5: Even/Odd -->
+      <a href="#alg5"><g style="cursor:pointer" filter="url(#m4sh)">
+        <ellipse cx="560" cy="325" rx="42" ry="13" fill="#d4a574"/>
+        <text x="560" y="320" text-anchor="middle" font-size="22">🧦</text>
+        <text x="560" y="365" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">5.זוגי/אי</text>
+      </g></a>
+      <!-- Station 6: Sliding Window -->
+      <a href="#alg6"><g style="cursor:pointer" filter="url(#m4sh)">
+        <ellipse cx="680" cy="335" rx="46" ry="14" fill="#d4a574"/>
+        <text x="680" y="322" text-anchor="middle" font-size="22">🪟</text>
+        <text x="680" y="365" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">6.SlideWin</text>
+      </g></a>
+      <!-- Station 7: Common values -->
+      <a href="#alg7"><g style="cursor:pointer" filter="url(#m4sh)">
+        <ellipse cx="800" cy="325" rx="42" ry="13" fill="#d4a574"/>
+        <g transform="translate(800,308)">
+          <circle cx="-8" r="10" fill="#ff6b6b" opacity="0.7"/>
+          <circle cx="8" r="10" fill="#4ecdc4" opacity="0.7"/>
+        </g>
+        <text x="800" y="365" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">7.משותפים</text>
+      </g></a>
+      <!-- Station 8: Remove dups -->
+      <a href="#alg8"><g style="cursor:pointer" filter="url(#m4sh)">
+        <ellipse cx="920" cy="335" rx="42" ry="13" fill="#d4a574"/>
+        <text x="920" y="325" text-anchor="middle" font-size="22">🗑️</text>
+        <text x="920" y="365" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">8.כפילויות</text>
+      </g></a>
+      <!-- Station 9: Reverse string -->
+      <a href="#alg9"><g style="cursor:pointer" filter="url(#m4sh)">
+        <ellipse cx="1040" cy="325" rx="42" ry="13" fill="#d4a574"/>
+        <text x="1040" y="322" text-anchor="middle" font-size="22">📖</text>
+        <text x="1040" y="365" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">9.Reverse</text>
+      </g></a>
+      <!-- Station 10: Char count -->
+      <a href="#alg10"><g style="cursor:pointer" filter="url(#m4sh)">
+        <ellipse cx="1150" cy="335" rx="40" ry="12" fill="#d4a574"/>
+        <text x="1150" y="325" text-anchor="middle" font-size="22">🔤</text>
+        <text x="1150" y="365" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">10.תווים</text>
+      </g></a>
+
+      <!-- Palm trees -->
+      <g><rect x="30" y="380" width="6" height="40" fill="#5d4037"/><text x="20" y="390" font-size="22">🌴</text></g>
+      <g><rect x="1170" y="380" width="6" height="40" fill="#5d4037"/><text x="1160" y="390" font-size="22">🌴</text></g>
+
+      <!-- Footprints path -->
+      <g fill="#c19a6b" opacity="0.5">
+        <ellipse cx="60" cy="420" rx="6" ry="3"/><ellipse cx="180" cy="425" rx="6" ry="3"/><ellipse cx="300" cy="420" rx="6" ry="3"/><ellipse cx="420" cy="425" rx="6" ry="3"/><ellipse cx="540" cy="420" rx="6" ry="3"/><ellipse cx="660" cy="425" rx="6" ry="3"/><ellipse cx="780" cy="420" rx="6" ry="3"/><ellipse cx="900" cy="425" rx="6" ry="3"/><ellipse cx="1020" cy="420" rx="6" ry="3"/><ellipse cx="1140" cy="425" rx="6" ry="3"/>
+      </g>
+
+      <!-- Boat with grandma -->
+      <g transform="translate(80,210)">
+        <path d="M -25 0 L 25 0 L 20 12 L -20 12 Z" fill="#8b6f47"/>
+        <line x1="0" y1="-25" x2="0" y2="0" stroke="#5d4037" stroke-width="2"/>
+        <polygon points="0,-25 0,-5 15,-15" fill="#fff"/>
+        <circle cx="0" cy="-3" r="6" fill="#fde0c5"/>
+        <ellipse cx="0" cy="-9" rx="7" ry="4" fill="#ecf0f1"/>
+      </g>
+    </svg>
+    <div style="text-align:center;margin-top:14px;color:#16213e;font-size:0.95em;font-style:italic;">
+      ⛵ הפלגה לאורך החוף — לחץ על אי כדי לקפוץ לאלגוריתם
+    </div>
+  </section>
+
+  <nav class="toc">
+    <h2>📚 רשימת אלגוריתמים</h2>
+    <div class="toc-grid">
+      <a href="#alg1"><span>1. ספירת מספרים במטריצה</span><span class="difficulty diff-easy">קל</span></a>
+      <a href="#alg2"><span>2. מיון ספרות</span><span class="difficulty diff-easy">קל</span></a>
+      <a href="#alg3"><span>3. פלינדרום בינארי</span><span class="difficulty diff-medium">בינוני</span></a>
+      <a href="#alg4"><span>4. סדרת פיבונאצ'י</span><span class="difficulty diff-medium">בינוני</span></a>
+      <a href="#alg5"><span>5. ספירת זוגיים/אי-זוגיים</span><span class="difficulty diff-easy">קל</span></a>
+      <a href="#alg6"><span>6. רצפים שסכומם שווה</span><span class="difficulty diff-hard">קשה</span></a>
+      <a href="#alg7"><span>7. ערכים משותפים בלי includes</span><span class="difficulty diff-medium">בינוני</span></a>
+      <a href="#alg8"><span>8. הסרת כפילויות</span><span class="difficulty diff-easy">קל</span></a>
+      <a href="#alg9"><span>9. הפיכת מחרוזת</span><span class="difficulty diff-easy">קל</span></a>
+      <a href="#alg10"><span>10. ספירת תווים</span><span class="difficulty diff-medium">בינוני</span></a>
+    </div>
+  </nav>
+
+  <!-- ============ ALG 1 ============ -->
+  <section id="alg1">
+    <h2>1️⃣ ספירת מספרים במטריצה <span class="complexity">O(n×m)</span> <span class="difficulty diff-easy">קל</span></h2>
+
+    <div class="question-box">
+      בהינתן מטריצה (מערך דו-ממדי) של מספרים, ספור כמה ערכים גדולים מ-X יש בכל שורה ובכל עמודה.
+    </div>
+
+    <div class="approach-box">
+      עבור על כל תא במטריצה. עבור כל ערך גדול מ-X, הוסף 1 למונה השורה ולמונה העמודה.
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function countBig(matrix: number[][], threshold: number) {
+  const rows = matrix.length;
+  const cols = matrix[0]?.length || 0;
+
+  const rowCounts: number[] = new Array(rows).fill(0);
+  const colCounts: number[] = new Array(cols).fill(0);
+
+  for (let i = 0; i &lt; rows; i++) {
+    for (let j = 0; j &lt; cols; j++) {
+      if (matrix[i][j] &gt; threshold) {
+        rowCounts[i]++;
+        colCounts[j]++;
+      }
+    }
+  }
+
+  return { rowCounts, colCounts };
+}
+
+// בדיקות
+const m = [
+  [10, 60, 30],
+  [70, 80, 20],
+  [40, 90, 100]
+];
+countBig(m, 50);
+// { rowCounts: [1, 2, 2], colCounts: [1, 3, 1] }</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ ALG 2 ============ -->
+  <section id="alg2">
+    <h2>2️⃣ מיון ספרות במספר <span class="complexity">O(n log n)</span> <span class="difficulty diff-easy">קל</span></h2>
+
+    <div class="question-box">
+      בהינתן מספר, החזר אותו עם הספרות ממוינות מהקטנה לגדולה. למשל 4231 → 1234.
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function sortDigits(num: number): number {
+  return Number(
+    num.toString()
+       .split('')
+       .sort((a, b) =&gt; Number(a) - Number(b))
+       .join('')
+  );
+}
+
+// פתרון יציב יותר (לא נשמטים אפסים)
+function sortDigitsAsString(num: number): string {
+  return num.toString()
+    .split('')
+    .sort((a, b) =&gt; Number(a) - Number(b))
+    .join('');
+}
+
+// בדיקות
+sortDigits(4231);     // 1234
+sortDigits(9876);     // 6789
+sortDigits(305);      // 35 (האפס נשמט!)
+sortDigitsAsString(305);  // "035"</div>
+  </details>
+  
+
+    <h3>גרסה — מיון מהגדולה לקטנה</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function sortDigitsDescending(num: number): number {
+  return Number(
+    num.toString()
+       .split('')
+       .sort((a, b) =&gt; Number(b) - Number(a))
+       .join('')
+  );
+}
+
+sortDigitsDescending(1234);   // 4321</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ ALG 3 ============ -->
+  <section id="alg3">
+    <h2>3️⃣ פלינדרום בינארי <span class="complexity">O(log n)</span> <span class="difficulty diff-medium">בינוני</span></h2>
+
+    <div class="question-box">
+      קלט: מספר עשרוני. פלט: <code class="inline">true</code> אם הייצוג הבינארי שלו פלינדרום, אחרת <code class="inline">false</code>.
+    </div>
+
+    <div class="approach-box">
+      המר לבינארי, אז בדוק אם המחרוזת זהה לעצמה הפוכה.
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// פתרון 1: reverse + compare
+function isBinaryPalindrome(num: number): boolean {
+  const binary = num.toString(2);
+  const reversed = binary.split('').reverse().join('');
+  return binary === reversed;
+}
+
+// פתרון 2: two pointers (יעיל יותר)
+function isBinaryPalindrome(num: number): boolean {
+  const binary = num.toString(2);
+  let left = 0;
+  let right = binary.length - 1;
+
+  while (left &lt; right) {
+    if (binary[left] !== binary[right]) return false;
+    left++;
+    right--;
+  }
+  return true;
+}
+
+// בדיקות
+isBinaryPalindrome(9);    // true  (1001)
+isBinaryPalindrome(10);   // false (1010)
+isBinaryPalindrome(7);    // true  (111)
+isBinaryPalindrome(0);    // true  (0)</div>
+  </details>
+  
+
+    <div class="tip">
+      <strong>טיפ:</strong> <code class="inline">.toString(2)</code> = בינארי, <code class="inline">.toString(16)</code> = הקס, <code class="inline">.toString(8)</code> = אוקטל. <code class="inline">parseInt('1001', 2)</code> מחזיר ל-base 10.
+    </div>
+  </section>
+
+  <!-- ============ ALG 4 ============ -->
+  <section id="alg4">
+    <h2>4️⃣ סדרת פיבונאצ'י <span class="complexity">O(n)</span> <span class="difficulty diff-medium">בינוני</span></h2>
+
+    <div class="question-box">
+      החזר את האיבר ה-n בסדרת פיבונאצ'י: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, ...
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// פתרון איטרטיבי — מומלץ במבחן
+function fibonacci(n: number): number {
+  if (n &lt; 0) throw new Error('n חייב להיות חיובי');
+  if (n &lt;= 1) return n;
+
+  let prev = 0, curr = 1;
+  for (let i = 2; i &lt;= n; i++) {
+    [prev, curr] = [curr, prev + curr];
+  }
+  return curr;
+}
+
+// פתרון רקורסיבי + memoization
+function fibMemo(n: number, cache: Record&lt;number, number&gt; = {}): number {
+  if (n &lt;= 1) return n;
+  if (cache[n] !== undefined) return cache[n];
+  cache[n] = fibMemo(n-1, cache) + fibMemo(n-2, cache);
+  return cache[n];
+}
+
+// בדיקות
+fibonacci(0);    // 0
+fibonacci(10);   // 55
+fibonacci(20);   // 6765</div>
+  </details>
+  
+
+    <h3>מציאת מיקום של מספר בסדרה</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function fibIndex(num: number): number {
+  if (num === 0) return 0;
+  if (num === 1) return 1;
+
+  let prev = 0, curr = 1, index = 1;
+  while (curr &lt;= num) {
+    if (curr === num) return index;
+    [prev, curr] = [curr, prev + curr];
+    index++;
+  }
+  return -1;
+}
+
+fibIndex(8);    // 6
+fibIndex(4);    // -1</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ ALG 5 ============ -->
+  <section id="alg5">
+    <h2>5️⃣ ספירת זוגיים ואי-זוגיים <span class="complexity">O(n)</span> <span class="difficulty diff-easy">קל</span></h2>
+
+    <div class="question-box">
+      בהינתן מערך מספרים, ספור כמה זוגיים וכמה אי-זוגיים יש, בלי לספור כפילויות.
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function countEvenOdd(nums: number[]): { even: number; odd: number } {
+  const unique = [...new Set(nums)];   // הסר כפילויות
+
+  let even = 0;
+  let odd = 0;
+
+  for (const n of unique) {
+    if (n % 2 === 0) even++;
+    else odd++;
+  }
+
+  return { even, odd };
+}
+
+// או עם reduce
+function countEvenOdd(nums: number[]): { even: number; odd: number } {
+  return [...new Set(nums)].reduce(
+    (acc, n) =&gt; {
+      if (n % 2 === 0) acc.even++;
+      else acc.odd++;
+      return acc;
+    },
+    { even: 0, odd: 0 }
+  );
+}
+
+// בדיקות
+countEvenOdd([1, 2, 3, 2, 4, 5, 5]);
+// unique: [1, 2, 3, 4, 5]
+// { even: 2, odd: 3 }</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ ALG 6 ============ -->
+  <section id="alg6">
+    <h2>6️⃣ רצפים שסכומם שווה למספר <span class="complexity">O(n²)</span> <span class="difficulty diff-hard">קשה</span></h2>
+
+    <div class="question-box">
+      בהינתן מערך ומספר target, מצא את כל הרצפים הרציפים שסכומם שווה ל-target.
+    </div>
+
+    <div class="approach-box">
+      Two pointers / Sliding window. עבור כל אינדקס התחלה, סכם פריטים עוקבים עד שמגיעים ל-target.
+    </div>
+
+    <!-- 🎨 SLIDING WINDOW VISUAL -->
+    <div style="background: rgba(10, 25, 47, 0.5); padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; border: 1px dashed #667eea;">
+      <h4 style="color:#667eea; margin-top:0;">👁️ המחשת Sliding Window</h4>
+      <div style="display: flex; justify-content: center; gap: 8px; font-family: monospace; font-size: 1.2em; margin-bottom: 10px;">
+        <span style="padding:10px; background:#1e293b; border-radius:6px; color:#cbd5e1;">1</span>
+        <span style="padding:10px; background:rgba(102,126,234,0.3); border:2px solid #667eea; border-radius:6px; color:#fff;">2</span>
+        <span style="padding:10px; background:rgba(102,126,234,0.3); border:2px solid #667eea; border-radius:6px; color:#fff;">3</span>
+        <span style="padding:10px; background:#1e293b; border-radius:6px; color:#cbd5e1;">4</span>
+        <span style="padding:10px; background:#1e293b; border-radius:6px; color:#cbd5e1;">5</span>
+      </div>
+      <div style="color:#a5b4fc; font-size:0.9em;">החלון [2,3] זז ימינה. סכום = 5. Target = 5. <span style="color:#4ade80;">✔ מצאנו!</span></div>
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function findSubarrays(nums: number[], target: number): number[][] {
+  const result: number[][] = [];
+
+  for (let start = 0; start &lt; nums.length; start++) {
+    let sum = 0;
+    for (let end = start; end &lt; nums.length; end++) {
+      sum += nums[end];
+      if (sum === target) {
+        result.push(nums.slice(start, end + 1));
+      }
+      // אם הגענו מעל ויש רק חיוביים — אפשר לעצור
+      if (sum &gt; target) break;
+    }
+  }
+
+  return result;
+}
+
+// בדיקות
+findSubarrays([1, 2, 3, 4, 5], 9);
+// [[2,3,4], [4,5]]
+findSubarrays([1, 1, 1, 1], 2);
+// [[1,1], [1,1], [1,1]]</div>
+  </details>
+  
+
+    <h3>גרסה לפי אורך מינימלי</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function findShortestSubarray(nums: number[], target: number): number[] | null {
+  let result: number[] | null = null;
+
+  for (let start = 0; start &lt; nums.length; start++) {
+    let sum = 0;
+    for (let end = start; end &lt; nums.length; end++) {
+      sum += nums[end];
+      if (sum === target) {
+        const sub = nums.slice(start, end + 1);
+        if (!result || sub.length &lt; result.length) {
+          result = sub;
+        }
+        break;   // נמצא, אין טעם להמשיך
+      }
+    }
+  }
+
+  return result;
+}</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ ALG 7 ============ -->
+  <section id="alg7">
+    <h2>7️⃣ ערכים משותפים בלי includes <span class="complexity">O(n+m)</span> <span class="difficulty diff-medium">בינוני</span></h2>
+
+    <div class="question-box">
+      מצא ערכים משותפים בין שני מערכים — בלי להשתמש ב-<code class="inline">includes</code>, <code class="inline">indexOf</code>, או לולאת for רגילה.
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// פתרון 1: filter + Set
+function commonValues(arr1: number[], arr2: number[]): number[] {
+  const set2 = new Set(arr2);
+  return arr1.filter(x =&gt; set2.has(x));
+}
+
+// פתרון 2: filter + filter (איטי יותר)
+function commonValues(arr1: number[], arr2: number[]): number[] {
+  return arr1.filter(x =&gt; arr2.some(y =&gt; y === x));
+}
+
+// פתרון 3: Set intersection (ES2024)
+function commonValues(arr1: number[], arr2: number[]): number[] {
+  const s1 = new Set(arr1);
+  const s2 = new Set(arr2);
+  return [...s1].filter(x =&gt; s2.has(x));
+}
+
+// בדיקות
+commonValues([1, 2, 3, 4], [3, 4, 5, 6]);
+// [3, 4]
+commonValues([1, 1, 2, 3], [1, 2]);
+// [1, 1, 2] (כפילויות נשמרות מ-arr1)</div>
+  </details>
+  
+
+    <h3>גרסה: בלי כפילויות</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function commonValuesUnique(arr1: number[], arr2: number[]): number[] {
+  const set2 = new Set(arr2);
+  return [...new Set(arr1.filter(x =&gt; set2.has(x)))];
+}
+
+commonValuesUnique([1, 1, 2, 3], [1, 2]);
+// [1, 2]</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ ALG 8 ============ -->
+  <section id="alg8">
+    <h2>8️⃣ הסרת כפילויות ממערך <span class="complexity">O(n)</span> <span class="difficulty diff-easy">קל</span></h2>
+
+    <div class="question-box">
+      הסר כפילויות ממערך — שמור על הסדר המקורי.
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// פתרון 1: Set (הכי קצר ומהיר)
+const unique = (arr: number[]): number[] =&gt; [...new Set(arr)];
+
+// פתרון 2: filter + indexOf
+const unique = (arr: number[]): number[] =&gt;
+  arr.filter((x, i) =&gt; arr.indexOf(x) === i);
+
+// פתרון 3: reduce
+const unique = (arr: number[]): number[] =&gt;
+  arr.reduce((acc: number[], x) =&gt;
+    acc.includes(x) ? acc : [...acc, x]
+  , []);
+
+// בדיקות
+unique([1, 2, 2, 3, 3, 3, 4]);   // [1, 2, 3, 4]</div>
+  </details>
+  
+
+    <h3>הסרת כפילויות מאובייקטים</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">type User = { id: number; name: string };
+
+// לפי id
+function uniqueById(users: User[]): User[] {
+  const seen = new Set&lt;number&gt;();
+  return users.filter(u =&gt; {
+    if (seen.has(u.id)) return false;
+    seen.add(u.id);
+    return true;
+  });
+}
+
+// או עם Map (שומר את האחרון)
+function uniqueByIdMap(users: User[]): User[] {
+  return Array.from(
+    new Map(users.map(u =&gt; [u.id, u])).values()
+  );
+}</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ ALG 9 ============ -->
+  <section id="alg9">
+    <h2>9️⃣ הפיכת מחרוזת <span class="complexity">O(n)</span> <span class="difficulty diff-easy">קל</span></h2>
+
+    <div class="question-box">
+      הפוך מחרוזת — "Hello" → "olleH".
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// פתרון 1: split + reverse + join
+const reverse = (str: string): string =&gt; str.split('').reverse().join('');
+
+// פתרון 2: spread
+const reverse = (str: string): string =&gt; [...str].reverse().join('');
+
+// פתרון 3: לולאה
+function reverse(str: string): string {
+  let result = '';
+  for (let i = str.length - 1; i &gt;= 0; i--) {
+    result += str[i];
+  }
+  return result;
+}
+
+// פתרון 4: רקורסיה
+function reverse(str: string): string {
+  return str.length &lt;= 1 ? str : reverse(str.slice(1)) + str[0];
+}
+
+// בדיקות
+reverse('Hello');         // 'olleH'
+reverse('שלום');           // 'םולש'</div>
+  </details>
+  
+
+    <h3>בדיקת פלינדרום</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function isPalindrome(str: string): boolean {
+  const clean = str.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+  return clean === clean.split('').reverse().join('');
+}
+
+isPalindrome('A man a plan a canal Panama');   // true
+isPalindrome('hello');                          // false</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ ALG 10 ============ -->
+  <section id="alg10">
+    <h2>🔟 ספירת תווים במחרוזת <span class="complexity">O(n)</span> <span class="difficulty diff-medium">בינוני</span></h2>
+
+    <div class="question-box">
+      ספור כמה פעמים מופיע כל תו במחרוזת. החזר אובייקט.
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function countChars(str: string): Record&lt;string, number&gt; {
+  const counts: Record&lt;string, number&gt; = {};
+
+  for (const char of str) {
+    counts[char] = (counts[char] || 0) + 1;
+  }
+
+  return counts;
+}
+
+// או עם reduce
+const countChars = (str: string): Record&lt;string, number&gt; =&gt;
+  [...str].reduce((acc, char) =&gt; {
+    acc[char] = (acc[char] || 0) + 1;
+    return acc;
+  }, {} as Record&lt;string, number&gt;);
+
+// בדיקות
+countChars('hello');
+// { h: 1, e: 1, l: 2, o: 1 }
+countChars('שלום עולם');
+// { 'ש': 1, 'ל': 2, 'ו': 2, 'ם': 2, ' ': 1, 'ע': 1 }</div>
+  </details>
+  
+
+    <h3>מציאת התו הכי נפוץ</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function mostCommon(str: string): string {
+  const counts = countChars(str);
+  let maxChar = '';
+  let maxCount = 0;
+
+  for (const [char, count] of Object.entries(counts)) {
+    if (count &gt; maxCount) {
+      maxChar = char;
+      maxCount = count;
+    }
+  }
+
+  return maxChar;
+}
+
+mostCommon('hello world');   // 'l'</div>
+  </details>
+  
+
+    <h3>מציאת התו הראשון שלא חוזר</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">function firstNonRepeating(str: string): string | null {
+  const counts = countChars(str);
+  for (const char of str) {
+    if (counts[char] === 1) return char;
+  }
+  return null;
+}
+
+firstNonRepeating('aabbcdd');   // 'c'
+firstNonRepeating('aabb');      // null</div>
+  </details>
+  
+  </section>
+
+  <footer style="text-align:center;padding:30px;color:rgba(255,255,255,0.6);">
+    <p>📚 חזור לדשבורד לראות את ההתקדמות שלך</p>
+    <p>🎯 100/100 — בא לקראתך</p>
+  </footer>
+
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    if (window.scrollY > 300) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+  });
+</script>
+
+<script src="concept-widget.js"></script>
+
+<!-- Interactive Sandbox Engine -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.code-block').forEach((block, index) => {
+      // Make the code block editable
+      block.setAttribute('contenteditable', 'true');
+      block.setAttribute('spellcheck', 'false');
+      block.title = 'לחץ כדי לערוך את הקוד';
+
+      // Create Run Button
+      const btn = document.createElement('button');
+      btn.className = 'run-btn';
+      btn.innerHTML = '▶️ הרץ קוד (Run)';
+      
+      // Create Console Output Window
+      const consoleOutput = document.createElement('pre');
+      consoleOutput.className = 'console-output';
+      consoleOutput.id = 'console-' + index;
+      consoleOutput.style.display = 'none';
+
+      // Inject underneath the code block
+      block.parentNode.insertBefore(consoleOutput, block.nextSibling);
+      block.parentNode.insertBefore(btn, consoleOutput);
+
+      // Handle Click Event
+      btn.addEventListener('click', () => {
+        consoleOutput.style.display = 'block';
+        consoleOutput.style.color = '#0f0';
+        consoleOutput.style.borderLeftColor = '#28a745';
+        consoleOutput.innerText = 'מקמפל TypeScript ומריץ...\n';
+        
+        // Intercept console.log to print to our window
+        const originalLog = console.log;
+        let logs = [];
+        console.log = function(...args) {
+          logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
+          originalLog.apply(console, args); // Keep native console working
+        };
+
+        try {
+          const rawCode = block.innerText;
+          
+          // Compile TypeScript to JavaScript using Babel Standalone
+          const compiledCode = Babel.transform(rawCode, { 
+            filename: 'script.ts',
+            presets: ['typescript'] 
+          }).code;
+
+          // Execute Compiled JS
+          // Wrap in an IIFE to capture return values and prevent scope leakage
+          const executionCode = `
+            return (function() {
+              ${compiledCode}
+            })();
+          `;
+          
+          const result = new Function(executionCode)();
+          
+          // Render results
+          let outputText = logs.join('\n');
+          if (result !== undefined) {
+            outputText += (outputText ? '\n\n' : '') + 'החזיר: ' + JSON.stringify(result, null, 2);
+          }
+          
+          if (!outputText.trim()) {
+            outputText = '✅ הקוד רץ בהצלחה (ללא פלט). השתמש ב-console.log כדי לראות נתונים.';
+          }
+          
+          consoleOutput.innerText = outputText;
+
+        } catch (err) {
+          consoleOutput.style.color = '#ff6b6b';
+          consoleOutput.style.borderLeftColor = '#ff6b6b';
+          consoleOutput.innerText = '❌ שגיאה:\n' + err.message;
+        } finally {
+          // Restore native console.log
+          console.log = originalLog;
+        }
+      });
+    });
+  });
+</script>
+<script src="theme-toggle.js"></script>
+<script src="breadcrumbs.js"></script>
+<script src="collapse-sections.js"></script>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

@@ -1,0 +1,473 @@
+{
+  "before_issues": [
+    [
+      "bank-q1.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "bank-q1.html",
+      "חסר באנר QA"
+    ],
+    [
+      "bank-q1.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "bank-q1.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "bank-q1.html",
+      "4 שורות קוד ארוכות"
+    ],
+    [
+      "bank-q2.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "bank-q2.html",
+      "חסר באנר QA"
+    ],
+    [
+      "bank-q2.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "bank-q2.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "bank-q3.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "bank-q3.html",
+      "חסר באנר QA"
+    ],
+    [
+      "bank-q3.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "bank-q3.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "currency-q1.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "currency-q1.html",
+      "חסר באנר QA"
+    ],
+    [
+      "currency-q1.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "currency-q1.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "currency-q1.html",
+      "3 שורות קוד ארוכות"
+    ],
+    [
+      "currency-q2.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "currency-q2.html",
+      "חסר באנר QA"
+    ],
+    [
+      "currency-q2.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "currency-q2.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "flights-q1.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "flights-q1.html",
+      "חסר באנר QA"
+    ],
+    [
+      "flights-q1.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "flights-q1.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "flights-q1.html",
+      "3 שורות קוד ארוכות"
+    ],
+    [
+      "flights-q2.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "flights-q2.html",
+      "חסר באנר QA"
+    ],
+    [
+      "flights-q2.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "flights-q2.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "flights-q3.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "flights-q3.html",
+      "חסר באנר QA"
+    ],
+    [
+      "flights-q3.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "flights-q3.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "football-q1.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "football-q1.html",
+      "חסר באנר QA"
+    ],
+    [
+      "football-q1.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "football-q1.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "football-q2.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "football-q2.html",
+      "חסר באנר QA"
+    ],
+    [
+      "football-q2.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "football-q2.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "football-q3.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "football-q3.html",
+      "חסר באנר QA"
+    ],
+    [
+      "football-q3.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "football-q3.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "helpme-q1.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "helpme-q1.html",
+      "חסר באנר QA"
+    ],
+    [
+      "helpme-q1.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "helpme-q1.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "helpme-q1.html",
+      "2 שורות קוד ארוכות"
+    ],
+    [
+      "helpme-q2.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "helpme-q2.html",
+      "חסר באנר QA"
+    ],
+    [
+      "helpme-q2.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "helpme-q2.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "helpme-q3.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "helpme-q3.html",
+      "חסר באנר QA"
+    ],
+    [
+      "helpme-q3.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "helpme-q3.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "index.html",
+      "עוגן שבור #Football"
+    ],
+    [
+      "index.html",
+      "עוגן שבור #Parking"
+    ],
+    [
+      "index.html",
+      "עוגן שבור #Flight"
+    ],
+    [
+      "index.html",
+      "עוגן שבור #HelpMe"
+    ],
+    [
+      "index.html",
+      "עוגן שבור #Bank"
+    ],
+    [
+      "index.html",
+      "עוגן שבור #Logistics"
+    ],
+    [
+      "index.html",
+      "עוגן שבור #Currency"
+    ],
+    [
+      "index.html",
+      "עוגן שבור #Willing"
+    ],
+    [
+      "index.html",
+      "עוגן שבור #Travel"
+    ],
+    [
+      "logistics-q1.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "logistics-q1.html",
+      "חסר באנר QA"
+    ],
+    [
+      "logistics-q1.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "logistics-q1.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "logistics-q1.html",
+      "3 שורות קוד ארוכות"
+    ],
+    [
+      "logistics-q2.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "logistics-q2.html",
+      "חסר באנר QA"
+    ],
+    [
+      "logistics-q2.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "logistics-q2.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "parking-q1.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "parking-q1.html",
+      "חסר באנר QA"
+    ],
+    [
+      "parking-q1.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "parking-q1.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "parking-q1.html",
+      "1 שורות קוד ארוכות"
+    ],
+    [
+      "parking-q2.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "parking-q2.html",
+      "חסר באנר QA"
+    ],
+    [
+      "parking-q2.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "parking-q2.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "parking-q3.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "parking-q3.html",
+      "חסר באנר QA"
+    ],
+    [
+      "parking-q3.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "parking-q3.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "travel-q1.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "travel-q1.html",
+      "חסר באנר QA"
+    ],
+    [
+      "travel-q1.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "travel-q1.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "travel-q1.html",
+      "5 שורות קוד ארוכות"
+    ],
+    [
+      "travel-q2.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "travel-q2.html",
+      "חסר באנר QA"
+    ],
+    [
+      "travel-q2.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "travel-q2.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "travel-q3.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "travel-q3.html",
+      "חסר באנר QA"
+    ],
+    [
+      "travel-q3.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "travel-q3.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "willing-q1.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "willing-q1.html",
+      "חסר באנר QA"
+    ],
+    [
+      "willing-q1.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "willing-q1.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "willing-q1.html",
+      "3 שורות קוד ארוכות"
+    ],
+    [
+      "willing-q2.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "willing-q2.html",
+      "חסר באנר QA"
+    ],
+    [
+      "willing-q2.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "willing-q2.html",
+      "שורות קוד לא נגישות במקלדת"
+    ],
+    [
+      "willing-q3.html",
+      "פירוק סעיפים גנרי"
+    ],
+    [
+      "willing-q3.html",
+      "חסר באנר QA"
+    ],
+    [
+      "willing-q3.html",
+      "חסר כרטיס Debug QA"
+    ],
+    [
+      "willing-q3.html",
+      "שורות קוד לא נגישות במקלדת"
+    ]
+  ],
+  "after_issues": []
+}

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏅 תעודת שליטה — Full Stack Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Alef:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Alef', sans-serif; background: #0f172a; color: #e0e0e0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
+
+    .back-btn { align-self: flex-start; color: #ffd93d; text-decoration: none; padding: 8px 16px; background: rgba(255,217,61,0.1); border-radius: 8px; margin-bottom: 20px; transition: 0.2s; }
+    .back-btn:hover { background: rgba(255,217,61,0.2); }
+
+    h1 { color: #4ecdc4; font-size: 2em; margin-bottom: 5px; text-align: center; }
+    .subtitle { color: #94a3b8; margin-bottom: 30px; text-align: center; }
+
+    /* Setup Form */
+    .setup-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 30px; width: 100%; max-width: 500px; margin-bottom: 30px; }
+    .setup-card h2 { color: #ffd93d; margin-bottom: 20px; }
+    label { display: block; color: #94a3b8; margin-bottom: 6px; font-size: 0.9em; }
+    input[type="text"] { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; font-size: 1em; margin-bottom: 20px; font-family: 'Alef', sans-serif; }
+    input[type="text"]:focus { outline: none; border-color: #4ecdc4; }
+    .gen-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #4ecdc4, #20b2aa); border: none; border-radius: 8px; color: #fff; font-weight: bold; font-size: 1.1em; cursor: pointer; transition: 0.2s; font-family: 'Alef', sans-serif; }
+    .gen-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(78,205,196,0.3); }
+
+    /* === THE CERTIFICATE === */
+    #certificate-wrapper { display: none; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
+
+    .certificate {
+      width: 800px;
+      max-width: 100%;
+      background: linear-gradient(160deg, #1a1040, #0d1f3c);
+      border: 3px solid #d4af37;
+      border-radius: 15px;
+      padding: 50px 60px;
+      position: relative;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(212, 175, 55, 0.2), inset 0 0 60px rgba(0,0,0,0.3);
+      direction: rtl;
+    }
+
+    .cert-border-inner {
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 10px;
+      padding: 40px;
+    }
+
+    .cert-corner { position: absolute; font-size: 2em; line-height: 1; opacity: 0.7; }
+    .cert-corner.tl { top: 15px; right: 15px; }
+    .cert-corner.tr { top: 15px; left: 15px; }
+    .cert-corner.bl { bottom: 15px; right: 15px; }
+    .cert-corner.br { bottom: 15px; left: 15px; }
+
+    .cert-logo { font-size: 3.5em; margin-bottom: 10px; }
+    .cert-title { font-family: 'Playfair Display', serif; font-size: 1.5em; color: #d4af37; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; }
+    .cert-declares { color: #94a3b8; font-size: 1em; margin-bottom: 5px; }
+    .cert-name { font-family: 'Playfair Display', serif; font-size: 3em; color: #fff; margin: 15px 0; text-shadow: 0 0 30px rgba(212,175,55,0.4); }
+    .cert-body { color: #cbd5e1; font-size: 1.05em; line-height: 1.8; margin: 20px 0; }
+    .cert-program { background: linear-gradient(135deg, #d4af37, #f0c940); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 1.2em; }
+
+    .cert-stats { display: flex; justify-content: center; gap: 30px; margin: 25px 0; flex-wrap: wrap; }
+    .stat-pill { background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 20px; padding: 8px 20px; }
+    .stat-pill .num { font-size: 1.5em; font-weight: bold; color: #d4af37; display: block; }
+    .stat-pill .lbl { font-size: 0.8em; color: #94a3b8; }
+
+    .cert-divider { border: none; border-top: 1px solid rgba(212,175,55,0.3); margin: 20px 0; }
+    .cert-date { color: #64748b; font-size: 0.9em; margin-top: 10px; }
+    .cert-seal { font-size: 4em; margin-top: 20px; }
+
+    /* Buttons */
+    .cert-actions { display: flex; gap: 15px; }
+    .cert-btn { padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; font-size: 1em; cursor: pointer; transition: 0.2s; font-family: 'Alef', sans-serif; }
+    .print-btn { background: #d4af37; color: #000; }
+    .print-btn:hover { background: #f0c940; }
+    .reset-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .back-btn, .setup-card, h1, .subtitle, .cert-actions { display: none !important; }
+      .certificate { box-shadow: none; border: 3px solid #d4af37; }
+      #certificate-wrapper { display: flex !important; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="00_dashboard.html" class="back-btn">← חזרה לדשבורד</a>
+<h1>🏅 מחולל תעודת שליטה</h1>
+<p class="subtitle">צור תעודה אישית המסכמת את מסע ההכנה שלך</p>
+
+<!-- Setup -->
+<div class="setup-card">
+  <h2>✏️ מלא את הפרטים</h2>
+  <label>שמך המלא (כפי שיופיע בתעודה)</label>
+  <input type="text" id="student-name" placeholder="לדוגמה: טל ישראלי" maxlength="50">
+  <label>מטרת הלמידה / שם הקורס</label>
+  <input type="text" id="course-name" placeholder="לדוגמה: Full-Stack Development Exam Prep">
+  <button class="gen-btn" onclick="generateCertificate()">✨ צור תעודה</button>
+</div>
+
+<!-- Certificate -->
+<div id="certificate-wrapper">
+  <div class="certificate" id="certificate">
+    <div class="cert-corner tl">✦</div>
+    <div class="cert-corner tr">✦</div>
+    <div class="cert-corner bl">✦</div>
+    <div class="cert-corner br">✦</div>
+
+    <div class="cert-border-inner">
+      <div class="cert-logo">🎓</div>
+      <div class="cert-title">Certificate of Mastery</div>
+      <div class="cert-declares">This is to certify that</div>
+      <div class="cert-name" id="cert-name-display">שמך כאן</div>
+      <div class="cert-body">
+        השלים בהצלחה את תוכנית ההכנה האינטנסיבית<br>
+        <span class="cert-program" id="cert-course-display">Full-Stack Development Mastery Portal</span><br>
+        באמצעות מערכת למידה מתקדמת הכוללת שינון חכם,<br>
+        סימולטורי מבחנים, ויזואליזציה וכלי דיבוג אקטיביים.
+      </div>
+
+      <div class="cert-stats" id="cert-stats">
+        <!-- Injected by JS -->
+      </div>
+
+      <hr class="cert-divider">
+      <div class="cert-date" id="cert-date"></div>
+      <div class="cert-seal">🌟</div>
+    </div>
+  </div>
+
+  <div class="cert-actions">
+    <button class="cert-btn print-btn" onclick="window.print()">🖨️ הדפס / שמור כ-PDF</button>
+    <button class="cert-btn reset-btn" onclick="document.getElementById('certificate-wrapper').style.display='none'; document.querySelector('.setup-card').style.display='block';">ערוך מחדש</button>
+  </div>
+</div>
+
+<script>
+  function generateCertificate() {
+    const name = document.getElementById('student-name').value.trim();
+    const course = document.getElementById('course-name').value.trim();
+    
+    if (!name) { alert('יש להזין שם מלא!'); return; }
+
+    // Get stats from localStorage
+    const DB_KEY = 'FullStackStudyProgressDB';
+    let db = {};
+    try { db = JSON.parse(localStorage.getItem(DB_KEY)) || {}; } catch(e) {}
+    
+    const streak = db.streak || 0;
+    const quizzes = db.quizzesCompleted || 0;
+    const flashcards = db.flashcardsAnswered || 0;
+    const focusSessions = db.focusSessions || 0;
+    
+    // History: count total days studied
+    const historyDays = Object.keys(db.history || {}).length;
+
+    // Fill certificate
+    document.getElementById('cert-name-display').textContent = name;
+    document.getElementById('cert-course-display').textContent = course || 'Full-Stack Development Mastery Portal';
+    
+    const now = new Date();
+    document.getElementById('cert-date').textContent = `תאריך הסמכה: ${now.toLocaleDateString('he-IL', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+    
+    const stats = [
+      { num: streak, lbl: 'ימי רצף 🔥' },
+      { num: quizzes, lbl: 'בחנים הושלמו ✅' },
+      { num: flashcards, lbl: 'כרטיסיות בוצעו 🗂️' },
+      { num: focusSessions, lbl: 'סשני מיקוד 🍅' },
+    ];
+    
+    document.getElementById('cert-stats').innerHTML = stats
+      .map(s => `<div class="stat-pill"><span class="num">${s.num}</span><span class="lbl">${s.lbl}</span></div>`)
+      .join('');
+
+    document.querySelector('.setup-card').style.display = 'none';
+    document.getElementById('certificate-wrapper').style.display = 'flex';
+  }
+</script>
+</body>
+</html>

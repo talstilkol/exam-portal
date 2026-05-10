@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דף נוסחאות A4 - Full Stack</title>
+<link rel="stylesheet" href="light-mode.css">
+<link rel="stylesheet" href="print-mobile.css">
+<style>
+  body { font-family: Arial, sans-serif; font-size: 10.5pt; line-height: 1.4; margin: 0; padding: 16px; color: #000; background: #fff; }
+  h1 { text-align: center; font-size: 17pt; border-bottom: 2px solid #000; margin-bottom: 10px; padding-bottom: 5px; }
+  h2 { font-size: 12pt; border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 4px; color: #1a1a6e; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .box { border: 1px solid #333; padding: 8px 10px; border-radius: 4px; break-inside: avoid; }
+  ul { margin: 2px 0; padding-right: 16px; }
+  li { margin-bottom: 2px; font-size: 9.5pt; }
+  code { font-family: monospace; background: #f0f0f0; padding: 1px 3px; font-size: 9pt; }
+  .tag { display: inline-block; background: #1a1a6e; color: white; border-radius: 3px; padding: 1px 5px; font-size: 8pt; margin-bottom: 4px; }
+  @media print {
+    @page { margin: 0.8cm; size: A4; }
+    body { font-size: 9.5pt; padding: 0; }
+    .grid { gap: 6px; }
+    .no-print { display: none !important; }
+    .box { border: 1px solid #666; padding: 6px 8px; }
+  }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="no-print" style="text-align:center; margin-bottom:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+  <button onclick="window.print()" style="padding:10px 22px; font-size:1.1em; cursor:pointer; background:#1a1a6e; color:white; border:none; border-radius:6px;">🖨️ הדפס (A4)</button>
+  <a href="00_dashboard.html" style="padding:10px 22px; color:#1a1a6e; text-decoration:none; border:1px solid #1a1a6e; border-radius:6px;">← דשבורד</a>
+</div>
+
+<h1>📋 דף נוסחאות מלא — Full-Stack Exam</h1>
+
+<div class="grid">
+
+  <!-- 1. JS Basics -->
+  <div class="box">
+    <span class="tag">JavaScript</span>
+    <h2>JS יסודות</h2>
+    <ul>
+      <li><b>var/let/const:</b> var=Function+Hoisting, let/const=Block Scope</li>
+      <li><b>== vs ===:</b> == עושה Coercion, === גם בודק סוג</li>
+      <li><b>Array:</b> <code>map</code>(מחזיר מערך), <code>filter</code>(תנאי), <code>reduce</code>(ערך)</li>
+      <li><b>Destructuring:</b> <code>const {name, age=20} = user</code></li>
+      <li><b>Spread:</b> <code>[...arr]</code> / <code>{...obj}</code> — עותק רדוד</li>
+      <li><b>Optional Chaining:</b> <code>obj?.prop?.sub</code></li>
+      <li><b>Nullish:</b> <code>a ?? 'default'</code> — רק null/undefined</li>
+    </ul>
+  </div>
+
+  <!-- 2. Async -->
+  <div class="box">
+    <span class="tag">Async</span>
+    <h2>אסינכרוניות</h2>
+    <ul>
+      <li><b>Event Loop:</b> Sync → Microtasks (Promise) → Macrotasks (setTimeout)</li>
+      <li><b>Promise:</b> Pending → Fulfilled / Rejected</li>
+      <li><b>async/await:</b> עוטף Promise, חובה <code>try/catch</code></li>
+      <li><b>Promise.all:</b> מקביל, נכשל אם אחד נכשל</li>
+      <li><b>Promise.allSettled:</b> ממתין לכולם, לא נכשל</li>
+      <li><b>Closure:</b> פונקציה שזוכרת את סביבת יצירתה</li>
+    </ul>
+  </div>
+
+  <!-- 3. React -->
+  <div class="box">
+    <span class="tag">React</span>
+    <h2>React Core & Hooks</h2>
+    <ul>
+      <li><b>Virtual DOM:</b> Diffing — מרנדר רק מה שהשתנה</li>
+      <li><b>useState:</b> <code>set(prev =&gt; prev+1)</code> למניעת Stale Closure</li>
+      <li><b>useEffect:</b> [] = Mount, [x] = עדכון, חובה <code>return cleanup</code></li>
+      <li><b>useMemo/useCallback:</b> Cache ערך/פונקציה</li>
+      <li><b>useRef:</b> לא גורם לרינדור, DOM ו-timer refs</li>
+      <li><b>State Immutable:</b> לא לשנות ישירות — <code>{...obj, x:1}</code></li>
+    </ul>
+  </div>
+
+  <!-- 4. Node/Express -->
+  <div class="box">
+    <span class="tag">Node.js</span>
+    <h2>Node.js & Express</h2>
+    <ul>
+      <li><b>Node:</b> Single Thread + Event Loop = לא חוסם</li>
+      <li><b>Middleware:</b> <code>(req,res,next) =&gt; { next() }</code></li>
+      <li><b>CORS:</b> <code>app.use(cors())</code> לפני routes</li>
+      <li><b>Routes:</b> <code>router.get/post/put/delete</code></li>
+      <li><b>.env:</b> סודות — לא לגיט! <code>process.env.VAR</code></li>
+      <li><b>Error:</b> <code>res.status(400).json({message})</code></li>
+    </ul>
+  </div>
+
+  <!-- 5. MongoDB -->
+  <div class="box">
+    <span class="tag">MongoDB</span>
+    <h2>MongoDB & Mongoose</h2>
+    <ul>
+      <li><b>NoSQL:</b> מסמכי BSON, אין סכמה קשיחה</li>
+      <li><b>Schema/Model:</b> Schema=מבנה, Model=פעולות</li>
+      <li><b>Embed vs Ref:</b> קטן=Embed, גדל=ObjectId + populate()</li>
+      <li><b>CRUD:</b> findMany, findById, create, findByIdAndUpdate, findByIdAndDelete</li>
+      <li><b>Validation:</b> <code>required:true, unique:true</code></li>
+      <li><b>pre('save'):</b> לפני שמירה — Bcrypt hash</li>
+    </ul>
+  </div>
+
+  <!-- 6. Auth/Security -->
+  <div class="box">
+    <span class="tag">Security</span>
+    <h2>Auth & Security</h2>
+    <ul>
+      <li><b>JWT:</b> Header.Payload.Signature — Stateless, לא ב-DB</li>
+      <li><b>XSS:</b> JS זדוני → טוקן ב-HttpOnly Cookie</li>
+      <li><b>CSRF:</b> ניצול Cookie → SameSite / Anti-CSRF</li>
+      <li><b>Bcrypt:</b> Hash+Salt, <code>compare(plain, hash)</code></li>
+      <li><b>401:</b> לא מזוהה (Authentication)</li>
+      <li><b>403:</b> מזוהה אבל אין הרשאה (Authorization)</li>
+    </ul>
+  </div>
+
+  <!-- 7. TypeScript -->
+  <div class="box">
+    <span class="tag">TypeScript</span>
+    <h2>TypeScript</h2>
+    <ul>
+      <li><b>Type vs Interface:</b> Type=כל מה שאפשר, Interface=אובייקטים (extends)</li>
+      <li><b>Union:</b> <code>string | number</code></li>
+      <li><b>Optional:</b> <code>name?: string</code></li>
+      <li><b>Generics:</b> <code>function fn&lt;T&gt;(x: T): T</code></li>
+      <li><b>Utility:</b> Partial&lt;T&gt;, Required&lt;T&gt;, Pick&lt;T,K&gt;, Omit&lt;T,K&gt;</li>
+      <li><b>Type Guard:</b> <code>typeof x === 'string'</code></li>
+    </ul>
+  </div>
+
+  <!-- 8. CSS/Flexbox/Grid -->
+  <div class="box">
+    <span class="tag">CSS</span>
+    <h2>CSS / Flex / Grid</h2>
+    <ul>
+      <li><b>Flex:</b> <code>display:flex; justify-content; align-items</code></li>
+      <li><b>Grid:</b> <code>grid-template-columns: repeat(3,1fr)</code></li>
+      <li><b>Box Model:</b> content + padding + border + margin</li>
+      <li><b>Position:</b> relative=מקום מקורי, absolute=להורה, fixed=viewport</li>
+      <li><b>Z-index:</b> עובד רק על positioned elements</li>
+      <li><b>Media Query:</b> <code>@media (max-width:768px)</code></li>
+    </ul>
+  </div>
+
+  <!-- 9. Docker -->
+  <div class="box">
+    <span class="tag">DevOps</span>
+    <h2>Docker & DevOps</h2>
+    <ul>
+      <li><b>Image vs Container:</b> Image=תבנית, Container=instance רץ</li>
+      <li><b>Dockerfile:</b> FROM, WORKDIR, COPY, RUN, CMD</li>
+      <li><b>docker-compose:</b> מריץ כמה שירותים יחד</li>
+      <li><b>Volumes:</b> שמירת נתונים מחוץ לcontainer</li>
+      <li><b>CI/CD:</b> Push → Test → Build → Deploy אוטומטי</li>
+      <li><b>.env בdocker:</b> <code>env_file: .env</code> ב-compose</li>
+    </ul>
+  </div>
+
+  <!-- 10. Git -->
+  <div class="box">
+    <span class="tag">Git</span>
+    <h2>Git Workflow</h2>
+    <ul>
+      <li><b>Flow:</b> Working → <code>add</code> → Stage → <code>commit</code> → Local → <code>push</code></li>
+      <li><b>Branch:</b> <code>git checkout -b feature/x</code></li>
+      <li><b>Merge vs Rebase:</b> Merge=commit מיזוג, Rebase=היסטוריה ישרה</li>
+      <li><b>PR:</b> Pull Request = code review לפני merge</li>
+      <li><b>.gitignore:</b> node_modules/, .env, dist/</li>
+      <li><b>Conflict:</b> ידנית — קבל/דחה שינויים</li>
+    </ul>
+  </div>
+
+  <!-- 11. Algorithms -->
+  <div class="box">
+    <span class="tag">Algorithms</span>
+    <h2>אלגוריתמים נפוצים</h2>
+    <ul>
+      <li><b>Palindrome:</b> <code>str === str.split('').reverse().join('')</code></li>
+      <li><b>Fibonacci:</b> f(n)=f(n-1)+f(n-2), base: f(0)=0, f(1)=1</li>
+      <li><b>Dedup:</b> <code>[...new Set(arr)]</code></li>
+      <li><b>Count Chars:</b> <code>obj[c] = (obj[c]||0) + 1</code></li>
+      <li><b>Complexity:</b> O(1) const, O(n) linear, O(n²) nested loop</li>
+      <li><b>Binary Search:</b> O(log n) — מערך ממוין בלבד</li>
+    </ul>
+  </div>
+
+  <!-- 12. Error Handling -->
+  <div class="box">
+    <span class="tag">Patterns</span>
+    <h2>Error Handling & Patterns</h2>
+    <ul>
+      <li><b>try/catch/finally:</b> finally רץ תמיד</li>
+      <li><b>Custom Error:</b> <code>class MyError extends Error</code></li>
+      <li><b>Express:</b> <code>(err,req,res,next) =&gt; res.status(500)</code></li>
+      <li><b>Memory Leak:</b> setInterval ב-useEffect בלי cleanup</li>
+      <li><b>Singleton:</b> מחלקה עם instance אחד בלבד</li>
+      <li><b>SOLID:</b> Single Responsibility, Open/Closed</li>
+    </ul>
+  </div>
+
+</div>
+
+<div style="margin-top:12px; text-align:center; font-size:9pt; color:#666;">
+  Full-Stack Exam — 100/100 Prep Sheet
+</div>
+
+<script src="theme-toggle.js"></script>
+<script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

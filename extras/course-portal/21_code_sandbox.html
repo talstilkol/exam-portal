@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧪 Sandbox — Full Stack Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0d1117; color: #f0f6fc; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    /* Header */
+    .top-bar { background: linear-gradient(135deg, #161b22, #21262d); border-bottom: 1px solid #30363d; padding: 12px 20px; display: flex; align-items: center; gap: 15px; }
+    .back-btn { color: #58a6ff; text-decoration: none; font-size: 0.9em; padding: 6px 12px; border: 1px solid #30363d; border-radius: 6px; transition: 0.2s; }
+    .back-btn:hover { background: #21262d; }
+    .top-bar h1 { font-size: 1.2em; color: #f0f6fc; }
+    .top-bar p { color: #8b949e; font-size: 0.85em; margin-right: auto; }
+
+    /* Snippet Selector */
+    .snippet-bar { background: #161b22; border-bottom: 1px solid #30363d; padding: 10px 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .snippet-label { color: #8b949e; font-size: 0.9em; margin-left: 5px; }
+    .snippet-btn { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85em; transition: 0.2s; }
+    .snippet-btn:hover, .snippet-btn.active { background: #238636; border-color: #238636; color: #fff; }
+
+    /* Main Editor Layout */
+    .editor-layout { display: flex; flex: 1; height: calc(100vh - 110px); }
+    
+    /* Code Panel */
+    .code-panel { flex: 1; display: flex; flex-direction: column; border-left: 1px solid #30363d; }
+    .panel-header { background: #161b22; padding: 10px 20px; font-size: 0.85em; color: #8b949e; border-bottom: 1px solid #30363d; display: flex; justify-content: space-between; align-items: center; }
+    textarea#code-editor { flex: 1; background: #0d1117; color: #f0f6fc; border: none; padding: 20px; font-family: 'Fira Code', 'Courier New', monospace; font-size: 14px; line-height: 1.6; resize: none; outline: none; direction: ltr; text-align: left; tab-size: 2; }
+    textarea#code-editor:focus { background: #010409; }
+
+    /* Output Panel */
+    .output-panel { width: 40%; display: flex; flex-direction: column; }
+    .run-btn { background: #238636; color: white; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: 0.2s; }
+    .run-btn:hover { background: #2ea043; }
+    .clear-btn { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.9em; transition: 0.2s; }
+    .clear-btn:hover { background: #30363d; }
+    #output { flex: 1; background: #010409; padding: 20px; font-family: 'Fira Code', 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-y: auto; direction: ltr; text-align: left; }
+    .out-line { margin-bottom: 4px; }
+    .out-line.log { color: #c9d1d9; }
+    .out-line.error { color: #f85149; }
+    .out-line.warn { color: #e3b341; }
+    .out-line.info { color: #58a6ff; }
+    .out-line.result { color: #7ee787; }
+    .out-prompt { color: #8b949e; margin-left: 5px; }
+    .out-placeholder { color: #484f58; font-style: italic; margin-top: 50px; text-align: center; font-size: 1.1em; }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="00_dashboard.html" class="back-btn">← דשבורד</a>
+  <div>
+    <h1>🧪 Interactive JS Sandbox</h1>
+    <p>כתוב קוד ↓ לחץ Run ↓ ראה תוצאות בזמן אמת</p>
+  </div>
+</div>
+
+<div class="snippet-bar">
+  <span class="snippet-label">📂 Starter Snippets:</span>
+  <button class="snippet-btn active" onclick="loadSnippet('closures')">Closures</button>
+  <button class="snippet-btn" onclick="loadSnippet('async')">Async/Await</button>
+  <button class="snippet-btn" onclick="loadSnippet('arrays')">Array Methods</button>
+  <button class="snippet-btn" onclick="loadSnippet('promises')">Promises</button>
+  <button class="snippet-btn" onclick="loadSnippet('destructuring')">Destructuring</button>
+  <button class="snippet-btn" onclick="loadSnippet('prototype')">Prototype & Class</button>
+  <button class="snippet-btn" onclick="loadSnippet('generators')">Generators</button>
+  <button class="snippet-btn" onclick="loadSnippet('blank')">✏️ Blank</button>
+</div>
+
+<div class="editor-layout">
+  <!-- Code Editor -->
+  <div class="code-panel">
+    <div class="panel-header">
+      <span>📝 editor.js</span>
+      <span style="color:#3fb950; font-size:0.8em;">JavaScript (Browser Runtime)</span>
+    </div>
+    <textarea id="code-editor" spellcheck="false"></textarea>
+  </div>
+
+  <!-- Output -->
+  <div class="output-panel">
+    <div class="panel-header">
+      <span>💻 Console Output</span>
+      <div style="display:flex;gap:8px;">
+        <button class="clear-btn" onclick="clearOutput()">Clear</button>
+        <button class="run-btn" onclick="runCode()">▶ Run</button>
+      </div>
+    </div>
+    <div id="output">
+      <div class="out-placeholder">לחץ ▶ Run להרצת הקוד</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const snippets = {
+    closures: `// ==============================================
+// CLOSURES — פונקציה שזוכרת את הסביבה שלה
+// ==============================================
+
+// דוגמה 1: Counter מנוהל ע"י Closure
+function createCounter() {
+  let count = 0; // משתנה "פרטי"
+  return {
+    increment: () => ++count,
+    decrement: () => --count,
+    get: () => count
+  };
+}
+
+const counter = createCounter();
+counter.increment();
+counter.increment();
+counter.increment();
+counter.decrement();
+console.log("Count:", counter.get()); // 2
+
+// דוגמה 2: Closure Trap בלולאה
+const funcs = [];
+for (let i = 0; i < 3; i++) {
+  funcs.push(() => console.log("let:", i)); // 0, 1, 2 ✅
+}
+funcs.forEach(f => f());`,
+
+    async: `// ==============================================
+// ASYNC / AWAIT — אסינכרוניות קריאה כמו קוד סינכרוני
+// ==============================================
+
+// סימולציה של fetch (כי אין network כאן)
+function fakeApi(data, delay = 500) {
+  return new Promise(resolve => setTimeout(() => resolve(data), delay));
+}
+
+async function loadUserDashboard(userId) {
+  console.log("Fetching user...");
+  
+  try {
+    // פעולות טוריות (Sequentially)
+    const user = await fakeApi({ id: userId, name: "Tal" });
+    const posts = await fakeApi([{ title: "Post 1" }, { title: "Post 2" }]);
+    
+    // פעולות מקביליות (Parallel) - הרבה יותר מהיר!
+    const [likes, comments] = await Promise.all([
+      fakeApi(42),
+      fakeApi(7)
+    ]);
+    
+    console.log("User:", user.name);
+    console.log("Posts:", posts.length);
+    console.log("Likes:", likes, "| Comments:", comments);
+    
+  } catch (err) {
+    console.error("Error:", err.message);
+  }
+}
+
+loadUserDashboard(1);`,
+
+    arrays: `// ==============================================
+// ARRAY METHODS — מניפולציה על מערכים
+// ==============================================
+
+const products = [
+  { name: "iPhone", price: 999, category: "Tech", inStock: true },
+  { name: "Book", price: 25, category: "Education", inStock: true },
+  { name: "Shirt", price: 50, category: "Fashion", inStock: false },
+  { name: "MacBook", price: 1499, category: "Tech", inStock: true },
+  { name: "Course", price: 199, category: "Education", inStock: true },
+];
+
+// 1. filter — סנן רק זמינים
+const available = products.filter(p => p.inStock);
+console.log("Available:", available.length); // 4
+
+// 2. map — תמצית שמות בלבד
+const names = products.map(p => p.name);
+console.log("Names:", names);
+
+// 3. reduce — סכום כולל
+const total = products.reduce((sum, p) => sum + p.price, 0);
+console.log("Total:", total);
+
+// 4. chaining — Tech + available + מחיר גבוה
+const result = products
+  .filter(p => p.inStock && p.category === "Tech")
+  .sort((a, b) => b.price - a.price)
+  .map(p => \`\${p.name}: $\${p.price}\`);
+
+console.log("Tech (sorted):", result);`,
+
+    promises: `// ==============================================
+// PROMISES — ניהול אסינכרוניות
+// ==============================================
+
+// יצירת Promise ידנית
+const waitAndReturn = (value, ms) => new Promise((resolve, reject) => {
+  if (ms < 0) return reject(new Error("Negative delay!"));
+  setTimeout(() => resolve(value), ms);
+});
+
+// Promise chaining
+waitAndReturn("Hello", 100)
+  .then(val => {
+    console.log("1st:", val);
+    return val + " World!";
+  })
+  .then(val => console.log("2nd:", val))
+  .catch(err => console.error("Error:", err.message));
+
+// Promise.all (parallel)
+Promise.all([
+  waitAndReturn("A", 300),
+  waitAndReturn("B", 100),
+  waitAndReturn("C", 200),
+]).then(results => console.log("All:", results));
+
+// Promise.race (fastest wins)
+Promise.race([
+  waitAndReturn("slow", 400),
+  waitAndReturn("fast", 50),
+]).then(winner => console.log("Race winner:", winner));`,
+
+    destructuring: `// ==============================================
+// DESTRUCTURING — פירוק מבנים
+// ==============================================
+
+// Object Destructuring
+const user = { name: "Tal", age: 30, role: "developer", city: "Tel Aviv" };
+
+const { name, role, city: location = "Unknown" } = user;
+console.log(name, role, location); // Tal developer Tel Aviv
+
+// Nested Destructuring
+const config = { db: { host: "localhost", port: 5432 } };
+const { db: { host, port } } = config;
+console.log(\`\${host}:\${port}\`); // localhost:5432
+
+// Array Destructuring
+const [first, second, ...rest] = [10, 20, 30, 40, 50];
+console.log(first, second, rest); // 10 20 [30,40,50]
+
+// Function parameter destructuring
+function greet({ name, role = "guest" }) {
+  return \`Hello \${name}, role: \${role}\`;
+}
+console.log(greet({ name: "Admin", role: "superuser" }));
+
+// Swap variables!
+let a = 1, b = 2;
+[a, b] = [b, a];
+console.log(a, b); // 2 1`,
+
+    prototype: `// ==============================================
+// PROTOTYPE & CLASS — OOP ב-JavaScript
+// ==============================================
+
+// Class syntax (ES6+)
+class Animal {
+  #sound; // Private field
+
+  constructor(name, sound) {
+    this.name = name;
+    this.#sound = sound;
+  }
+
+  speak() {
+    return \`\${this.name} says \${this.#sound}!\`;
+  }
+
+  static create(name, sound) {
+    return new Animal(name, sound);
+  }
+}
+
+class Dog extends Animal {
+  constructor(name) {
+    super(name, "Woof");
+    this.tricks = [];
+  }
+
+  learn(trick) {
+    this.tricks.push(trick);
+    return this;
+  }
+
+  showTricks() {
+    return \`\${this.name} knows: \${this.tricks.join(", ")}\`;
+  }
+}
+
+const rex = new Dog("Rex");
+rex.learn("sit").learn("shake").learn("roll over");
+
+console.log(rex.speak());
+console.log(rex.showTricks());
+console.log("Is Dog?", rex instanceof Dog);
+console.log("Is Animal?", rex instanceof Animal);`,
+
+    generators: `// ==============================================
+// GENERATORS — פונקציות שניתן להשהות
+// ==============================================
+
+// Generator בסיסי
+function* counter(start = 0) {
+  while (true) {
+    yield start++;
+  }
+}
+
+const gen = counter(1);
+console.log(gen.next().value); // 1
+console.log(gen.next().value); // 2
+console.log(gen.next().value); // 3
+
+// Generator סופי - Fibonacci
+function* fibonacci() {
+  let [a, b] = [0, 1];
+  while (true) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+}
+
+const fib = fibonacci();
+const first8 = Array.from({ length: 8 }, () => fib.next().value);
+console.log("Fibonacci:", first8);
+
+// Async Generator
+async function* paginatedFetch(pages) {
+  for (let page = 1; page <= pages; page++) {
+    await new Promise(r => setTimeout(r, 50));
+    yield { page, data: \`Page \${page} data\` };
+  }
+}
+
+(async () => {
+  for await (const result of paginatedFetch(3)) {
+    console.log(result.data);
+  }
+})();`,
+
+    blank: `// Write your code here...
+console.log("Hello, World!");`
+  };
+
+  function loadSnippet(name) {
+    document.getElementById('code-editor').value = snippets[name] || '';
+    document.querySelectorAll('.snippet-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    clearOutput();
+  }
+
+  function clearOutput() {
+    document.getElementById('output').innerHTML = '<div class="out-placeholder">לחץ ▶ Run להרצת הקוד</div>';
+  }
+
+  function runCode() {
+    const code = document.getElementById('code-editor').value;
+    const outputEl = document.getElementById('output');
+    outputEl.innerHTML = '';
+
+    // Override console
+    const logs = [];
+    const origConsole = { log: console.log, error: console.error, warn: console.warn, info: console.info };
+
+    const addLog = (type, args) => {
+      const line = document.createElement('div');
+      line.className = `out-line ${type}`;
+      const prefix = { log: '>', error: '✖', warn: '⚠', info: 'ℹ' }[type] || '>';
+      line.innerHTML = `<span class="out-prompt">${prefix}</span> ${args.map(a => {
+        if (typeof a === 'object') { try { return JSON.stringify(a, null, 2); } catch(e) { return String(a); } }
+        return String(a);
+      }).join(' ')}`;
+      outputEl.appendChild(line);
+    };
+
+    console.log = (...args) => { addLog('log', args); origConsole.log(...args); };
+    console.error = (...args) => { addLog('error', args); origConsole.error(...args); };
+    console.warn = (...args) => { addLog('warn', args); origConsole.warn(...args); };
+    console.info = (...args) => { addLog('info', args); origConsole.info(...args); };
+
+    try {
+      const result = new Function(code)();
+      if (result !== undefined) {
+        addLog('result', [result]);
+      }
+    } catch (err) {
+      addLog('error', [err.message]);
+    }
+
+    // Restore console
+    setTimeout(() => {
+      console.log = origConsole.log;
+      console.error = origConsole.error;
+      console.warn = origConsole.warn;
+      console.info = origConsole.info;
+    }, 2000);
+  }
+
+  // Keyboard shortcut: Ctrl+Enter to run
+  document.getElementById('code-editor').addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      runCode();
+    }
+    // Tab key inserts spaces
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const ta = e.target;
+      const start = ta.selectionStart;
+      const end = ta.selectionEnd;
+      ta.value = ta.value.substring(0, start) + '  ' + ta.value.substring(end);
+      ta.selectionStart = ta.selectionEnd = start + 2;
+    }
+  });
+
+  // Load default snippet
+  document.addEventListener('DOMContentLoaded', () => {
+    loadSnippet('closures');
+  });
+</script>
+</body>
+</html>

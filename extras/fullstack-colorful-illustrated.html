@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Full Stack צבעוני — מפת שכבות, תקשורת, Import/Export</title>
+  <style>
+    :root {
+      --bg: #fff7ed;
+      --ink: #172033;
+      --muted: #5b6475;
+      --card: rgba(255,255,255,0.82);
+      --white: #ffffff;
+      --blue: #2563eb;
+      --sky: #0ea5e9;
+      --green: #16a34a;
+      --lime: #84cc16;
+      --pink: #ec4899;
+      --purple: #7c3aed;
+      --orange: #f97316;
+      --yellow: #facc15;
+      --red: #ef4444;
+      --dark: #0f172a;
+      --line: rgba(15,23,42,.15);
+      --shadow: 0 18px 55px rgba(15, 23, 42, 0.16);
+      --soft-shadow: 0 10px 25px rgba(15, 23, 42, 0.10);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(250,204,21,.55), transparent 28%),
+        radial-gradient(circle at 12% 8%, rgba(236,72,153,.24), transparent 28%),
+        radial-gradient(circle at 20% 72%, rgba(14,165,233,.20), transparent 32%),
+        linear-gradient(135deg, #fff7ed 0%, #eef2ff 52%, #ecfeff 100%);
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(15,23,42,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15,23,42,.045) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.55), transparent 75%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    a { color: inherit; }
+
+    .page {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 36px;
+      padding: clamp(28px, 5vw, 64px);
+      background:
+        linear-gradient(135deg, rgba(37,99,235,.96), rgba(124,58,237,.94) 48%, rgba(236,72,153,.90)),
+        linear-gradient(45deg, #2563eb, #7c3aed);
+      color: white;
+      box-shadow: var(--shadow);
+      min-height: 520px;
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 34px;
+      align-items: center;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      top: -220px;
+      left: -160px;
+    }
+
+    .hero > * { position: relative; z-index: 1; }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 14px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 999px;
+      background: rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      font-weight: 800;
+    }
+
+    h1 {
+      font-size: clamp(40px, 7vw, 78px);
+      line-height: 1.03;
+      margin: 22px 0 14px;
+      letter-spacing: -1px;
+    }
+
+    .hero p {
+      font-size: clamp(18px, 2vw, 24px);
+      max-width: 760px;
+      color: rgba(255,255,255,.92);
+      margin: 0 0 26px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-light {
+      background: white;
+      color: #312e81;
+      box-shadow: 0 12px 25px rgba(0,0,0,.18);
+    }
+
+    .btn-ghost {
+      color: white;
+      border: 1px solid rgba(255,255,255,.42);
+      background: rgba(255,255,255,.12);
+    }
+
+    .hero-art {
+      min-height: 420px;
+      background: rgba(255,255,255,.13);
+      border: 1px solid rgba(255,255,255,.24);
+      border-radius: 32px;
+      backdrop-filter: blur(12px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.28);
+      padding: 18px;
+    }
+
+    .hero-art svg {
+      width: 100%;
+      height: 100%;
+      min-height: 390px;
+      display: block;
+    }
+
+    .floaty { animation: floaty 5s ease-in-out infinite; transform-origin: center; }
+    .floaty2 { animation: floaty 6.2s ease-in-out infinite reverse; transform-origin: center; }
+    .pulse { animation: pulse 2.8s ease-in-out infinite; }
+    .dash { stroke-dasharray: 10 10; animation: dash 5s linear infinite; }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: .65; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.035); }
+    }
+
+    @keyframes dash {
+      from { stroke-dashoffset: 0; }
+      to { stroke-dashoffset: -120; }
+    }
+
+    .nav {
+      position: sticky;
+      top: 12px;
+      z-index: 10;
+      margin: 18px 0 28px;
+      padding: 10px;
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 999px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .nav a {
+      text-decoration: none;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-weight: 900;
+      color: #334155;
+    }
+
+    .nav a:hover { background: #eff6ff; color: #1d4ed8; }
+
+    section {
+      margin: 28px 0;
+      padding: clamp(22px, 4vw, 34px);
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    h2 {
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.1;
+      margin: 0;
+      color: #172033;
+    }
+
+    h3 {
+      font-size: 24px;
+      margin: 28px 0 12px;
+      color: #1e293b;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .lead {
+      font-size: 20px;
+      color: var(--muted);
+      margin-top: 0;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card {
+      background: white;
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(15,23,42,.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0;
+      height: 6px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--pink), var(--yellow));
+    }
+
+    .card h3, .card h4 { margin-top: 0; }
+
+    .mini-icon {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      font-size: 30px;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #eff6ff, #fdf2f8);
+      border: 1px solid rgba(15,23,42,.08);
+    }
+
+    .analogy {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .callout {
+      border-radius: 22px;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+      border: 1px solid rgba(22,163,74,.22);
+      border-right: 8px solid var(--green);
+      font-size: 19px;
+    }
+
+    .warning {
+      background: linear-gradient(135deg, #fff7ed, #fef2f2);
+      border: 1px solid rgba(239,68,68,.20);
+      border-right: 8px solid var(--red);
+    }
+
+    .gold {
+      background: linear-gradient(135deg, #fffbeb, #fefce8);
+      border: 1px solid rgba(250,204,21,.38);
+      border-right: 8px solid var(--yellow);
+    }
+
+    .layer-board {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(140px, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .layer {
+      border: 0;
+      cursor: pointer;
+      text-align: right;
+      padding: 18px;
+      border-radius: 22px;
+      color: white;
+      min-height: 178px;
+      box-shadow: 0 14px 32px rgba(15,23,42,.16);
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s ease, filter .2s ease;
+    }
+
+    .layer:hover, .layer.active { transform: translateY(-6px) scale(1.02); filter: saturate(1.14); }
+    .layer::after {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.18);
+      left: -35px;
+      bottom: -35px;
+    }
+
+    .layer .emoji { font-size: 44px; display: block; margin-bottom: 12px; }
+    .layer strong { display: block; font-size: 21px; }
+    .layer span { color: rgba(255,255,255,.90); font-weight: 700; }
+
+    .frontend { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
+    .cdn { background: linear-gradient(135deg, #14b8a6, #16a34a); }
+    .server { background: linear-gradient(135deg, #f97316, #ef4444); }
+    .backend { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+    .database { background: linear-gradient(135deg, #0f172a, #334155); }
+    .devops { background: linear-gradient(135deg, #ec4899, #f97316); }
+
+    #layerDetails {
+      margin-top: 18px;
+      min-height: 96px;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 22px;
+      padding: 18px 20px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    #layerDetails strong { color: white; font-size: 21px; }
+    #layerDetails code { color: #facc15; }
+
+    .flow-wrap {
+      position: relative;
+      min-height: 540px;
+      padding: 20px;
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(239,246,255,.95), rgba(255,255,255,.76)),
+        radial-gradient(circle at 25% 18%, rgba(250,204,21,.3), transparent 22%);
+      border: 1px solid rgba(15,23,42,.10);
+      overflow: hidden;
+    }
+
+    .flow-svg { width: 100%; min-height: 500px; display: block; }
+
+    .table-wrap { overflow-x: auto; border-radius: 18px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(15,23,42,.07);
+      min-width: 760px;
+    }
+
+    th {
+      background: #1d4ed8;
+      color: white;
+      padding: 14px;
+      text-align: right;
+      font-size: 16px;
+    }
+
+    td {
+      padding: 14px;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: top;
+      background: white;
+    }
+
+    tr:nth-child(even) td { background: #f8fafc; }
+
+    .pill {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      background: #eef2ff;
+      color: #3730a3;
+      margin: 2px;
+    }
+
+    .tree {
+      direction: ltr;
+      text-align: left;
+      background: #0f172a;
+      color: #dbeafe;
+      border-radius: 20px;
+      padding: 22px;
+      overflow-x: auto;
+      font-family: Consolas, Monaco, monospace;
+      line-height: 1.65;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+    }
+
+    pre {
+      direction: ltr;
+      text-align: left;
+      background: #0f172a;
+      color: #e5e7eb;
+      border-radius: 18px;
+      padding: 18px;
+      overflow-x: auto;
+      line-height: 1.6;
+      font-size: 15px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
+    code { font-family: Consolas, Monaco, monospace; }
+
+    .split-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      background: #f1f5f9;
+      border-radius: 999px;
+      font-weight: 900;
+      color: #334155;
+      margin-bottom: 10px;
+    }
+
+    .mini-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #f8fafc, #eff6ff);
+      border-radius: 24px;
+      border: 1px solid rgba(15,23,42,.08);
+    }
+
+    .bubble {
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-weight: 900;
+      color: white;
+      box-shadow: 0 8px 18px rgba(15,23,42,.12);
+    }
+
+    .arrow {
+      font-size: 28px;
+      color: #334155;
+      transform: rotate(180deg);
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .check {
+      background: white;
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-weight: 800;
+    }
+
+    .check::before { content: "✅ "; }
+    .bad::before { content: "❌ "; }
+
+    .footer {
+      padding: 30px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .print-note {
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      background: #0f172a;
+      color: white;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+      z-index: 20;
+      text-decoration: none;
+    }
+
+    @media (max-width: 980px) {
+      .hero, .analogy { grid-template-columns: 1fr; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .layer-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .check-grid { grid-template-columns: 1fr; }
+      .nav { border-radius: 22px; }
+      .print-note { display: none; }
+    }
+
+    @media (max-width: 560px) {
+      .page { padding: 12px; }
+      .hero { border-radius: 24px; padding: 24px; }
+      .layer-board { grid-template-columns: 1fr; }
+      section { border-radius: 20px; }
+      .arrow { transform: rotate(90deg); }
+    }
+
+    @media print {
+      body { background: white; }
+      .nav, .print-note, .btn { display: none; }
+      .hero, section { box-shadow: none; page-break-inside: avoid; }
+      .hero { color: white; min-height: auto; }
+      .hero-art { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="print-note" href="javascript:window.print()">🖨️ הדפסה / PDF</a>
+
+  <div class="page">
+    <header class="hero" id="top">
+      <div>
+        <span class="eyebrow">🧠 הסבר לסבתא · אבל מתקדם</span>
+        <h1>Full Stack<br>בצבעים, ציורים וזרימות</h1>
+        <p>
+          דף ויזואלי שמסביר את עץ המערכת, מפת התקשורת בין השכבות,
+          ומפת הקשרים בין קבצי Frontend, Backend, Server, Database, DevOps ו־Network.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-light" href="#flow">🚀 לתרשים הזרימה</a>
+          <a class="btn btn-ghost" href="#imports">📦 למי מייבא ממי</a>
+          <a class="btn btn-ghost" href="#grandma">🍽️ להסבר במסעדה</a>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-label="איור Full Stack">
+        <svg viewBox="0 0 720 560" role="img">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0" stop-color="#fff" stop-opacity=".95" />
+              <stop offset="1" stop-color="#dbeafe" stop-opacity=".75" />
+            </linearGradient>
+            <linearGradient id="g2" x1="0" x2="1">
+              <stop offset="0" stop-color="#fde68a" />
+              <stop offset="1" stop-color="#f97316" />
+            </linearGradient>
+            <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#0f172a" flood-opacity=".25" />
+            </filter>
+          </defs>
+
+          <path d="M110 430 C170 325, 240 360, 305 280 C380 190, 478 196, 565 90" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" opacity=".28" class="dash" />
+
+          <g class="floaty" filter="url(#soft)">
+            <rect x="46" y="86" width="190" height="132" rx="26" fill="url(#g1)" />
+            <circle cx="88" cy="126" r="23" fill="#0ea5e9" />
+            <rect x="115" y="112" width="105" height="15" rx="7" fill="#93c5fd" />
+            <rect x="72" y="154" width="148" height="14" rx="7" fill="#bfdbfe" />
+            <rect x="72" y="181" width="100" height="14" rx="7" fill="#dbeafe" />
+            <text x="141" y="250" text-anchor="middle" font-size="28" font-weight="900" fill="#ffffff">Frontend</text>
+          </g>
+
+          <g class="floaty2" filter="url(#soft)">
+            <rect x="438" y="70" width="182" height="128" rx="26" fill="#ecfeff" />
+            <path d="M480 136 C478 100, 558 100, 556 136 C590 130, 604 172, 565 176 L483 176 C440 174, 448 128, 480 136" fill="#22c55e" opacity=".9" />
+            <text x="529" y="230" text-anchor="middle" font-size="28" font-weight="900" fill="#ffffff">CDN</text>
+          </g>
+
+          <g filter="url(#soft)">
+            <rect x="288" y="234" width="170" height="138" rx="26" fill="#fff7ed" />
+            <rect x="322" y="268" width="104" height="17" rx="8" fill="#fb923c" />
+            <rect x="322" y="299" width="104" height="17" rx="8" fill="#fdba74" />
+            <rect x="322" y="330" width="104" height="17" rx="8" fill="#fed7aa" />
+            <circle cx="304" cy="277" r="8" fill="#22c55e" class="pulse" />
+            <circle cx="304" cy="308" r="8" fill="#facc15" class="pulse" />
+            <circle cx="304" cy="339" r="8" fill="#ef4444" class="pulse" />
+            <text x="373" y="404" text-anchor="middle" font-size="28" font-weight="900" fill="#ffffff">Server</text>
+          </g>
+
+          <g class="floaty" filter="url(#soft)">
+            <rect x="80" y="340" width="190" height="128" rx="26" fill="#faf5ff" />
+            <circle cx="136" cy="402" r="31" fill="#a855f7" />
+            <rect x="175" y="376" width="82" height="15" rx="7" fill="#c084fc" />
+            <rect x="175" y="402" width="62" height="15" rx="7" fill="#ddd6fe" />
+            <text x="175" y="505" text-anchor="middle" font-size="28" font-weight="900" fill="#ffffff">Backend</text>
+          </g>
+
+          <g class="floaty2" filter="url(#soft)">
+            <rect x="482" y="336" width="176" height="136" rx="26" fill="#f8fafc" />
+            <ellipse cx="570" cy="374" rx="62" ry="22" fill="#1e293b" />
+            <path d="M508 374 v55 c0 13 28 24 62 24 s62 -11 62 -24 v-55 c0 13 -28 23 -62 23 s-62 -10 -62 -23z" fill="#334155" />
+            <ellipse cx="570" cy="429" rx="62" ry="22" fill="#475569" />
+            <text x="570" y="512" text-anchor="middle" font-size="28" font-weight="900" fill="#ffffff">Database</text>
+          </g>
+
+          <g fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".85">
+            <path d="M238 150 C310 145, 370 130, 438 126" marker-end="url(#arrowhead)" />
+            <path d="M529 198 C500 230, 460 253, 430 270" />
+            <path d="M330 356 C292 382, 260 396, 235 405" />
+            <path d="M450 340 C486 364, 506 386, 524 408" />
+          </g>
+
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#fff" />
+            </marker>
+          </defs>
+
+          <g class="pulse">
+            <circle cx="360" cy="102" r="28" fill="url(#g2)" />
+            <text x="360" y="112" text-anchor="middle" font-size="31">⚡</text>
+          </g>
+        </svg>
+      </div>
+    </header>
+
+    <nav class="nav" aria-label="ניווט בעמוד">
+      <a href="#big-picture">🗂 עץ המערכת</a>
+      <a href="#flow">🌐 תקשורת</a>
+      <a href="#imports">📦 Import / Export</a>
+      <a href="#backend">🧠 Backend</a>
+      <a href="#grandma">🍽️ משל המסעדה</a>
+      <a href="#summary">✅ סיכום</a>
+    </nav>
+
+    <section id="big-picture">
+      <div class="section-title">
+        <h2>🗂 עץ המערכת</h2>
+        <span class="tag">שכבות Full Stack</span>
+      </div>
+      <p class="lead">
+        המערכת מתחלקת לשכבות. כל שכבה עושה עבודה אחרת, כמו צוותים שונים באותו בניין.
+        לחצו על שכבה כדי לראות מה היא עושה.
+      </p>
+
+      <div class="layer-board">
+        <button class="layer frontend active" data-title="📱 Frontend" data-details="המסך שהמשתמש רואה. כאן נמצאים React, קומפוננטות, כפתורים, טפסים, CSS, state ו־fetch. Frontend לא נוגע ישירות ב־Database; הוא שולח בקשות ל־Backend.">
+          <span class="emoji">📱</span><strong>Frontend</strong><span>החנות / המסך</span>
+        </button>
+        <button class="layer cdn" data-title="🌍 CDN" data-details="מחסן קבצים קרוב ומהיר. מחזיר קבצים סטטיים כמו index.html, CSS, JS ותמונות. לפעמים גם עובד כ־Proxy לפני השרת.">
+          <span class="emoji">🌍</span><strong>CDN</strong><span>מחסן קרוב</span>
+        </button>
+        <button class="layer server" data-title="⚖️ Server" data-details="המכונה או סביבת הריצה שעליה הקוד פועל. למשל שרת בענן, Render, Railway, VPS או Node.js process שמאזין לפורט.">
+          <span class="emoji">⚖️</span><strong>Server</strong><span>המחשב שרץ</span>
+        </button>
+        <button class="layer backend" data-title="🧠 Backend" data-details="הקוד שמקבל בקשות, מפעיל routes/controllers/models, בודק ולידציה והרשאות, ומחזיר JSON. לרוב Express/Node.js.">
+          <span class="emoji">🧠</span><strong>Backend</strong><span>המטבח / המוח</span>
+        </button>
+        <button class="layer database" data-title="🗄 Database" data-details="הארכיון. שומר מידע לאורך זמן: משתמשים, מוצרים, הזמנות, פוסטים. MongoDB שומר Collections ו־Documents.">
+          <span class="emoji">🗄</span><strong>Database</strong><span>הארכיון</span>
+        </button>
+        <button class="layer devops" data-title="🛠 DevOps" data-details="דואג שהכול יעלה לאוויר: build, deploy, env variables, HTTPS, דומיין, Docker, CI/CD, ניטור ותקלות.">
+          <span class="emoji">🛠</span><strong>DevOps</strong><span>החשמל והפריסה</span>
+        </button>
+      </div>
+
+      <div id="layerDetails"><strong>📱 Frontend</strong><br>המסך שהמשתמש רואה. כאן נמצאים React, קומפוננטות, כפתורים, טפסים, CSS, state ו־fetch. Frontend לא נוגע ישירות ב־Database; הוא שולח בקשות ל־Backend.</div>
+    </section>
+
+    <section id="flow">
+      <div class="section-title">
+        <h2>🌐 מפת תקשורת — מי מדבר עם מי?</h2>
+        <span class="tag">Runtime</span>
+      </div>
+      <p class="lead">
+        זה מה שקורה בזמן אמת, כשהמשתמש גולש באתר, לוחץ על כפתור, שולח טופס או מבקש מידע.
+      </p>
+
+      <div class="flow-wrap">
+        <svg class="flow-svg" viewBox="0 0 1080 520" role="img" aria-label="תרשים תקשורת Full Stack">
+          <defs>
+            <linearGradient id="fg1" x1="0" x2="1">
+              <stop offset="0" stop-color="#0ea5e9" />
+              <stop offset="1" stop-color="#2563eb" />
+            </linearGradient>
+            <linearGradient id="fg2" x1="0" x2="1">
+              <stop offset="0" stop-color="#22c55e" />
+              <stop offset="1" stop-color="#14b8a6" />
+            </linearGradient>
+            <linearGradient id="fg3" x1="0" x2="1">
+              <stop offset="0" stop-color="#f97316" />
+              <stop offset="1" stop-color="#ef4444" />
+            </linearGradient>
+            <linearGradient id="fg4" x1="0" x2="1">
+              <stop offset="0" stop-color="#7c3aed" />
+              <stop offset="1" stop-color="#ec4899" />
+            </linearGradient>
+            <linearGradient id="fg5" x1="0" x2="1">
+              <stop offset="0" stop-color="#0f172a" />
+              <stop offset="1" stop-color="#475569" />
+            </linearGradient>
+            <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <path d="M1,1 L11,6 L1,11 z" fill="#334155" />
+            </marker>
+            <filter id="drop" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0f172a" flood-opacity=".18" />
+            </filter>
+          </defs>
+
+          <g filter="url(#drop)">
+            <rect x="28" y="180" width="130" height="110" rx="24" fill="#ffffff" />
+            <text x="93" y="220" text-anchor="middle" font-size="34">👤</text>
+            <text x="93" y="258" text-anchor="middle" font-size="18" font-weight="900" fill="#172033">User</text>
+          </g>
+
+          <g filter="url(#drop)">
+            <rect x="205" y="155" width="170" height="160" rx="28" fill="url(#fg1)" />
+            <text x="290" y="214" text-anchor="middle" font-size="44">📱</text>
+            <text x="290" y="257" text-anchor="middle" font-size="22" font-weight="900" fill="#fff">Frontend</text>
+            <text x="290" y="286" text-anchor="middle" font-size="14" fill="#dbeafe">React · UI · fetch</text>
+          </g>
+
+          <g filter="url(#drop)">
+            <rect x="432" y="60" width="170" height="132" rx="28" fill="url(#fg2)" />
+            <text x="517" y="113" text-anchor="middle" font-size="40">🌍</text>
+            <text x="517" y="153" text-anchor="middle" font-size="22" font-weight="900" fill="#fff">CDN</text>
+            <text x="517" y="176" text-anchor="middle" font-size="14" fill="#dcfce7">static files</text>
+          </g>
+
+          <g filter="url(#drop)">
+            <rect x="432" y="316" width="170" height="132" rx="28" fill="url(#fg3)" />
+            <text x="517" y="369" text-anchor="middle" font-size="40">⚖️</text>
+            <text x="517" y="408" text-anchor="middle" font-size="22" font-weight="900" fill="#fff">Server</text>
+            <text x="517" y="431" text-anchor="middle" font-size="14" fill="#ffedd5">Node process</text>
+          </g>
+
+          <g filter="url(#drop)">
+            <rect x="660" y="155" width="170" height="160" rx="28" fill="url(#fg4)" />
+            <text x="745" y="214" text-anchor="middle" font-size="44">🧠</text>
+            <text x="745" y="257" text-anchor="middle" font-size="22" font-weight="900" fill="#fff">Backend</text>
+            <text x="745" y="286" text-anchor="middle" font-size="14" fill="#f5d0fe">routes → controllers</text>
+          </g>
+
+          <g filter="url(#drop)">
+            <rect x="890" y="155" width="170" height="160" rx="28" fill="url(#fg5)" />
+            <text x="975" y="214" text-anchor="middle" font-size="44">🗄</text>
+            <text x="975" y="257" text-anchor="middle" font-size="22" font-weight="900" fill="#fff">Database</text>
+            <text x="975" y="286" text-anchor="middle" font-size="14" fill="#e2e8f0">MongoDB</text>
+          </g>
+
+          <g fill="none" stroke="#334155" stroke-width="5" stroke-linecap="round" marker-end="url(#arr)">
+            <path class="dash" d="M158 235 L205 235" />
+            <path class="dash" d="M375 205 C405 162, 414 133, 432 126" />
+            <path class="dash" d="M375 268 C405 325, 414 368, 432 382" />
+            <path class="dash" d="M602 382 C635 325, 645 275, 660 245" />
+            <path class="dash" d="M830 235 L890 235" />
+          </g>
+
+          <g fill="#334155" font-size="14" font-weight="900">
+            <text x="176" y="222">click / submit</text>
+            <text x="382" y="120">GET files</text>
+            <text x="380" y="350">fetch JSON</text>
+            <text x="608" y="332">HTTP request</text>
+            <text x="842" y="222">query</text>
+          </g>
+
+          <path d="M910 334 C770 490, 422 504, 245 325" fill="none" stroke="#22c55e" stroke-width="5" stroke-linecap="round" stroke-dasharray="10 10" opacity=".75" marker-end="url(#arr)" />
+          <text x="542" y="494" text-anchor="middle" font-size="16" font-weight="900" fill="#166534">התשובה חוזרת: Database → Backend → Frontend → User</text>
+        </svg>
+      </div>
+
+      <div class="mini-flow" aria-label="זרימה קצרה">
+        <span class="bubble" style="background:#0ea5e9">📱 Frontend</span>
+        <span class="arrow">➜</span>
+        <span class="bubble" style="background:#14b8a6">🌍 CDN / Proxy</span>
+        <span class="arrow">➜</span>
+        <span class="bubble" style="background:#f97316">⚖️ Server</span>
+        <span class="arrow">➜</span>
+        <span class="bubble" style="background:#7c3aed">🧠 Backend</span>
+        <span class="arrow">➜</span>
+        <span class="bubble" style="background:#0f172a">🗄 Database</span>
+      </div>
+    </section>
+
+    <section id="communication-table">
+      <div class="section-title">
+        <h2>🧭 מי מדבר עם מי?</h2>
+        <span class="tag">HTTP · JSON · DB</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>מי מתחיל?</th>
+              <th>עם מי הוא מדבר?</th>
+              <th>איך?</th>
+              <th>מה עובר שם?</th>
+              <th>אסוציאציה</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="pill">Browser</span></td>
+              <td>CDN / Hosting</td>
+              <td>HTTPS GET</td>
+              <td>HTML, CSS, JS, Images</td>
+              <td>לקוח נכנס לחנות ומקבל קטלוג</td>
+            </tr>
+            <tr>
+              <td><span class="pill">Frontend</span></td>
+              <td>Backend</td>
+              <td><code>fetch()</code></td>
+              <td>JSON של בקשה / תשובה</td>
+              <td>מלצר שולח הזמנה למטבח</td>
+            </tr>
+            <tr>
+              <td><span class="pill">Backend</span></td>
+              <td>Database</td>
+              <td>Mongoose / Driver</td>
+              <td>Query, Document, Collection</td>
+              <td>המטבח מבקש מצרכים מהמחסן</td>
+            </tr>
+            <tr>
+              <td><span class="pill">DevOps</span></td>
+              <td>Server / Hosting</td>
+              <td>Deploy / Build</td>
+              <td>קוד, ENV, גרסאות</td>
+              <td>מנהל המסעדה דואג שהכול פתוח</td>
+            </tr>
+            <tr>
+              <td><span class="pill">Network</span></td>
+              <td>כולם</td>
+              <td>DNS, HTTPS, Ports</td>
+              <td>תעבורה, כתובות, אבטחה</td>
+              <td>כבישים, רמזורים ושלטים</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="imports">
+      <div class="section-title">
+        <h2>📦 מי מייבא ממי? מי מייצא ממי?</h2>
+        <span class="tag">Import / Export</span>
+      </div>
+      <p class="lead">
+        חשוב להפריד בין <b>תקשורת רשת</b> לבין <b>ייבוא קבצים</b>.
+        <code>fetch</code> מדבר עם שרת. <code>import</code> מביא קוד מקובץ אחר בפרויקט.
+      </p>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="mini-icon">📱</div>
+          <h3>Frontend — כיוון הייבוא</h3>
+          <div class="tree">main.jsx
+ └── imports App.jsx
+     ├── imports pages
+     │   ├── Home.jsx
+     │   ├── Products.jsx
+     │   └── AddProduct.jsx
+     ├── imports components
+     │   ├── Header.jsx
+     │   └── ProductCard.jsx
+     └── imports services
+         └── productsApi.js</div>
+        </div>
+
+        <div class="card">
+          <div class="mini-icon">🧠</div>
+          <h3>Backend — כיוון הייבוא</h3>
+          <div class="tree">server.js
+ ├── imports app.js
+ └── imports config/db.js
+
+app.js
+ └── imports routes/productRoutes.js
+
+routes
+ └── imports controllers
+
+controllers
+ └── imports models
+
+models
+ └── imports mongoose</div>
+        </div>
+      </div>
+
+      <h3>טבלת Export / Import</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>קובץ</th>
+              <th>מה הוא מייצא?</th>
+              <th>מי מייבא אותו?</th>
+              <th>למה?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Header.jsx</code></td>
+              <td>קומפוננטת Header</td>
+              <td><code>App.jsx</code></td>
+              <td>כדי להציג תפריט/כותרת קבועה</td>
+            </tr>
+            <tr>
+              <td><code>productsApi.js</code></td>
+              <td>פונקציות <code>getProducts</code>, <code>addProduct</code></td>
+              <td>עמודי React</td>
+              <td>כדי לשלוח בקשות לשרת</td>
+            </tr>
+            <tr>
+              <td><code>productRoutes.js</code></td>
+              <td>Router</td>
+              <td><code>app.js</code></td>
+              <td>כדי לחבר כתובת API לשרת</td>
+            </tr>
+            <tr>
+              <td><code>productController.js</code></td>
+              <td>פונקציות Controller</td>
+              <td><code>productRoutes.js</code></td>
+              <td>כדי לבצע את הלוגיקה של הבקשה</td>
+            </tr>
+            <tr>
+              <td><code>Product.js</code></td>
+              <td>Model</td>
+              <td><code>productController.js</code></td>
+              <td>כדי לדבר עם MongoDB</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout gold">
+        <b>כלל סבתא:</b><br>
+        <code>import</code> = להביא קובץ מהפרויקט.<br>
+        <code>export</code> = לאפשר לקובץ אחר להשתמש בי.<br>
+        <code>fetch</code> = לדבר עם שרת דרך האינטרנט.
+      </div>
+    </section>
+
+    <section id="tree">
+      <div class="section-title">
+        <h2>🏗️ עץ קבצים לדוגמה</h2>
+        <span class="tag">מבנה פרויקט</span>
+      </div>
+      <div class="tree">my-fullstack-app/
+├── frontend/
+│   ├── index.html
+│   ├── package.json
+│   └── src/
+│       ├── main.jsx
+│       ├── App.jsx
+│       ├── pages/
+│       │   ├── Home.jsx
+│       │   ├── Products.jsx
+│       │   └── AddProduct.jsx
+│       ├── components/
+│       │   ├── Header.jsx
+│       │   ├── ProductCard.jsx
+│       │   └── ProductForm.jsx
+│       ├── services/
+│       │   └── productsApi.js
+│       └── styles/
+│           └── index.css
+│
+├── backend/
+│   ├── package.json
+│   ├── .env
+│   └── src/
+│       ├── server.js
+│       ├── app.js
+│       ├── config/
+│       │   └── db.js
+│       ├── routes/
+│       │   └── productRoutes.js
+│       ├── controllers/
+│       │   └── productController.js
+│       └── models/
+│           └── Product.js
+│
+└── devops/
+    ├── Dockerfile
+    └── deploy-config.yml</div>
+    </section>
+
+    <section id="frontend-code">
+      <div class="section-title">
+        <h2>📱 Frontend — דוגמת קוד</h2>
+        <span class="tag">React</span>
+      </div>
+      <div class="grid grid-2">
+        <div>
+          <span class="split-title">main.jsx → מדליק את האפליקציה</span>
+          <pre><code>import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
+
+ReactDOM
+  .createRoot(document.getElementById("root"))
+  .render(&lt;App /&gt;);</code></pre>
+        </div>
+        <div>
+          <span class="split-title">productsApi.js → מדבר עם השרת</span>
+          <pre><code>export async function getProducts() {
+  const res = await fetch("/api/products");
+  return res.json();
+}
+
+export async function addProduct(product) {
+  const res = await fetch("/api/products", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(product)
+  });
+
+  return res.json();
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="backend">
+      <div class="section-title">
+        <h2>🧠 Backend — דוגמת קוד</h2>
+        <span class="tag">Express</span>
+      </div>
+      <div class="grid grid-2">
+        <div>
+          <span class="split-title">app.js → מחבר Middleware ו־Routes</span>
+          <pre><code>import express from "express";
+import cors from "cors";
+import productRoutes from "./routes/productRoutes.js";
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.use("/api/products", productRoutes);
+
+export default app;</code></pre>
+        </div>
+        <div>
+          <span class="split-title">productRoutes.js → מפנה ל־Controller</span>
+          <pre><code>import express from "express";
+import {
+  getProducts,
+  createProduct,
+  deleteProduct
+} from "../controllers/productController.js";
+
+const router = express.Router();
+
+router.get("/", getProducts);
+router.post("/", createProduct);
+router.delete("/:id", deleteProduct);
+
+export default router;</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="grandma">
+      <div class="section-title">
+        <h2>🍽️ משל המסעדה</h2>
+        <span class="tag">אסוציאטיבי וקל</span>
+      </div>
+      <div class="analogy">
+        <div>
+          <div class="callout">
+            <b>Frontend = מלצר</b><br>
+            המלצר מדבר עם הלקוח, מציג תפריט, מקבל הזמנה — אבל הוא לא נכנס למחסן ולא מבשל לבד.
+          </div>
+          <br>
+          <div class="callout gold">
+            <b>Backend = מטבח</b><br>
+            המטבח מקבל הזמנה, בודק שהיא הגיונית, מבקש מצרכים מהמחסן, ומחזיר מנה.
+          </div>
+          <br>
+          <div class="callout warning">
+            <b>Database = מחסן</b><br>
+            המחסן לא מדבר עם לקוחות. הוא רק שומר ומחזיר מידע למטבח.
+          </div>
+        </div>
+
+        <div class="card">
+          <svg viewBox="0 0 680 470" role="img" aria-label="איור מסעדה ל־Full Stack" style="width:100%;height:auto;display:block">
+            <defs>
+              <linearGradient id="r1" x1="0" x2="1">
+                <stop offset="0" stop-color="#fde68a" />
+                <stop offset="1" stop-color="#fb7185" />
+              </linearGradient>
+              <filter id="rs" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#0f172a" flood-opacity=".18" />
+              </filter>
+            </defs>
+            <rect x="22" y="26" width="636" height="418" rx="34" fill="#fff7ed" stroke="#fed7aa" stroke-width="3" />
+            <circle cx="116" cy="126" r="54" fill="#dbeafe" filter="url(#rs)" />
+            <text x="116" y="140" text-anchor="middle" font-size="54">👤</text>
+            <text x="116" y="204" text-anchor="middle" font-size="22" font-weight="900" fill="#1e293b">לקוח</text>
+
+            <circle cx="286" cy="126" r="54" fill="#e0f2fe" filter="url(#rs)" />
+            <text x="286" y="140" text-anchor="middle" font-size="54">🤵</text>
+            <text x="286" y="204" text-anchor="middle" font-size="22" font-weight="900" fill="#1e293b">מלצר</text>
+            <text x="286" y="228" text-anchor="middle" font-size="16" fill="#2563eb">Frontend</text>
+
+            <circle cx="456" cy="126" r="54" fill="#f3e8ff" filter="url(#rs)" />
+            <text x="456" y="140" text-anchor="middle" font-size="54">👨‍🍳</text>
+            <text x="456" y="204" text-anchor="middle" font-size="22" font-weight="900" fill="#1e293b">מטבח</text>
+            <text x="456" y="228" text-anchor="middle" font-size="16" fill="#7c3aed">Backend</text>
+
+            <circle cx="566" cy="312" r="54" fill="#e2e8f0" filter="url(#rs)" />
+            <text x="566" y="326" text-anchor="middle" font-size="54">📦</text>
+            <text x="566" y="390" text-anchor="middle" font-size="22" font-weight="900" fill="#1e293b">מחסן</text>
+            <text x="566" y="414" text-anchor="middle" font-size="16" fill="#334155">Database</text>
+
+            <g fill="none" stroke="#334155" stroke-width="5" stroke-linecap="round" stroke-dasharray="8 8">
+              <path d="M170 126 L232 126" />
+              <path d="M340 126 L402 126" />
+              <path d="M494 174 C525 210, 543 240, 555 260" />
+              <path d="M519 310 C430 342, 300 330, 184 173" />
+            </g>
+
+            <rect x="76" y="296" width="350" height="74" rx="18" fill="url(#r1)" filter="url(#rs)" />
+            <text x="251" y="326" text-anchor="middle" font-size="20" font-weight="900" fill="#fff">הזמנה נכנסת → מנה חוזרת</text>
+            <text x="251" y="352" text-anchor="middle" font-size="15" fill="#fff">fetch request → JSON response</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section id="mistakes">
+      <div class="section-title">
+        <h2>🚨 טעויות נפוצות</h2>
+        <span class="tag">לא ליפול כאן</span>
+      </div>
+      <div class="check-grid">
+        <div class="check bad">Frontend לא אמור לייבא Model של MongoDB.</div>
+        <div class="check bad">Database לא מדבר ישירות עם המשתמש.</div>
+        <div class="check bad">Export לא שולח מידע ללקוח — הוא רק מאפשר Import.</div>
+        <div class="check bad">Route ב־React הוא לא אותו דבר כמו Route ב־Express.</div>
+        <div class="check">Frontend מציג ומפעיל fetch.</div>
+        <div class="check">Backend מקבל בקשות ומחזיר JSON.</div>
+        <div class="check">Database שומר ומחזיר Documents.</div>
+        <div class="check">DevOps מריץ, פורס ומחבר סביבה.</div>
+      </div>
+    </section>
+
+    <section id="summary">
+      <div class="section-title">
+        <h2>✅ משפט סיכום</h2>
+        <span class="tag">לזכור למבחן</span>
+      </div>
+      <div class="grid grid-3">
+        <div class="card"><div class="mini-icon">📱</div><h3>Frontend מציג</h3><p>מסכים, כפתורים, טפסים, state, UI.</p></div>
+        <div class="card"><div class="mini-icon">🧠</div><h3>Backend מחליט</h3><p>Routes, Controllers, Validation, JSON.</p></div>
+        <div class="card"><div class="mini-icon">🗄</div><h3>Database שומר</h3><p>Collections, Documents, נתונים לאורך זמן.</p></div>
+      </div>
+      <div class="callout gold" style="margin-top:18px;font-size:22px;text-align:center">
+        <b>Frontend מציג · Backend מחליט · Database שומר · DevOps מריץ · Network מעביר · CDN מאיץ</b>
+      </div>
+    </section>
+
+    <footer class="footer">
+      נבנה כקובץ HTML אחד: צבעוני, רספונסיבי, עם איורי SVG, תרשימי זרימה וקוד לדוגמה.
+    </footer>
+  </div>
+
+  <script>
+    const layerButtons = document.querySelectorAll('.layer');
+    const details = document.getElementById('layerDetails');
+
+    layerButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        layerButtons.forEach((b) => b.classList.remove('active'));
+        button.classList.add('active');
+        details.innerHTML = `<strong>${button.dataset.title}</strong><br>${button.dataset.details}`;
+      });
+    });
+  </script>
+</body>
+</html>

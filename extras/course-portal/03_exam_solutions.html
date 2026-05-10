@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>פתרון 4 מבחנים אמיתיים</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); background-attachment: fixed; color: #e0e0e0; line-height: 1.7; min-height: 100vh; padding: 20px; }
+  .container { max-width: 1300px; margin: 0 auto; }
+  header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #c44569 100%); border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+  header h1 { font-size: 2.5em; color: white; margin-bottom: 10px; }
+  header p { color: rgba(255,255,255,0.95); font-size: 1.2em; }
+  .back-link { display: inline-block; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; }
+  .back-link:hover { background: rgba(255,217,61,0.25); }
+  .toc { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 30px; }
+  .toc h2 { color: #4ecdc4; margin-bottom: 20px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .toc a { color: #ffd93d; text-decoration: none; padding: 14px 18px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; border: 1px solid rgba(255,217,61,0.2); display: block; }
+  .toc a:hover { background: rgba(255,217,61,0.25); transform: translateY(-2px); }
+  .toc a strong { display: block; color: #fff; font-size: 1.1em; margin-bottom: 4px; }
+  .toc a span { color: #c0c0c0; font-size: 0.85em; }
+  section { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 35px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); scroll-margin-top: 30px; }
+  section h2 { color: #4ecdc4; font-size: 2em; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 3px solid rgba(78,205,196,0.3); }
+  section h3 { color: #ffd93d; margin: 25px 0 15px; font-size: 1.4em; padding-right: 15px; border-right: 4px solid #ffd93d; }
+  section h4 { color: #ff9a9e; margin: 20px 0 12px; font-size: 1.15em; }
+  .code-block { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; font-family: 'Consolas', monospace; direction: ltr; text-align: left; overflow-x: auto; margin: 15px 0; color: #e6edf3; font-size: 0.92em; line-height: 1.6; white-space: pre; }
+  code.inline { background: rgba(78,205,196,0.15); color: #4ecdc4; padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.95em; direction: ltr; display: inline-block; }
+  .important { background: rgba(255,107,107,0.15); border-right: 4px solid #ff6b6b; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .important::before { content: "💡 "; }
+  .tip { background: rgba(40,167,69,0.15); border-right: 4px solid #28a745; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .tip::before { content: "✅ "; }
+  .exam { background: rgba(111,66,193,0.15); border-right: 4px solid #6f42c1; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .exam::before { content: "🎓 "; }
+  .table-wrapper { overflow-x: auto; margin: 20px 0; border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; }
+  th { background: linear-gradient(135deg, #4ecdc4, #44a8a3); color: white; padding: 12px; text-align: right; }
+  td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-card { background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(196,69,105,0.1)); border: 2px solid rgba(255,107,107,0.3); border-radius: 12px; padding: 25px; margin: 20px 0; }
+  .exam-card h4 { color: #ff6b6b; font-size: 1.3em; margin-bottom: 12px; }
+  .step { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin: 15px 0; border-right: 4px solid #4ecdc4; }
+  .step h4 { color: #4ecdc4; margin-bottom: 10px; }
+  .scroll-top { position: fixed; bottom: 30px; left: 30px; background: linear-gradient(135deg, #4ecdc4, #44a8a3); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(78,205,196,0.4); border: none; font-size: 1.8em; opacity: 0; transition: all 0.3s ease; z-index: 1000; }
+  .scroll-top.visible { opacity: 1; }
+  @media (max-width: 768px) { section { padding: 20px 15px; } }
+</style>
+  <link rel="stylesheet" href="light-mode.css">
+  <link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+
+<div class="container">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;">
+    <a href="00_dashboard.html" class="back-link">← דשבורד</a>
+    <a href="IDE_project.html" class="back-link" style="background:rgba(88,166,255,0.15);border-color:rgba(88,166,255,0.4);color:#79c0ff;">💻 פתח IDE</a>
+    <a href="MAP_master.html" class="back-link" style="background:rgba(255,217,61,0.15);border-color:rgba(255,217,61,0.4);color:#ffd93d;">🗺️ המפה הגדולה</a>
+    <a href="DEBUG_errors.html" class="back-link" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.4);color:#fca5a5;">🛠️ מילון שגיאות</a>
+    <a href="BUILD_walkthrough.html" class="back-link" style="background:rgba(132,204,22,0.15);border-color:rgba(132,204,22,0.4);color:#bef264;">🛠️ בנה מאפס</a>
+  </div>
+
+  <header>
+    <h1>🎯 פתרון 4 מבחנים אמיתיים</h1>
+    <p>בקרת טיסות · חשבונות בנק · מחסן לוגיסטי · מחשבון מטבעות</p>
+  </header>
+
+  <!-- ============= DIDACTIC HERO: 4 Exam Architectures with Data Model ============= -->
+  <style>
+    .exam-hero { background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%); border-radius:18px; padding:32px; margin-bottom:30px; box-shadow:0 12px 40px rgba(0,0,0,0.4); border:2px solid rgba(78,205,196,0.2); }
+    .exam-hero .eh-title { text-align:center; margin-bottom:24px; }
+    .exam-hero .eh-title h2 { color:#4ecdc4; font-size:1.8em; margin-bottom:8px; border:none; padding:0; }
+    .exam-hero .eh-title p { color:#cbd5e1; font-size:1.05em; }
+    .exam-hero .eh-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:20px; }
+    .eh-card { background:#fff; border-radius:14px; padding:22px; transition:all .25s; text-decoration:none; color:#0f172a; display:block; border-top:6px solid; }
+    .eh-card:hover { transform:translateY(-4px); box-shadow:0 14px 30px rgba(0,0,0,0.4); }
+    .eh-card.x1 { border-color:#3b82f6; }
+    .eh-card.x2 { border-color:#22c55e; }
+    .eh-card.x3 { border-color:#f97316; }
+    .eh-card.x4 { border-color:#a855f7; }
+    .eh-card .eh-tag { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.75em; font-weight:bold; color:#fff; margin-bottom:8px; }
+    .eh-card.x1 .eh-tag { background:#3b82f6; }
+    .eh-card.x2 .eh-tag { background:#22c55e; }
+    .eh-card.x3 .eh-tag { background:#f97316; }
+    .eh-card.x4 .eh-tag { background:#a855f7; }
+    .eh-card h3 { color:#0f172a; font-size:1.3em; margin-bottom:6px; padding:0; border:none; }
+    .eh-card .eh-sub { color:#64748b; font-size:0.85em; margin-bottom:14px; }
+    .eh-card .eh-flow { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:6px; align-items:center; padding:10px; background:#f1f5f9; border-radius:8px; margin-bottom:12px; font-size:0.78em; text-align:center; }
+    .eh-card .eh-flow .step { padding:6px 8px; background:#fff; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+    .eh-card .eh-flow .step .stl { color:#64748b; font-size:0.85em; }
+    .eh-card .eh-flow .step .stv { color:#0f172a; font-weight:bold; margin-top:2px; }
+    .eh-card .eh-flow .arr { color:#0ea5e9; font-weight:bold; }
+    .eh-card .eh-section-label { color:#64748b; font-size:0.76em; font-weight:bold; letter-spacing:0.5px; margin:8px 0 4px; text-transform:uppercase; }
+    .eh-card pre { background:#0f172a; color:#a7f3d0; padding:11px 13px; border-radius:7px; font-size:0.78em; overflow-x:auto; margin:0; line-height:1.55; font-family:'SF Mono','Monaco','Consolas',monospace; direction:ltr; text-align:left; }
+    .eh-card pre .k { color:#f472b6; }
+    .eh-card pre .s { color:#fde68a; }
+    .eh-card pre .c { color:#64748b; font-style:italic; }
+    .eh-card pre .v { color:#93c5fd; }
+    .eh-card pre .g { color:#86efac; }
+    .eh-card .eh-endpoints { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+    .eh-card .eh-ep { padding:3px 9px; background:#e0f2fe; color:#075985; border-radius:5px; font-family:monospace; font-size:0.78em; font-weight:600; }
+    .eh-card .eh-ep.post { background:#fef3c7; color:#92400e; }
+    .eh-card .eh-ep.put { background:#e9d5ff; color:#6b21a8; }
+    .eh-card .eh-ep.del { background:#fee2e2; color:#991b1b; }
+    .eh-card .eh-link { display:inline-block; margin-top:14px; color:#0ea5e9; font-size:0.88em; font-weight:600; }
+  </style>
+
+  <section class="exam-hero">
+    <div class="eh-title">
+      <h2>�️ 4 מבחנים — הארכיטקטורה המלאה</h2>
+      <p>לכל מבחן: <strong style="color:#4ecdc4;">Schema → Endpoints → UI Flow</strong>. הבן את הדפוס וכל מבחן בדיוק כמו זה.</p>
+    </div>
+
+    <div class="eh-grid">
+
+      <!-- Exam 1: Flight Control -->
+      <a href="#exam1" class="eh-card x1">
+        <span class="eh-tag">מבחן 1</span>
+        <h3>✈️ Flight Control System</h3>
+        <div class="eh-sub">Dashboard · Matrix counting · CRUD on flights</div>
+
+        <div class="eh-flow">
+          <div class="step"><div class="stl">Frontend</div><div class="stv">React Dashboard</div></div>
+          <div class="arr">→</div>
+          <div class="step"><div class="stl">Backend</div><div class="stv">Express /flights</div></div>
+          <div class="arr">→</div>
+          <div class="step"><div class="stl">DB</div><div class="stv">Flight Model</div></div>
+        </div>
+
+        <div class="eh-section-label">📋 Mongoose Schema</div>
+<pre><span class="k">const</span> Flight = <span class="v">model</span>(<span class="s">'Flight'</span>, {
+  flightNumber: <span class="g">String</span>,
+  origin: <span class="g">String</span>,
+  destination: <span class="g">String</span>,
+  status: <span class="g">String</span>, <span class="c">// scheduled/landed</span>
+  passengers: <span class="g">Number</span>
+});</pre>
+
+        <div class="eh-section-label">🛣️ Endpoints</div>
+        <div class="eh-endpoints">
+          <span class="eh-ep">GET /flights</span>
+          <span class="eh-ep post">POST /flights</span>
+          <span class="eh-ep put">PUT /flights/:id</span>
+          <span class="eh-ep del">DELETE /flights/:id</span>
+        </div>
+
+        <span class="eh-link">→ פתח את הפתרון המלא</span>
+      </a>
+
+      <!-- Exam 2: Bank Accounts -->
+      <a href="#exam2" class="eh-card x2">
+        <span class="eh-tag">מבחן 2</span>
+        <h3>🏦 Bank Accounts System</h3>
+        <div class="eh-sub">Classes · Validation · Transfer between accounts</div>
+
+        <div class="eh-flow">
+          <div class="step"><div class="stl">UI</div><div class="stv">Login + Transfer</div></div>
+          <div class="arr">→</div>
+          <div class="step"><div class="stl">API</div><div class="stv">Auth + Validate</div></div>
+          <div class="arr">→</div>
+          <div class="step"><div class="stl">DB</div><div class="stv">Account Model</div></div>
+        </div>
+
+        <div class="eh-section-label">📋 Mongoose Schema</div>
+<pre><span class="k">const</span> Account = <span class="v">model</span>(<span class="s">'Account'</span>, {
+  owner: <span class="g">String</span>,
+  balance: { type: <span class="g">Number</span>,
+    min: 0 }, <span class="c">// 🛡️ אסור שלילי</span>
+  currency: <span class="g">String</span>,
+  transactions: [<span class="g">Object</span>]
+});</pre>
+
+        <div class="eh-section-label">🛣️ Endpoints</div>
+        <div class="eh-endpoints">
+          <span class="eh-ep">GET /accounts/:id</span>
+          <span class="eh-ep post">POST /transfer</span>
+          <span class="eh-ep post">POST /deposit</span>
+          <span class="eh-ep">GET /history</span>
+        </div>
+
+        <span class="eh-link">→ פתח את הפתרון המלא</span>
+      </a>
+
+      <!-- Exam 3: Warehouse -->
+      <a href="#exam3" class="eh-card x3">
+        <span class="eh-tag">מבחן 3</span>
+        <h3>📦 Warehouse Logistics</h3>
+        <div class="eh-sub">Inventory CRUD · Stock alerts · Search</div>
+
+        <div class="eh-flow">
+          <div class="step"><div class="stl">UI</div><div class="stv">Inventory Grid</div></div>
+          <div class="arr">→</div>
+          <div class="step"><div class="stl">API</div><div class="stv">/items routes</div></div>
+          <div class="arr">→</div>
+          <div class="step"><div class="stl">DB</div><div class="stv">Item Model</div></div>
+        </div>
+
+        <div class="eh-section-label">📋 Mongoose Schema</div>
+<pre><span class="k">const</span> Item = <span class="v">model</span>(<span class="s">'Item'</span>, {
+  name: { type: <span class="g">String</span>,
+    required: <span class="k">true</span> },
+  quantity: { type: <span class="g">Number</span>,
+    default: 0 },
+  category: <span class="g">String</span>,
+  shelfLocation: <span class="g">String</span>
+});</pre>
+
+        <div class="eh-section-label">🛣️ Endpoints</div>
+        <div class="eh-endpoints">
+          <span class="eh-ep">GET /items</span>
+          <span class="eh-ep post">POST /items</span>
+          <span class="eh-ep put">PUT /items/:id</span>
+          <span class="eh-ep">GET /items/low-stock</span>
+        </div>
+
+        <span class="eh-link">→ פתח את הפתרון המלא</span>
+      </a>
+
+      <!-- Exam 4: Currency Calculator -->
+      <a href="#exam4" class="eh-card x4">
+        <span class="eh-tag">מבחן 4</span>
+        <h3>💱 Currency Calculator</h3>
+        <div class="eh-sub">External API · Conversion · Rate caching</div>
+
+        <div class="eh-flow">
+          <div class="step"><div class="stl">UI</div><div class="stv">Convert Form</div></div>
+          <div class="arr">→</div>
+          <div class="step"><div class="stl">API</div><div class="stv">/convert</div></div>
+          <div class="arr">→</div>
+          <div class="step"><div class="stl">External</div><div class="stv">Rates API</div></div>
+        </div>
+
+        <div class="eh-section-label">📋 Schema (cache rates)</div>
+<pre><span class="k">const</span> Rate = <span class="v">model</span>(<span class="s">'Rate'</span>, {
+  from: <span class="g">String</span>, <span class="c">// 'USD'</span>
+  to: <span class="g">String</span>,   <span class="c">// 'ILS'</span>
+  rate: <span class="g">Number</span>, <span class="c">// 3.7</span>
+  fetchedAt: <span class="g">Date</span>
+});</pre>
+
+        <div class="eh-section-label">🛣️ Endpoints</div>
+        <div class="eh-endpoints">
+          <span class="eh-ep">GET /rates</span>
+          <span class="eh-ep post">POST /convert</span>
+          <span class="eh-ep">GET /history</span>
+        </div>
+
+        <span class="eh-link">→ פתח את הפתרון המלא</span>
+      </a>
+
+    </div>
+
+    <div style="margin-top:24px;padding:18px;background:rgba(255,217,61,0.1);border-radius:12px;border-right:4px solid #ffd93d;color:#cbd5e1;">
+      💡 <strong style="color:#ffd93d;">הדפוס חוזר:</strong> Schema (Mongoose) → Routes (Express) → Validation → Controller → Response → React UI. למד את הדפוס פעם אחת — ענה על כל מבחן.
+    </div>
+  </section>
+
+  <!-- (Old decorative kingdoms hidden) -->
+  <section style="display:none;">
+    <svg viewBox="0 0 1200 460" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+      <defs>
+        <filter id="m3sh"><feDropShadow dx="2" dy="4" stdDeviation="2" flood-opacity="0.3"/></filter>
+      </defs>
+      <!-- Sky -->
+      <rect width="1200" height="280" fill="#87ceeb" opacity="0.4"/>
+      <!-- Hills -->
+      <ellipse cx="200" cy="320" rx="280" ry="80" fill="#86b049"/>
+      <ellipse cx="700" cy="340" rx="320" ry="90" fill="#76a040"/>
+      <ellipse cx="1100" cy="320" rx="240" ry="70" fill="#86b049"/>
+      <rect y="350" width="1200" height="110" fill="#5d8a3a"/>
+
+      <!-- Kingdom 1: Flight Control -->
+      <a href="#exam1"><g style="cursor:pointer" filter="url(#m3sh)">
+        <!-- Tower -->
+        <rect x="100" y="180" width="50" height="170" fill="#5dade2"/>
+        <rect x="90" y="160" width="70" height="30" fill="#2e86c1"/>
+        <rect x="105" y="200" width="40" height="20" fill="#16213e"/>
+        <rect x="105" y="230" width="40" height="6" fill="#fff"/>
+        <rect x="105" y="245" width="40" height="6" fill="#fff"/>
+        <rect x="105" y="260" width="40" height="6" fill="#fff"/>
+        <!-- Antenna -->
+        <line x1="125" y1="160" x2="125" y2="120" stroke="#16213e" stroke-width="3"/>
+        <circle cx="125" cy="115" r="6" fill="#ff6b6b"/>
+        <!-- Plane -->
+        <text x="220" y="155" font-size="32">✈️</text>
+        <!-- Plate -->
+        <rect x="80" y="365" width="110" height="40" rx="8" fill="#16213e"/>
+        <text x="135" y="380" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffd93d" direction="rtl">מבחן 1</text>
+        <text x="135" y="398" text-anchor="middle" font-size="11" fill="#fff" direction="rtl">Flight Control</text>
+      </g></a>
+
+      <!-- Kingdom 2: Bank -->
+      <a href="#exam2"><g style="cursor:pointer" filter="url(#m3sh)">
+        <!-- Bank building -->
+        <rect x="350" y="220" width="180" height="130" fill="#d4af7a"/>
+        <polygon points="340,220 440,160 540,220" fill="#8b6f47"/>
+        <!-- Columns -->
+        <rect x="370" y="240" width="14" height="110" fill="#fff" opacity="0.6"/>
+        <rect x="400" y="240" width="14" height="110" fill="#fff" opacity="0.6"/>
+        <rect x="430" y="240" width="14" height="110" fill="#fff" opacity="0.6"/>
+        <rect x="460" y="240" width="14" height="110" fill="#fff" opacity="0.6"/>
+        <rect x="490" y="240" width="14" height="110" fill="#fff" opacity="0.6"/>
+        <text x="440" y="200" text-anchor="middle" font-size="22" fill="#16213e">$</text>
+        <!-- Plate -->
+        <rect x="370" y="365" width="140" height="40" rx="8" fill="#16213e"/>
+        <text x="440" y="380" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffd93d" direction="rtl">מבחן 2</text>
+        <text x="440" y="398" text-anchor="middle" font-size="11" fill="#fff" direction="rtl">🏦 Bank Accounts</text>
+      </g></a>
+
+      <!-- Kingdom 3: Warehouse -->
+      <a href="#exam3"><g style="cursor:pointer" filter="url(#m3sh)">
+        <rect x="640" y="230" width="200" height="120" fill="#e74c3c"/>
+        <polygon points="630,230 740,160 850,230" fill="#922b21"/>
+        <!-- Door -->
+        <rect x="710" y="280" width="60" height="70" fill="#5d4037"/>
+        <line x1="740" y1="280" x2="740" y2="350" stroke="#fff" stroke-width="2"/>
+        <!-- Boxes -->
+        <rect x="660" y="320" width="30" height="30" fill="#d4a574"/>
+        <rect x="800" y="320" width="30" height="30" fill="#d4a574"/>
+        <rect x="660" y="280" width="30" height="30" fill="#d4a574"/>
+        <text x="740" y="200" text-anchor="middle" font-size="22">📦</text>
+        <rect x="670" y="365" width="140" height="40" rx="8" fill="#16213e"/>
+        <text x="740" y="380" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffd93d" direction="rtl">מבחן 3</text>
+        <text x="740" y="398" text-anchor="middle" font-size="11" fill="#fff" direction="rtl">Warehouse</text>
+      </g></a>
+
+      <!-- Kingdom 4: Currency Calc -->
+      <a href="#exam4"><g style="cursor:pointer" filter="url(#m3sh)">
+        <rect x="950" y="220" width="160" height="130" fill="#9b59b6"/>
+        <rect x="940" y="200" width="180" height="25" fill="#6c3483"/>
+        <!-- Display board -->
+        <rect x="970" y="240" width="120" height="60" fill="#16213e"/>
+        <text x="1030" y="265" text-anchor="middle" font-size="14" fill="#4ecdc4">USD: 3.7</text>
+        <text x="1030" y="285" text-anchor="middle" font-size="14" fill="#ffd93d">EUR: 4.0</text>
+        <!-- Coins -->
+        <circle cx="985" cy="325" r="12" fill="#ffd93d"/>
+        <text x="985" y="330" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">$</text>
+        <circle cx="1030" cy="325" r="12" fill="#ffd93d"/>
+        <text x="1030" y="330" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">€</text>
+        <circle cx="1075" cy="325" r="12" fill="#ffd93d"/>
+        <text x="1075" y="330" text-anchor="middle" font-size="11" font-weight="bold" fill="#16213e">₪</text>
+        <rect x="965" y="365" width="140" height="40" rx="8" fill="#16213e"/>
+        <text x="1035" y="380" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffd93d" direction="rtl">מבחן 4</text>
+        <text x="1035" y="398" text-anchor="middle" font-size="11" fill="#fff" direction="rtl">💱 Currency</text>
+      </g></a>
+
+      <!-- Connecting path -->
+      <path d="M 50 430 Q 600 410 1180 430" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="10 6" opacity="0.6"/>
+
+      <!-- Grandma + compass -->
+      <g transform="translate(280,395)">
+        <ellipse cx="0" cy="14" rx="13" ry="18" fill="#9b59b6"/>
+        <circle cx="0" cy="-5" r="11" fill="#fde0c5"/>
+        <ellipse cx="0" cy="-13" rx="12" ry="6" fill="#ecf0f1"/>
+        <circle cx="-3" cy="-5" r="3" fill="none" stroke="#16213e" stroke-width="1.2"/>
+        <circle cx="3" cy="-5" r="3" fill="none" stroke="#16213e" stroke-width="1.2"/>
+        <!-- compass -->
+        <circle cx="-22" cy="10" r="9" fill="#fff" stroke="#16213e" stroke-width="1.5"/>
+        <line x1="-22" y1="10" x2="-25" y2="3" stroke="#ff6b6b" stroke-width="2"/>
+      </g>
+    </svg>
+    <div style="text-align:center;margin-top:14px;color:#16213e;font-size:0.95em;font-style:italic;">
+      🗺️ לחץ על ממלכה כדי לפתוח את הפתרון המלא של המבחן
+    </div>
+  </section>
+
+  <nav class="toc">
+    <h2>📚 בחר מבחן</h2>
+    <div class="toc-grid">
+      <a href="#exam1">
+        <strong>✈️ מבחן 1 — בקרת טיסות</strong>
+        <span>מטריצה · ספירה · Dashboard</span>
+      </a>
+      <a href="#exam2">
+        <strong>🏦 מבחן 2 — חשבונות בנק</strong>
+        <span>Classes · CRUD · validation</span>
+      </a>
+      <a href="#exam3">
+        <strong>📦 מבחן 3 — מחסן לוגיסטי</strong>
+        <span>Routes · classes · Express</span>
+      </a>
+      <a href="#exam4">
+        <strong>💱 מבחן 4 — מחשבון מטבעות</strong>
+        <span>Routes · API · המרות</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ============ EXAM 1 ============ -->
+  <section id="exam1">
+    <h2>✈️ מבחן 1 — בקרת טיסות</h2>
+
+    <div class="exam-card">
+      <h4>📋 הנושא</h4>
+      <p>בנה מערכת בקרת טיסות עם React. המערכת מציגה רשימת טיסות, ומאפשרת לסנן, להוסיף, ולמחוק.</p>
+    </div>
+
+    <h3>שלב 1: מבנה הנתונים</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">// types.ts
+type FlightStatus = 'scheduled' | 'boarding' | 'departed' | 'arrived' | 'delayed';
+
+type Flight = {
+  id: string;
+  number: string;          // "TLV-NYC-001"
+  from: string;
+  to: string;
+  departureTime: string;
+  arrivalTime: string;
+  status: FlightStatus;
+  passengers: number;
+  gate: string;
+};</div>
+
+    <h3>שלב 2: App.tsx — הרכיב הראשי</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">import { useState, useEffect } from 'react';
+import FlightList from './components/FlightList';
+import AddFlightForm from './components/AddFlightForm';
+import FilterBar from './components/FilterBar';
+
+function App() {
+  const [flights, setFlights] = useState&lt;Flight[]&gt;([]);
+  const [filter, setFilter] = useState&lt;FlightStatus | 'all'&gt;('all');
+
+  // טעינה מ-localStorage
+  useEffect(() =&gt; {
+    const saved = localStorage.getItem('flights');
+    if (saved) setFlights(JSON.parse(saved));
+  }, []);
+
+  // שמירה ב-localStorage
+  useEffect(() =&gt; {
+    localStorage.setItem('flights', JSON.stringify(flights));
+  }, [flights]);
+
+  const addFlight = (flight: Flight) =&gt; {
+    setFlights(prev =&gt; [...prev, flight]);
+  };
+
+  const deleteFlight = (id: string) =&gt; {
+    setFlights(prev =&gt; prev.filter(f =&gt; f.id !== id));
+  };
+
+  const updateStatus = (id: string, status: FlightStatus) =&gt; {
+    setFlights(prev =&gt; prev.map(f =&gt;
+      f.id === id ? { ...f, status } : f
+    ));
+  };
+
+  const filteredFlights = filter === 'all'
+    ? flights
+    : flights.filter(f =&gt; f.status === filter);
+
+  return (
+    &lt;div className="app"&gt;
+      &lt;h1&gt;מערכת בקרת טיסות&lt;/h1&gt;
+      &lt;Dashboard flights={flights} /&gt;
+      &lt;FilterBar filter={filter} onChange={setFilter} /&gt;
+      &lt;AddFlightForm onAdd={addFlight} /&gt;
+      &lt;FlightList
+        flights={filteredFlights}
+        onDelete={deleteFlight}
+        onStatusChange={updateStatus}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</div>
+
+    <h3>שלב 3: Dashboard — סטטיסטיקות</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">function Dashboard({ flights }: { flights: Flight[] }) {
+  const total = flights.length;
+  const inAir = flights.filter(f =&gt; f.status === 'departed').length;
+  const delayed = flights.filter(f =&gt; f.status === 'delayed').length;
+  const totalPassengers = flights.reduce((sum, f) =&gt; sum + f.passengers, 0);
+
+  return (
+    &lt;div className="dashboard"&gt;
+      &lt;StatCard label="סה״כ טיסות" value={total} /&gt;
+      &lt;StatCard label="באוויר" value={inAir} /&gt;
+      &lt;StatCard label="מתעכבות" value={delayed} /&gt;
+      &lt;StatCard label="סה״כ נוסעים" value={totalPassengers} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+function StatCard({ label, value }: { label: string; value: number }) {
+  return (
+    &lt;div className="stat-card"&gt;
+      &lt;div className="stat-value"&gt;{value}&lt;/div&gt;
+      &lt;div className="stat-label"&gt;{label}&lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</div>
+
+    <h3>שלב 4: שאלת JS — ספירת מספרים במטריצה</h3>
+    <div class="exam-card">
+      <h4>השאלה</h4>
+      <p>בהינתן מטריצה של מספרים (מערך דו-ממדי), כתוב פונקציה שמחזירה כמה מספרים יש בכל שורה ובכל עמודה שגדולים מ-50.</p>
+    </div>
+
+    <div class="code-block" contenteditable="true" spellcheck="false">function countBig(matrix: number[][]) {
+  const rows = matrix.length;
+  const cols = matrix[0]?.length || 0;
+
+  const rowCounts: number[] = [];
+  const colCounts: number[] = new Array(cols).fill(0);
+
+  for (let i = 0; i &lt; rows; i++) {
+    let rowCount = 0;
+    for (let j = 0; j &lt; cols; j++) {
+      if (matrix[i][j] &gt; 50) {
+        rowCount++;
+        colCounts[j]++;
+      }
+    }
+    rowCounts.push(rowCount);
+  }
+
+  return { rowCounts, colCounts };
+}
+
+// בדיקה
+const m = [
+  [10, 60, 30],
+  [70, 80, 20],
+  [40, 90, 100]
+];
+countBig(m);
+// {
+//   rowCounts: [1, 2, 2],    // כמה גדולים בכל שורה
+//   colCounts: [1, 3, 1]     // כמה גדולים בכל עמודה
+// }</div>
+
+    <div class="tip">
+      <strong>טיפ:</strong> תמיד התחל עם מקרי קצה — מטריצה ריקה, שורה ריקה, ערכים שליליים. השתמש ב-<code class="inline">matrix[0]?.length || 0</code> להגנה.
+    </div>
+  </section>
+
+  <!-- ============ EXAM 2 ============ -->
+  <section id="exam2">
+    <h2>🏦 מבחן 2 — חשבונות בנק</h2>
+
+    <div class="exam-card">
+      <h4>📋 הנושא</h4>
+      <p>בנה מערכת ניהול חשבונות בנק. כל לקוח יכול להחזיק כמה חשבונות. אפשרי הפקדה, משיכה, והעברה בין חשבונות.</p>
+    </div>
+
+    <h3>שלב 1: Classes</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">class Account {
+  id: string;
+  type: 'checking' | 'savings';
+  balance: number;
+  owner: string;
+
+  constructor(id: string, type: 'checking' | 'savings', owner: string, balance = 0) {
+    this.id = id;
+    this.type = type;
+    this.owner = owner;
+    this.balance = balance;
+  }
+
+  deposit(amount: number): void {
+    if (amount &lt;= 0) {
+      throw new Error('סכום ההפקדה חייב להיות חיובי');
+    }
+    this.balance += amount;
+  }
+
+  withdraw(amount: number): void {
+    if (amount &lt;= 0) {
+      throw new Error('סכום המשיכה חייב להיות חיובי');
+    }
+    if (amount &gt; this.balance) {
+      throw new Error('אין מספיק יתרה');
+    }
+    this.balance -= amount;
+  }
+
+  transfer(target: Account, amount: number): void {
+    this.withdraw(amount);
+    target.deposit(amount);
+  }
+}
+
+class Customer {
+  id: string;
+  name: string;
+  accounts: Account[];
+
+  constructor(id: string, name: string) {
+    this.id = id;
+    this.name = name;
+    this.accounts = [];
+  }
+
+  addAccount(account: Account): void {
+    this.accounts.push(account);
+  }
+
+  totalBalance(): number {
+    return this.accounts.reduce((sum, acc) =&gt; sum + acc.balance, 0);
+  }
+
+  findAccount(id: string): Account | undefined {
+    return this.accounts.find(acc =&gt; acc.id === id);
+  }
+}</div>
+
+    <h3>שלב 2: Express API</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">// server.js
+import express from 'express';
+const app = express();
+app.use(express.json());
+
+// In-memory database
+const customers = new Map();
+
+// GET /api/customers — כל הלקוחות
+app.get('/api/customers', (req, res) =&gt; {
+  res.json(Array.from(customers.values()));
+});
+
+// POST /api/customers — לקוח חדש
+app.post('/api/customers', (req, res) =&gt; {
+  const { id, name } = req.body;
+  if (!id || !name) return res.status(400).json({ error: 'חסרים פרטים' });
+  const customer = new Customer(id, name);
+  customers.set(id, customer);
+  res.status(201).json(customer);
+});
+
+// POST /api/customers/:id/accounts — חשבון חדש
+app.post('/api/customers/:id/accounts', (req, res) =&gt; {
+  const customer = customers.get(req.params.id);
+  if (!customer) return res.status(404).json({ error: 'לקוח לא נמצא' });
+
+  const { accountId, type, balance } = req.body;
+  const account = new Account(accountId, type, customer.id, balance);
+  customer.addAccount(account);
+  res.status(201).json(account);
+});
+
+// POST /api/transfer — העברה
+app.post('/api/transfer', (req, res) =&gt; {
+  const { fromCustomerId, fromAccountId, toCustomerId, toAccountId, amount } = req.body;
+
+  const fromCustomer = customers.get(fromCustomerId);
+  const toCustomer = customers.get(toCustomerId);
+
+  if (!fromCustomer || !toCustomer) {
+    return res.status(404).json({ error: 'לקוח לא נמצא' });
+  }
+
+  const fromAccount = fromCustomer.findAccount(fromAccountId);
+  const toAccount = toCustomer.findAccount(toAccountId);
+
+  if (!fromAccount || !toAccount) {
+    return res.status(404).json({ error: 'חשבון לא נמצא' });
+  }
+
+  try {
+    fromAccount.transfer(toAccount, amount);
+    res.json({
+      message: 'ההעברה בוצעה',
+      fromBalance: fromAccount.balance,
+      toBalance: toAccount.balance
+    });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.listen(3000);</div>
+
+    <h3>שלב 3: שאלת JS — מיון ספרות</h3>
+    <div class="exam-card">
+      <h4>השאלה</h4>
+      <p>בהינתן מספר (למשל 4231), החזר את אותו מספר עם ספרות ממוינות מהקטנה לגדולה (1234).</p>
+    </div>
+
+    <div class="code-block" contenteditable="true" spellcheck="false">function sortDigits(num: number): number {
+  // 1. הפוך למחרוזת ואז למערך של תווים
+  const digits = num.toString().split('');
+
+  // 2. מיין כמספרים (לא כtext!)
+  digits.sort((a, b) =&gt; Number(a) - Number(b));
+
+  // 3. הצמד חזרה והחזר כמספר
+  return Number(digits.join(''));
+}
+
+// בדיקות
+sortDigits(4231);     // 1234
+sortDigits(9876);     // 6789
+sortDigits(1000);     // 0001 → 1 ⚠️
+sortDigits(305);      // 035 → 35 ⚠️</div>
+
+    <div class="important">
+      <strong>שים לב:</strong> אם יש 0 בהתחלה, הוא יישמט בהמרה למספר. אם השאלה דורשת שמירה על האפסים, הזחר string במקום number.
+    </div>
+  </section>
+
+  <!-- ============ EXAM 3 ============ -->
+  <section id="exam3">
+    <h2>📦 מבחן 3 — מחסן לוגיסטי</h2>
+
+    <div class="exam-card">
+      <h4>📋 הנושא</h4>
+      <p>בנה מערכת ניהול מחסן עם classes ל-Item, Category, ו-Warehouse. ה-Express API מאפשר CRUD מלא.</p>
+    </div>
+
+    <h3>שלב 1: Classes</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">class Item {
+  constructor(
+    public id: string,
+    public name: string,
+    public quantity: number,
+    public price: number,
+    public categoryId: string
+  ) {}
+
+  getValue(): number {
+    return this.quantity * this.price;
+  }
+}
+
+class Category {
+  items: Item[] = [];
+
+  constructor(public id: string, public name: string) {}
+
+  addItem(item: Item): void {
+    this.items.push(item);
+  }
+
+  removeItem(itemId: string): void {
+    this.items = this.items.filter(i =&gt; i.id !== itemId);
+  }
+
+  totalValue(): number {
+    return this.items.reduce((sum, item) =&gt; sum + item.getValue(), 0);
+  }
+}
+
+class Warehouse {
+  categories: Map&lt;string, Category&gt; = new Map();
+
+  addCategory(category: Category): void {
+    this.categories.set(category.id, category);
+  }
+
+  totalInventoryValue(): number {
+    let total = 0;
+    for (const category of this.categories.values()) {
+      total += category.totalValue();
+    }
+    return total;
+  }
+
+  findItem(itemId: string): Item | undefined {
+    for (const category of this.categories.values()) {
+      const item = category.items.find(i =&gt; i.id === itemId);
+      if (item) return item;
+    }
+    return undefined;
+  }
+}</div>
+
+    <h3>שלב 2: Routes</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">const warehouse = new Warehouse();
+
+// Categories
+app.get('/api/categories', (req, res) =&gt; {
+  res.json(Array.from(warehouse.categories.values()));
+});
+
+app.post('/api/categories', (req, res) =&gt; {
+  const { id, name } = req.body;
+  warehouse.addCategory(new Category(id, name));
+  res.status(201).json({ message: 'נוצר' });
+});
+
+// Items
+app.get('/api/items/:id', (req, res) =&gt; {
+  const item = warehouse.findItem(req.params.id);
+  if (!item) return res.status(404).json({ error: 'לא נמצא' });
+  res.json(item);
+});
+
+app.post('/api/categories/:catId/items', (req, res) =&gt; {
+  const category = warehouse.categories.get(req.params.catId);
+  if (!category) return res.status(404).json({ error: 'קטגוריה לא נמצאה' });
+
+  const { id, name, quantity, price } = req.body;
+  const item = new Item(id, name, quantity, price, category.id);
+  category.addItem(item);
+  res.status(201).json(item);
+});
+
+app.delete('/api/items/:id', (req, res) =&gt; {
+  for (const category of warehouse.categories.values()) {
+    if (category.items.some(i =&gt; i.id === req.params.id)) {
+      category.removeItem(req.params.id);
+      return res.json({ message: 'נמחק' });
+    }
+  }
+  res.status(404).json({ error: 'לא נמצא' });
+});
+
+// Stats
+app.get('/api/stats', (req, res) =&gt; {
+  res.json({
+    totalCategories: warehouse.categories.size,
+    totalValue: warehouse.totalInventoryValue()
+  });
+});</div>
+
+    <h3>שלב 3: שאלת JS — פלינדרום בינארי</h3>
+    <div class="exam-card">
+      <h4>השאלה</h4>
+      <p>קלט: מספר עשרוני. פלט: <code class="inline">true</code> אם הייצוג הבינארי שלו פלינדרום, אחרת <code class="inline">false</code>.</p>
+      <p style="margin-top:8px;">לדוגמה: 9 = <code class="inline">1001</code> = פלינדרום ✅. 10 = <code class="inline">1010</code> = לא פלינדרום ❌.</p>
+    </div>
+
+    <div class="code-block" contenteditable="true" spellcheck="false">function isBinaryPalindrome(num: number): boolean {
+  // 1. המר לבינארי
+  const binary = num.toString(2);
+
+  // 2. בדוק פלינדרום
+  for (let i = 0; i &lt; Math.floor(binary.length / 2); i++) {
+    if (binary[i] !== binary[binary.length - 1 - i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// או דרך פשוטה יותר
+function isBinaryPalindrome(num: number): boolean {
+  const binary = num.toString(2);
+  const reversed = binary.split('').reverse().join('');
+  return binary === reversed;
+}
+
+// בדיקות
+isBinaryPalindrome(9);    // true  (1001)
+isBinaryPalindrome(10);   // false (1010)
+isBinaryPalindrome(7);    // true  (111)
+isBinaryPalindrome(5);    // true  (101)
+isBinaryPalindrome(0);    // true  (0)
+isBinaryPalindrome(1);    // true  (1)</div>
+
+    <div class="tip">
+      <strong>טיפ:</strong> <code class="inline">.toString(2)</code> ממיר לבינארי. <code class="inline">.toString(16)</code> = הקס. <code class="inline">.toString(8)</code> = אוקטל.
+    </div>
+  </section>
+
+  <!-- ============ EXAM 4 ============ -->
+  <section id="exam4">
+    <h2>💱 מבחן 4 — מחשבון מטבעות</h2>
+
+    <div class="exam-card">
+      <h4>📋 הנושא</h4>
+      <p>בנה API להמרת מטבעות. תמיכה ב-USD, EUR, GBP, ILS. שעורים יציבים בקובץ או in-memory.</p>
+    </div>
+
+    <h3>שלב 1: מבנה</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">// rates.ts
+type Currency = 'USD' | 'EUR' | 'GBP' | 'ILS';
+
+const exchangeRates: Record&lt;Currency, Record&lt;Currency, number&gt;&gt; = {
+  USD: { USD: 1, EUR: 0.92, GBP: 0.79, ILS: 3.65 },
+  EUR: { USD: 1.09, EUR: 1, GBP: 0.86, ILS: 3.97 },
+  GBP: { USD: 1.27, EUR: 1.16, GBP: 1, ILS: 4.62 },
+  ILS: { USD: 0.27, EUR: 0.25, GBP: 0.22, ILS: 1 },
+};
+
+function convert(amount: number, from: Currency, to: Currency): number {
+  if (!exchangeRates[from] || !exchangeRates[from][to]) {
+    throw new Error('מטבע לא נתמך');
+  }
+  return amount * exchangeRates[from][to];
+}</div>
+
+    <h3>שלב 2: Express Routes</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">// GET /api/convert?amount=100&from=USD&to=ILS
+app.get('/api/convert', (req, res) =&gt; {
+  const amount = Number(req.query.amount);
+  const from = req.query.from as Currency;
+  const to = req.query.to as Currency;
+
+  if (isNaN(amount) || amount &lt;= 0) {
+    return res.status(400).json({ error: 'סכום לא תקין' });
+  }
+  if (!from || !to) {
+    return res.status(400).json({ error: 'חסר מטבע' });
+  }
+
+  try {
+    const result = convert(amount, from, to);
+    res.json({
+      from,
+      to,
+      amount,
+      result: Number(result.toFixed(2)),
+      rate: exchangeRates[from][to]
+    });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// GET /api/rates — כל השעורים
+app.get('/api/rates', (req, res) =&gt; {
+  res.json(exchangeRates);
+});
+
+// POST /api/rates — עדכון שער
+app.post('/api/rates', (req, res) =&gt; {
+  const { from, to, rate } = req.body;
+  if (!exchangeRates[from]) exchangeRates[from] = {} as any;
+  exchangeRates[from][to] = rate;
+  res.json({ message: 'עודכן' });
+});</div>
+
+    <h3>שלב 3: React Frontend</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">function CurrencyConverter() {
+  const [amount, setAmount] = useState(100);
+  const [from, setFrom] = useState&lt;Currency&gt;('USD');
+  const [to, setTo] = useState&lt;Currency&gt;('ILS');
+  const [result, setResult] = useState&lt;number | null&gt;(null);
+
+  const handleConvert = async () =&gt; {
+    const res = await fetch(
+      `/api/convert?amount=${amount}&from=${from}&to=${to}`
+    );
+    const data = await res.json();
+    setResult(data.result);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        type="number"
+        value={amount}
+        onChange={e =&gt; setAmount(Number(e.target.value))}
+      /&gt;
+      &lt;select value={from} onChange={e =&gt; setFrom(e.target.value as Currency)}&gt;
+        &lt;option value="USD"&gt;USD&lt;/option&gt;
+        &lt;option value="EUR"&gt;EUR&lt;/option&gt;
+        &lt;option value="GBP"&gt;GBP&lt;/option&gt;
+        &lt;option value="ILS"&gt;ILS&lt;/option&gt;
+      &lt;/select&gt;
+      &lt;span&gt;←&lt;/span&gt;
+      &lt;select value={to} onChange={e =&gt; setTo(e.target.value as Currency)}&gt;
+        &lt;option value="USD"&gt;USD&lt;/option&gt;
+        &lt;option value="EUR"&gt;EUR&lt;/option&gt;
+        &lt;option value="GBP"&gt;GBP&lt;/option&gt;
+        &lt;option value="ILS"&gt;ILS&lt;/option&gt;
+      &lt;/select&gt;
+      &lt;button onClick={handleConvert}&gt;המר&lt;/button&gt;
+      {result !== null && (
+        &lt;p&gt;{amount} {from} = {result} {to}&lt;/p&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</div>
+
+    <h3>שלב 4: שאלת JS — מיקום בפיבונאצ'י</h3>
+    <div class="exam-card">
+      <h4>השאלה</h4>
+      <p>בהינתן מספר n, החזר את האיבר ה-n בסדרת פיבונאצ'י. הסדרה: 0, 1, 1, 2, 3, 5, 8, 13, 21, ...</p>
+    </div>
+
+    <div class="code-block" contenteditable="true" spellcheck="false">// פתרון איטרטיבי (O(n)) — מומלץ
+function fibonacci(n: number): number {
+  if (n &lt; 0) throw new Error('n חייב להיות חיובי');
+  if (n &lt;= 1) return n;
+
+  let prev = 0, curr = 1;
+  for (let i = 2; i &lt;= n; i++) {
+    [prev, curr] = [curr, prev + curr];
+  }
+  return curr;
+}
+
+// בדיקות
+fibonacci(0);    // 0
+fibonacci(1);    // 1
+fibonacci(2);    // 1
+fibonacci(5);    // 5
+fibonacci(10);   // 55
+fibonacci(20);   // 6765
+
+// פתרון רקורסיבי (איטי, O(2^n)) — להראות שמכירים
+function fibRecursive(n: number): number {
+  if (n &lt;= 1) return n;
+  return fibRecursive(n - 1) + fibRecursive(n - 2);
+}
+
+// פתרון רקורסיבי עם memoization (מהיר)
+function fibMemo(n: number, cache: Record&lt;number, number&gt; = {}): number {
+  if (n &lt;= 1) return n;
+  if (cache[n] !== undefined) return cache[n];
+  cache[n] = fibMemo(n - 1, cache) + fibMemo(n - 2, cache);
+  return cache[n];
+}</div>
+
+    <h3>שאלת בונוס: מיקום מספר בסדרה</h3>
+    <div class="code-block" contenteditable="true" spellcheck="false">// בהינתן מספר, מצא באיזה מיקום הוא בסדרה. אם לא קיים — החזר -1
+function fibIndex(num: number): number {
+  if (num &lt; 0) return -1;
+  if (num === 0) return 0;
+  if (num === 1) return 1;
+
+  let prev = 0, curr = 1, index = 1;
+
+  while (curr &lt;= num) {
+    if (curr === num) return index;
+    [prev, curr] = [curr, prev + curr];
+    index++;
+  }
+
+  return -1;   // לא בסדרה
+}
+
+// בדיקות
+fibIndex(8);    // 6 (0,1,1,2,3,5,8)
+fibIndex(13);   // 7
+fibIndex(4);    // -1 (לא בסדרה)
+fibIndex(55);   // 10</div>
+
+    <div class="exam">
+      <strong>טיפ למבחן:</strong> תמיד תכתוב גם פתרון איטרטיבי וגם רקורסיבי. הפתרון הרקורסיבי "יפה" אבל איטי. הציון הולך לפתרון יעיל.
+    </div>
+  </section>
+
+  <footer style="text-align:center;padding:30px;color:rgba(255,255,255,0.6);">
+    <p>📚 חזור לדשבורד לראות את ההתקדמות שלך</p>
+    <p>🎯 100/100 — בא לקראתך</p>
+  </footer>
+
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    if (window.scrollY > 300) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+  });
+</script>
+
+<script src="concept-widget.js"></script>
+<script src="theme-toggle.js"></script>
+<script src="breadcrumbs.js"></script>
+<script src="collapse-sections.js"></script>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

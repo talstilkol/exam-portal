@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>מבחנים מדומים | Full-Stack Portal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',sans-serif;line-height:1.7}
+header{background:#161b22;border-bottom:1px solid #30363d;padding:1rem 2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+header h1{font-size:1.3rem;color:#58a6ff}
+.back-btn{background:#21262d;border:1px solid #30363d;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;text-decoration:none;font-size:.85rem}
+.container{max-width:900px;margin:0 auto;padding:1.5rem}
+.exam-select{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.exam-card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:1.5rem;text-align:center;cursor:pointer;transition:.2s}
+.exam-card:hover{border-color:#58a6ff;transform:translateY(-2px)}
+.exam-card.active{border-color:#3fb950;background:#112316}
+.exam-card .num{font-size:2rem;font-weight:700;color:#58a6ff}
+.exam-card .sub{font-size:.8rem;color:#8b949e;margin-top:.3rem}
+.exam-stats{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem;display:flex;gap:2rem;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap}
+.stat{text-align:center}
+.stat .n{font-size:1.4rem;font-weight:700;color:#58a6ff}
+.stat .l{font-size:.75rem;color:#8b949e}
+.mode-toggle{margin-left:auto;display:flex;gap:.5rem}
+.btn{padding:.5rem 1rem;border-radius:6px;border:1px solid #30363d;background:#21262d;color:#e6edf3;cursor:pointer;font-size:.85rem}
+.btn:hover{border-color:#58a6ff}
+.btn.primary{background:#238636;border-color:#3fb950;color:#fff}
+.btn.primary:hover{background:#2ea043}
+#exam-area{display:none}
+.question{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:1.3rem;margin-bottom:1rem}
+.question-num{color:#8b949e;font-size:.78rem;margin-bottom:.4rem}
+.question-text{font-size:.95rem;margin-bottom:.8rem;color:#e6edf3;font-weight:500}
+.question-text pre{background:#0d1117;border-radius:6px;padding:.6rem;margin:.4rem 0;font-size:.82rem;overflow-x:auto;white-space:pre-wrap}
+.option{display:block;padding:.5rem .8rem;margin:.3rem 0;border-radius:6px;border:1px solid #30363d;cursor:pointer;transition:.15s;font-size:.88rem}
+.option:hover{background:#21262d;border-color:#58a6ff}
+.option.selected{background:#1d2d45;border-color:#58a6ff;color:#79c0ff}
+.option.correct{background:#112316;border-color:#3fb950;color:#3fb950}
+.option.wrong{background:#1f1117;border-color:#f85149;color:#f85149}
+.fill-input{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:.5rem .8rem;color:#e6edf3;font-size:.9rem;margin-top:.4rem}
+.fill-input:focus{outline:none;border-color:#58a6ff}
+.topic-tag{background:#21262d;border-radius:4px;padding:.1rem .4rem;font-size:.72rem;color:#79c0ff}
+.result-box{display:none;background:#161b22;border:1px solid #30363d;border-radius:12px;padding:2rem;text-align:center;margin-bottom:1.5rem}
+.result-box .score{font-size:3rem;font-weight:700}
+.result-box .grade{font-size:1.1rem;margin-top:.5rem;color:#8b949e}
+.explanation{background:#0d1117;border-radius:6px;padding:.6rem;margin-top:.5rem;font-size:.82rem;color:#a5d6ff;display:none}
+.show-answer .explanation{display:block}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-btn" href="00_dashboard.html">← דשבורד</a>
+  <h1>📝 מבחנים מדומים — SVCollege Full-Stack</h1>
+</header>
+<div class="container">
+
+<div class="exam-select" id="exam-select">
+  <div class="exam-card" onclick="loadExam(1)"><div class="num">1</div><div class="sub">מבחן מאוזן<br>60 שאלות</div></div>
+  <div class="exam-card" onclick="loadExam(2)"><div class="num">2</div><div class="sub">מבחן מאוזן<br>60 שאלות</div></div>
+  <div class="exam-card" onclick="loadExam(3)"><div class="num">3</div><div class="sub">מבחן מאוזן<br>60 שאלות</div></div>
+  <div class="exam-card" onclick="loadExam(4)"><div class="num">4</div><div class="sub">מבחן מאוזן<br>60 שאלות</div></div>
+  <div class="exam-card" onclick="loadExam(5)"><div class="num">5</div><div class="sub">ציד באגים<br>React/JS</div></div>
+  <div class="exam-card" onclick="loadExam(6)"><div class="num">6</div><div class="sub">Traces<br>מעקב ביצוע</div></div>
+  <div class="exam-card" onclick="loadExam(7)"><div class="num">7</div><div class="sub">Builds<br>יצירה מאפס</div></div>
+  <div class="exam-card" onclick="loadExam(8)"><div class="num">8</div><div class="sub">Phase 2/3<br>מתקדם</div></div>
+  <div class="exam-card" onclick="loadExam(9)"><div class="num">9</div><div class="sub">SV College<br>Nest/Next/DB</div></div>
+</div>
+
+<div id="exam-area">
+  <div class="exam-stats">
+    <div class="stat"><div class="n" id="stat-exam">—</div><div class="l">מבחן</div></div>
+    <div class="stat"><div class="n" id="stat-total">—</div><div class="l">שאלות</div></div>
+    <div class="stat"><div class="n" id="stat-answered">0</div><div class="l">נענו</div></div>
+    <div class="stat"><div class="n" id="stat-time">90:00</div><div class="l">זמן</div></div>
+    <div class="mode-toggle">
+      <button class="btn" onclick="toggleMode()">מצב תרגול / מבחן</button>
+      <button class="btn primary" onclick="submitExam()">📊 הגש מבחן</button>
+    </div>
+  </div>
+
+  <div class="result-box" id="result-box">
+    <div class="score" id="score-text">—</div>
+    <div class="grade" id="grade-text">—</div>
+  </div>
+
+  <div id="questions-area"></div>
+</div>
+
+<!-- Phase 1: Core Questions -->
+<script src="materials/raw-data/questions_trace.js"></script>
+<script src="materials/raw-data/questions_build.js"></script>
+<script src="materials/raw-data/questions_bug.js"></script>
+
+<!-- Phase 2/3: Expansions -->
+<script src="materials/raw-data/zz_questions_bug_phase2.js"></script>
+<script src="materials/raw-data/zz_questions_build_phase2.js"></script>
+<script src="materials/raw-data/zz_questions_trace_phase2.js"></script>
+<script src="materials/raw-data/zz_questions_trace_phase3.js"></script>
+
+<!-- SV College Specifics -->
+<script src="materials/raw-data/svcollege_questions_ai_engineering.js"></script>
+<script src="materials/raw-data/svcollege_questions_auth.js"></script>
+<script src="materials/raw-data/svcollege_questions_bridge.js"></script>
+<script src="materials/raw-data/svcollege_questions_design_systems.js"></script>
+<script src="materials/raw-data/svcollege_questions_devops.js"></script>
+<script src="materials/raw-data/svcollege_questions_nestjs.js"></script>
+<script src="materials/raw-data/svcollege_questions_nextjs.js"></script>
+<script src="materials/raw-data/svcollege_questions_sql_orm.js"></script>
+
+<script>
+const EXAMS = {
+  1: {
+    title: "מבחן מאוזן #1",
+    mc: [
+      {q:"מה נכון לתאר את AI לפי השיעור?", opts:["מודל שמחזיר טקסט/קוד בהסתמך על סטטיסטיקה","מסד נתונים שמחזיר עובדות אמתיות תמיד","מערכת שמחליפה בדיקות production","אלגוריתם שמחשב רק מספרים"], correct:0, topic:"ai_development::AI", exp:"LLM מנחש רצף tokens לפי הקשר — תמיד לאמת פלט."},
+      {q:"מתי נכון להשתמש ב-Cursor Cmd+K?", opts:["כשיודעים איזה שינוי קטן לערוך במקום בקובץ","כשצריך למחוק את כל ה-repo","כשצריך להחליף את Git","כשצריך לפרוס production"], correct:0, topic:"ai_development::Cursor", exp:"Cmd+K לעריכה מקומית. לרב-קבציות — Composer."},
+      {q:"מה חסר ב-prompt חלש 'תתקן את זה'?", opts:["מטרה, context, מגבלות וקריטריון קבלה","ניסוח רגשי יותר","בחירת צבע Tailwind","מזהה מספרי שרירותי"], correct:0, topic:"ai_development::Prompt", exp:"Prompt טוב: מטרה + context + מגבלות + קריטריון."},
+      {q:"מה יודפס?\nconst arr=[1,2,3];\narr.push(4);\nconsole.log(arr);", opts:["[1,2,3]","[1,2,3,4]","[4,1,2,3]","4"], correct:1, topic:"lesson_11::Array", exp:"push מוסיפה לסוף המערך ומשנה את המקור."},
+      {q:"מה ההבדל המרכזי בין map ל-forEach?", opts:["map מוחק; forEach מוסיף","map יוצר מערך חדש; forEach רק רץ","forEach מחזיר מערך חדש","map עובד רק עם מספרים"], correct:1, topic:"lesson_11::map", exp:"map מחזיר Array חדש. forEach מחזיר undefined."},
+      {q:"מה התוצאה?\n[1,2,3,4].reduce((acc,n)=>acc+n,0)", opts:["0","10","[1,2,3,4]","4"], correct:1, topic:"lesson_11::reduce", exp:"reduce מצטבר: 0+1+2+3+4=10."},
+      {q:"מה יודפס ראשון?\nconsole.log('A');\nsetTimeout(()=>console.log('B'),1000);\nconsole.log('C');", opts:["A→B→C","A→C→B","B→A→C","C→A→B"], correct:1, topic:"lesson_15::setTimeout", exp:"setTimeout נדחה. סינכרוני (A,C) קודם, אז B."},
+      {q:"מה יודפס?\nconst a={v:1};\nconst b=a;\nb.v=99;\nconsole.log(a.v);", opts:["1","99","undefined","{v:1}"], correct:1, topic:"lesson_11::By Reference", exp:"אובייקטים By Reference — b מצביע על אותו object."},
+      {q:"מה יודפס?\nlet a=5;\nlet b=a;\na=10;\nconsole.log(b);", opts:["5","10","undefined","NaN"], correct:0, topic:"lesson_11::By Value", exp:"primitives By Value — b = עותק עצמאי."},
+      {q:"מה Closure?", opts:["פונקציה שזוכרת את הסקופ שבו נוצרה","פונקציה בלי פרמטרים","פונקציה שלא מחזירה ערך","מתודה של Object"], correct:0, topic:"lesson_15::Closure", exp:"Closure זוכר lexical scope — חיוני ל-private state."},
+      {q:"מה עושה useRef?", opts:["שומר ref בלי לגרום לרינדור","יוצר Route","מוחק state","מחליף MongoDB"], correct:0, topic:"lesson_24::useRef", exp:"useRef מחזיר {current} שאפשר לשנות בלי re-render."},
+      {q:"מתי כדאי useMemo?", opts:["כשצריך state חדש","כשיש חישוב כבד שחוזר ברינדור","כדי ליצור state","רק עם setTimeout"], correct:1, topic:"lesson_24::useMemo", exp:"useMemo מזכיר תוצאת חישוב יקר לפי dependency array."},
+      {q:"ב-Express, איזה method ליצירת משאב?", opts:["GET","POST","DELETE","PATCH"], correct:1, topic:"lesson_17::POST", exp:"POST=Create, GET=Read, PATCH/PUT=Update, DELETE=Delete."},
+      {q:"מה משמעות סטטוס 404?", opts:["הצלחה","המשאב לא נמצא","שגיאת שרת","אין הרשאה"], correct:1, topic:"lesson_17::Status Codes", exp:"404 Not Found — הבקשה תקינה, משאב לא קיים."},
+      {q:"מה תפקיד extends?", opts:["ירושה — מחלקה אחת מורישה לאחרת","מאריכה זיכרון","מוסיפה מתודות חדשות","אין כזה ב-JS"], correct:0, topic:"lesson_13::extends", exp:"class Dog extends Animal — Dog מקבלת מתודות Animal."},
+      {q:"מה ההבדל בין useEffect(fn) ל-useEffect(fn,[])?", opts:["שניהם רצים רק ב-mount","בלי deps כל render; [] פעם אחת","[] מריץ לפני render","ללא מערך — לא רץ"], correct:1, topic:"lesson_24::dependency array", exp:"[] = mount בלבד. ללא array = אחרי כל render."},
+      {q:"מה יודפס?\nconsole.log('1');\nsetTimeout(()=>console.log('2'),0);\nPromise.resolve().then(()=>console.log('3'));\nconsole.log('4');", opts:["1,2,3,4","1,4,3,2","1,4,2,3","1,3,4,2"], correct:1, topic:"lesson_15::Event Loop", exp:"sync→microtask→macrotask: 1,4 סינכרוני, 3 microtask, 2 macrotask."},
+      {q:"מה foreign key עושה?", opts:["מצביע ל-PK בטבלה אחרת ומונע orphans","יוצר index אוטומטי","מחיר מהיר יותר","מחליף JOIN"], correct:0, topic:"lesson_sql_orm::foreign key", exp:"FK מבטיח referential integrity — אי אפשר להצביע לרשומה שלא קיימת."},
+      {q:"מה ACID ב-transactions?", opts:["Atomicity,Consistency,Isolation,Durability","Array,Class,Interface,Data","Auto,Cache,Index,Delete","Async,Callback,Invoke,Done"], correct:0, topic:"lesson_sql_orm::transaction", exp:"ACID = ארבעת הקניות של DB transaction."},
+      {q:"מה JOIN עושה?", opts:["מחבר rows מטבלאות שונות לפי תנאי","מוחק rows כפולות","יוצר index","מחליף FK"], correct:0, topic:"lesson_sql_orm::JOIN", exp:"JOIN = חיבור rows לפי ON condition — בדרך כלל FK↔PK."}
+    ],
+    fill: [
+      {q:"const nums=[1,2,3];\nconst doubled=nums.____(n=>n*2);\n// [2,4,6]", answer:"map", hint:"מתודה שיוצרת מערך חדש מטרנספורמציה", topic:"lesson_11::map"},
+      {q:"const nums=[1,2,3,4];\nconst even=nums.____(n=>n%2===0);\n// [2,4]", answer:"filter", hint:"מסננת איברים לפי תנאי boolean", topic:"lesson_11::filter"},
+      {q:"const sum=[1,2,3,4].____((acc,n)=>acc+n,0);\n// 10", answer:"reduce", hint:"מצמצמת מערך לערך אחד", topic:"lesson_11::reduce"},
+      {q:"async function getUsers(){\n  const res=____ fetch('/api/users');\n  return res.json();\n}", answer:"await", hint:"מילת מפתח שמחכה ל-Promise", topic:"lesson_15::Asynchronous"},
+      {q:"fetch('/api')\n  .then(res=>res.____())\n  .then(data=>console.log(data));", answer:"json", hint:"מתודה שמפענחת גוף כ-JSON", topic:"lesson_15::fetch"},
+      {q:"const p=new Promise((____, reject)=>{\n  setTimeout(()=>/*fulfill*/,1000);\n});", answer:"resolve", hint:"שם הפרמטר הראשון בקולבק של new Promise", topic:"lesson_15::Promise"},
+      {q:"// Express middleware לפענוח JSON:\napp.use(express.____());", answer:"json", hint:"פונקציה שמחזירה middleware לJSon body", topic:"lesson_17::middleware"},
+      {q:"// Primary key ב-PostgreSQL:\nid integer GENERATED ALWAYS AS IDENTITY ____", answer:"PRIMARY KEY", hint:"הגדרת מזהה ייחודי", topic:"lesson_sql_orm::primary key"},
+      {q:"// JOIN בין users ל-orders:\nSELECT * FROM orders\n____ users ON users.id=orders.user_id;", answer:"JOIN", hint:"פקודת SQL שמחברת טבלאות", topic:"lesson_sql_orm::JOIN"},
+      {q:"// Nest.js controller:\n@____()\nfindAll() { return this.service.findAll(); }", answer:"Get", hint:"HTTP method decorator ב-Nest", topic:"lesson_nestjs::controller"}
+    ]
+  }
+};
+
+// Build exam 2-4 from exam 1 with shuffled questions (demo)
+for(let i=2;i<=4;i++){
+  EXAMS[i] = JSON.parse(JSON.stringify(EXAMS[1]));
+  EXAMS[i].title = `מבחן מאוזן #${i}`;
+  EXAMS[i].mc = [...EXAMS[1].mc].sort(()=>Math.random()-.5);
+  EXAMS[i].fill = [...EXAMS[1].fill].sort(()=>Math.random()-.5);
+}
+
+// Add bug hunt exam at 5
+if (typeof QUESTIONS_BUG !== 'undefined') {
+  const bugQuestions = QUESTIONS_BUG.map(b => ({
+    q: b.title + ":\n<pre>" + b.brokenCode.replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</pre>",
+    opts: b.options,
+    correct: b.correctIndex,
+    topic: b.conceptKey,
+    exp: "תיקון:\n<pre>" + b.fix.replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</pre>\n" + b.explanation
+  }));
+  EXAMS[5] = {
+    title: "מבחן 5: ציד באגים",
+    mc: bugQuestions,
+    fill: []
+  };
+}
+
+// Map extra arrays
+function mapExtraQuestions(arr, titlePrefix) {
+  if (!arr || !Array.isArray(arr)) return [];
+  return arr.map(q => ({
+    q: `${titlePrefix}: ${q.title || ''}\n<pre>${(q.brokenCode || q.code || q.prompt || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`,
+    opts: q.options || q.opts || ["1", "2", "3", "4"],
+    correct: q.correctIndex !== undefined ? q.correctIndex : (q.correct || 0),
+    topic: q.conceptKey || q.topic || "general",
+    exp: `${q.explanation || q.exp || ''}\n${q.fix ? '<pre>'+q.fix.replace(/</g, '&lt;').replace(/>/g, '&gt;')+'</pre>' : ''}`
+  }));
+}
+
+if (typeof QUESTIONS_TRACE !== 'undefined') EXAMS[6] = { title: "מבחן 6: Traces", mc: mapExtraQuestions(QUESTIONS_TRACE, "Trace"), fill: [] };
+if (typeof QUESTIONS_BUILD !== 'undefined') EXAMS[7] = { title: "מבחן 7: Builds", mc: mapExtraQuestions(QUESTIONS_BUILD, "Build"), fill: [] };
+
+let phase2 = [];
+if (typeof QUESTIONS_BUG_PHASE2 !== 'undefined') phase2 = phase2.concat(mapExtraQuestions(QUESTIONS_BUG_PHASE2, "Bug Phase2"));
+if (typeof QUESTIONS_BUILD_PHASE2 !== 'undefined') phase2 = phase2.concat(mapExtraQuestions(QUESTIONS_BUILD_PHASE2, "Build Phase2"));
+if (typeof QUESTIONS_TRACE_PHASE2 !== 'undefined') phase2 = phase2.concat(mapExtraQuestions(QUESTIONS_TRACE_PHASE2, "Trace Phase2"));
+if (typeof QUESTIONS_TRACE_PHASE3 !== 'undefined') phase2 = phase2.concat(mapExtraQuestions(QUESTIONS_TRACE_PHASE3, "Trace Phase3"));
+if (phase2.length > 0) EXAMS[8] = { title: "מבחן 8: Phase 2/3 Mix", mc: phase2, fill: [] };
+
+let svMc = [], svFill = [];
+const svq = [
+  typeof SVCOLLEGE_NESTJS_QUESTIONS !== 'undefined' ? SVCOLLEGE_NESTJS_QUESTIONS : null,
+  typeof SVCOLLEGE_NEXTJS_QUESTIONS !== 'undefined' ? SVCOLLEGE_NEXTJS_QUESTIONS : null,
+  typeof SVCOLLEGE_SQL_ORM_QUESTIONS !== 'undefined' ? SVCOLLEGE_SQL_ORM_QUESTIONS : null,
+  typeof SVCOLLEGE_AI_ENGINEERING_QUESTIONS !== 'undefined' ? SVCOLLEGE_AI_ENGINEERING_QUESTIONS : null,
+  typeof SVCOLLEGE_AUTH_QUESTIONS !== 'undefined' ? SVCOLLEGE_AUTH_QUESTIONS : null,
+  typeof SVCOLLEGE_DEVOPS_QUESTIONS !== 'undefined' ? SVCOLLEGE_DEVOPS_QUESTIONS : null
+];
+svq.forEach(qObj => {
+  if (qObj) {
+    if (qObj.mc) svMc = svMc.concat(qObj.mc);
+    if (qObj.fill) svFill = svFill.concat(qObj.fill);
+  }
+});
+if (svMc.length > 0 || svFill.length > 0) EXAMS[9] = { title: "מבחן 9: SV College (Nest, Next, DB...)", mc: svMc, fill: svFill };
+
+let practiceMode = true;
+let currentExam = null;
+let timer = null;
+let timeLeft = 90*60;
+let answered = 0;
+
+function loadExam(n){
+  document.querySelectorAll('.exam-card').forEach((c,i)=>c.classList.toggle('active',i===n-1));
+  currentExam = EXAMS[n];
+  answered = 0;
+  timeLeft = 90*60;
+  document.getElementById('stat-exam').textContent = `#${n}`;
+  document.getElementById('stat-total').textContent = currentExam.mc.length + currentExam.fill.length;
+  document.getElementById('stat-answered').textContent = 0;
+  document.getElementById('result-box').style.display='none';
+  renderExam();
+  document.getElementById('exam-area').style.display='block';
+  startTimer();
+}
+
+function renderExam(){
+  const area = document.getElementById('questions-area');
+  let html = '<h3 style="color:#79c0ff;margin-bottom:1rem">חלק א׳ — שאלות אמריקאיות (MC)</h3>';
+  currentExam.mc.forEach((q,i)=>{
+    html += `<div class="question" id="q-mc-${i}">
+      <div class="question-num">שאלה ${i+1} · <span class="topic-tag">${q.topic}</span></div>
+      <div class="question-text"><pre>${q.q}</pre></div>
+      ${q.opts.map((o,j)=>`<label class="option" id="opt-${i}-${j}">
+        <input type="radio" name="mc-${i}" value="${j}" style="display:none" onchange="selectMC(${i},${j})">
+        ${['A','B','C','D'][j]}. ${o}
+      </label>`).join('')}
+      <div class="explanation">${q.exp}</div>
+    </div>`;
+  });
+  html += '<h3 style="color:#79c0ff;margin:1.5rem 0 1rem">חלק ב׳ — השלמה (Fill)</h3>';
+  currentExam.fill.forEach((q,i)=>{
+    html += `<div class="question" id="q-fill-${i}">
+      <div class="question-num">שאלה ${i+1} · <span class="topic-tag">${q.topic}</span></div>
+      <div class="question-text"><pre>${q.q}</pre></div>
+      <div style="font-size:.82rem;color:#8b949e;margin-bottom:.3rem">💡 רמז: ${q.hint}</div>
+      <input class="fill-input" type="text" placeholder="התשובה שלך..." oninput="checkFill(${i},this.value)">
+      <div class="explanation">✅ תשובה: <strong>${q.answer}</strong></div>
+    </div>`;
+  });
+  area.innerHTML = html;
+}
+
+function selectMC(qi,oi){
+  if(!practiceMode) return;
+  const q = currentExam.mc[qi];
+  document.querySelectorAll(`[id^="opt-${qi}-"]`).forEach((el,j)=>{
+    el.classList.remove('selected','correct','wrong');
+    if(j===oi) el.classList.add(j===q.correct?'correct':'wrong');
+    else if(j===q.correct) el.classList.add('correct');
+  });
+  document.getElementById(`q-mc-${qi}`).classList.add('show-answer');
+  updateAnswered();
+}
+
+function checkFill(qi,val){
+  const q = currentExam.fill[qi];
+  if(val.trim().toLowerCase()===q.answer.toLowerCase()){
+    document.getElementById(`q-fill-${qi}`).classList.add('show-answer');
+  }
+  updateAnswered();
+}
+
+function updateAnswered(){
+  const mc = document.querySelectorAll('[name^="mc-"]:checked').length;
+  const fill = [...document.querySelectorAll('.fill-input')].filter(i=>i.value.trim()).length;
+  document.getElementById('stat-answered').textContent = mc+fill;
+}
+
+function submitExam(){
+  let correct=0, total=0;
+  currentExam.mc.forEach((q,i)=>{
+    total++;
+    const sel = document.querySelector(`[name="mc-${i}"]:checked`);
+    if(sel && parseInt(sel.value)===q.correct) correct++;
+  });
+  currentExam.fill.forEach((q,i)=>{
+    total++;
+    const inp = document.querySelectorAll('.fill-input')[i];
+    if(inp && inp.value.trim().toLowerCase()===q.answer.toLowerCase()) correct++;
+  });
+  document.querySelectorAll('.question').forEach(q=>q.classList.add('show-answer'));
+  const pct = Math.round(correct/total*100);
+  const rb = document.getElementById('result-box');
+  rb.style.display='block';
+  document.getElementById('score-text').textContent=`${pct}%`;
+  document.getElementById('score-text').style.color=pct>=80?'#3fb950':pct>=60?'#f0883e':'#f85149';
+  document.getElementById('grade-text').textContent=`${correct}/${total} נכון — ${pct>=80?'מצוין!':pct>=60?'טוב, אפשר טוב יותר':'חזור על החומר'}`;
+  rb.scrollIntoView({behavior:'smooth'});
+  if(timer) clearInterval(timer);
+}
+
+function toggleMode(){practiceMode=!practiceMode;}
+
+function startTimer(){
+  if(timer) clearInterval(timer);
+  timer = setInterval(()=>{
+    timeLeft--;
+    const m=Math.floor(timeLeft/60), s=timeLeft%60;
+    document.getElementById('stat-time').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+    if(timeLeft<=0){clearInterval(timer);submitExam();}
+  },1000);
+}
+</script>
+</body>
+</html>

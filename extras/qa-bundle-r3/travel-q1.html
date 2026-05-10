@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>פולסטאק מועד ג — Travel-SV — React — Travel-SV</title>
+<link href="assets/style.css" rel="stylesheet"/>
+<meta name="description" content="שאלה 1: React — Travel-SV — שאלה מלאה, פירוק סעיפים, פתרון קוד ו-Debug."/><!--portal-r3-css-->
+<style id="portal-injected-css">
+/* === Compact improvement panel (chips → tooltip) === */
+.imp-panel-compact { margin: 18px 12px; padding: 14px; border: 2.5px solid #000;
+  border-radius: 14px; background: linear-gradient(135deg, #fef3c7, #fffbeb);
+  box-shadow: 4px 4px 0 #000; }
+.imp-panel-compact .impc-head { display:flex; justify-content:space-between; align-items:center;
+  gap:10px; flex-wrap:wrap; margin-bottom:10px; padding-bottom:8px;
+  border-bottom: 2px dashed #f59e0b; }
+.imp-panel-compact .impc-title { margin:0; font-size:16px; color:#1f2937; font-weight:900; }
+.imp-panel-compact .impc-hint { font-size:11px; color:#92400e; font-style:italic; }
+.sol100-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border:2px solid #000;border-radius:8px;background:linear-gradient(135deg,#86efac,#dcfce7);color:#14532d;text-decoration:none;font-weight:900;font-size:12px;font-family:Heebo,Arial,sans-serif;box-shadow:2px 2px 0 #000;transition:.12s;white-space:nowrap;cursor:pointer}
+.sol100-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 #000;background:linear-gradient(135deg,#4ade80,#bbf7d0)}
+.imp-panel-compact .imp-score { display:inline-block; margin-right:6px; padding:2px 9px;
+  border:2px solid #000; border-radius:999px; background:#facc15; color:#000;
+  font-size:11px; font-weight:900; }
+.imp-panel-compact .impc-chips { display:flex; align-items:center; gap:4px; flex-wrap:wrap;
+  padding:6px 0; }
+.imp-panel-compact .impc-row-label { font-size:12px; font-weight:900; color:#475569;
+  margin-left:6px; min-width:110px; }
+.imp-panel-compact .sev-chip { display:inline-flex; align-items:center; justify-content:center;
+  min-width:30px; height:24px; padding:0 9px; border:1.8px solid #000;
+  border-radius:999px; font-size:11px; font-weight:900; cursor:pointer;
+  margin:1.5px; transition:.12s; box-shadow:1.5px 1.5px 0 #000; font-family:inherit; }
+.imp-panel-compact .sev-chip:hover { transform:translate(-1px,-1px); box-shadow:3px 3px 0 #000 }
+.imp-panel-compact .sev-chip.crit { background:#fca5a5; color:#7f1d1d }
+.imp-panel-compact .sev-chip.high { background:#fdba74; color:#7c2d12 }
+.imp-panel-compact .sev-chip.med  { background:#fde68a; color:#78350f }
+.imp-panel-compact .sev-chip.low  { background:#5eead4; color:#134e4a }
+.imp-panel-compact .sev-chip.fixed{ background:#86efac; color:#14532d; cursor:default }
+.imp-panel-compact .sev-chip.miss { background:#f9a8d4; color:#831843 }
+.imp-panel-compact .sev-chip.extra{ background:#c4b5fd; color:#4c1d95 }
+
+/* === Embedded tooltip (when iframe parent is unreachable) === */
+.iframe-tooltip { position:fixed; z-index:9999; max-width:520px; min-width:240px;
+  padding:14px 18px; background:linear-gradient(135deg,#0f172a,#1e293b);
+  color:#e2e8f0; border:2.5px solid #000; border-radius:14px;
+  box-shadow:6px 6px 0 #000; opacity:0; transform:scale(.96); transform-origin:top right;
+  transition:opacity .14s ease, transform .14s ease; pointer-events:auto;
+  font-family:Heebo,Arial,sans-serif; font-size:13.5px; line-height:1.65; direction:rtl; }
+.iframe-tooltip.show { opacity:1; transform:scale(1); }
+.iframe-tooltip h4 { margin:0 0 8px; font-size:16px; color:#facc15; font-weight:900 }
+.iframe-tooltip h5 { margin:8px 0 4px; font-size:13px; color:#fbbf24; text-transform:uppercase; letter-spacing:.3px }
+.iframe-tooltip p { margin:0 0 8px }
+.iframe-tooltip code { background:#0a0f1c; color:#fcd34d; padding:1px 6px; border-radius:4px;
+  font-family:Consolas,monospace; font-size:12px; direction:ltr; display:inline-block }
+.iframe-tooltip pre { margin:6px 0; padding:8px 10px; background:#0a0f1c; border-radius:8px;
+  color:#86efac; direction:ltr; text-align:left; font-family:Consolas,monospace;
+  font-size:11.5px; line-height:1.5; white-space:pre-wrap; word-break:break-all;
+  max-height:220px; overflow:auto }
+.iframe-tooltip pre.before { color:#fca5a5 }
+.iframe-tooltip .vt-tag { display:inline-block; padding:2px 8px; border-radius:999px;
+  border:1.5px solid #facc15; background:rgba(250,204,21,.12); color:#facc15;
+  font-size:11px; font-weight:900; margin-left:6px }
+.iframe-tooltip .vt-close { position:absolute; top:6px; left:6px; width:24px; height:24px;
+  border:2px solid #000; border-radius:50%; background:#facc15; color:#000;
+  font-weight:900; cursor:pointer; padding:0; line-height:1 }
+
+/* === Old-style improvement panel (kept for any leftover usage, hidden by default) === */
+.imp-panel { display:none; }
+
+/* === LEGACY (was) Improvement panel - kept for typography fallback only === */
+.imp-panel-legacy { margin: 24px 12px; padding: 16px; border: 2.5px solid #000; border-radius: 14px;
+  background: linear-gradient(135deg, #fef3c7, #fffbeb); box-shadow: 4px 4px 0 #000; }
+.imp-panel .imp-title { margin: 0 0 12px; font-size: 18px; color: #1f2937; font-weight: 900;
+  border-bottom: 2px dashed #f59e0b; padding-bottom: 8px; }
+.imp-panel .imp-score { display: inline-block; margin-right: 8px; padding: 3px 10px;
+  border: 2px solid #000; border-radius: 999px; background: #facc15; color: #000;
+  font-size: 12px; font-weight: 900; }
+.imp-bug { margin-bottom: 14px; padding: 10px; border: 2px solid #000; border-radius: 10px;
+  background: #fff; box-shadow: 2px 2px 0 #000; }
+.imp-bug-head { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;
+  font-size: 14px; line-height: 1.6; }
+.imp-bug-desc { flex: 1; }
+.sev { display: inline-block; padding: 2px 8px; border: 2px solid #000; border-radius: 999px;
+  font-size: 11px; font-weight: 900; white-space: nowrap; }
+.sev-crit { background: #fee2e2; color: #b91c1c; }
+.sev-high { background: #ffedd5; color: #c2410c; }
+.sev-med  { background: #fef3c7; color: #b45309; }
+.sev-low  { background: #ccfbf1; color: #0f766e; }
+.imp-bug-diff { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.imp-before, .imp-after { border: 1.5px solid #000; border-radius: 8px; padding: 8px;
+  background: #f8fafc; min-width: 0; }
+.imp-before { background: #fef2f2; }
+.imp-after { background: #f0fdf4; }
+.imp-label { font-weight: 900; font-size: 11px; margin-bottom: 4px;
+  text-transform: uppercase; letter-spacing: .5px; color: #475569; }
+.imp-before .imp-label { color: #b91c1c; }
+.imp-after .imp-label { color: #166534; }
+.imp-before pre, .imp-after pre { margin: 0; padding: 6px; background: #0f172a;
+  color: #e2e8f0; border-radius: 6px; direction: ltr; text-align: left;
+  font-family: Consolas, Monaco, monospace; font-size: 11.5px; line-height: 1.55;
+  white-space: pre-wrap; word-break: break-all; max-height: 220px; overflow: auto; }
+.imp-after pre { color: #86efac; }
+.imp-block { margin-top: 12px; padding: 10px 12px; border: 2px solid #000; border-radius: 10px;
+  background: #fff; box-shadow: 2px 2px 0 #000; }
+.imp-block h5 { margin: 0 0 8px; font-size: 14px; }
+.imp-block ul { margin: 0; padding-right: 20px; }
+.imp-block ul li { font-size: 13.5px; line-height: 1.65; margin-bottom: 4px; }
+.imp-missing { background: #fef2f2; }
+.imp-extras { background: #f0fdf4; }
+
+/* === Two-question notice === */
+.two-q-notice { padding: 20px; margin: 0 0 18px; border: 2.5px solid #000;
+  border-radius: 14px; background: linear-gradient(135deg, #dbeafe, #ede9fe);
+  box-shadow: 4px 4px 0 #000; }
+.two-q-notice .q-header { display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  border-bottom: 2px dashed #1e40af; padding-bottom: 10px; margin-bottom: 14px; }
+.two-q-notice .q-number { padding: 4px 10px; border: 2px solid #000; border-radius: 999px;
+  background: #fff; font-weight: 900; font-size: 13px; }
+.two-q-notice h3 { margin: 0; flex: 1; font-size: 18px; }
+.two-q-notice .topic { padding: 3px 9px; border-radius: 999px; background: #fef3c7;
+  border: 1.5px solid #000; font-size: 11px; font-weight: 900; }
+.big-100 { font-size: 22px; font-weight: 900; color: #1e40af; padding: 12px 16px;
+  border: 3px solid #000; border-radius: 12px; background: #fff;
+  box-shadow: 3px 3px 0 #000; margin-bottom: 12px; display: inline-block; }
+.q-tip { padding: 10px 12px; background: #fef3c7; border: 2px solid #f59e0b;
+  border-radius: 10px; font-size: 13.5px; line-height: 1.65; }
+.q-source-doc { margin-top: 12px; padding: 10px; background: #f8fafc;
+  border: 2px solid #cbd5e1; border-radius: 10px; }
+.q-source-doc summary { cursor: pointer; font-weight: 900; font-size: 13px; }
+.q-source-doc pre { margin: 8px 0 0; padding: 10px; background: #0f172a; color: #e2e8f0;
+  border-radius: 6px; font-size: 12px; line-height: 1.5; direction: rtl; text-align: right; }
+
+@media (max-width: 720px) {
+  .imp-bug-diff { grid-template-columns: 1fr; }
+}
+/* === Phase C: Responsive improvement panel === */
+@media(max-width:600px){
+  .imp-panel-compact{margin:10px 6px;padding:10px}
+  .imp-panel-compact .impc-title{font-size:13px}
+  .imp-panel-compact .impc-hint{display:none}
+  .imp-panel-compact .impc-row-label{min-width:80px;font-size:11px}
+  .imp-panel-compact .sev-chip{height:22px;font-size:10px;padding:0 7px}
+  .sol100-btn{font-size:11px;padding:4px 9px}
+  .iframe-tooltip{max-width:90vw;min-width:200px;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body class="question-body"><a class="skip-link" href="#main-content">דלג לתוכן השאלה</a>
+<div class="single-wrap">
+<header class="single-header">
+<span class="source-badge">עמוד 23 מתוך 25 · עותק של מבחן פולסטאק מועד ג.pdf — Travel-SV</span>
+<h1>שאלה 1: React — Travel-SV</h1>
+<p>פולסטאק מועד ג — Travel-SV — כל השאלה מוצגת כאן בעמוד עצמאי: קודם נוסח מלא, אחר כך פירוק סעיפים, ואז פתרון בקוד עם הערות מרחפות.</p>
+<div class="single-actions"><a href="index.html">🏠 אינדקס כל השאלות</a><a href="willing-q3.html">← שאלה קודמת</a><a href="travel-q2.html">שאלה הבאה →</a><button onclick="window.print()">🖨 הדפס/שמור PDF</button><a class="report-link" href="qa-report.html">📊 דוח QA</a></div>
+</header><div class="qa-banner"><b>גרסת QA מתוקנת:</b> פירוק הסעיפים עודכן כך שכל סעיף אומר מה עושים, למה עושים ומה בודקים. שורות הקוד נעטפות ונגישות גם במקלדת.</div><div class="round2-banner" id="qa-round2"><b>סבב בדיקות 2:</b><ul><li>נבדקו שוב קישורים, עוגנים, CSS, ניווט בין 25 השאלות ומבנה HTML.</li><li>נוספו כפתורי העתקה לבלוקי קוד, קישור דילוג לנגישות, והסברי שורות גלויים גם בהדפסה/PDF.</li><li>נבדק שכל עמוד מכיל נוסח שאלה, פירוק סעיפים, ניתוח, פתרון מלא וטעויות נפוצות.</li></ul></div>
+<div class="round3-banner"><b>סבב בדיקות 3:</b> נבדק תוכן מול חומרי המבחן, נוספה טבלת כיסוי סעיף־סעיף, ונוסף סדר פתרון לפי קבצים: בלוקים קטנים → קובץ מלא → מעבר לקובץ הבא.</div>
+<div class="page-grid" id="main-content">
+<aside class="left-rail">
+<h2 class="rail-title">📚 כל השאלות</h2>
+<a class="rail-link" href="football-q1.html"><b>מבחן אימון — Football Club — שאלה 1</b><small>React — Football Club</small></a>
+<a class="rail-link" href="football-q2.html"><b>מבחן אימון — Football Club — שאלה 2</b><small>JavaScript — סכום לפי אורך מספר</small></a>
+<a class="rail-link" href="football-q3.html"><b>מבחן אימון — Football Club — שאלה 3</b><small>Express — שרת משחקי מחשב</small></a>
+<a class="rail-link" href="parking-q1.html"><b>מבחן חדש 2023 — SV Parking — שאלה 1</b><small>React — SV Parking</small></a>
+<a class="rail-link" href="parking-q2.html"><b>מבחן חדש 2023 — SV Parking — שאלה 2</b><small>JavaScript — רצפים שסכומם שווה למספר</small></a>
+<a class="rail-link" href="parking-q3.html"><b>מבחן חדש 2023 — SV Parking — שאלה 3</b><small>Server — DB של מורים</small></a>
+<a class="rail-link" href="flights-q1.html"><b>מבחן טיסות — Flight Control — שאלה 1</b><small>React — מערכת בקרת טיסות</small></a>
+<a class="rail-link" href="flights-q2.html"><b>מבחן טיסות — Flight Control — שאלה 2</b><small>JavaScript — ספירת מספרים במטריצה</small></a>
+<a class="rail-link" href="flights-q3.html"><b>מבחן טיסות — Flight Control — שאלה 3</b><small>Server — DB סטודנטים</small></a>
+<a class="rail-link" href="helpme-q1.html"><b>מועד א פולסטאק — HelpMe — שאלה 1</b><small>React — HelpMe</small></a>
+<a class="rail-link" href="helpme-q2.html"><b>מועד א פולסטאק — HelpMe — שאלה 2</b><small>JavaScript/Node package — זיהוי סדרה</small></a>
+<a class="rail-link" href="helpme-q3.html"><b>מועד א פולסטאק — HelpMe — שאלה 3</b><small>תאוריה — HTTP, MongoDB, React, functions</small></a>
+<a class="rail-link" href="bank-q1.html"><b>מועד ב Frontend — SV Bank — שאלה 1</b><small>React — SV Bank</small></a>
+<a class="rail-link" href="bank-q2.html"><b>מועד ב Frontend — SV Bank — שאלה 2</b><small>JavaScript — מיון ספרות ללא sort</small></a>
+<a class="rail-link" href="bank-q3.html"><b>מועד ב Frontend — SV Bank — שאלה 3</b><small>Express — שמירת טקסט לקובץ</small></a>
+<a class="rail-link" href="logistics-q1.html"><b>מבחן מחסן לוגיסטי — שאלה 1</b><small>React — Logistics Management</small></a>
+<a class="rail-link" href="logistics-q2.html"><b>מבחן מחסן לוגיסטי — שאלה 2</b><small>JavaScript — בינארי לדצימלי ואז פלינדרום</small></a>
+<a class="rail-link" href="currency-q1.html"><b>מבחן מחשבון המרה — שאלה 1</b><small>React — Currency Exchange</small></a>
+<a class="rail-link" href="currency-q2.html"><b>מבחן מחשבון המרה — שאלה 2</b><small>JavaScript — מיקום ערך בסדרת פיבונאצ׳י מותאמת</small></a>
+<a class="rail-link" href="willing-q1.html"><b>פולסטאק מועד ב 2022 — Willing App — שאלה 1</b><small>React — Willing App</small></a>
+<a class="rail-link" href="willing-q2.html"><b>פולסטאק מועד ב 2022 — Willing App — שאלה 2</b><small>JavaScript — ספירת זוגיים/אי זוגיים ייחודיים</small></a>
+<a class="rail-link" href="willing-q3.html"><b>פולסטאק מועד ב 2022 — Willing App — שאלה 3</b><small>Server — קורסים ב-MongoDB</small></a>
+<a class="rail-link current" href="travel-q1.html"><b>פולסטאק מועד ג — Travel-SV — שאלה 1</b><small>React — Travel-SV</small></a>
+<a class="rail-link" href="travel-q2.html"><b>פולסטאק מועד ג — Travel-SV — שאלה 2</b><small>JavaScript — האם מערך חלקי מופיע במערך שלם לפי סדר</small></a>
+<a class="rail-link" href="travel-q3.html"><b>פולסטאק מועד ג — Travel-SV — שאלה 3</b><small>Node package — מחלקת קובץ טקסט</small></a>
+</aside>
+<main>
+<section class="page-card">
+<div class="page-card-head"><h2>1. תמונת פתרון מהירה</h2></div>
+<div class="page-card-body">
+<div class="split-summary">
+<div class="summary-chip"><b>נושא</b><span>REACT</span></div>
+<div class="summary-chip"><b>מה צריך להגיש</b><span>פתרון עובד + קוד מסודר + ולידציות לפי נוסח השאלה.</span></div>
+<div class="summary-chip"><b>אסטרטגיית פתרון</b><span>1. לבנות data ראשוני לפי האובייקטים בשאלה. 2. להגדיר Routes לכל עמוד. 3. לבנות טפסים controlled. 4. לכתוב פונקציות ולידציה. 5. לבצע add/edit/delete בעזרת setState immutable. 6. לנווט רק אחרי פעולה תקינה.</span></div>
+</div>
+</div>
+</section>
+<section class="page-card">
+<div class="page-card-head"><h2>2. פירוק מלא לסעיפים ותתי סעיפים</h2></div>
+<div class="page-card-body"><div class="step-list"><div class="step-item"><b>מ ע ר כ ת ז ו מ א פ ש ר ת ל כ ל יוז ר ל ה כ נ ס ל ח ש ב ו ן ה א יש י ש ל ו ,ל ה וס יף מ ס ע ח ד ש ול ע ד כ ן מ ס ע ות</b><br/><span>מה צריך לעשות:</span> לתרגם את הדרישה לקוד ברור: קומפוננטה, state, פונקציה או route לפי ההקשר, בלי להוסיף לוגיקה שלא התבקשה.<br/><span>למה:</span> כך כל דרישה מקבלת מימוש ישיר שאפשר לבדוק ולתת עליו ניקוד.<br/><span>מה לוודא:</span> להריץ בדיקה אחת תקינה ובדיקה אחת שגויה, ולוודא שהתוצאה במסך/פלט תואמת לנוסח.</div><div class="step-item"><b>ב כ ל א ח ד מ ה ע מ וד ים ת מ יד יש כ ות ר ת ק ב וע ע ם ש ם ה א פ ל יק צ יה וב נ וס ף מ צ ד ש מ א ל יש נ ם 5</b><br/><span>מה צריך לעשות:</span> לתרגם את הדרישה לקוד ברור: קומפוננטה, state, פונקציה או route לפי ההקשר, בלי להוסיף לוגיקה שלא התבקשה.<br/><span>למה:</span> כך כל דרישה מקבלת מימוש ישיר שאפשר לבדוק ולתת עליו ניקוד.<br/><span>מה לוודא:</span> להריץ בדיקה אחת תקינה ובדיקה אחת שגויה, ולוודא שהתוצאה במסך/פלט תואמת לנוסח.</div><div class="step-item"><b>עמוד – SignIn</b><br/><span>מה צריך לעשות:</span> לחבר כל כפתור ל־handler: בדיקות → עדכון state/מערך → alert או navigate לפי התוצאה.<br/><span>למה:</span> סדר הפעולות מונע מצב שבו המשתמש עובר עמוד למרות שהטופס שגוי.<br/><span>מה לוודא:</span> ללחוץ עם נתונים תקינים ולא תקינים; לוודא שאין יצירה כפולה או ניווט בטעות.</div><div class="step-item"><b>ערוץ העמוד ’ – ‘/מציג 2אינפוטים וכפתור</b><br/><span>מה צריך לעשות:</span> להגדיר Route מדויק לפי הנתיב שבשאלה, ולקשר אליו בכפתור/Link או navigate רק לאחר תנאי מתאים.<br/><span>למה:</span> במבחן נתיב שגוי נחשב חוסר מימוש גם אם הקומפוננטה עצמה כתובה טוב.<br/><span>מה לוודא:</span> להקליד את הנתיב ידנית בדפדפן וללחוץ דרך הממשק; לבדוק שהעמוד הנכון נפתח ושאין מעבר מוקדם.</div><div class="step-item"><b>אינפוט .1יוזר – מקבל רק svcollege</b><br/><span>מה צריך לעשות:</span> לבנות שדה controlled: value מתוך state ו־onChange שמעדכן state; ב־select/checkbox לטפל בסוג הערך הנכון.<br/><span>למה:</span> בלי state מסודר אי אפשר לבצע ולידציה, שמירה ועריכה בצורה יציבה.<br/><span>מה לוודא:</span> להקליד, למחוק ולבחור ערכים; לוודא שהטופס משקף את state ולא נשאר ערך ישן.</div><div class="step-item"><b>אינפוט ,2ססמא – מקבל רק abcde</b><br/><span>מה צריך לעשות:</span> לבנות שדה controlled: value מתוך state ו־onChange שמעדכן state; ב־select/checkbox לטפל בסוג הערך הנכון.<br/><span>למה:</span> בלי state מסודר אי אפשר לבצע ולידציה, שמירה ועריכה בצורה יציבה.<br/><span>מה לוודא:</span> להקליד, למחוק ולבחור ערכים; לוודא שהטופס משקף את state ולא נשאר ערך ישן.</div><div class="step-item"><b>כפתור loginמוודא שהערכים תקינים ומכניס את היוזר למערכת ,במידה ושם המשתמש או</b><br/><span>מה צריך לעשות:</span> לחבר כל כפתור ל־handler: בדיקות → עדכון state/מערך → alert או navigate לפי התוצאה.<br/><span>למה:</span> סדר הפעולות מונע מצב שבו המשתמש עובר עמוד למרות שהטופס שגוי.<br/><span>מה לוודא:</span> ללחוץ עם נתונים תקינים ולא תקינים; לוודא שאין יצירה כפולה או ניווט בטעות.</div><div class="step-item"><b>במידה והפרטים נכונים ,האתר קופץ לערוץ ’ ‘/homeוהכפתור signinהופך למצב "לא</b><br/><span>מה צריך לעשות:</span> להגדיר Route מדויק לפי הנתיב שבשאלה, ולקשר אליו בכפתור/Link או navigate רק לאחר תנאי מתאים.<br/><span>למה:</span> במבחן נתיב שגוי נחשב חוסר מימוש גם אם הקומפוננטה עצמה כתובה טוב.<br/><span>מה לוודא:</span> להקליד את הנתיב ידנית בדפדפן וללחוץ דרך הממשק; לבדוק שהעמוד הנכון נפתח ושאין מעבר מוקדם.</div><div class="step-item"><b>ערוץ ’‘/home</b><br/><span>מה צריך לעשות:</span> להגדיר Route מדויק לפי הנתיב שבשאלה, ולקשר אליו בכפתור/Link או navigate רק לאחר תנאי מתאים.<br/><span>למה:</span> במבחן נתיב שגוי נחשב חוסר מימוש גם אם הקומפוננטה עצמה כתובה טוב.<br/><span>מה לוודא:</span> להקליד את הנתיב ידנית בדפדפן וללחוץ דרך הממשק; לבדוק שהעמוד הנכון נפתח ושאין מעבר מוקדם.</div><div class="step-item"><b>ש מ ות ה א נ ש ים ש ה צ ט ר פ ו ל מ ס ע – מ ע ר ך ש ל מ ח ר וז ות )ב כ ל ת א יש ש ם פ ר ט י ב ל ב ד ל ל א</b><br/><span>מה צריך לעשות:</span> לתרגם את הדרישה לקוד ברור: קומפוננטה, state, פונקציה או route לפי ההקשר, בלי להוסיף לוגיקה שלא התבקשה.<br/><span>למה:</span> כך כל דרישה מקבלת מימוש ישיר שאפשר לבדוק ולתת עליו ניקוד.<br/><span>מה לוודא:</span> להריץ בדיקה אחת תקינה ובדיקה אחת שגויה, ולוודא שהתוצאה במסך/פלט תואמת לנוסח.</div><div class="step-item"><b>עמוד .Add + Update</b><br/><span>מה צריך לעשות:</span> ליצור אובייקט חדש עם כל השדות הנדרשים ולהוסיף אותו למערך בעזרת spread: [...items, newItem].<br/><span>למה:</span> בריאקט אסור לדחוף ישירות למערך state; immutable update גורם לרינדור נכון.<br/><span>מה לוודא:</span> אחרי ההוספה לבדוק שהפריט מופיע, שהטופס מתאפס/מנווט, ושאין כפילות אסורה.</div><div class="step-item"><b>ערוץ ’ ‘/updateאו ’‘/add</b><br/><span>מה צריך לעשות:</span> להגדיר Route מדויק לפי הנתיב שבשאלה, ולקשר אליו בכפתור/Link או navigate רק לאחר תנאי מתאים.<br/><span>למה:</span> במבחן נתיב שגוי נחשב חוסר מימוש גם אם הקומפוננטה עצמה כתובה טוב.<br/><span>מה לוודא:</span> להקליד את הנתיב ידנית בדפדפן וללחוץ דרך הממשק; לבדוק שהעמוד הנכון נפתח ושאין מעבר מוקדם.</div><div class="step-item"><b>אלמנט "איזור" – במידה והמשתמש בחר אפשרות של הוספה ) (addהאלמנט ישאר אינפוט</b><br/><span>מה צריך לעשות:</span> לבנות שדה controlled: value מתוך state ו־onChange שמעדכן state; ב־select/checkbox לטפל בסוג הערך הנכון.<br/><span>למה:</span> בלי state מסודר אי אפשר לבצע ולידציה, שמירה ועריכה בצורה יציבה.<br/><span>מה לוודא:</span> להקליד, למחוק ולבחור ערכים; לוודא שהטופס משקף את state ולא נשאר ערך ישן.</div><div class="step-item"><b>טקסט .במידה ובחר בעדכון האלמנט ישתנה לרשימה ) (selectויציג את שמות האיזורים</b><br/><span>מה צריך לעשות:</span> לבנות שדה controlled: value מתוך state ו־onChange שמעדכן state; ב־select/checkbox לטפל בסוג הערך הנכון.<br/><span>למה:</span> בלי state מסודר אי אפשר לבצע ולידציה, שמירה ועריכה בצורה יציבה.<br/><span>מה לוודא:</span> להקליד, למחוק ולבחור ערכים; לוודא שהטופס משקף את state ולא נשאר ערך ישן.</div><div class="step-item"><b>.5כפתור "אישור" ישנה את שמו בהתאם לערוץ ).(update || add</b><br/><span>מה צריך לעשות:</span> להגדיר Route מדויק לפי הנתיב שבשאלה, ולקשר אליו בכפתור/Link או navigate רק לאחר תנאי מתאים.<br/><span>למה:</span> במבחן נתיב שגוי נחשב חוסר מימוש גם אם הקומפוננטה עצמה כתובה טוב.<br/><span>מה לוודא:</span> להקליד את הנתיב ידנית בדפדפן וללחוץ דרך הממשק; לבדוק שהעמוד הנכון נפתח ושאין מעבר מוקדם.</div><div class="step-item"><b>במידה והפעולה עברה בהצלחה יחזור המשתמש לעמוד .home</b><br/><span>מה צריך לעשות:</span> לתרגם את הדרישה לקוד ברור: קומפוננטה, state, פונקציה או route לפי ההקשר, בלי להוסיף לוגיקה שלא התבקשה.<br/><span>למה:</span> כך כל דרישה מקבלת מימוש ישיר שאפשר לבדוק ולתת עליו ניקוד.<br/><span>מה לוודא:</span> להריץ בדיקה אחת תקינה ובדיקה אחת שגויה, ולוודא שהתוצאה במסך/פלט תואמת לנוסח.</div><div class="step-item"><b>כפתור logoutינתק את המשתמש ויחזור אותו לעמוד .signin</b><br/><span>מה צריך לעשות:</span> לחבר כל כפתור ל־handler: בדיקות → עדכון state/מערך → alert או navigate לפי התוצאה.<br/><span>למה:</span> סדר הפעולות מונע מצב שבו המשתמש עובר עמוד למרות שהטופס שגוי.<br/><span>מה לוודא:</span> ללחוץ עם נתונים תקינים ולא תקינים; לוודא שאין יצירה כפולה או ניווט בטעות.</div></div></div>
+</section><section class="page-card qa-report-card"><div class="page-card-head"><h2>✅ QA ו־Debug — מה לוודא לפני שמגישים</h2></div><div class="page-card-body"><div class="qa-debug-grid"><div class="qa-debug-tile"><strong>1. נתיבים</strong><small>לפתוח ידנית כל route ולבדוק שאין מסך ריק.</small></div><div class="qa-debug-tile"><strong>2. ולידציות</strong><small>לבדוק תקין, ריק, קצר/ארוך וכפילות.</small></div><div class="qa-debug-tile"><strong>3. State</strong><small>לעדכן מערכים רק עם spread/map/filter.</small></div><div class="qa-debug-tile"><strong>4. תצוגה</strong><small>לבדוק שהרשימה מתעדכנת אחרי פעולה.</small></div><div class="qa-debug-tile"><strong>5. ניווט</strong><small>לעבור עמוד רק אחרי פעולה תקינה.</small></div><div class="qa-debug-tile"><strong>6. Console</strong><small>לוודא שאין שגיאות אדומות בדפדפן.</small></div></div></div></section>
+<section class="page-card">
+<div class="page-card-head"><h2>3. מפת קבצים / IDE</h2></div>
+<div class="page-card-body">
+<p>כאן רואים אילו בלוקים קטנים מרכיבים את הפתרון, ואז את הקובץ הגדול. במבחן כדאי לעבוד בדיוק בסדר הזה: קודם עוזרים, אחר כך state/routes, אחר כך פעולות, ובסוף JSX/תצוגה.</p>
+<div class="ide-files"><div class="ide-file">Login<small>בלוק קטן לפני הקובץ הגדול</small></div><div class="ide-file">אותה קומפוננטה<small>בלוק קטן לפני הקובץ הגדול</small></div><div class="ide-file">Partners<small>בלוק קטן לפני הקובץ הגדול</small></div><div class="ide-file">App.jsx<small>קובץ גדול מלא</small></div></div>
+</div>
+</section>
+<section class="round3-section" id="round3-content-check">
+  <div class="round3-head"><h2>🔎 סבב 3 — בדיקת תוכן, סעיפים וקבצים</h2></div>
+  <div class="round3-body">
+    <div class="round3-note"><b>נבדק מול חומר המקור:</b> פולסטאק מועד ג — Travel-SV, שאלה 1. כאן יש בדיקה מפורשת שהשאלה מפורקת לסעיפים ותתי־סעיפים, ושבפתרון עובדים לפי קובץ: בלוקים קטנים → קובץ מלא → מעבר לקובץ הבא.</div>
+    <h3>א. פירוק מדויק של כל הדרישות בשאלה</h3>
+    <table class="coverage-table"><thead><tr><th>#</th><th>סעיף</th><th>מה צריך לעשות</th><th>מה לוודא</th></tr></thead><tbody><tr><td><b>1</b></td><td>Layout</td><td>כותרת קבועה TRAVEL-SV ו־5 כפתורי ניווט בצד שמאל בכל עמוד; כפתורים לא לחיצים עד login מוצלח.</td><td>לבדוק ידנית במסך/console/route שהסעיף עובד בדיוק כמו שנכתב.</td></tr><tr><td><b>2</b></td><td>SignIn /</td><td>User Name רק svcollege, Password רק abcde, Login מאמת; שגוי alert; תקין ל־/home, SignIn disabled ושאר הכפתורים enabled.</td><td>לבדוק ידנית במסך/console/route שהסעיף עובד בדיוק כמו שנכתב.</td></tr><tr><td><b>3</b></td><td>Home /home</td><td>מציג את המסע האחרון שנכנס; חצים לדפדוף בין מסעות; שדות: area, description, days, partners.</td><td>לבדוק ידנית במסך/console/route שהסעיף עובד בדיוק כמו שנכתב.</td></tr><tr><td><b>4</b></td><td>Add/Update</td><td>אותה קומפוננטה עבור /add ו־/update; ב־add אזור הוא input, ב־update אזור select של אזורים קיימים.</td><td>לבדוק ידנית במסך/console/route שהסעיף עובד בדיוק כמו שנכתב.</td></tr><tr><td><b>5</b></td><td>Validations</td><td>Area באנגלית 2–100, description עד 200, days 1–100, partners עד 15 תווים וללא תווים מיוחדים, כפתור משנה שם add/update.</td><td>לבדוק ידנית במסך/console/route שהסעיף עובד בדיוק כמו שנכתב.</td></tr><tr><td><b>6</b></td><td>Logout/responsive</td><td>logout מנתק וחוזר ל־signin; האתר רספונסיבי למובייל.</td><td>לבדוק ידנית במסך/console/route שהסעיף עובד בדיוק כמו שנכתב.</td></tr></tbody></table>
+    <h3>ב. סדר כתיבת הקבצים — בדיוק לפי הבקשה שלך</h3>
+    <p>בכל קובץ מופיעים קודם בלוקים קטנים של קוד, אחר כך <b>הקובץ המלא</b>, ורק אחרי זה הערה מפורשת שעוברים לקובץ הבא.</p>
+    <article class="file-sequence">
+  <div class="file-seq-head"><h3>קובץ 1: <code>src/main.jsx</code></h3><span class="round3-audit-chip">בלוקים קטנים ← קובץ מלא</span></div>
+  <div class="file-seq-body">
+    <p><b>נושא:</b> Travel-SV. קודם קוראים את הבלוקים הקטנים, ואז מעתיקים/בודקים את הקובץ המלא.</p>
+    <div class="mini-block-grid"><div class="mini-block-card"><h4>בלוק 1: ייבוא React ו־ReactDOM</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">1</span><span class="src">// src/main.jsx</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">2</span><span class="src">// קובץ הכניסה הראשי של React.</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">// תפקידו להכניס את App לתוך div#root שנמצא ב-index.html.</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">4</span><span class="src">import React from &quot;react&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">5</span><span class="src">import ReactDOM from &quot;react-dom/client&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">6</span><span class="src">import App from &quot;./App.jsx&quot;;</span></div></div></div><div class="mini-block-card"><h4>בלוק 2: ייבוא App וקובץ CSS</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">1</span><span class="src">import React from &quot;react&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">2</span><span class="src">import ReactDOM from &quot;react-dom/client&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">3</span><span class="src">import App from &quot;./App.jsx&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">4</span><span class="src">import &quot;./App.css&quot;;</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">5</span><span class="src"></span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(</span></div></div></div><div class="mini-block-card"><h4>בלוק 3: render לתוך root</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">1</span><span class="src"></span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">2</span><span class="src">ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(</span></div><div class="code-line" tabindex="0" data-tip="JSX/HTML: אלמנט שמוצג למשתמש במסך."><span class="ln">3</span><span class="src">  &lt;React.StrictMode&gt;</span></div><div class="code-line" tabindex="0" data-tip="JSX/HTML: אלמנט שמוצג למשתמש במסך."><span class="ln">4</span><span class="src">    &lt;App /&gt;</span></div><div class="code-line" tabindex="0" data-tip="JSX/HTML: אלמנט שמוצג למשתמש במסך."><span class="ln">5</span><span class="src">  &lt;/React.StrictMode&gt;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">);</span></div></div></div></div>
+    <span class="full-file-label">📦 הקובץ המלא של src/main.jsx</span>
+    <div class="print-full-note">כל שורה כוללת הסבר במעבר עכבר/פוקוס. בהדפסה ההסברים מופיעים כטקסט מתחת לשורה.</div>
+    <div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">1</span><span class="src">// src/main.jsx</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">2</span><span class="src">// קובץ הכניסה הראשי של React.</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">// תפקידו להכניס את App לתוך div#root שנמצא ב-index.html.</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">4</span><span class="src">import React from &quot;react&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">5</span><span class="src">import ReactDOM from &quot;react-dom/client&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">6</span><span class="src">import App from &quot;./App.jsx&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">7</span><span class="src">import &quot;./App.css&quot;;</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">8</span><span class="src"></span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">9</span><span class="src">ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(</span></div><div class="code-line" tabindex="0" data-tip="JSX/HTML: אלמנט שמוצג למשתמש במסך."><span class="ln">10</span><span class="src">  &lt;React.StrictMode&gt;</span></div><div class="code-line" tabindex="0" data-tip="JSX/HTML: אלמנט שמוצג למשתמש במסך."><span class="ln">11</span><span class="src">    &lt;App /&gt;</span></div><div class="code-line" tabindex="0" data-tip="JSX/HTML: אלמנט שמוצג למשתמש במסך."><span class="ln">12</span><span class="src">  &lt;/React.StrictMode&gt;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">13</span><span class="src">);</span></div></div>
+    <div class="next-file-note">סיימנו את <code>src/main.jsx</code>. עכשיו עוברים לקובץ הבא, ורק אז ממשיכים בפתרון.</div>
+  </div>
+</article><article class="file-sequence">
+  <div class="file-seq-head"><h3>קובץ 2: <code>App.jsx</code></h3><span class="round3-audit-chip">בלוקים קטנים ← קובץ מלא</span></div>
+  <div class="file-seq-body">
+    <p><b>נושא:</b> Travel-SV. קודם קוראים את הבלוקים הקטנים, ואז מעתיקים/בודקים את הקובץ המלא.</p>
+    <div class="mini-block-grid"><div class="mini-block-card"><h4>בלוק 1: imports + data ראשוני</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">1</span><span class="src">import { useState } from &quot;react&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">2</span><span class="src">import { BrowserRouter, Routes, Route, useNavigate, useLocation } from &quot;react-router-dom&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">3</span><span class="src">import &quot;./style.css&quot;;</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">4</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">5</span><span class="src">const initialTrips = [</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">  { id: 1, area: &quot;Israel&quot;, description: &quot;Short family trip&quot;, days: 3, partners: [&quot;Dana&quot;, &quot;Ben&quot;] }</span></div></div></div><div class="mini-block-card"><h4>בלוק 2: ולידציות וטיפול בטפסים</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">1</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">2</span><span class="src">function SignIn({ setLogged }) {</span></div><div class="code-line" tabindex="0" data-tip="useState: שומר ערך משתנה וגורם ל־React לרנדר מחדש אחרי עדכון."><span class="ln">3</span><span class="src">  const [form, setForm] = useState({ username: &quot;&quot;, password: &quot;&quot; });</span></div><div class="code-line" tabindex="0" data-tip="ניווט: מעבר עמוד מתבצע רק אחרי בדיקה/פעולה תקינה."><span class="ln">4</span><span class="src">  const navigate = useNavigate();</span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">5</span><span class="src">  function login() {</span></div><div class="code-line" tabindex="0" data-tip="תנאי: עוצר פעולה שגויה או מפצל את הלוגיקה לפי מצב."><span class="ln">6</span><span class="src">    if (form.username !== &quot;svcollege&quot; || form.password !== &quot;abcde&quot;) return alert(&quot;One of the entered details is invalid&quot;);</span></div></div></div><div class="mini-block-card"><h4>בלוק 3: Routes, state ו־JSX מלא</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">1</span><span class="src">    &lt;textarea placeholder=&quot;Description&quot; value={form.description} onChange={e =&gt; setForm({ ...form, description: e.target.value })} /&gt;</span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">2</span><span class="src">    &lt;input placeholder=&quot;Days&quot; value={form.days} onChange={e =&gt; setForm({ ...form, days: e.target.value })} /&gt;</span></div><div class="code-line" tabindex="0" data-tip="map: יוצר מערך חדש; בריאקט משמש להצגת רשימות או לעדכון immutable."><span class="ln">3</span><span class="src">    {form.partners.map((p, i) =&gt; &lt;input key={i} placeholder=&quot;Partner&quot; value={p} onChange={e =&gt; changePartner(e.target.value, i)} /&gt;)}&lt;button onClick={addPartner}&gt;+&lt;/button&gt;&lt;button onClick={submit}&gt;{mode === &quot;add&quot; ? &quot;Add&quot; : &quot;Update&quot;}&lt;/button&gt;&lt;/Shell&gt;;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">4</span><span class="src">}</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">5</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="ייצוא: מאפשר לקובץ אחר לייבא את הפונקציה/הרכיב הזה."><span class="ln">6</span><span class="src">export default App;</span></div></div></div></div>
+    <span class="full-file-label">📦 הקובץ המלא של App.jsx</span>
+    <div class="print-full-note">כל שורה כוללת הסבר במעבר עכבר/פוקוס. בהדפסה ההסברים מופיעים כטקסט מתחת לשורה.</div>
+    <div class="round3-code"><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">1</span><span class="src">import { useState } from &quot;react&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">2</span><span class="src">import { BrowserRouter, Routes, Route, useNavigate, useLocation } from &quot;react-router-dom&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">3</span><span class="src">import &quot;./style.css&quot;;</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">4</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">5</span><span class="src">const initialTrips = [</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">  { id: 1, area: &quot;Israel&quot;, description: &quot;Short family trip&quot;, days: 3, partners: [&quot;Dana&quot;, &quot;Ben&quot;] }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">7</span><span class="src">];</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">8</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">9</span><span class="src">function validateTrip(trip) {</span></div><div class="code-line" tabindex="0" data-tip="תנאי: עוצר פעולה שגויה או מפצל את הלוגיקה לפי מצב."><span class="ln">10</span><span class="src">  if (!/^[A-Za-z]{2,100}$/.test(trip.area)) return &quot;Area must be English letters, 2-100 chars&quot;;</span></div><div class="code-line" tabindex="0" data-tip="תנאי: עוצר פעולה שגויה או מפצל את הלוגיקה לפי מצב."><span class="ln">11</span><span class="src">  if (!trip.description || trip.description.length &gt; 200) return &quot;Description must be up to 200 chars&quot;;</span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">12</span><span class="src">  const days = Number(trip.days);</span></div><div class="code-line" tabindex="0" data-tip="תנאי: עוצר פעולה שגויה או מפצל את הלוגיקה לפי מצב."><span class="ln">13</span><span class="src">  if (!Number.isInteger(days) || days &lt; 1 || days &gt; 100) return &quot;Days must be 1-100&quot;;</span></div><div class="code-line" tabindex="0" data-tip="תנאי: עוצר פעולה שגויה או מפצל את הלוגיקה לפי מצב."><span class="ln">14</span><span class="src">  if (trip.partners.some(p =&gt; !/^[A-Za-z]{1,15}$/.test(p))) return &quot;Partner names must be English letters up to 15 chars&quot;;</span></div><div class="code-line" tabindex="0" data-tip="return: מחזיר ערך מפונקציה או JSX מקומפוננטה."><span class="ln">15</span><span class="src">  return null;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">16</span><span class="src">}</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">17</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">18</span><span class="src">function App() {</span></div><div class="code-line" tabindex="0" data-tip="useState: שומר ערך משתנה וגורם ל־React לרנדר מחדש אחרי עדכון."><span class="ln">19</span><span class="src">  const [logged, setLogged] = useState(false);</span></div><div class="code-line" tabindex="0" data-tip="useState: שומר ערך משתנה וגורם ל־React לרנדר מחדש אחרי עדכון."><span class="ln">20</span><span class="src">  const [trips, setTrips] = useState(initialTrips);</span></div><div class="code-line" tabindex="0" data-tip="React Router: מגדיר איזה רכיב יופיע לפי הנתיב בדפדפן."><span class="ln">21</span><span class="src">  return &lt;BrowserRouter&gt;&lt;Routes&gt;</span></div><div class="code-line" tabindex="0" data-tip="React Router: מגדיר איזה רכיב יופיע לפי הנתיב בדפדפן."><span class="ln">22</span><span class="src">    &lt;Route path=&quot;/&quot; element={&lt;SignIn setLogged={setLogged} /&gt;} /&gt;</span></div><div class="code-line" tabindex="0" data-tip="React Router: מגדיר איזה רכיב יופיע לפי הנתיב בדפדפן."><span class="ln">23</span><span class="src">    &lt;Route path=&quot;/home&quot; element={&lt;Home logged={logged} setLogged={setLogged} trips={trips} /&gt;} /&gt;</span></div><div class="code-line" tabindex="0" data-tip="React Router: מגדיר איזה רכיב יופיע לפי הנתיב בדפדפן."><span class="ln">24</span><span class="src">    &lt;Route path=&quot;/add&quot; element={&lt;AddUpdate mode=&quot;add&quot; logged={logged} setLogged={setLogged} trips={trips} setTrips={setTrips} /&gt;} /&gt;</span></div><div class="code-line" tabindex="0" data-tip="React Router: מגדיר איזה רכיב יופיע לפי הנתיב בדפדפן."><span class="ln">25</span><span class="src">    &lt;Route path=&quot;/update&quot; element={&lt;AddUpdate mode=&quot;update&quot; logged={logged} setLogged={setLogged} trips={trips} setTrips={setTrips} /&gt;} /&gt;</span></div><div class="code-line" tabindex="0" data-tip="React Router: מגדיר איזה רכיב יופיע לפי הנתיב בדפדפן."><span class="ln">26</span><span class="src">  &lt;/Routes&gt;&lt;/BrowserRouter&gt;;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">27</span><span class="src">}</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">28</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">29</span><span class="src">function Shell({ logged, setLogged, children }) {</span></div><div class="code-line" tabindex="0" data-tip="ניווט: מעבר עמוד מתבצע רק אחרי בדיקה/פעולה תקינה."><span class="ln">30</span><span class="src">  const navigate = useNavigate();</span></div><div class="code-line" tabindex="0" data-tip="ניווט: מעבר עמוד מתבצע רק אחרי בדיקה/פעולה תקינה."><span class="ln">31</span><span class="src">  function go(path) { if (logged) navigate(path); }</span></div><div class="code-line" tabindex="0" data-tip="ניווט: מעבר עמוד מתבצע רק אחרי בדיקה/פעולה תקינה."><span class="ln">32</span><span class="src">  return &lt;main className=&quot;app&quot;&gt;&lt;h1&gt;TRAVEL-SV&lt;/h1&gt;&lt;aside&gt;&lt;button disabled={logged} onClick={() =&gt; navigate(&quot;/&quot;)}&gt;SignIn&lt;/button&gt;&lt;button disabled={!logged} onClick={() =&gt; go(&quot;/home&quot;)}&gt;Home&lt;/button&gt;&lt;button disabled={!logged} onClick={() =&gt; go(&quot;/add&quot;)}&gt;Add&lt;/button&gt;&lt;button disabled={!logged} onClick={() =&gt; go(&quot;/update&quot;)}&gt;Update&lt;/button&gt;&lt;button disabled={!logged} onClick={() =&gt; { setLogged(false); navigate(&quot;/&quot;); }}&gt;Logout&lt;/button&gt;&lt;/aside&gt;&lt;section&gt;{children}&lt;/section&gt;&lt;/main&gt;;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">33</span><span class="src">}</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">34</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">35</span><span class="src">function SignIn({ setLogged }) {</span></div><div class="code-line" tabindex="0" data-tip="useState: שומר ערך משתנה וגורם ל־React לרנדר מחדש אחרי עדכון."><span class="ln">36</span><span class="src">  const [form, setForm] = useState({ username: &quot;&quot;, password: &quot;&quot; });</span></div><div class="code-line" tabindex="0" data-tip="ניווט: מעבר עמוד מתבצע רק אחרי בדיקה/פעולה תקינה."><span class="ln">37</span><span class="src">  const navigate = useNavigate();</span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">38</span><span class="src">  function login() {</span></div><div class="code-line" tabindex="0" data-tip="תנאי: עוצר פעולה שגויה או מפצל את הלוגיקה לפי מצב."><span class="ln">39</span><span class="src">    if (form.username !== &quot;svcollege&quot; || form.password !== &quot;abcde&quot;) return alert(&quot;One of the entered details is invalid&quot;);</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">40</span><span class="src">    setLogged(true);</span></div><div class="code-line" tabindex="0" data-tip="ניווט: מעבר עמוד מתבצע רק אחרי בדיקה/פעולה תקינה."><span class="ln">41</span><span class="src">    navigate(&quot;/home&quot;);</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">42</span><span class="src">  }</span></div><div class="code-line" tabindex="0" data-tip="return: מחזיר ערך מפונקציה או JSX מקומפוננטה."><span class="ln">43</span><span class="src">  return &lt;Shell logged={false} setLogged={setLogged}&gt;&lt;input placeholder=&quot;User Name&quot; onChange={e =&gt; setForm({ ...form, username: e.target.value })} /&gt;&lt;input placeholder=&quot;Password&quot; type=&quot;password&quot; onChange={e =&gt; setForm({ ...form, password: e.target.value })} /&gt;&lt;button onClick={login}&gt;Login&lt;/button&gt;&lt;/Shell&gt;;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">44</span><span class="src">}</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">45</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">46</span><span class="src">function Home({ logged, setLogged, trips }) {</span></div><div class="code-line" tabindex="0" data-tip="useState: שומר ערך משתנה וגורם ל־React לרנדר מחדש אחרי עדכון."><span class="ln">47</span><span class="src">  const [index, setIndex] = useState(Math.max(0, trips.length - 1));</span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">48</span><span class="src">  const trip = trips[index];</span></div><div class="code-line" tabindex="0" data-tip="return: מחזיר ערך מפונקציה או JSX מקומפוננטה."><span class="ln">49</span><span class="src">  return &lt;Shell logged={logged} setLogged={setLogged}&gt;{trip ? &lt;article className=&quot;trip&quot;&gt;&lt;button onClick={() =&gt; setIndex((index - 1 + trips.length) % trips.length)}&gt;◀&lt;/button&gt;&lt;h2&gt;{trip.area}&lt;/h2&gt;&lt;p&gt;{trip.description}&lt;/p&gt;&lt;p&gt;{trip.days} days&lt;/p&gt;&lt;p&gt;{trip.partners.join(&quot;, &quot;)}&lt;/p&gt;&lt;button onClick={() =&gt; setIndex((index + 1) % trips.length)}&gt;▶&lt;/button&gt;&lt;/article&gt; : &lt;p&gt;No trips yet&lt;/p&gt;}&lt;/Shell&gt;;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">50</span><span class="src">}</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">51</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">52</span><span class="src">function AddUpdate({ mode, logged, setLogged, trips, setTrips }) {</span></div><div class="code-line" tabindex="0" data-tip="useState: שומר ערך משתנה וגורם ל־React לרנדר מחדש אחרי עדכון."><span class="ln">53</span><span class="src">  const [selectedId, setSelectedId] = useState(trips[0]?.id || &quot;&quot;);</span></div><div class="code-line" tabindex="0" data-tip="find: מחזיר את האיבר הראשון שמתאים לתנאי או undefined."><span class="ln">54</span><span class="src">  const selected = trips.find(t =&gt; t.id === Number(selectedId));</span></div><div class="code-line" tabindex="0" data-tip="useState: שומר ערך משתנה וגורם ל־React לרנדר מחדש אחרי עדכון."><span class="ln">55</span><span class="src">  const [form, setForm] = useState(mode === &quot;update&quot; &amp;&amp; selected ? selected : { area: &quot;&quot;, description: &quot;&quot;, days: &quot;&quot;, partners: [&quot;&quot;] });</span></div><div class="code-line" tabindex="0" data-tip="ניווט: מעבר עמוד מתבצע רק אחרי בדיקה/פעולה תקינה."><span class="ln">56</span><span class="src">  const navigate = useNavigate();</span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">57</span><span class="src">  function addPartner() { setForm({ ...form, partners: [...form.partners, &quot;&quot;] }); }</span></div><div class="code-line" tabindex="0" data-tip="map: יוצר מערך חדש; בריאקט משמש להצגת רשימות או לעדכון immutable."><span class="ln">58</span><span class="src">  function changePartner(value, i) { setForm({ ...form, partners: form.partners.map((p, idx) =&gt; idx === i ? value : p) }); }</span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">59</span><span class="src">  function submit() {</span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">60</span><span class="src">    const err = validateTrip(form);</span></div><div class="code-line" tabindex="0" data-tip="תנאי: עוצר פעולה שגויה או מפצל את הלוגיקה לפי מצב."><span class="ln">61</span><span class="src">    if (err) return alert(err);</span></div><div class="code-line" tabindex="0" data-tip="filter: מחזיר מערך חדש רק עם איברים שעברו תנאי."><span class="ln">62</span><span class="src">    const fixed = { ...form, id: form.id || Date.now(), days: Number(form.days), partners: form.partners.filter(Boolean) };</span></div><div class="code-line" tabindex="0" data-tip="map: יוצר מערך חדש; בריאקט משמש להצגת רשימות או לעדכון immutable."><span class="ln">63</span><span class="src">    setTrips(mode === &quot;add&quot; ? [...trips, fixed] : trips.map(t =&gt; t.id === fixed.id ? fixed : t));</span></div><div class="code-line" tabindex="0" data-tip="ניווט: מעבר עמוד מתבצע רק אחרי בדיקה/פעולה תקינה."><span class="ln">64</span><span class="src">    navigate(&quot;/home&quot;);</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">65</span><span class="src">  }</span></div><div class="code-line" tabindex="0" data-tip="map: יוצר מערך חדש; בריאקט משמש להצגת רשימות או לעדכון immutable."><span class="ln">66</span><span class="src">  return &lt;Shell logged={logged} setLogged={setLogged}&gt;{mode === &quot;update&quot; ? &lt;select value={selectedId} onChange={e =&gt; { const t = trips.find(x =&gt; x.id === Number(e.target.value)); setSelectedId(e.target.value); setForm(t); }}&gt;&lt;option value=&quot;&quot;&gt;Area&lt;/option&gt;{trips.map(t =&gt; &lt;option key={t.id} value={t.id}&gt;{t.area}&lt;/option&gt;)}&lt;/select&gt; : &lt;input placeholder=&quot;Area&quot; value={form.area} onChange={e =&gt; setForm({ ...form, area: e.target.value })} /&gt;}</span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">67</span><span class="src">    &lt;textarea placeholder=&quot;Description&quot; value={form.description} onChange={e =&gt; setForm({ ...form, description: e.target.value })} /&gt;</span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">68</span><span class="src">    &lt;input placeholder=&quot;Days&quot; value={form.days} onChange={e =&gt; setForm({ ...form, days: e.target.value })} /&gt;</span></div><div class="code-line" tabindex="0" data-tip="map: יוצר מערך חדש; בריאקט משמש להצגת רשימות או לעדכון immutable."><span class="ln">69</span><span class="src">    {form.partners.map((p, i) =&gt; &lt;input key={i} placeholder=&quot;Partner&quot; value={p} onChange={e =&gt; changePartner(e.target.value, i)} /&gt;)}&lt;button onClick={addPartner}&gt;+&lt;/button&gt;&lt;button onClick={submit}&gt;{mode === &quot;add&quot; ? &quot;Add&quot; : &quot;Update&quot;}&lt;/button&gt;&lt;/Shell&gt;;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">70</span><span class="src">}</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">71</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="ייצוא: מאפשר לקובץ אחר לייבא את הפונקציה/הרכיב הזה."><span class="ln">72</span><span class="src">export default App;</span></div></div>
+    <div class="next-file-note">סיימנו את <code>App.jsx</code>. עכשיו עוברים לקובץ הבא, ורק אז ממשיכים בפתרון.</div>
+  </div>
+</article><article class="file-sequence">
+  <div class="file-seq-head"><h3>קובץ 3: <code>src/App.css</code></h3><span class="round3-audit-chip">בלוקים קטנים ← קובץ מלא</span></div>
+  <div class="file-seq-body">
+    <p><b>נושא:</b> Travel-SV. קודם קוראים את הבלוקים הקטנים, ואז מעתיקים/בודקים את הקובץ המלא.</p>
+    <div class="mini-block-grid"><div class="mini-block-card"><h4>בלוק 1: איפוס ועיצוב בסיסי</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">1</span><span class="src">/* src/App.css */</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">2</span><span class="src">/* עיצוב בסיסי עבור Travel-SV. */</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">* { box-sizing: border-box; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">4</span><span class="src">body { margin: 0; font-family: Arial, sans-serif; background: #f3f4f6; color: #111827; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">5</span><span class="src">button, input, select, textarea { font: inherit; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">.page { min-height: 100vh; padding: 24px; }</span></div></div></div><div class="mini-block-card"><h4>בלוק 2: עיצוב form/card/panel</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">1</span><span class="src">.app-shell { max-width: 1100px; margin: 0 auto; display: grid; gap: 18px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">2</span><span class="src">.header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; background: white; border: 2px solid #111827; border-radius: 14px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">.nav { display: flex; flex-wrap: wrap; gap: 8px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">4</span><span class="src">.nav a, .nav button { padding: 10px 14px; border: 2px solid #111827; border-radius: 10px; background: white; cursor: pointer; text-decoration: none; color: #111827; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">5</span><span class="src">.panel { background: white; border: 2px solid #111827; border-radius: 16px; padding: 18px; box-shadow: 5px 5px 0 #111827; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">.form { display: grid; gap: 12px; max-width: 420px; margin: 0 auto; }</span></div></div></div><div class="mini-block-card"><h4>בלוק 3: רספונסיביות מובייל</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">1</span><span class="src">.form input, .form select, .form textarea { padding: 12px; border: 2px solid #111827; border-radius: 10px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">2</span><span class="src">.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">.card { background: #fff7ed; border: 2px solid #111827; border-radius: 14px; padding: 14px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">4</span><span class="src">.error { color: #dc2626; font-weight: 700; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">5</span><span class="src">.success { color: #16a34a; font-weight: 700; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">@media (max-width: 500px) { .page { padding: 12px; } .header { flex-direction: column; align-items: stretch; } .nav { justify-content: center; } }</span></div></div></div></div>
+    <span class="full-file-label">📦 הקובץ המלא של src/App.css</span>
+    <div class="print-full-note">כל שורה כוללת הסבר במעבר עכבר/פוקוס. בהדפסה ההסברים מופיעים כטקסט מתחת לשורה.</div>
+    <div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">1</span><span class="src">/* src/App.css */</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">2</span><span class="src">/* עיצוב בסיסי עבור Travel-SV. */</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">* { box-sizing: border-box; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">4</span><span class="src">body { margin: 0; font-family: Arial, sans-serif; background: #f3f4f6; color: #111827; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">5</span><span class="src">button, input, select, textarea { font: inherit; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">.page { min-height: 100vh; padding: 24px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">7</span><span class="src">.app-shell { max-width: 1100px; margin: 0 auto; display: grid; gap: 18px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">8</span><span class="src">.header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; background: white; border: 2px solid #111827; border-radius: 14px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">9</span><span class="src">.nav { display: flex; flex-wrap: wrap; gap: 8px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">10</span><span class="src">.nav a, .nav button { padding: 10px 14px; border: 2px solid #111827; border-radius: 10px; background: white; cursor: pointer; text-decoration: none; color: #111827; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">11</span><span class="src">.panel { background: white; border: 2px solid #111827; border-radius: 16px; padding: 18px; box-shadow: 5px 5px 0 #111827; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">12</span><span class="src">.form { display: grid; gap: 12px; max-width: 420px; margin: 0 auto; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">13</span><span class="src">.form input, .form select, .form textarea { padding: 12px; border: 2px solid #111827; border-radius: 10px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">14</span><span class="src">.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">15</span><span class="src">.card { background: #fff7ed; border: 2px solid #111827; border-radius: 14px; padding: 14px; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">16</span><span class="src">.error { color: #dc2626; font-weight: 700; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">17</span><span class="src">.success { color: #16a34a; font-weight: 700; }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">18</span><span class="src">@media (max-width: 500px) { .page { padding: 12px; } .header { flex-direction: column; align-items: stretch; } .nav { justify-content: center; } }</span></div></div>
+    
+  </div>
+</article>
+  </div>
+</section>
+<section class="question-card" id="travel-q1">
+<div class="q-header">
+<span class="q-number">שאלה 1</span>
+<h3>React — Travel-SV</h3>
+<span class="topic">react</span>
+</div>
+<div class="q-layout">
+<aside class="q-side">
+<div class="question-source">
+<h4>📜 השאלה במלואה</h4>
+<details open="">
+<summary>פתח/סגור את נוסח השאלה המקורי</summary>
+<pre class="raw-question">שאלה :1
+י ש ל י צ ו ר מ ע ר כ ת ל ב נ י י ת י ומ ן מ ס ע .
+א ת ה מ ע ר כ ת י ש ל ב נ ות ב א מ צ ע ות ר יא ק ט
+למערכת קוראים TRAVEL-SV
+מ ע ר כ ת ז ו מ א פ ש ר ת ל כ ל יוז ר ל ה כ נ ס ל ח ש ב ו ן ה א יש י ש ל ו ,ל ה וס יף מ ס ע ח ד ש ול ע ד כ ן מ ס ע ות
+ק י ימ י ם .
+ב כ ל א ח ד מ ה ע מ וד ים ת מ יד יש כ ות ר ת ק ב וע ע ם ש ם ה א פ ל יק צ יה וב נ וס ף מ צ ד ש מ א ל יש נ ם 5
+כ פ ת ו ר י ם ל נ י ו וט ב ת ו ך ה מ מ ש ק .
+כאשר מריצים את האתר אוטומטית נכנסים ל.SignIn
+* * כ ל ה כ פ ת ו ר ים מ צ ד ש מ א ל א י נ ם ל ח י צ י ם ע ד א ש ר ה מ ש ת מ ש ה ת ח ב ר ב ה צ ל ח ה ל מ ע ר כ ת
+עמוד – SignIn
+
+TRAVEL- SV
+SignIn
+Home User Name
+Add
+Update Password
+Logout
+Login
+
+--- עמוד חדש ---
+3
+
+ערוץ העמוד ’ – ‘/מציג 2אינפוטים וכפתור
+אינפוט .1יוזר – מקבל רק svcollege
+אינפוט ,2ססמא – מקבל רק abcde
+כפתור loginמוודא שהערכים תקינים ומכניס את היוזר למערכת ,במידה ושם המשתמש או
+הסיסמא אינם תקינים תקפוץ הודעת alertעם הודעה שאחד הפרטים שהוכנסו אינם
+ת ק ינ ים .
+במידה והפרטים נכונים ,האתר קופץ לערוץ ’ ‘/homeוהכפתור signinהופך למצב "לא
+ל ח י ץ " ו ש א ר ה כ פ ת ו ר י ם י ש ת נ ו ל מ צ ב " ל ח יץ " .
+עמוד .home
+
+TRAVEL- SV
+SignIn
+Home
+Add
+Update
+Logout
+
+ערוץ ’‘/home
+מ צ יג ח ל ו ן ב א מ צ ע ה ע מ וד ע ם ה " מ ס ע " ה א ח ר ו ן ש נ כ נ ס ל מ ע ר כ ת ,ל כ ל מ ס ע י ש כ ו ת ר ת ע ם
+ה פ ר ט ים ה ב א ים
+איזור המסע – מחרוזת באורך 2-10תווים
+תיאור המסע – מחרוזת עד 200תווים
+מספר ימים – 1-100
+ש מ ות ה א נ ש ים ש ה צ ט ר פ ו ל מ ס ע – מ ע ר ך ש ל מ ח ר וז ות )ב כ ל ת א יש ש ם פ ר ט י ב ל ב ד ל ל א
+ר ו וח ים א ו ת ו ו ים מ י וח ד ים (
+כ פ ת ו ר י ח צ י ם מ צ ד י ח ל ו ן ה מ ס ע ,מ א פ ש ר י ם ל ד פ ד ף ב י ן ה מ ס ע ו ת .ל ח י צ ה ע ל כ ל ח ץ ת צ יג א ת
+ה מ ס ע ה ב א ב ת ור
+
+--- עמוד חדש ---
+4
+
+עמוד .Add + Update
+
+TRAVEL- SV
+SignIn
+Area
+Home
+Add Decription
+Update
+Days
+Logout
+Partner +
+
+Add/Update
+
+ערוץ ’ ‘/updateאו ’‘/add
+ל ח יצ ה ע ל ע ד כ ו ן א ו ה וס פ ה ת ע ב יר א ת ה מ ש ת מ ש ל ע ר וץ ה מ ת א ים וה ת צ וג ה ש ל ה ע מ וד ים
+זה ה .
+* י ש ל ה ש ת מ ש ב א ות ה ק ומ פ ונ נ ט ה ב ש ב יל ש נ יה ם *
+ב ע מ וד ז ה י וכ ל ה מ ש ת מ ש ל ה וס י ף א ז ו ר ,ת יא ו ר ,ימ ים ,א נ ש ים ש ט י יל א ית ם ול א ש ר ע ד כ ו ן א ו
+ה וס פ ה
+אלמנט "איזור" – במידה והמשתמש בחר אפשרות של הוספה ) (addהאלמנט ישאר אינפוט
+טקסט .במידה ובחר בעדכון האלמנט ישתנה לרשימה ) (selectויציג את שמות האיזורים
+ש ק י ימ י ם ב מ ע ר ך ה מ ס ע ו ת .
+
+--- עמוד חדש ---
+5
+
+ול יד צ יה :
+י ש ל ו וד א א ת ה ד ב ר י ם ה ב א י ם :
+.1איזור יהיה בין 2-100תווים )אותיות באנגלית בלבד(
+.2תיאור יהיה כל מחרוזת עד 200תווים
+.3ימים יאפשר להזין רק מספרים בין 1-100
+.4שמות ,כל שם יהיה באורך של עד 15תווים ,ללא תוים מיוחדים ,יהיה ניתן להוסיף כמה
+א נ ש ים ב א מ צ ע ות כ פ ת ו ר ה +
+.5כפתור "אישור" ישנה את שמו בהתאם לערוץ ).(update || add
+ל ח יצ ה ע ל י ו ת ב צ ע א ת ה ול יד צ יה ות ז ר וק ש ג יא ה ב ה ת א ם
+במידה והפעולה עברה בהצלחה יחזור המשתמש לעמוד .home
+כפתור logoutינתק את המשתמש ויחזור אותו לעמוד .signin
+* ה א ת ר ח י יב ל ה י ו ת ר ס פ ונ ס יב י ל מ וב י יל
+
+--- עמוד חדש ---
+6</pre>
+</details>
+<h4>🔢 פירוק השאלה לתתי־משימות</h4>
+<ol class="subtasks"><li>* * כ ל ה כ פ ת ו ר ים מ צ ד ש מ א ל א י נ ם ל ח י צ י ם ע ד א ש ר ה מ ש ת מ ש ה ת ח ב ר ב ה צ ל ח ה ל מ ע ר כ ת</li><li>עמוד – SignIn</li><li>--- עמוד חדש ---</li><li>ערוץ העמוד ’ – ‘/מציג 2אינפוטים וכפתור</li><li>אינפוט .1יוזר – מקבל רק svcollege</li><li>אינפוט ,2ססמא – מקבל רק abcde</li><li>כפתור loginמוודא שהערכים תקינים ומכניס את היוזר למערכת ,במידה ושם המשתמש או</li><li>במידה והפרטים נכונים ,האתר קופץ לערוץ ’ ‘/homeוהכפתור signinהופך למצב "לא</li><li>עמוד .home</li><li>ערוץ ’‘/home</li><li>עמוד .Add + Update</li><li>ערוץ ’ ‘/updateאו ’‘/add</li><li>* י ש ל ה ש ת מ ש ב א ות ה ק ומ פ ונ נ ט ה ב ש ב יל ש נ יה ם *</li><li>אלמנט "איזור" – במידה והמשתמש בחר אפשרות של הוספה ) (addהאלמנט ישאר אינפוט</li><li>.1איזור יהיה בין 2-100תווים )אותיות באנגלית בלבד(</li><li>.2תיאור יהיה כל מחרוזת עד 200תווים</li><li>.3ימים יאפשר להזין רק מספרים בין 1-100</li><li>.4שמות ,כל שם יהיה באורך של עד 15תווים ,ללא תוים מיוחדים ,יהיה ניתן להוסיף כמה</li><li>.5כפתור "אישור" ישנה את שמו בהתאם לערוץ ).(update || add</li><li>במידה והפעולה עברה בהצלחה יחזור המשתמש לעמוד .home</li><li>כפתור logoutינתק את המשתמש ויחזור אותו לעמוד .signin</li><li>* ה א ת ר ח י יב ל ה י ו ת ר ס פ ונ ס יב י ל מ וב י יל</li></ol>
+</div>
+</aside>
+<main class="q-main">
+<div class="summary-box"><b>תקציר פתרון:</b> SignIn עם svcollege/abcde, Home עם דפדוף במסעות, Add/Update באותה קומפוננטה, logout.</div>
+<h4>🧠 ניתוח סעיף־סעיף בעברית</h4>
+<table class="analysis-table"><thead><tr><th>#</th><th>נושא</th><th>מה צריך לעשות</th><th>למה</th><th>מה לוודא</th></tr></thead><tbody><tr><td><b>1</b></td><td>מודל נתונים</td><td>להגדיר מערך התחלתי ואובייקט מרכזי לפי השאלה</td><td>כי כל הפתרון נשען על מבנה נתונים נכון; אם האובייקט לא נכון, כל הקוד אחריו מסתבך.</td><td>כל שדה מהאפיון קיים ושמות באנגלית</td></tr><tr><td><b>2</b></td><td>Routes</td><td>להגדיר נתיב לכל עמוד עם react-router-dom</td><td>כי המבחן בודק מעבר נכון בין עמודים ולא רק הצגת מסך אחד.</td><td>כל כפתור מוביל לנתיב הנכון</td></tr><tr><td><b>3</b></td><td>State</td><td>לשמור משתמשים/רשימות/טופס ב-useState</td><td>כדי לפרק את הדרישה לחלק קטן שאפשר לבדוק בדיבוג ולא להילחץ מכל השאלה בבת אחת.</td><td>לא משנים מערך ישירות; משתמשים ב-spread/filter/map</td></tr><tr><td><b>4</b></td><td>Validation</td><td>לפני כל הוספה/עדכון לבדוק את כל התנאים</td><td>כדי לפרק את הדרישה לחלק קטן שאפשר לבדוק בדיבוג ולא להילחץ מכל השאלה בבת אחת.</td><td>בכשל יש alert או הודעת שגיאה לפי הדרישה</td></tr><tr><td><b>5</b></td><td>Debug</td><td>לבדוק בתרחיש טוב ובתרחיש שגוי</td><td>כדי לפרק את הדרישה לחלק קטן שאפשר לבדוק בדיבוג ולא להילחץ מכל השאלה בבת אחת.</td><td>אין שגיאות console והעמוד הנכון נפתח</td></tr></tbody></table>
+<h4>🧭 תרשים זרימת פתרון</h4>
+<div class="flow"><div class="flow-step"><b>1</b><span>המשתמש לוחץ/מקליד</span><small>אירוע onClick/onChange מתחיל</small></div><div class="flow-step"><b>2</b><span>state מתעדכן</span><small>setState/useState מחזיק את הערך</small></div><div class="flow-step"><b>3</b><span>ולידציה</span><small>אם קלט לא תקין — alert/שגיאה ועוצרים</small></div><div class="flow-step"><b>4</b><span>פעולה על מערך</span><small>map/filter/spread בלי mutation</small></div><div class="flow-step"><b>5</b><span>ניווט/רינדור</span><small>useNavigate או render מחדש</small></div></div>
+<h4>🔍 ניתוח בקוד — דרישה מול מימוש</h4>
+<table class="analysis-table code-map"><thead><tr><th>#</th><th>דרישה מהשאלה</th><th>איפה זה מופיע בקוד</th><th>מה לבדוק בדיבאג</th></tr></thead><tbody><tr><td><b>1</b></td><td>Login<br/><small>רק svcollege + abcde.</small></td><td><code>if (username !== "svcollege" || password !== "abcde") alert(...)</code></td><td>בדקו ב-React DevTools שה-state משתנה, שהניווט נכון, ושאין שינוי ישיר למערך.</td></tr><tr><td><b>2</b></td><td>אותה קומפוננטה<br/><small>mode add/update משנה תצוגת Area.</small></td><td><code>mode === "update" ? &lt;select&gt; : &lt;input&gt;</code></td><td>בדקו ב-React DevTools שה-state משתנה, שהניווט נכון, ושאין שינוי ישיר למערך.</td></tr><tr><td><b>3</b></td><td>Partners<br/><small>כפתור + מוסיף שדה שם.</small></td><td><code>partners: [...partners, ""]</code></td><td>בדקו ב-React DevTools שה-state משתנה, שהניווט נכון, ושאין שינוי ישיר למערך.</td></tr></tbody></table>
+<h4>🧩 פירוק הפתרון לבלוקים קטנים של קוד</h4>
+<div class="mini-code-block"><h5>Login</h5><p>רק svcollege + abcde.</p><div class="annotated-code"><div class="code-title">בלוק קטן <small>רחפו על שורה כדי לראות הסבר</small><button type="button" class="copy-code" aria-label="העתק את בלוק הקוד">📋 העתק בלוק</button></div><div class="code-lines"><div aria-label="הסבר לשורת קוד 1" class="code-line" data-tip="תנאי: בודקים האם משהו נכון. אם כן, מבצעים את הבלוק שבתוך התנאי." role="button" tabindex="0"><span class="ln">1</span><span class="src">if (username !== "svcollege" || password !== "abcde") alert(...)</span></div></div></div></div><div class="mini-code-block"><h5>אותה קומפוננטה</h5><p>mode add/update משנה תצוגת Area.</p><div class="annotated-code"><div class="code-title">בלוק קטן <small>רחפו על שורה כדי לראות הסבר</small><button type="button" class="copy-code" aria-label="העתק את בלוק הקוד">📋 העתק בלוק</button></div><div class="code-lines"><div aria-label="הסבר לשורת קוד 1" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">1</span><span class="src">mode === "update" ? &lt;select&gt; : &lt;input&gt;</span></div></div></div></div><div class="mini-code-block"><h5>Partners</h5><p>כפתור + מוסיף שדה שם.</p><div class="annotated-code"><div class="code-title">בלוק קטן <small>רחפו על שורה כדי לראות הסבר</small><button type="button" class="copy-code" aria-label="העתק את בלוק הקוד">📋 העתק בלוק</button></div><div class="code-lines"><div aria-label="הסבר לשורת קוד 1" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">1</span><span class="src">partners: [...partners, ""]</span></div></div></div></div>
+<h4>📦 הקובץ הגדול המלא</h4>
+<div class="print-notes-hint">טיפ: בהדפסה / שמירה ל־PDF הסברי השורות יופיעו מתחת לכל שורה, כדי שלא יהיו תלויים רק ב־hover.</div><div class="full-file"><div class="full-file-head"><span>App.jsx</span><small>הקובץ הגדול המלא — עם הערות מרחפות לכל שורה</small></div><div class="annotated-code"><div class="code-title">App.jsx <small>רחפו על שורה כדי לראות הסבר</small><button type="button" class="copy-code" aria-label="העתק את בלוק הקוד">📋 העתק בלוק</button></div><div class="code-lines"><div aria-label="הסבר לשורת קוד 1" class="code-line" data-tip="ייבוא: מביאים ספרייה, קומפוננטה או פונקציה מקובץ אחר כדי להשתמש בה כאן." role="button" tabindex="0"><span class="ln">1</span><span class="src">import { useState } from "react";</span></div><div aria-label="הסבר לשורת קוד 2" class="code-line" data-tip="ייבוא: מביאים ספרייה, קומפוננטה או פונקציה מקובץ אחר כדי להשתמש בה כאן." role="button" tabindex="0"><span class="ln">2</span><span class="src">import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";</span></div><div aria-label="הסבר לשורת קוד 3" class="code-line" data-tip="ייבוא: מביאים ספרייה, קומפוננטה או פונקציה מקובץ אחר כדי להשתמש בה כאן." role="button" tabindex="0"><span class="ln">3</span><span class="src">import "./style.css";</span></div><div aria-label="הסבר לשורת קוד 4" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">4</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 5" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">5</span><span class="src">const initialTrips = [</span></div><div aria-label="הסבר לשורת קוד 6" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">6</span><span class="src">  { id: 1, area: "Israel", description: "Short family trip", days: 3, partners: ["Dana", "Ben"] }</span></div><div aria-label="הסבר לשורת קוד 7" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">7</span><span class="src">];</span></div><div aria-label="הסבר לשורת קוד 8" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">8</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 9" class="code-line" data-tip="פונקציה: בלוק קוד עם שם, שמקבל פרמטרים ומבצע פעולה ממוקדת." role="button" tabindex="0"><span class="ln">9</span><span class="src">function validateTrip(trip) {</span></div><div aria-label="הסבר לשורת קוד 10" class="code-line" data-tip="תנאי: בודקים האם משהו נכון. אם כן, מבצעים את הבלוק שבתוך התנאי." role="button" tabindex="0"><span class="ln">10</span><span class="src">  if (!/^[A-Za-z]{2,100}$/.test(trip.area)) return "Area must be English letters, 2-100 chars";</span></div><div aria-label="הסבר לשורת קוד 11" class="code-line" data-tip="תנאי: בודקים האם משהו נכון. אם כן, מבצעים את הבלוק שבתוך התנאי." role="button" tabindex="0"><span class="ln">11</span><span class="src">  if (!trip.description || trip.description.length &gt; 200) return "Description must be up to 200 chars";</span></div><div aria-label="הסבר לשורת קוד 12" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">12</span><span class="src">  const days = Number(trip.days);</span></div><div aria-label="הסבר לשורת קוד 13" class="code-line" data-tip="תנאי: בודקים האם משהו נכון. אם כן, מבצעים את הבלוק שבתוך התנאי." role="button" tabindex="0"><span class="ln">13</span><span class="src">  if (!Number.isInteger(days) || days &lt; 1 || days &gt; 100) return "Days must be 1-100";</span></div><div aria-label="הסבר לשורת קוד 14" class="code-line" data-tip="תנאי: בודקים האם משהו נכון. אם כן, מבצעים את הבלוק שבתוך התנאי." role="button" tabindex="0"><span class="ln">14</span><span class="src">  if (trip.partners.some(p =&gt; !/^[A-Za-z]{1,15}$/.test(p))) return "Partner names must be English letters up to 15 chars";</span></div><div aria-label="הסבר לשורת קוד 15" class="code-line" data-tip="return: מחזיר ערך מהפונקציה או JSX מהרכיב." role="button" tabindex="0"><span class="ln">15</span><span class="src">  return null;</span></div><div aria-label="הסבר לשורת קוד 16" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">16</span><span class="src">}</span></div><div aria-label="הסבר לשורת קוד 17" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">17</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 18" class="code-line" data-tip="פונקציה: בלוק קוד עם שם, שמקבל פרמטרים ומבצע פעולה ממוקדת." role="button" tabindex="0"><span class="ln">18</span><span class="src">function App() {</span></div><div aria-label="הסבר לשורת קוד 19" class="code-line" data-tip="useState: יוצר state. הערך הראשון הוא הנתון, הערך השני הוא פונקציה לעדכון הנתון ורינדור מחדש." role="button" tabindex="0"><span class="ln">19</span><span class="src">  const [logged, setLogged] = useState(false);</span></div><div aria-label="הסבר לשורת קוד 20" class="code-line" data-tip="useState: יוצר state. הערך הראשון הוא הנתון, הערך השני הוא פונקציה לעדכון הנתון ורינדור מחדש." role="button" tabindex="0"><span class="ln">20</span><span class="src">  const [trips, setTrips] = useState(initialTrips);</span></div><div aria-label="הסבר לשורת קוד 21" class="code-line" data-tip="React Router: מגדיר איזה קומפוננטה מוצגת לפי הכתובת בדפדפן." role="button" tabindex="0"><span class="ln">21</span><span class="src">  return &lt;BrowserRouter&gt;&lt;Routes&gt;</span></div><div aria-label="הסבר לשורת קוד 22" class="code-line" data-tip="React Router: מגדיר איזה קומפוננטה מוצגת לפי הכתובת בדפדפן." role="button" tabindex="0"><span class="ln">22</span><span class="src">    &lt;Route path="/" element={&lt;SignIn setLogged={setLogged} /&gt;} /&gt;</span></div><div aria-label="הסבר לשורת קוד 23" class="code-line" data-tip="React Router: מגדיר איזה קומפוננטה מוצגת לפי הכתובת בדפדפן." role="button" tabindex="0"><span class="ln">23</span><span class="src">    &lt;Route path="/home" element={&lt;Home logged={logged} setLogged={setLogged} trips={trips} /&gt;} /&gt;</span></div><div aria-label="הסבר לשורת קוד 24" class="code-line" data-tip="React Router: מגדיר איזה קומפוננטה מוצגת לפי הכתובת בדפדפן." role="button" tabindex="0"><span class="ln">24</span><span class="src">    &lt;Route path="/add" element={&lt;AddUpdate mode="add" logged={logged} setLogged={setLogged} trips={trips} setTrips={setTrips} /&gt;} /&gt;</span></div><div aria-label="הסבר לשורת קוד 25" class="code-line" data-tip="React Router: מגדיר איזה קומפוננטה מוצגת לפי הכתובת בדפדפן." role="button" tabindex="0"><span class="ln">25</span><span class="src">    &lt;Route path="/update" element={&lt;AddUpdate mode="update" logged={logged} setLogged={setLogged} trips={trips} setTrips={setTrips} /&gt;} /&gt;</span></div><div aria-label="הסבר לשורת קוד 26" class="code-line" data-tip="React Router: מגדיר איזה קומפוננטה מוצגת לפי הכתובת בדפדפן." role="button" tabindex="0"><span class="ln">26</span><span class="src">  &lt;/Routes&gt;&lt;/BrowserRouter&gt;;</span></div><div aria-label="הסבר לשורת קוד 27" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">27</span><span class="src">}</span></div><div aria-label="הסבר לשורת קוד 28" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">28</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 29" class="code-line" data-tip="פונקציה: בלוק קוד עם שם, שמקבל פרמטרים ומבצע פעולה ממוקדת." role="button" tabindex="0"><span class="ln">29</span><span class="src">function Shell({ logged, setLogged, children }) {</span></div><div aria-label="הסבר לשורת קוד 30" class="code-line" data-tip="ניווט: מעביר את המשתמש לערוץ אחר רק אחרי תנאי/פעולה מתאימה." role="button" tabindex="0"><span class="ln">30</span><span class="src">  const navigate = useNavigate();</span></div><div aria-label="הסבר לשורת קוד 31" class="code-line" data-tip="ניווט: מעביר את המשתמש לערוץ אחר רק אחרי תנאי/פעולה מתאימה." role="button" tabindex="0"><span class="ln">31</span><span class="src">  function go(path) { if (logged) navigate(path); }</span></div><div aria-label="הסבר לשורת קוד 32" class="code-line" data-tip="ניווט: מעביר את המשתמש לערוץ אחר רק אחרי תנאי/פעולה מתאימה." role="button" tabindex="0"><span class="ln">32</span><span class="src">  return &lt;main className="app"&gt;&lt;h1&gt;TRAVEL-SV&lt;/h1&gt;&lt;aside&gt;&lt;button disabled={logged} onClick={() =&gt; navigate("/")}&gt;SignIn&lt;/button&gt;&lt;button disabled={!logged} onClick={() =&gt; go("/home")}&gt;Home&lt;/button&gt;&lt;button disabled={!logged} onClick={() =&gt; go("/add")}&gt;Add&lt;/button&gt;&lt;button disabled={!logged} onClick={() =&gt; go("/update")}&gt;Update&lt;/button&gt;&lt;button disabled={!logged} onClick={() =&gt; { setLogged(false); navigate("/"); }}&gt;Logout&lt;/button&gt;&lt;/aside&gt;&lt;section&gt;{children}&lt;/section&gt;&lt;/main&gt;;</span></div><div aria-label="הסבר לשורת קוד 33" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">33</span><span class="src">}</span></div><div aria-label="הסבר לשורת קוד 34" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">34</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 35" class="code-line" data-tip="פונקציה: בלוק קוד עם שם, שמקבל פרמטרים ומבצע פעולה ממוקדת." role="button" tabindex="0"><span class="ln">35</span><span class="src">function SignIn({ setLogged }) {</span></div><div aria-label="הסבר לשורת קוד 36" class="code-line" data-tip="useState: יוצר state. הערך הראשון הוא הנתון, הערך השני הוא פונקציה לעדכון הנתון ורינדור מחדש." role="button" tabindex="0"><span class="ln">36</span><span class="src">  const [form, setForm] = useState({ username: "", password: "" });</span></div><div aria-label="הסבר לשורת קוד 37" class="code-line" data-tip="ניווט: מעביר את המשתמש לערוץ אחר רק אחרי תנאי/פעולה מתאימה." role="button" tabindex="0"><span class="ln">37</span><span class="src">  const navigate = useNavigate();</span></div><div aria-label="הסבר לשורת קוד 38" class="code-line" data-tip="פונקציה: בלוק קוד עם שם, שמקבל פרמטרים ומבצע פעולה ממוקדת." role="button" tabindex="0"><span class="ln">38</span><span class="src">  function login() {</span></div><div aria-label="הסבר לשורת קוד 39" class="code-line" data-tip="תנאי: בודקים האם משהו נכון. אם כן, מבצעים את הבלוק שבתוך התנאי." role="button" tabindex="0"><span class="ln">39</span><span class="src">    if (form.username !== "svcollege" || form.password !== "abcde") return alert("One of the entered details is invalid");</span></div><div aria-label="הסבר לשורת קוד 40" class="code-line" data-tip="עדכון state/ערך: משנים מידע בצורה שמאפשרת לממשק להתעדכן." role="button" tabindex="0"><span class="ln">40</span><span class="src">    setLogged(true);</span></div><div aria-label="הסבר לשורת קוד 41" class="code-line" data-tip="ניווט: מעביר את המשתמש לערוץ אחר רק אחרי תנאי/פעולה מתאימה." role="button" tabindex="0"><span class="ln">41</span><span class="src">    navigate("/home");</span></div><div aria-label="הסבר לשורת קוד 42" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">42</span><span class="src">  }</span></div><div aria-label="הסבר לשורת קוד 43" class="code-line" data-tip="עדכון state/ערך: משנים מידע בצורה שמאפשרת לממשק להתעדכן." role="button" tabindex="0"><span class="ln">43</span><span class="src">  return &lt;Shell logged={false} setLogged={setLogged}&gt;&lt;input placeholder="User Name" onChange={e =&gt; setForm({ ...form, username: e.target.value })} /&gt;&lt;input placeholder="Password" type="password" onChange={e =&gt; setForm({ ...form, password: e.target.value })} /&gt;&lt;button onClick={login}&gt;Login&lt;/button&gt;&lt;/Shell&gt;;</span></div><div aria-label="הסבר לשורת קוד 44" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">44</span><span class="src">}</span></div><div aria-label="הסבר לשורת קוד 45" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">45</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 46" class="code-line" data-tip="פונקציה: בלוק קוד עם שם, שמקבל פרמטרים ומבצע פעולה ממוקדת." role="button" tabindex="0"><span class="ln">46</span><span class="src">function Home({ logged, setLogged, trips }) {</span></div><div aria-label="הסבר לשורת קוד 47" class="code-line" data-tip="useState: יוצר state. הערך הראשון הוא הנתון, הערך השני הוא פונקציה לעדכון הנתון ורינדור מחדש." role="button" tabindex="0"><span class="ln">47</span><span class="src">  const [index, setIndex] = useState(Math.max(0, trips.length - 1));</span></div><div aria-label="הסבר לשורת קוד 48" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">48</span><span class="src">  const trip = trips[index];</span></div><div aria-label="הסבר לשורת קוד 49" class="code-line" data-tip="עדכון state/ערך: משנים מידע בצורה שמאפשרת לממשק להתעדכן." role="button" tabindex="0"><span class="ln">49</span><span class="src">  return &lt;Shell logged={logged} setLogged={setLogged}&gt;{trip ? &lt;article className="trip"&gt;&lt;button onClick={() =&gt; setIndex((index - 1 + trips.length) % trips.length)}&gt;◀&lt;/button&gt;&lt;h2&gt;{trip.area}&lt;/h2&gt;&lt;p&gt;{trip.description}&lt;/p&gt;&lt;p&gt;{trip.days} days&lt;/p&gt;&lt;p&gt;{trip.partners.join(", ")}&lt;/p&gt;&lt;button onClick={() =&gt; setIndex((index + 1) % trips.length)}&gt;▶&lt;/button&gt;&lt;/article&gt; : &lt;p&gt;No trips yet&lt;/p&gt;}&lt;/Shell&gt;;</span></div><div aria-label="הסבר לשורת קוד 50" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">50</span><span class="src">}</span></div><div aria-label="הסבר לשורת קוד 51" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">51</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 52" class="code-line" data-tip="פונקציה: בלוק קוד עם שם, שמקבל פרמטרים ומבצע פעולה ממוקדת." role="button" tabindex="0"><span class="ln">52</span><span class="src">function AddUpdate({ mode, logged, setLogged, trips, setTrips }) {</span></div><div aria-label="הסבר לשורת קוד 53" class="code-line" data-tip="useState: יוצר state. הערך הראשון הוא הנתון, הערך השני הוא פונקציה לעדכון הנתון ורינדור מחדש." role="button" tabindex="0"><span class="ln">53</span><span class="src">  const [selectedId, setSelectedId] = useState(trips[0]?.id || "");</span></div><div aria-label="הסבר לשורת קוד 54" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">54</span><span class="src">  const selected = trips.find(t =&gt; t.id === Number(selectedId));</span></div><div aria-label="הסבר לשורת קוד 55" class="code-line" data-tip="useState: יוצר state. הערך הראשון הוא הנתון, הערך השני הוא פונקציה לעדכון הנתון ורינדור מחדש." role="button" tabindex="0"><span class="ln">55</span><span class="src">  const [form, setForm] = useState(mode === "update" &amp;&amp; selected ? selected : { area: "", description: "", days: "", partners: [""] });</span></div><div aria-label="הסבר לשורת קוד 56" class="code-line" data-tip="ניווט: מעביר את המשתמש לערוץ אחר רק אחרי תנאי/פעולה מתאימה." role="button" tabindex="0"><span class="ln">56</span><span class="src">  const navigate = useNavigate();</span></div><div aria-label="הסבר לשורת קוד 57" class="code-line" data-tip="פונקציה: בלוק קוד עם שם, שמקבל פרמטרים ומבצע פעולה ממוקדת." role="button" tabindex="0"><span class="ln">57</span><span class="src">  function addPartner() { setForm({ ...form, partners: [...form.partners, ""] }); }</span></div><div aria-label="הסבר לשורת קוד 58" class="code-line" data-tip="פונקציה: בלוק קוד עם שם, שמקבל פרמטרים ומבצע פעולה ממוקדת." role="button" tabindex="0"><span class="ln">58</span><span class="src">  function changePartner(value, i) { setForm({ ...form, partners: form.partners.map((p, idx) =&gt; idx === i ? value : p) }); }</span></div><div aria-label="הסבר לשורת קוד 59" class="code-line" data-tip="פונקציה: בלוק קוד עם שם, שמקבל פרמטרים ומבצע פעולה ממוקדת." role="button" tabindex="0"><span class="ln">59</span><span class="src">  function submit() {</span></div><div aria-label="הסבר לשורת קוד 60" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">60</span><span class="src">    const err = validateTrip(form);</span></div><div aria-label="הסבר לשורת קוד 61" class="code-line" data-tip="תנאי: בודקים האם משהו נכון. אם כן, מבצעים את הבלוק שבתוך התנאי." role="button" tabindex="0"><span class="ln">61</span><span class="src">    if (err) return alert(err);</span></div><div aria-label="הסבר לשורת קוד 62" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">62</span><span class="src">    const fixed = { ...form, id: form.id || Date.now(), days: Number(form.days), partners: form.partners.filter(Boolean) };</span></div><div aria-label="הסבר לשורת קוד 63" class="code-line" data-tip="map: עובר על מערך ומחזיר מערך חדש; בריאקט נפוץ ליצירת JSX מרשימה." role="button" tabindex="0"><span class="ln">63</span><span class="src">    setTrips(mode === "add" ? [...trips, fixed] : trips.map(t =&gt; t.id === fixed.id ? fixed : t));</span></div><div aria-label="הסבר לשורת קוד 64" class="code-line" data-tip="ניווט: מעביר את המשתמש לערוץ אחר רק אחרי תנאי/פעולה מתאימה." role="button" tabindex="0"><span class="ln">64</span><span class="src">    navigate("/home");</span></div><div aria-label="הסבר לשורת קוד 65" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">65</span><span class="src">  }</span></div><div aria-label="הסבר לשורת קוד 66" class="code-line" data-tip="map: עובר על מערך ומחזיר מערך חדש; בריאקט נפוץ ליצירת JSX מרשימה." role="button" tabindex="0"><span class="ln">66</span><span class="src">  return &lt;Shell logged={logged} setLogged={setLogged}&gt;{mode === "update" ? &lt;select value={selectedId} onChange={e =&gt; { const t = trips.find(x =&gt; x.id === Number(e.target.value)); setSelectedId(e.target.value); setForm(t); }}&gt;&lt;option value=""&gt;Area&lt;/option&gt;{trips.map(t =&gt; &lt;option key={t.id} value={t.id}&gt;{t.area}&lt;/option&gt;)}&lt;/select&gt; : &lt;input placeholder="Area" value={form.area} onChange={e =&gt; setForm({ ...form, area: e.target.value })} /&gt;}</span></div><div aria-label="הסבר לשורת קוד 67" class="code-line" data-tip="עדכון state/ערך: משנים מידע בצורה שמאפשרת לממשק להתעדכן." role="button" tabindex="0"><span class="ln">67</span><span class="src">    &lt;textarea placeholder="Description" value={form.description} onChange={e =&gt; setForm({ ...form, description: e.target.value })} /&gt;</span></div><div aria-label="הסבר לשורת קוד 68" class="code-line" data-tip="עדכון state/ערך: משנים מידע בצורה שמאפשרת לממשק להתעדכן." role="button" tabindex="0"><span class="ln">68</span><span class="src">    &lt;input placeholder="Days" value={form.days} onChange={e =&gt; setForm({ ...form, days: e.target.value })} /&gt;</span></div><div aria-label="הסבר לשורת קוד 69" class="code-line" data-tip="map: עובר על מערך ומחזיר מערך חדש; בריאקט נפוץ ליצירת JSX מרשימה." role="button" tabindex="0"><span class="ln">69</span><span class="src">    {form.partners.map((p, i) =&gt; &lt;input key={i} placeholder="Partner" value={p} onChange={e =&gt; changePartner(e.target.value, i)} /&gt;)}&lt;button onClick={addPartner}&gt;+&lt;/button&gt;&lt;button onClick={submit}&gt;{mode === "add" ? "Add" : "Update"}&lt;/button&gt;&lt;/Shell&gt;;</span></div><div aria-label="הסבר לשורת קוד 70" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">70</span><span class="src">}</span></div><div aria-label="הסבר לשורת קוד 71" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">71</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 72" class="code-line" data-tip="ייצוא ברירת מחדל: מאפשר לקבצים אחרים לייבא את הרכיב/המודול הזה בשם נוח." role="button" tabindex="0"><span class="ln">72</span><span class="src">export default App;</span></div></div></div></div>
+<div class="mistakes"><h4>⚠️ כל האפשרויות לעשות טעויות — כדי שלא תטעי</h4><ul><li>לפני התחברות הכפתורים בצד שמאל לא לחיצים</li><li>ב-add אזור הוא input, ב-update הוא select</li><li>כפתור אישור משנה שם לפי route</li><li>שותפים עד 15 תווים וללא תווים מיוחדים</li></ul></div>
+</main>
+</div>
+</section>
+<section class="expanded-mistakes">
+<h3>⚠️ טעויות מורחבות שלא ליפול בהן</h3>
+<ul><li>כפתורי הניווט לא לחיצים לפני login תקין.</li><li>Home מציג את המסע האחרון ומאפשר דפדוף בחצים.</li><li>Add ו-Update משתמשים באותו טופס אבל פעולה שונה.</li><li>לא לשנות מערך/אובייקט state ישירות. תמיד ליצור עותק עם spread או map/filter.</li><li>לא לשכוח value/onChange בכל input אם הוא controlled component.</li><li>checkbox צריך checked ולא value; select צריך value מתאים.</li><li>מספרים שמגיעים מ-input הם מחרוזות — להמיר עם Number לפני חישוב/בדיקה.</li><li>לא לנווט לפני שהוולידציות עברו; navigate רק בסוף פעולה תקינה.</li><li>ב-map חייבים key יציב לכל כרטיס/שורה.</li><li>לא להציג כפתורי ניווט למשתמש לא מחובר אם הדרישה אומרת לחסום.</li><li>לא לשכוח להחזיר JSX אחד עוטף בכל קומפוננטה.</li><li>לא לשכוח להתאים route/path בדיוק לדרישה: /add, /edit, /history וכו׳.</li><li>אם יש חיפוש חלקי — להשתמש ב-includes על lowercase כדי לא להיכשל בגלל אותיות גדולות/קטנות.</li><li>כשיש עריכה — לוודא שהטופס נטען מהאובייקט הנבחר ולא נשאר ריק.</li><li>בעיצוב: קודם פונקציונליות, אחר כך CSS; לא לאבד נקודות על לוגיקה בגלל עיצוב מוקדם.</li></ul>
+</section>
+<div class="single-actions" style="justify-content:center;margin-top:24px"><a href="index.html">🏠 חזרה לאינדקס</a><a href="willing-q3.html">← שאלה קודמת</a><a href="travel-q2.html">שאלה הבאה →</a></div>
+</main>
+</div>
+</div>
+<script>
+(function(){
+  function collectCode(block){
+    return Array.from(block.querySelectorAll('.code-line .src'))
+      .map(el => el.textContent.replace(/ /g, ' '))
+      .join('\n');
+  }
+  async function copyCode(btn){
+    const block = btn.closest('.annotated-code') || btn.closest('.full-file') || document;
+    const code = collectCode(block);
+    if (!code.trim()) return;
+    try {
+      await navigator.clipboard.writeText(code);
+      const old = btn.textContent;
+      btn.textContent = '✅ הועתק';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = old; btn.classList.remove('copied'); }, 1400);
+    } catch(e) {
+      alert('לא הצלחתי להעתיק אוטומטית. אפשר לסמן את הקוד ידנית.');
+    }
+  }
+  document.addEventListener('click', (event) => {
+    const btn = event.target.closest('.copy-code');
+    if (btn) copyCode(btn);
+  });
+})();
+</script><!--portal-r3-panel-start-->
+    <div class="imp-panel-compact" data-qid="travel-q1">
+      <div class="impc-head">
+        <h4 class="impc-title">🔧 שיפורים לציון 100 — Travel-SV — יומן מסע <span class="imp-score">50 נק׳</span></h4>
+        <a class="sol100-btn" href="../solutions100/travel-q1.html" target="_blank">🏆 פתרון 100</a>
+        <span class="impc-hint">לחיצה על צ'יפ פותחת חלון מרחף עם הפירוט</span>
+      </div>
+      <div class="impc-chips">
+        <span class="impc-row-label">באגים מתוקנים:</span>
+        <span class="sev-chip fixed" aria-label="באגים מתוקנים">✓ 1 מתוקנים</span>
+        <button class="sev-chip high" data-tip-payload="{&quot;kind&quot;: &quot;bug&quot;, &quot;sev&quot;: &quot;high&quot;, &quot;sev_label&quot;: &quot;גבוה&quot;, &quot;desc&quot;: &quot;הוספת רשומה: validation על date (תקין), location (לא ריק), notes&quot;, &quot;before&quot;: &quot;// validation חסר&quot;, &quot;after&quot;: &quot;if (!date || !location.trim()) return alert(&#x27;Date and location required&#x27;);\nif (isNaN(new Date(date).getTime())) return alert(&#x27;Invalid date&#x27;);&quot;, &quot;qid&quot;: &quot;travel-q1&quot;, &quot;num&quot;: 1, &quot;total&quot;: 1}" aria-label="באג 1 — גבוה">1 ג</button>
+      </div>
+      <div class="impc-chips"><span class="impc-row-label">דרישות חסרות:</span><button class="sev-chip miss" data-tip-payload="{&quot;kind&quot;: &quot;missing&quot;, &quot;text&quot;: &quot;מיון לפי תאריך&quot;, &quot;num&quot;: 1, &quot;qid&quot;: &quot;travel-q1&quot;}" aria-label="דרישה חסרה 1">M1</button> <button class="sev-chip miss" data-tip-payload="{&quot;kind&quot;: &quot;missing&quot;, &quot;text&quot;: &quot;חיפוש בתוך notes&quot;, &quot;num&quot;: 2, &quot;qid&quot;: &quot;travel-q1&quot;}" aria-label="דרישה חסרה 2">M2</button></div>
+      <div class="impc-chips"><span class="impc-row-label">פיצ'רים מעבר:</span><button class="sev-chip extra" data-tip-payload="{&quot;kind&quot;: &quot;extra&quot;, &quot;text&quot;: &quot;מפת המסע — pinning של locations על מפה&quot;, &quot;num&quot;: 1, &quot;qid&quot;: &quot;travel-q1&quot;}" aria-label="פיצ'ר נוסף 1">+1</button> <button class="sev-chip extra" data-tip-payload="{&quot;kind&quot;: &quot;extra&quot;, &quot;text&quot;: &quot;Photo upload לכל רשומה&quot;, &quot;num&quot;: 2, &quot;qid&quot;: &quot;travel-q1&quot;}" aria-label="פיצ'ר נוסף 2">+2</button></div>
+    </div>
+    <!--portal-r3-panel-end--><!--portal-r3-script-->
+<script id="portal-injected-script">
+(function(){
+  // Embed a small tooltip element in the iframe document
+  let tip = document.getElementById('iframe-tooltip-el');
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.id = 'iframe-tooltip-el';
+    tip.className = 'iframe-tooltip';
+    tip.setAttribute('role','dialog');
+    tip.innerHTML = '<button class="vt-close" type="button" aria-label="סגירה">×</button><div class="iframe-tooltip-body"></div>';
+    document.body.appendChild(tip);
+    tip.querySelector('.vt-close').addEventListener('click', () => tip.classList.remove('show'));
+  }
+  const tipBody = tip.querySelector('.iframe-tooltip-body');
+
+  function showTip(target, html) {
+    tipBody.innerHTML = html;
+    tip.classList.add('show');
+    tip.style.left = '0px'; tip.style.top = '0px';
+    requestAnimationFrame(() => {
+      const rect = target.getBoundingClientRect();
+      const tw = tip.offsetWidth, th = tip.offsetHeight;
+      let x = rect.left + rect.width/2 - tw/2;
+      let y = rect.bottom + 12;
+      if (y + th > window.innerHeight - 10) y = Math.max(10, rect.top - th - 12);
+      x = Math.max(10, Math.min(window.innerWidth - tw - 10, x));
+      tip.style.left = x + 'px';
+      tip.style.top = y + 'px';
+    });
+  }
+
+  function hideTip() { tip.classList.remove('show'); }
+
+  function escHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+  }
+
+  function decodeAttr(s) {
+    const t = document.createElement('textarea');
+    t.innerHTML = s;
+    return t.value;
+  }
+
+  function buildBugTooltip(p) {
+    const sevColors = {critical:'#dc2626',high:'#ea580c',medium:'#facc15',low:'#14b8a6'};
+    const c = sevColors[p.sev] || '#facc15';
+    return `
+      <h4>🐛 באג ${p.num} מתוך ${p.total} <span class="vt-tag" style="border-color:${c};color:${c};background:${c}1a">${p.sev_label}</span></h4>
+      <p>${p.desc}</p>
+      <h5>לפני (קוד מקור)</h5>
+      <pre class="before">${escHtml(p.before)}</pre>
+      <h5>אחרי (לציון 100)</h5>
+      <pre>${escHtml(p.after)}</pre>
+    `;
+  }
+
+  function buildMissingTooltip(p) {
+    return `
+      <h4>📋 דרישה חסרה ${p.num}</h4>
+      <p>${p.text}</p>
+      <p style="margin-top:8px;color:#cbd5e1;font-size:12px">דרישה זו לא מומשה בפתרון המקורי. בגרסה המתוקנת היא הושלמה.</p>
+    `;
+  }
+
+  function buildExtraTooltip(p) {
+    return `
+      <h4>✨ פיצ'ר מעבר לדרישה ${p.num}</h4>
+      <p>${p.text}</p>
+      <p style="margin-top:8px;color:#cbd5e1;font-size:12px">פוליש מעבר לנדרש בשאלה — שיפור איכות שלא מוריד נקודות אם חסר.</p>
+    `;
+  }
+
+  document.addEventListener('click', e => {
+    const chip = e.target.closest('[data-tip-payload]');
+    if (chip) {
+      e.stopPropagation();
+      let payload;
+      try { payload = JSON.parse(decodeAttr(chip.getAttribute('data-tip-payload'))); }
+      catch (err) { console.error('bad payload', err); return; }
+      let html = '';
+      if (payload.kind === 'bug')     html = buildBugTooltip(payload);
+      else if (payload.kind === 'missing') html = buildMissingTooltip(payload);
+      else if (payload.kind === 'extra')   html = buildExtraTooltip(payload);
+      showTip(chip, html);
+      return;
+    }
+    if (!tip.contains(e.target)) hideTip();
+  });
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+})();
+</script>
+</body>
+</html>

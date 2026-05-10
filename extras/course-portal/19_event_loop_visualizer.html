@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="he" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔄 Event Loop Visualizer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #0f172a; color: #f8fafc; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+    
+    header { text-align: center; margin-bottom: 20px; width: 100%; max-width: 1200px; position: relative; }
+    h1 { color: #38bdf8; font-size: 2.2em; }
+    p { color: #94a3b8; }
+    .back-btn { position: absolute; left: 0; top: 0; background: rgba(255,255,255,0.1); color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; }
+    
+    .main-container { display: flex; gap: 20px; width: 100%; max-width: 1200px; height: 75vh; }
+    
+    /* Code Editor Side */
+    .code-section { flex: 1; background: #1e293b; border-radius: 12px; padding: 20px; border: 1px solid #334155; display: flex; flex-direction: column; }
+    h2 { font-size: 1.2em; color: #cbd5e1; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+    
+    .code-block { font-family: 'Fira Code', monospace; background: #0b1120; padding: 15px; border-radius: 8px; line-height: 1.6; color: #a5b4fc; flex: 1; overflow-y: auto; }
+    .line { padding: 2px 5px; border-radius: 4px; transition: background 0.3s; }
+    .line.active { background: rgba(56, 189, 248, 0.3); border-left: 3px solid #38bdf8; }
+    
+    .console-out { background: #000; color: #4ade80; padding: 10px; border-radius: 8px; font-family: monospace; min-height: 100px; margin-top: 15px; border: 1px solid #334155; }
+    
+    /* Visualizer Side */
+    .engine-section { flex: 2; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; }
+    
+    .box { background: rgba(15, 23, 42, 0.6); border-radius: 12px; padding: 15px; border: 2px solid #334155; display: flex; flex-direction: column; position: relative; }
+    .box-title { position: absolute; top: -12px; left: 15px; background: #0f172a; padding: 0 10px; font-weight: bold; font-size: 0.9em; }
+    
+    #call-stack { border-color: #f43f5e; }
+    #call-stack .box-title { color: #f43f5e; }
+    
+    #web-apis { border-color: #f59e0b; }
+    #web-apis .box-title { color: #f59e0b; }
+    
+    #micro-queue { border-color: #10b981; }
+    #micro-queue .box-title { color: #10b981; }
+    
+    #macro-queue { border-color: #3b82f6; }
+    #macro-queue .box-title { color: #3b82f6; }
+    
+    .item-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; overflow-y: auto; padding-top: 10px; }
+    
+    .task-item { background: #334155; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.9em; font-weight: bold; animation: slideIn 0.3s ease-out forwards; text-align: center; }
+    @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    
+    .task-item.sync { background: #be123c; color: #fff; }
+    .task-item.async { background: #b45309; color: #fff; }
+    .task-item.micro { background: #047857; color: #fff; }
+    .task-item.macro { background: #1d4ed8; color: #fff; }
+    
+    .controls { display: flex; justify-content: center; gap: 15px; margin-top: 20px; width: 100%; }
+    .btn { padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1em; cursor: pointer; transition: 0.2s; color: white; }
+    .btn-play { background: #38bdf8; color: #000; }
+    .btn-play:hover { background: #0ea5e9; }
+    .btn-reset { background: rgba(255,255,255,0.1); }
+    .btn-reset:hover { background: rgba(255,255,255,0.2); }
+    
+    .explanation { margin-top: 15px; text-align: center; color: #facc15; font-size: 1.1em; font-weight: bold; min-height: 30px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="00_dashboard.html" class="back-btn">← Dashboard</a>
+  <h1>🔄 The Event Loop Visualizer</h1>
+  <p>Step-by-step Execution of Async JavaScript</p>
+</header>
+
+<div class="main-container">
+  <!-- Code -->
+  <div class="code-section">
+    <h2>JavaScript Engine (V8)</h2>
+    <div class="code-block" id="code-block">
+      <div class="line" id="l1">console.log('Start');</div>
+      <div class="line" id="l2">setTimeout(() => {</div>
+      <div class="line" id="l3">&nbsp;&nbsp;console.log('Timeout');</div>
+      <div class="line" id="l4">}, 0);</div>
+      <div class="line" id="l5">Promise.resolve().then(() => {</div>
+      <div class="line" id="l6">&nbsp;&nbsp;console.log('Promise');</div>
+      <div class="line" id="l7">});</div>
+      <div class="line" id="l8">console.log('End');</div>
+    </div>
+    
+    <h2>Console Output</h2>
+    <div class="console-out" id="console"></div>
+  </div>
+  
+  <!-- Visualizer -->
+  <div class="engine-section">
+    <div class="box" id="call-stack">
+      <div class="box-title">Call Stack (LIFO)</div>
+      <div class="item-container" id="cs-container"></div>
+    </div>
+    
+    <div class="box" id="web-apis">
+      <div class="box-title">Web APIs (Browser)</div>
+      <div class="item-container" id="wa-container"></div>
+    </div>
+    
+    <div class="box" id="micro-queue">
+      <div class="box-title">Microtask Queue (High Priority)</div>
+      <div class="item-container" id="miq-container"></div>
+    </div>
+    
+    <div class="box" id="macro-queue">
+      <div class="box-title">Macrotask Queue (Callback Queue)</div>
+      <div class="item-container" id="maq-container"></div>
+    </div>
+  </div>
+</div>
+
+<div class="explanation" id="explanation">Click 'Next Step' to start execution.</div>
+
+<div class="controls">
+  <button class="btn btn-reset" onclick="reset()">Reset</button>
+  <button class="btn btn-play" onclick="nextStep()" id="btn-next">Next Step ⏭️</button>
+</div>
+
+<script>
+  // Event Loop Animation Logic
+  const steps = [
+    { line: 'l1', action: 'pushCS', name: "console.log('Start')", type: 'sync', msg: 'Push synchronous task to Call Stack.' },
+    { line: 'l1', action: 'print', text: 'Start', msg: 'Execute log.' },
+    { line: 'l1', action: 'popCS', msg: 'Task finishes and pops off the stack.' },
+    
+    { line: 'l2', action: 'pushCS', name: 'setTimeout()', type: 'sync', msg: 'setTimeout is called (Synchronous).' },
+    { line: 'l2', action: 'pushWA', name: 'Timer(CB, 0)', type: 'async', msg: 'Browser Web API handles the timer.' },
+    { line: 'l2', action: 'popCS', msg: 'setTimeout finishes and pops off.' },
+    
+    { line: 'l5', action: 'pushCS', name: 'Promise.resolve()', type: 'sync', msg: 'Promise is resolved.' },
+    { line: 'l5', action: 'pushMIQ', name: 'CB: log("Promise")', type: 'micro', msg: '.then() callback goes to Microtask Queue.' },
+    { line: 'l5', action: 'popCS', msg: 'Promise finishes and pops off.' },
+    
+    { line: 'l8', action: 'pushCS', name: "console.log('End')", type: 'sync', msg: 'Push synchronous task to Call Stack.' },
+    { line: 'l8', action: 'print', text: 'End', msg: 'Execute log.' },
+    { line: 'l8', action: 'popCS', msg: 'Task finishes and pops off.' },
+    
+    { line: 'none', action: 'waToMaq', name: 'CB: log("Timeout")', type: 'macro', msg: 'Web API timer finishes, moves callback to Macrotask Queue.' },
+    
+    { line: 'none', action: 'checkLoop1', msg: 'Call Stack is empty. Event Loop checks Microtask Queue first (High Priority).' },
+    { line: 'l6', action: 'miqToCs', msg: 'Move Promise callback to Call Stack.' },
+    { line: 'l6', action: 'print', text: 'Promise', msg: 'Execute log.' },
+    { line: 'l6', action: 'popCS', msg: 'Promise callback finishes.' },
+    
+    { line: 'none', action: 'checkLoop2', msg: 'Microtask Queue is empty. Event Loop checks Macrotask Queue.' },
+    { line: 'l3', action: 'maqToCs', msg: 'Move Timeout callback to Call Stack.' },
+    { line: 'l3', action: 'print', text: 'Timeout', msg: 'Execute log.' },
+    { line: 'l3', action: 'popCS', msg: 'Timeout callback finishes. Program complete.' },
+    { line: 'none', action: 'done', msg: '🎉 Execution Complete! Order: Start -> End -> Promise -> Timeout' }
+  ];
+
+  let currentStep = 0;
+  
+  const cs = document.getElementById('cs-container');
+  const wa = document.getElementById('wa-container');
+  const miq = document.getElementById('miq-container');
+  const maq = document.getElementById('maq-container');
+  const consoleOut = document.getElementById('console');
+  const exp = document.getElementById('explanation');
+
+  function reset() {
+    currentStep = 0;
+    cs.innerHTML = ''; wa.innerHTML = ''; miq.innerHTML = ''; maq.innerHTML = '';
+    consoleOut.innerHTML = '';
+    exp.textContent = "Click 'Next Step' to start execution.";
+    document.querySelectorAll('.line').forEach(l => l.classList.remove('active'));
+    document.getElementById('btn-next').disabled = false;
+  }
+
+  function createNode(name, type) {
+    const d = document.createElement('div');
+    d.className = `task-item ${type}`;
+    d.textContent = name;
+    return d;
+  }
+
+  function nextStep() {
+    if(currentStep >= steps.length) return;
+    const s = steps[currentStep];
+    
+    // Highlight line
+    document.querySelectorAll('.line').forEach(l => l.classList.remove('active'));
+    if(s.line !== 'none') document.getElementById(s.line).classList.add('active');
+    
+    exp.textContent = s.msg;
+
+    switch(s.action) {
+      case 'pushCS': cs.prepend(createNode(s.name, s.type)); break;
+      case 'popCS': if(cs.firstChild) cs.firstChild.remove(); break;
+      case 'pushWA': wa.prepend(createNode(s.name, s.type)); break;
+      case 'pushMIQ': miq.appendChild(createNode(s.name, s.type)); break;
+      case 'print': consoleOut.innerHTML += `> ${s.text}<br>`; break;
+      case 'waToMaq': 
+        if(wa.firstChild) wa.firstChild.remove();
+        maq.appendChild(createNode(s.name, s.type)); 
+        break;
+      case 'miqToCs':
+        if(miq.firstChild) miq.firstChild.remove();
+        cs.prepend(createNode('CB: Promise', 'sync'));
+        break;
+      case 'maqToCs':
+        if(maq.firstChild) maq.firstChild.remove();
+        cs.prepend(createNode('CB: Timeout', 'sync'));
+        break;
+      case 'done':
+        document.getElementById('btn-next').disabled = true;
+        break;
+    }
+    
+    currentStep++;
+  }
+</script>
+
+</body>
+</html>

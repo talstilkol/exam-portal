@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אסטרטגיית מבחן — 100/100</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); background-attachment: fixed; color: #e0e0e0; line-height: 1.7; min-height: 100vh; padding: 20px; }
+  .container { max-width: 1300px; margin: 0 auto; }
+  header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #28a745 0%, #20c997 50%, #17a2b8 100%); border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+  header h1 { font-size: 2.5em; color: white; margin-bottom: 10px; }
+  header p { color: rgba(255,255,255,0.95); font-size: 1.2em; }
+  .back-link { display: inline-block; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; }
+  .back-link:hover { background: rgba(255,217,61,0.25); }
+  .toc { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 30px; }
+  .toc h2 { color: #4ecdc4; margin-bottom: 20px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+  .toc a { color: #ffd93d; text-decoration: none; padding: 10px 14px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; border: 1px solid rgba(255,217,61,0.2); }
+  .toc a:hover { background: rgba(255,217,61,0.25); transform: translateY(-2px); }
+  section { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 35px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); scroll-margin-top: 30px; }
+  section h2 { color: #4ecdc4; font-size: 1.8em; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 3px solid rgba(78,205,196,0.3); }
+  section h3 { color: #ffd93d; margin: 25px 0 15px; font-size: 1.3em; padding-right: 15px; border-right: 4px solid #ffd93d; }
+  .code-block { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; font-family: 'Consolas', monospace; direction: ltr; text-align: left; overflow-x: auto; margin: 15px 0; color: #e6edf3; font-size: 0.92em; line-height: 1.6; white-space: pre; }
+  code.inline { background: rgba(78,205,196,0.15); color: #4ecdc4; padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.95em; direction: ltr; display: inline-block; }
+  .important { background: rgba(255,107,107,0.15); border-right: 4px solid #ff6b6b; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .important::before { content: "💡 "; }
+  .warning { background: rgba(220,53,69,0.15); border-right: 4px solid #dc3545; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .warning::before { content: "⚠️ "; }
+  .tip { background: rgba(40,167,69,0.15); border-right: 4px solid #28a745; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .tip::before { content: "✅ "; }
+  .timing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+  .timing-card { background: rgba(102,126,234,0.1); border: 2px solid rgba(102,126,234,0.3); border-radius: 12px; padding: 20px; text-align: center; }
+  .timing-card .time { font-size: 2em; font-weight: bold; color: #ffd93d; }
+  .timing-card .label { color: #c0c0c0; font-size: 0.95em; margin-top: 5px; }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { background: rgba(0,0,0,0.3); padding: 14px 20px; border-radius: 8px; margin-bottom: 8px; transition: all 0.3s ease; cursor: pointer; display: flex; align-items: flex-start; gap: 12px; }
+  .checklist li:hover { background: rgba(255,217,61,0.08); }
+  .checklist li.checked { background: rgba(40,167,69,0.15); }
+  .checklist li.checked .text { text-decoration: line-through; color: #888; }
+  .check-circle { width: 22px; height: 22px; border: 2px solid #4ecdc4; border-radius: 50%; flex-shrink: 0; margin-top: 3px; transition: all 0.2s ease; }
+  .checklist li.checked .check-circle { background: #28a745; border-color: #28a745; }
+  .checklist li.checked .check-circle::after { content: '✓'; color: white; display: flex; align-items: center; justify-content: center; height: 100%; font-weight: bold; font-size: 0.9em; }
+  .gold-rule { background: linear-gradient(135deg, rgba(255,217,61,0.15), rgba(245,158,11,0.15)); border: 2px solid rgba(255,217,61,0.4); border-radius: 12px; padding: 20px; margin: 12px 0; position: relative; }
+  .gold-rule .number { position: absolute; top: -15px; right: 20px; background: #ffd93d; color: #1a1a2e; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2em; }
+  .gold-rule h4 { color: #ffd93d; margin-bottom: 8px; padding-right: 50px; }
+  .scroll-top { position: fixed; bottom: 30px; left: 30px; background: linear-gradient(135deg, #4ecdc4, #44a8a3); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(78,205,196,0.4); border: none; font-size: 1.8em; opacity: 0; transition: all 0.3s ease; z-index: 1000; }
+  .scroll-top.visible { opacity: 1; }
+  @media (max-width: 768px) { section { padding: 20px 15px; } }
+</style>
+  <link rel="stylesheet" href="light-mode.css">
+  <link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+
+<div class="container">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;">
+    <a href="00_dashboard.html" class="back-link">← דשבורד</a>
+    <a href="IDE_project.html" class="back-link" style="background:rgba(88,166,255,0.15);border-color:rgba(88,166,255,0.4);color:#79c0ff;">💻 פתח IDE</a>
+    <a href="MAP_master.html" class="back-link" style="background:rgba(255,217,61,0.15);border-color:rgba(255,217,61,0.4);color:#ffd93d;">🗺️ המפה הגדולה</a>
+    <a href="DEBUG_errors.html" class="back-link" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.4);color:#fca5a5;">🛠️ מילון שגיאות</a>
+    <a href="BUILD_walkthrough.html" class="back-link" style="background:rgba(132,204,22,0.15);border-color:rgba(132,204,22,0.4);color:#bef264;">🛠️ בנה מאפס</a>
+  </div>
+
+  <header>
+    <h1>🎓 אסטרטגיית מבחן — 100/100</h1>
+    <p>חלוקת זמן · כללי זהב · צ'ק־ליסט הגשה</p>
+  </header>
+
+  <!-- ============= DIDACTIC HERO: 4-Hour Exam Timeline with Concrete Tasks ============= -->
+  <style>
+    .strat-hero { background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%); border-radius:18px; padding:32px; margin-bottom:30px; box-shadow:0 12px 40px rgba(0,0,0,0.4); border:2px solid rgba(78,205,196,0.2); }
+    .strat-hero .st-title { text-align:center; margin-bottom:24px; }
+    .strat-hero .st-title h2 { color:#4ecdc4; font-size:1.8em; margin-bottom:8px; border:none; padding:0; }
+    .strat-hero .st-title p { color:#cbd5e1; font-size:1.05em; }
+
+    /* Time bar */
+    .st-timebar { display:flex; background:#0f172a; border-radius:10px; overflow:hidden; margin-bottom:8px; height:42px; border:1px solid rgba(255,255,255,0.1); }
+    .st-timebar .tb-slot { display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; font-weight:bold; font-size:0.85em; position:relative; padding:0 4px; text-decoration:none; transition:all .2s; }
+    .st-timebar .tb-slot:hover { filter:brightness(1.2); }
+    .st-timebar .tb-slot::after { content:""; position:absolute; right:0; top:8px; bottom:8px; width:1px; background:rgba(255,255,255,0.2); }
+    .st-timebar .tb-slot:last-child::after { display:none; }
+    .st-times { display:flex; margin-bottom:24px; font-size:0.75em; color:#94a3b8; font-family:monospace; }
+
+    .st-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:16px; }
+    .st-card { background:#fff; border-radius:13px; padding:18px; transition:all .25s; text-decoration:none; color:#0f172a; display:block; border-right:5px solid; }
+    .st-card:hover { transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,0,0,0.4); }
+    .st-card.t1 { border-color:#0ea5e9; }
+    .st-card.t2 { border-color:#06b6d4; }
+    .st-card.t3 { border-color:#22c55e; }
+    .st-card.t4 { border-color:#f59e0b; }
+    .st-card.t5 { border-color:#ef4444; }
+    .st-card.t6 { border-color:#a855f7; }
+    .st-card.t7 { border-color:#84cc16; }
+    .st-card .st-time { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+    .st-card .st-time .duration { padding:4px 11px; border-radius:4px; color:#fff; font-weight:bold; font-size:0.85em; font-family:monospace; }
+    .st-card.t1 .duration { background:#0ea5e9; }
+    .st-card.t2 .duration { background:#06b6d4; }
+    .st-card.t3 .duration { background:#22c55e; }
+    .st-card.t4 .duration { background:#f59e0b; }
+    .st-card.t5 .duration { background:#ef4444; }
+    .st-card.t6 .duration { background:#a855f7; }
+    .st-card.t7 .duration { background:#84cc16; }
+    .st-card .st-time .clock { color:#64748b; font-size:0.78em; font-family:monospace; }
+    .st-card h3 { color:#0f172a; font-size:1.1em; margin-bottom:10px; padding:0; border:none; }
+    .st-card .st-tasks { background:#f8fafc; padding:10px 12px; border-radius:6px; }
+    .st-card .st-tasks .task { display:flex; align-items:flex-start; gap:6px; font-size:0.85em; color:#334155; padding:4px 0; line-height:1.5; }
+    .st-card .st-tasks .task .check { color:#22c55e; flex-shrink:0; font-weight:bold; }
+    .st-card .st-link { display:inline-block; margin-top:10px; color:#0ea5e9; font-size:0.83em; font-weight:600; }
+  </style>
+
+  <section class="strat-hero">
+    <div class="st-title">
+      <h2>⏱️ 4 שעות = 240 דקות — חלוקה מדויקת לכל דקה</h2>
+      <p>הצלחה במבחן = <strong style="color:#4ecdc4;">לדעת מה לעשות בכל רגע</strong>. הנה איך לחלק 240 דקות.</p>
+    </div>
+
+    <!-- Visual Time Bar -->
+    <div class="st-timebar">
+      <a href="#timing" class="tb-slot" style="flex:15;background:#0ea5e9;">15<small style="font-size:0.7em;opacity:0.8;display:block;">קריאה</small></a>
+      <a href="#steps" class="tb-slot" style="flex:30;background:#06b6d4;">30<small style="font-size:0.7em;opacity:0.8;display:block;">Setup</small></a>
+      <a href="#steps" class="tb-slot" style="flex:60;background:#22c55e;">60<small style="font-size:0.7em;opacity:0.8;display:block;">Backend</small></a>
+      <a href="#steps" class="tb-slot" style="flex:75;background:#f59e0b;">75<small style="font-size:0.7em;opacity:0.8;display:block;">Frontend</small></a>
+      <a href="#steps" class="tb-slot" style="flex:30;background:#ef4444;">30<small style="font-size:0.7em;opacity:0.8;display:block;">Algo</small></a>
+      <a href="#steps" class="tb-slot" style="flex:20;background:#a855f7;">20<small style="font-size:0.7em;opacity:0.8;display:block;">Review</small></a>
+      <a href="#submission" class="tb-slot" style="flex:10;background:#84cc16;">10<small style="font-size:0.7em;opacity:0.8;display:block;">הגשה</small></a>
+    </div>
+    <div class="st-times">
+      <div style="flex:15;text-align:center;">0:00</div>
+      <div style="flex:30;text-align:center;">0:15</div>
+      <div style="flex:60;text-align:center;">0:45</div>
+      <div style="flex:75;text-align:center;">1:45</div>
+      <div style="flex:30;text-align:center;">3:00</div>
+      <div style="flex:20;text-align:center;">3:30</div>
+      <div style="flex:10;text-align:center;">3:50→4:00</div>
+    </div>
+
+    <div class="st-grid">
+
+      <a href="#timing" class="st-card t1">
+        <div class="st-time"><span class="duration">15 דק'</span><span class="clock">0:00 – 0:15</span></div>
+        <h3>📖 קריאה והבנת המבחן</h3>
+        <div class="st-tasks">
+          <div class="task"><span class="check">✓</span><span>קרא את כל המבחן <strong>פעמיים</strong></span></div>
+          <div class="task"><span class="check">✓</span><span>סמן מה ברור / מה לא ברור</span></div>
+          <div class="task"><span class="check">✓</span><span>זהה את ה-Models הנדרשים</span></div>
+          <div class="task"><span class="check">✓</span><span>זהה את ה-Endpoints (CRUD?)</span></div>
+        </div>
+        <span class="st-link">→ ראה דוגמה</span>
+      </a>
+
+      <a href="#steps" class="st-card t2">
+        <div class="st-time"><span class="duration">30 דק'</span><span class="clock">0:15 – 0:45</span></div>
+        <h3>🚀 Project Setup</h3>
+        <div class="st-tasks">
+          <div class="task"><span class="check">✓</span><span><code>npm create vite</code> + Tailwind</span></div>
+          <div class="task"><span class="check">✓</span><span>Backend: <code>npm i express mongoose</code></span></div>
+          <div class="task"><span class="check">✓</span><span>צור תיקיות: <code>routes/ models/ components/</code></span></div>
+          <div class="task"><span class="check">✓</span><span>git init + commit ראשון</span></div>
+        </div>
+        <span class="st-link">→ ראה תבנית setup</span>
+      </a>
+
+      <a href="#steps" class="st-card t3">
+        <div class="st-time"><span class="duration">60 דק'</span><span class="clock">0:45 – 1:45</span></div>
+        <h3>⚙️ Backend מלא (Models + Routes)</h3>
+        <div class="st-tasks">
+          <div class="task"><span class="check">✓</span><span>Mongoose Schema + validation</span></div>
+          <div class="task"><span class="check">✓</span><span>5 endpoints: GET, POST, PUT, DELETE</span></div>
+          <div class="task"><span class="check">✓</span><span>בדוק ב-Postman/Thunder</span></div>
+          <div class="task"><span class="check">✓</span><span>Error handling: try/catch</span></div>
+        </div>
+        <span class="st-link">→ ראה תבנית backend</span>
+      </a>
+
+      <a href="#steps" class="st-card t4">
+        <div class="st-time"><span class="duration">75 דק'</span><span class="clock">1:45 – 3:00</span></div>
+        <h3>🎨 Frontend (React + Tailwind)</h3>
+        <div class="st-tasks">
+          <div class="task"><span class="check">✓</span><span>Components: List, Form, Item</span></div>
+          <div class="task"><span class="check">✓</span><span>useState + useEffect לכל דבר</span></div>
+          <div class="task"><span class="check">✓</span><span>fetch אל ה-Backend</span></div>
+          <div class="task"><span class="check">✓</span><span>Tailwind: flex, grid, spacing</span></div>
+        </div>
+        <span class="st-link">→ ראה תבנית frontend</span>
+      </a>
+
+      <a href="#steps" class="st-card t5">
+        <div class="st-time"><span class="duration">30 דק'</span><span class="clock">3:00 – 3:30</span></div>
+        <h3>🧮 שאלת אלגוריתם</h3>
+        <div class="st-tasks">
+          <div class="task"><span class="check">✓</span><span>קרא 2 פעמים, הבן מה הקלט/פלט</span></div>
+          <div class="task"><span class="check">✓</span><span>כתוב פסבדו-קוד תחילה</span></div>
+          <div class="task"><span class="check">✓</span><span>בדוק עם 2-3 דוגמאות</span></div>
+          <div class="task"><span class="check">✓</span><span>אם נתקעת — דלג, חזור בסוף</span></div>
+        </div>
+        <span class="st-link">→ ראה אלגוריתמים</span>
+      </a>
+
+      <a href="#mistakes" class="st-card t6">
+        <div class="st-time"><span class="duration">20 דק'</span><span class="clock">3:30 – 3:50</span></div>
+        <h3>🔍 Review + Bug Fix</h3>
+        <div class="st-tasks">
+          <div class="task"><span class="check">✓</span><span>בדוק את כל הזרימות (CRUD)</span></div>
+          <div class="task"><span class="check">✓</span><span>פתח Console — אין errors?</span></div>
+          <div class="task"><span class="check">✓</span><span>בדוק typeof null, NaN, ===</span></div>
+          <div class="task"><span class="check">✓</span><span>וודא שאין mutation ב-React</span></div>
+        </div>
+        <span class="st-link">→ ראה טעויות נפוצות</span>
+      </a>
+
+      <a href="#submission" class="st-card t7">
+        <div class="st-time"><span class="duration">10 דק'</span><span class="clock">3:50 – 4:00</span></div>
+        <h3>📦 הגשה</h3>
+        <div class="st-tasks">
+          <div class="task"><span class="check">✓</span><span>git add . && git commit && git push</span></div>
+          <div class="task"><span class="check">✓</span><span>README.md מלא (איך מריצים)</span></div>
+          <div class="task"><span class="check">✓</span><span>זיפ ללא <code>node_modules/</code></span></div>
+          <div class="task"><span class="check">✓</span><span>וודא שהזיפ נפתח ועובד</span></div>
+        </div>
+        <span class="st-link">→ ראה צ'קליסט הגשה</span>
+      </a>
+
+    </div>
+
+    <div style="margin-top:24px;padding:18px;background:rgba(239,68,68,0.1);border-radius:12px;border-right:4px solid #ef4444;color:#cbd5e1;">
+      ⚠️ <strong style="color:#fca5a5;">חוק זהב:</strong> אם נתקעת יותר מ-15 דקות בסעיף — <strong>דלג</strong>. תחזור אליו בסוף. עדיף 80% מ-3 משימות מאשר 100% מאחת.
+    </div>
+  </section>
+
+  <!-- (Old mountain hidden) -->
+  <section style="display:none;">
+    <svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+      <defs>
+        <linearGradient id="m6mt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#a896c4"/><stop offset="100%" stop-color="#5d4577"/></linearGradient>
+        <filter id="m6sh"><feDropShadow dx="2" dy="3" stdDeviation="2" flood-opacity="0.3"/></filter>
+      </defs>
+      <!-- Sky -->
+      <rect width="1200" height="500" fill="#e0c3fc"/>
+      <!-- Sun -->
+      <circle cx="200" cy="100" r="50" fill="#fff9c4" opacity="0.9"/>
+      <circle cx="200" cy="100" r="32" fill="#ffd93d"/>
+
+      <!-- Mountain -->
+      <polygon points="100,500 600,80 1100,500" fill="url(#m6mt)" filter="url(#m6sh)"/>
+      <!-- Snow cap -->
+      <polygon points="540,150 600,80 660,150 640,140 620,145 600,138 580,144 560,140" fill="#fff"/>
+
+      <!-- Path zigzag up -->
+      <path d="M 200 480 L 350 380 L 500 400 L 650 280 L 750 300 L 600 80" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="10 6" opacity="0.8"/>
+
+      <!-- Stations along path (numbered) -->
+      <!-- Station 1: timing (clock) -->
+      <a href="#timing"><g style="cursor:pointer">
+        <circle cx="200" cy="480" r="22" fill="#ff6b6b" filter="url(#m6sh)"/>
+        <text x="200" y="487" text-anchor="middle" font-size="22">⏱️</text>
+        <rect x="155" y="445" width="90" height="22" rx="4" fill="#16213e"/>
+        <text x="200" y="461" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffd93d" direction="rtl">1. חלוקת זמן</text>
+      </g></a>
+      <!-- Station 2: steps -->
+      <a href="#steps"><g style="cursor:pointer">
+        <circle cx="350" cy="380" r="22" fill="#f39c12" filter="url(#m6sh)"/>
+        <text x="350" y="387" text-anchor="middle" font-size="20">📋</text>
+        <rect x="305" y="345" width="90" height="22" rx="4" fill="#16213e"/>
+        <text x="350" y="361" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffd93d" direction="rtl">2. שלבי פתרון</text>
+      </g></a>
+      <!-- Station 3: golden -->
+      <a href="#golden"><g style="cursor:pointer">
+        <circle cx="500" cy="400" r="24" fill="#ffd93d" filter="url(#m6sh)"/>
+        <text x="500" y="408" text-anchor="middle" font-size="20">👑</text>
+        <rect x="455" y="365" width="90" height="22" rx="4" fill="#16213e"/>
+        <text x="500" y="381" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffd93d" direction="rtl">3. כללי זהב</text>
+      </g></a>
+      <!-- Station 4: mistakes -->
+      <a href="#mistakes"><g style="cursor:pointer">
+        <circle cx="650" cy="280" r="22" fill="#e74c3c" filter="url(#m6sh)"/>
+        <text x="650" y="288" text-anchor="middle" font-size="20">⚠️</text>
+        <rect x="605" y="245" width="90" height="22" rx="4" fill="#16213e"/>
+        <text x="650" y="261" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffd93d" direction="rtl">4. טעויות</text>
+      </g></a>
+      <!-- Station 5: stuck -->
+      <a href="#stuck"><g style="cursor:pointer">
+        <circle cx="750" cy="300" r="22" fill="#3498db" filter="url(#m6sh)"/>
+        <text x="750" y="308" text-anchor="middle" font-size="20">🆘</text>
+        <rect x="705" y="265" width="90" height="22" rx="4" fill="#16213e"/>
+        <text x="750" y="281" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffd93d" direction="rtl">5. כשנתקעים</text>
+      </g></a>
+      <!-- Station 6: simulation -->
+      <a href="#simulation"><g style="cursor:pointer">
+        <circle cx="700" cy="200" r="22" fill="#16a085" filter="url(#m6sh)"/>
+        <text x="700" y="208" text-anchor="middle" font-size="20">🧪</text>
+        <rect x="655" y="165" width="90" height="22" rx="4" fill="#16213e"/>
+        <text x="700" y="181" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffd93d" direction="rtl">6. סימולציה</text>
+      </g></a>
+      <!-- Station 7: prep -->
+      <a href="#prep"><g style="cursor:pointer">
+        <circle cx="640" cy="140" r="22" fill="#27ae60" filter="url(#m6sh)"/>
+        <text x="640" y="148" text-anchor="middle" font-size="20">✅</text>
+        <rect x="595" y="105" width="90" height="22" rx="4" fill="#16213e"/>
+        <text x="640" y="121" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffd93d" direction="rtl">7. הכנה</text>
+      </g></a>
+      <!-- Summit (Station 8: submission) -->
+      <a href="#submission"><g style="cursor:pointer">
+        <circle cx="600" cy="80" r="28" fill="#ffd93d" stroke="#fff" stroke-width="3" filter="url(#m6sh)"/>
+        <text x="600" y="90" text-anchor="middle" font-size="22">🏆</text>
+        <rect x="535" y="35" width="130" height="26" rx="4" fill="#16213e"/>
+        <text x="600" y="53" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffd93d" direction="rtl">🎯 100/100 · הגשה</text>
+      </g></a>
+
+      <!-- Climbing grandma -->
+      <g transform="translate(330,360)">
+        <ellipse cx="0" cy="14" rx="11" ry="15" fill="#9b59b6"/>
+        <circle cx="0" cy="-3" r="9" fill="#fde0c5"/>
+        <ellipse cx="0" cy="-10" rx="10" ry="5" fill="#ecf0f1"/>
+        <circle cx="-3" cy="-3" r="2" fill="none" stroke="#16213e" stroke-width="1"/>
+        <circle cx="3" cy="-3" r="2" fill="none" stroke="#16213e" stroke-width="1"/>
+        <!-- Hiking stick -->
+        <line x1="14" y1="-5" x2="20" y2="25" stroke="#5d4037" stroke-width="2"/>
+        <!-- Backpack -->
+        <rect x="-12" y="2" width="8" height="14" fill="#16213e"/>
+      </g>
+
+      <!-- Clouds -->
+      <g fill="#fff" opacity="0.9">
+        <ellipse cx="900" cy="120" rx="40" ry="14"/><ellipse cx="880" cy="115" rx="20" ry="12"/><ellipse cx="920" cy="115" rx="20" ry="12"/>
+        <ellipse cx="1050" cy="200" rx="35" ry="12"/><ellipse cx="1030" cy="195" rx="18" ry="10"/>
+      </g>
+    </svg>
+    <div style="text-align:center;margin-top:14px;color:#fff9c4;font-size:0.95em;font-style:italic;">
+      🥾 כל תחנה היא שלב חיוני. לחץ עליה כדי לקרוא את ההסבר המלא
+    </div>
+  </section>
+
+  <nav class="toc">
+    <h2>📚 תוכן עניינים</h2>
+    <div class="toc-grid">
+      <a href="#timing">⏱️ חלוקת זמן 4 שעות</a>
+      <a href="#steps">📋 שלבי פתרון</a>
+      <a href="#golden">🏆 11 כללי זהב</a>
+      <a href="#mistakes">⚠️ טעויות נפוצות</a>
+      <a href="#stuck">🆘 כשאתה נתקע</a>
+      <a href="#simulation">🧪 סימולציה</a>
+      <a href="#prep">✅ הכנה לסביבה</a>
+      <a href="#submission">📦 צ'ק־ליסט הגשה</a>
+    </div>
+  </nav>
+
+  <!-- ============ TIMING ============ -->
+  <section id="timing">
+    <h2>⏱️ חלוקת זמן ל-4 שעות</h2>
+
+    <p style="margin-bottom:20px;">המבחן הוא 4 שעות = <strong>240 דקות</strong>. הנה החלוקה המומלצת:</p>
+
+    <div class="timing-grid">
+      <div class="timing-card">
+        <div class="time">15 דק'</div>
+        <div class="label">קריאה ותכנון</div>
+      </div>
+      <div class="timing-card">
+        <div class="time">30 דק'</div>
+        <div class="label">הקמת הפרויקט</div>
+      </div>
+      <div class="timing-card">
+        <div class="time">90 דק'</div>
+        <div class="label">Backend (אם יש)</div>
+      </div>
+      <div class="timing-card">
+        <div class="time">75 דק'</div>
+        <div class="label">Frontend</div>
+      </div>
+      <div class="timing-card">
+        <div class="time">15 דק'</div>
+        <div class="label">שאלת JS אלגוריתם</div>
+      </div>
+      <div class="timing-card">
+        <div class="time">15 דק'</div>
+        <div class="label">בדיקה והגשה</div>
+      </div>
+    </div>
+
+    <div class="important">
+      <strong>שעון יד או טיימר!</strong> אל תסמוך על "התחושה" — תקצב כל שעה. כשעובר זמן — תעבור הלאה גם אם לא סיימת. תחזור בסוף.
+    </div>
+
+    <h3>טיימר מומלץ לכל שעה</h3>
+    <ul style="padding-right:25px;">
+      <li><strong>שעה 1 (00:00-01:00):</strong> קריאה + הקמת פרויקט + התחלת Backend</li>
+      <li><strong>שעה 2 (01:00-02:00):</strong> Backend מלא + התחלת Frontend</li>
+      <li><strong>שעה 3 (02:00-03:00):</strong> Frontend + חיבור ל-API</li>
+      <li><strong>שעה 4 (03:00-04:00):</strong> שאלת JS + בדיקות + הגשה</li>
+    </ul>
+  </section>
+
+  <!-- ============ STEPS ============ -->
+  <section id="steps">
+    <h2>📋 שלבי פתרון מסודרים</h2>
+
+    <div class="gold-rule">
+      <div class="number">1</div>
+      <h4>קרא את כל המבחן לפני שמתחיל</h4>
+      <p>15 דקות של קריאה זה <strong>חובה</strong>. תזהה את כל הדרישות, תבין מה אופציונלי ומה חובה, ותתכנן את הסדר.</p>
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">2</div>
+      <h4>צייר את מבנה הנתונים על נייר</h4>
+      <p>איזה Models? איזה Routes? איזה State ב-React? לפני שאתה כותב שורה אחת — סדר במחשבה.</p>
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">3</div>
+      <h4>הקם פרויקט מינימלי שעובד</h4>
+      <p>Backend פשוט שמחזיר משהו, Frontend בסיסי שמתחבר אליו. <strong>הצלחה ראשונה</strong> מדרבנת המשך.</p>
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">4</div>
+      <h4>בנה Backend לפני Frontend</h4>
+      <p>קל יותר לבדוק ב-Postman/Thunder Client. כש-API עובד — Frontend הופך לקל.</p>
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">5</div>
+      <h4>בדוק כל endpoint לפני שעוברים הלאה</h4>
+      <p>אל תמתין לסוף. <strong>POST עובד? GET מחזיר?</strong> תבדוק עכשיו.</p>
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">6</div>
+      <h4>בנה Frontend בקומפוננטות קטנות</h4>
+      <p>אל תכתוב הכל ב-App.tsx. תפצל ל-Header, List, Form, Item.</p>
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">7</div>
+      <h4>שאלת ה-JS בסוף</h4>
+      <p>היא 10-20% מהמבחן. הפרויקט הוא רוב הציון. תפתור אותה אחרי שהפרויקט עובד.</p>
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">8</div>
+      <h4>בדיקה אחרונה — בדוק כל דרישה</h4>
+      <p>תחזור לדף השאלה ותסמן ✓ על כל דרישה. אם משהו לא נעשה — עכשיו הזמן.</p>
+    </div>
+  </section>
+
+  <!-- ============ GOLDEN RULES ============ -->
+  <section id="golden">
+    <h2>🏆 11 כללי זהב לציון 100</h2>
+
+    <div class="gold-rule">
+      <div class="number">1</div>
+      <h4>תמיד === ולעולם לא ==</h4>
+      
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌
+if (x == null)
+// ✅
+if (x === null || x === undefined)
+// או
+if (x == null)   // רק זה מותר (בודק null + undefined)</div>
+  </details>
+  
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">2</div>
+      <h4>functional update בכל שינוי state שתלוי בקודם</h4>
+      
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌
+setCount(count + 1);
+// ✅
+setCount(prev =&gt; prev + 1);
+
+// ❌
+setItems([...items, newItem]);
+// ✅
+setItems(prev =&gt; [...prev, newItem]);</div>
+  </details>
+  
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">3</div>
+      <h4>key={item.id} ולא key={index}</h4>
+      
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌ אם הרשימה משתנה — באגים!
+{items.map((item, i) =&gt; &lt;li key={i}&gt;...&lt;/li&gt;)}
+// ✅
+{items.map(item =&gt; &lt;li key={item.id}&gt;...&lt;/li&gt;)}</div>
+  </details>
+  
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">4</div>
+      <h4>cleanup בכל useEffect שיש בו subscription</h4>
+      
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">useEffect(() =&gt; {
+  const id = setInterval(tick, 1000);
+  return () =&gt; clearInterval(id);   // ✅ חובה
+}, []);</div>
+  </details>
+  
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">5</div>
+      <h4>try/catch בכל async + status codes נכונים</h4>
+      
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">app.post('/api/users', async (req, res) =&gt; {
+  try {
+    if (!req.body.name) {
+      return res.status(400).json({ error: 'name required' });
+    }
+    const user = await User.create(req.body);
+    res.status(201).json(user);   // ✅ 201 לCreate
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});</div>
+  </details>
+  
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">6</div>
+      <h4>validation לפני שמירה</h4>
+      
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// בFrontend
+if (!name.trim()) return alert('שם חובה');
+if (age &lt; 0 || age &gt; 120) return alert('גיל לא תקין');
+
+// בBackend
+if (!email || !email.includes('@')) {
+  return res.status(400).json({ error: 'אימייל לא תקין' });
+}</div>
+  </details>
+  
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">7</div>
+      <h4>אובייקטים — תמיד spread, לא mutate</h4>
+      
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌
+user.age = 31;
+setUser(user);
+// ✅
+setUser({ ...user, age: 31 });
+
+// ❌
+items.push(newItem);
+setItems(items);
+// ✅
+setItems([...items, newItem]);</div>
+  </details>
+  
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">8</div>
+      <h4>CORS + JSON middleware — לא לשכוח!</h4>
+      
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">app.use(cors());
+app.use(express.json());   // חובה ל-POST!</div>
+  </details>
+  
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">9</div>
+      <h4>useState עם type ב-TypeScript</h4>
+      
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌ TS ינחש never[]
+const [items, setItems] = useState([]);
+// ✅
+const [items, setItems] = useState&lt;Item[]&gt;([]);</div>
+  </details>
+  
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">10</div>
+      <h4>conditional rendering פשוט וקריא</h4>
+      
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ✅ Early return לטעינה ושגיאה
+if (loading) return &lt;Spinner /&gt;;
+if (error) return &lt;Error message={error} /&gt;;
+if (!data) return &lt;Empty /&gt;;
+return &lt;MainContent data={data} /&gt;;</div>
+  </details>
+  
+    </div>
+
+    <div class="gold-rule">
+      <div class="number">11</div>
+      <h4>שמות משתנים ברורים ובאנגלית</h4>
+      
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// ❌
+const x = users.filter(u =&gt; u.a &gt; 18);
+// ✅
+const adults = users.filter(user =&gt; user.age &gt; 18);</div>
+  </details>
+  
+    </div>
+  </section>
+
+  <!-- ============ MISTAKES ============ -->
+  <section id="mistakes">
+    <h2>⚠️ טעויות נפוצות שמורידות נקודות</h2>
+
+    <div class="warning">
+      <strong>הטעויות הכי גדולות שמורידות 5-10 נקודות לכל אחת:</strong>
+    </div>
+
+    <h3>בקוד JS</h3>
+    <ul style="padding-right:25px;">
+      <li><strong>שכחתי <code class="inline">await</code></strong> — הקוד ממשיך לפני שהבקשה הסתיימה</li>
+      <li><strong>splice במקום filter</strong> — splice משנה את המקור!</li>
+      <li><strong>== במקום ===</strong> — type coercion יוצר באגים מסתוריים</li>
+      <li><strong>שכחתי return ב-arrow function</strong> — <code class="inline">{...}</code> דורש <code class="inline">return</code></li>
+      <li><strong>JSON.parse על null</strong> — תמיד תבדוק <code class="inline">if (raw)</code></li>
+    </ul>
+
+    <h3>ב-React</h3>
+    <ul style="padding-right:25px;">
+      <li><strong>state mutation</strong> — <code class="inline">user.age = 31; setUser(user)</code></li>
+      <li><strong>missing key</strong> ברשימות</li>
+      <li><strong>useState בתוך תנאי</strong> — אסור!</li>
+      <li><strong>useEffect בלי deps</strong> — רץ אינסוף</li>
+      <li><strong>שכחתי e.preventDefault()</strong> בטופס</li>
+      <li><strong>controlled input בלי onChange</strong> — לא נותן להקליד</li>
+      <li><strong>fetch ב-render</strong> במקום ב-useEffect</li>
+    </ul>
+
+    <h3>ב-Backend</h3>
+    <ul style="padding-right:25px;">
+      <li><strong>שכחתי <code class="inline">app.use(express.json())</code></strong> — req.body undefined</li>
+      <li><strong>שכחתי <code class="inline">app.use(cors())</code></strong> — Frontend לא יכול להתחבר</li>
+      <li><strong>status codes לא נכונים</strong> — POST שמחזיר 200 במקום 201</li>
+      <li><strong>חסר try/catch</strong> ב-async — שרת קורס</li>
+      <li><strong>שכחתי await</strong> על Mongoose</li>
+      <li><strong>סיסמאות בpalintext</strong> — תמיד bcrypt!</li>
+    </ul>
+
+    <h3>בTypeScript</h3>
+    <ul style="padding-right:25px;">
+      <li><strong>any בכל מקום</strong> — TS מאבד משמעות</li>
+      <li><strong>שכחתי type ב-useState</strong></li>
+      <li><strong>אסרציות שגויות (as)</strong> — מסתיר באגים</li>
+      <li><strong>Optional fields שצריכים להיות חובה</strong></li>
+    </ul>
+
+    <h3>בהגשה</h3>
+    <ul style="padding-right:25px;">
+      <li><strong>הגשה עם node_modules</strong> — קובץ ענק!</li>
+      <li><strong>חסר README</strong> עם הוראות הרצה</li>
+      <li><strong>השארתי .env בHGashir</strong> — סודות חשופים</li>
+      <li><strong>console.logs בכל מקום</strong></li>
+      <li><strong>קוד מתויג כ-TODO</strong></li>
+    </ul>
+  </section>
+
+  <!-- ============ STUCK ============ -->
+  <section id="stuck">
+    <h2>🆘 מה לעשות כשנתקעים</h2>
+
+    <h3>שלב 1: עצור 2 דקות</h3>
+    <p>אל תכתוב עוד קוד. תקרא את הקוד הקיים. ב-90% מהמקרים — המקור הוא typo או משהו שכחת.</p>
+
+    <h3>שלב 2: בדוק עם DevTools</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// בדפדפן (F12)
+console.log(data);            // מה מגיע?
+console.log(typeof data);     // איזה type?
+console.log(Array.isArray(data));
+
+// Network tab
+// 1. הבקשה נשלחה?
+// 2. ה-response תקין?
+// 3. ה-status code?
+// 4. ה-body?</div>
+  </details>
+  
+
+    <h3>שלב 3: פתרון מינימלי</h3>
+    <p>אם feature מסוים לא עובד — <strong>תוותר עליו זמנית</strong>. לדוגמה: אם ה-validation מסובך מדי, תכתוב <code class="inline">if (!name) return</code> בלי הכל. <strong>תחזור אליו בסוף</strong>.</p>
+
+    <h3>שלב 4: בדוק את המסמכים שלך</h3>
+    <ul style="padding-right:25px;">
+      <li><strong>סנפטים</strong> — יש שם תבנית מוכנה?</li>
+      <li><strong>נושאים חסרים</strong> — אולי זה Router/Context?</li>
+      <li><strong>אלגוריתמים</strong> — אם השאלה אלגוריתמית</li>
+      <li><strong>מבחנים פתורים</strong> — דומה למשהו שכבר ראית?</li>
+    </ul>
+
+    <h3>שלב 5: עבור הלאה</h3>
+    <p>אם תקעת 15 דקות על משהו — <strong>עזוב</strong>. תעבור לחלק הבא. תחזור בסוף.</p>
+
+    <div class="tip">
+      <strong>זכור:</strong> 80% עובד עדיף על 100% חצי-בנוי. תהיה לך עבודה מלאה, ואת ה-20% שחסר — תוסיף אם יש זמן.
+    </div>
+  </section>
+
+  <!-- ============ SIMULATION ============ -->
+  <section id="simulation">
+    <h2>🧪 סימולציית מבחן ביום 5</h2>
+
+    <h3>הכנה</h3>
+    <ul style="padding-right:25px;">
+      <li>תיכן את עצמך לסימולציה — <strong>שלא יפריעו לך 90 דקות</strong></li>
+      <li>שעון/טיימר על השולחן</li>
+      <li>סגור Discord/WhatsApp/YouTube</li>
+      <li>תמיד הגיע למחשב נקי — Vite מותקן, Node מותקן</li>
+    </ul>
+
+    <h3>הסימולציה</h3>
+    <ol style="padding-right:25px;">
+      <li><strong>בחר אחד מ-4 המבחנים</strong> מקובץ exam_solutions (אבל אל תסתכל בפתרון!)</li>
+      <li><strong>הקם טיימר ל-90 דקות</strong></li>
+      <li><strong>פתור את המבחן</strong> כאילו זה האמיתי</li>
+      <li><strong>בלי לעצור באמצע</strong></li>
+      <li><strong>אחרי 90 דקות — עצור</strong></li>
+      <li><strong>השווה לפתרון</strong> בקובץ exam_solutions</li>
+    </ol>
+
+    <h3>מה לבדוק אחרי</h3>
+    <ul style="padding-right:25px;">
+      <li>איזה חלקים סיימת?</li>
+      <li>איפה תקעת?</li>
+      <li>איזה דרישות שכחת?</li>
+      <li>איזה באגים פספסת?</li>
+    </ul>
+
+    <div class="important">
+      הסימולציה היא הדרך הכי חשובה <strong>לדעת באיזה רמה אתה</strong>. אם אתה מסיים 70% ב-90 דקות — אתה במצב טוב למבחן 4 שעות.
+    </div>
+  </section>
+
+  <!-- ============ PREP ============ -->
+  <section id="prep">
+    <h2>✅ הכנה לסביבת המבחן</h2>
+
+    <h3>על המחשב — חובה לוודא יום לפני</h3>
+    <ul class="checklist">
+      <li><div class="check-circle"></div><div class="text"><strong>Node.js</strong> מותקן (גרסה 18+) — <code class="inline">node -v</code></div></li>
+      <li><div class="check-circle"></div><div class="text"><strong>npm</strong> עובד — <code class="inline">npm -v</code></div></li>
+      <li><div class="check-circle"></div><div class="text"><strong>VS Code</strong> מותקן עם הרחבות (ESLint, Prettier)</div></li>
+      <li><div class="check-circle"></div><div class="text"><strong>MongoDB</strong> מקומי או חיבור Atlas מוכן</div></li>
+      <li><div class="check-circle"></div><div class="text"><strong>Postman / Thunder Client</strong> מותקן לבדיקת API</div></li>
+      <li><div class="check-circle"></div><div class="text"><strong>Git</strong> מוגדר עם user.name + user.email</div></li>
+      <li><div class="check-circle"></div><div class="text"><strong>Chrome DevTools</strong> — וודא שאתה יודע F12</div></li>
+      <li><div class="check-circle"></div><div class="text"><strong>WinRAR / 7zip</strong> מותקן (להגשה)</div></li>
+    </ul>
+
+    <h3>בדיקה מהירה — הרץ פעם אחת לפני המבחן</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">npm create vite@latest test-app -- --template react-ts
+cd test-app
+npm install
+npm run dev
+
+# אם זה עובד — אתה מוכן!</div>
+  </details>
+  
+
+    <h3>על השולחן ביום המבחן</h3>
+    <ul class="checklist">
+      <li><div class="check-circle"></div><div class="text">המסמכים האלה פתוחים בדפדפן (Tabs)</div></li>
+      <li><div class="check-circle"></div><div class="text">בקבוק מים</div></li>
+      <li><div class="check-circle"></div><div class="text">חטיף קל (גרנולה, פרי)</div></li>
+      <li><div class="check-circle"></div><div class="text">דף ועט לסקיצות</div></li>
+      <li><div class="check-circle"></div><div class="text">שעון או טיימר</div></li>
+      <li><div class="check-circle"></div><div class="text">תעודת זהות</div></li>
+    </ul>
+
+    <h3>הגדרת תיקייה</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">D:/exam/
+├── frontend/        ← Vite project
+├── backend/         ← Express project
+├── README.md        ← הוראות הרצה
+└── notes.txt        ← פתקים שלך</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ SUBMISSION ============ -->
+  <section id="submission">
+    <h2>📦 צ'ק־ליסט הגשה</h2>
+
+    <p style="margin-bottom:15px;">לחץ על כל פריט לסמן ✓ כשבדקת:</p>
+
+    <ul class="checklist" id="submission-checklist">
+      <li data-id="s1"><div class="check-circle"></div><div class="text"><strong>הקוד עובד</strong> — הרצתי <code class="inline">npm run dev</code> ובדקתי</div></li>
+      <li data-id="s2"><div class="check-circle"></div><div class="text"><strong>כל הדרישות מתקיימות</strong> — חזרתי על דף השאלה וסימנתי ✓</div></li>
+      <li data-id="s3"><div class="check-circle"></div><div class="text"><strong>אין שגיאות בconsole</strong> — F12 → Console נקי</div></li>
+      <li data-id="s4"><div class="check-circle"></div><div class="text"><strong>אין warnings ב-React</strong> — missing key, deps וכו'</div></li>
+      <li data-id="s5"><div class="check-circle"></div><div class="text"><strong>בדקתי באייפון/חלון קטן</strong> — responsive בסיסי</div></li>
+      <li data-id="s6"><div class="check-circle"></div><div class="text"><strong>הסרתי console.log מיותרים</strong></div></li>
+      <li data-id="s7"><div class="check-circle"></div><div class="text"><strong>הסרתי TODO/FIXME</strong> או שינויתי ל-comments</div></li>
+      <li data-id="s8"><div class="check-circle"></div><div class="text"><strong>השמות באנגלית</strong> וברורים</div></li>
+      <li data-id="s9"><div class="check-circle"></div><div class="text"><strong>הוספתי README</strong> עם הוראות הרצה</div></li>
+      <li data-id="s10"><div class="check-circle"></div><div class="text"><strong>מחקתי node_modules</strong> מההגשה</div></li>
+      <li data-id="s11"><div class="check-circle"></div><div class="text"><strong>הקובץ הסופי הוא RAR/ZIP</strong> בשם נכון</div></li>
+    </ul>
+
+    <h3>תבנית README.md מינימלית</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;"># Exam Project — Full Stack
+
+## הרצה
+
+### Backend
+```
+cd backend
+npm install
+npm run dev
+```
+השרת רץ על http://localhost:3000
+
+### Frontend
+```
+cd frontend
+npm install
+npm run dev
+```
+הקליינט רץ על http://localhost:5173
+
+## .env
+צריך לייצר .env בתיקיית backend:
+```
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/mydb
+```
+
+## טכנולוגיות
+- React + TypeScript + Vite
+- Express + Node.js
+- MongoDB + Mongoose</div>
+  </details>
+  
+
+    <div class="tip">
+      <strong>טיפ אחרון:</strong> שמור את הקובץ הסופי ב-2 מקומות לפחות. הזרק לעצמך באימייל או על דיסק חיצוני. תוסיף ✓ — מוגן מפני אסונות!
+    </div>
+  </section>
+
+  <footer style="text-align:center;padding:30px;color:rgba(255,255,255,0.6);">
+    <p>📚 חזור לדשבורד לראות את ההתקדמות שלך</p>
+    <p style="font-size:1.3em;color:#28a745;margin-top:15px;">🎯 בהצלחה! אתה תצליח!</p>
+  </footer>
+
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
+<script>
+  // Submission checklist persistence
+  const SUB_KEY = 'exam-submission-checklist';
+
+  function loadChecklist() {
+    try {
+      return JSON.parse(localStorage.getItem(SUB_KEY) || '{}');
+    } catch { return {}; }
+  }
+
+  function saveChecklist(state) {
+    localStorage.setItem(SUB_KEY, JSON.stringify(state));
+  }
+
+  document.querySelectorAll('#submission-checklist li').forEach(item => {
+    const id = item.getAttribute('data-id');
+    const state = loadChecklist();
+    if (state[id]) item.classList.add('checked');
+
+    item.addEventListener('click', () => {
+      const state = loadChecklist();
+      state[id] = !state[id];
+      saveChecklist(state);
+      item.classList.toggle('checked');
+    });
+  });
+
+  // Generic checklists (prep)
+  document.querySelectorAll('.checklist:not(#submission-checklist) li').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('checked');
+    });
+  });
+
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    if (window.scrollY > 300) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+  });
+</script>
+
+<script src="concept-widget.js"></script>
+<script src="theme-toggle.js"></script>
+<script src="breadcrumbs.js"></script>
+<script src="collapse-sections.js"></script>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

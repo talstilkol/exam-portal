@@ -1,0 +1,54 @@
+/* === MOBILE RESPONSIVENESS (375px) === */
+@media (max-width: 768px) {
+  body { padding: 10px; font-size: 0.95em; }
+  .container, .quiz-container, .flashcard-container { width: 100%; padding: 10px; }
+  header { padding: 20px 10px; border-radius: 10px; }
+  header h1 { font-size: 1.8em; }
+  
+  /* Infographics & Layouts */
+  .files-grid, .coverage-grid, .stats-grid, .gamification-section { grid-template-columns: 1fr !important; display: flex !important; flex-direction: column !important; }
+  .visual-box, .deep-dive, .sandbox-block { padding: 15px; margin: 15px 0; overflow-x: auto; }
+  
+  /* Navigation / Hamburger (Basic concept) */
+  .toc-grid { grid-template-columns: 1fr; }
+  
+  /* Typography */
+  h2 { font-size: 1.5em !important; }
+  h3 { font-size: 1.2em !important; }
+}
+
+/* === PRINT STYLES (A4, White background, No clutter) === */
+@media print {
+  @page { margin: 1.5cm; }
+  
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt;
+  }
+  
+  /* Hide UI elements */
+  #cw-fab, #cw-panel, .scroll-top, #theme-toggle, .back-link, nav, .quiz-trigger, button, .sandbox-block button,
+  .gamification-section, .gs-fab, .gs-overlay, #floating-sidebar, .sidebar-wrapper,
+  .quiz-controls, .mode-cards, .toc, .back-link, .breadcrumb, [class*="sidebar"] {
+    display: none !important;
+  }
+  
+  /* Reformat Cards & Sections */
+  section, .file-card, .visual-box, .deep-dive {
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    margin-bottom: 20px !important;
+    color: #000 !important;
+  }
+  
+  h1, h2, h3, h4 { color: #000 !important; page-break-after: avoid; }
+  .term { background: #f0f0f0 !important; color: #000 !important; border-bottom: 1px solid #000 !important; }
+  .code-block { background: #f9f9f9 !important; border: 1px solid #ddd !important; color: #333 !important; font-size: 10pt; white-space: pre-wrap; word-wrap: break-word; }
+  
+  /* Print colors for badges/alerts */
+  .important { border-color: #000 !important; background: #fff !important; }
+  .warning { border-color: #000 !important; background: #fff !important; }
+}

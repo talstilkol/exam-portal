@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Nest.js — תיאוריה מלאה | Full-Stack Portal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',sans-serif;line-height:1.8}
+header{background:#161b22;border-bottom:1px solid #30363d;padding:1rem 2rem;display:flex;align-items:center;gap:1rem}
+header h1{font-size:1.3rem;color:#e34c26}
+.back-btn{background:#21262d;border:1px solid #30363d;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;text-decoration:none;font-size:.85rem}
+.container{max-width:960px;margin:0 auto;padding:1.5rem}
+.concept{background:#161b22;border:1px solid #30363d;border-radius:12px;margin-bottom:1.5rem;overflow:hidden}
+.concept-header{background:#21262d;padding:1rem 1.5rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.concept-header:hover{background:#30363d}
+.concept-header h2{font-size:1rem;color:#e6edf3;display:flex;align-items:center;gap:.6rem}
+.diff{display:inline-block;border-radius:4px;padding:.1rem .5rem;font-size:.72rem;font-weight:700}
+.d4{background:#1f3a1f;color:#3fb950;border:1px solid #3fb950}
+.d5{background:#2d2016;color:#f0883e;border:1px solid #f0883e}
+.d6{background:#2d1616;color:#f85149;border:1px solid #f85149}
+.concept-body{padding:1.5rem;display:none}
+.concept.open .concept-body{display:block}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;margin:.8rem 0}
+.level{background:#0d1117;border-radius:8px;padding:.8rem;border:1px solid #21262d}
+.level-label{font-size:.72rem;color:#8b949e;font-weight:700;text-transform:uppercase;margin-bottom:.3rem}
+.level-text{font-size:.85rem}
+.code-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:1rem;margin:.8rem 0;font-family:'Courier New',monospace;font-size:.8rem;overflow-x:auto;white-space:pre}
+.mistake{background:#1f1117;border-left:3px solid #f85149;padding:.7rem 1rem;border-radius:0 8px 8px 0;margin:.5rem 0;font-size:.85rem}
+.mistake::before{content:"🚫 ";font-size:.8rem}
+.why{background:#112316;border-left:3px solid #3fb950;padding:.7rem 1rem;border-radius:0 8px 8px 0;margin:.5rem 0;font-size:.85rem}
+.why::before{content:"💡 למה Full-Stack: ";font-weight:600;color:#3fb950}
+.diagram{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:1rem;margin:.8rem 0;font-family:'Courier New',monospace;font-size:.82rem;color:#79c0ff;text-align:center}
+h3{color:#79c0ff;font-size:.95rem;margin:.8rem 0 .4rem}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-btn" href="00_dashboard.html">← דשבורד</a>
+  <h1>🏗️ Nest.js — Modules, Controllers, Providers &amp; DI</h1>
+</header>
+<div class="container">
+
+<div class="diagram">
+HTTP Request
+    ↓
+Middleware → Guards → Interceptor (before) → Pipes → Handler → Interceptor (after)
+                                                              ↓
+                                                        Exception Filter (on error)
+</div>
+
+<div class="concept open">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>📦 Nest.js <span class="diff d5">קושי 5</span></h2>
+    <span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">👵 סבתא</div><div class="level-text">ארגון עסק גדול: מנהל, מחלקות, עובדים — כל אחד יודע תפקידו.</div></div>
+      <div class="level"><div class="level-label">🪖 חייל</div><div class="level-text">Framework Node.js עם TypeScript-first, decorators, DI container. רץ מעל Express. CLI: <code>nest new</code>, <code>nest g module/controller/service</code>.</div></div>
+      <div class="level"><div class="level-label">🎓 סטודנט</div><div class="level-text">מושפע מ-Angular: modules, decorators, DI. שכבות: Module → Controller (HTTP) → Service (logic). Built-in: validation, guards, interceptors, exception filters.</div></div>
+    </div>
+    <div class="why">Nest נותן מבנה קבוע לפרויקטים גדולים: איפה routes, business logic ו-data.</div>
+    <div class="code-block">@Module({ controllers: [TasksController], providers: [TasksService] })
+export class TasksModule {}</div>
+    <div class="mistake">לחשוב ש-Nest מחליף Node — Nest רץ <em>על</em> Node, מוסיף שכבת ארגון.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>📁 module <span class="diff d5">קושי 5</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">👵 סבתא</div><div class="level-text">מחלקה בבית-חולים: ילדים, נשים, לב — כל אחת עם הרופאים שלה.</div></div>
+      <div class="level"><div class="level-label">🪖 חייל</div><div class="level-text"><code>@Module</code> decorator: imports, controllers, providers, exports. AppModule = root. Feature modules: TasksModule, UsersModule.</div></div>
+      <div class="level"><div class="level-label">🎓 סטודנט</div><div class="level-text">providers זמינים רק בתוך המודול, אלא אם exported. <code>@Global()</code> — זמין בכל מקום. Module = bounded context ב-DDD.</div></div>
+    </div>
+    <div class="code-block">@Module({
+  imports: [AuthModule],
+  controllers: [TasksController],
+  providers: [TasksService],
+  exports: [TasksService],
+})
+export class TasksModule {}</div>
+    <div class="mistake">לזרוק את כל ה-providers ב-AppModule במקום modules לפי domain.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🎮 controller <span class="diff d4">קושי 4</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">🪖 חייל</div><div class="level-text"><code>@Controller('tasks')</code> = prefix /tasks. Decorators: <code>@Get(), @Post(), @Put(), @Patch(), @Delete()</code>. Params: <code>@Body, @Param, @Query</code>.</div></div>
+      <div class="level"><div class="level-label">🎓 סטודנט</div><div class="level-text">Controllers: HTTP layer only. Status codes default: POST=201, others=200. Error handling דרך throwing — exception filters תופסים.</div></div>
+    </div>
+    <div class="code-block">@Controller('tasks')
+export class TasksController {
+  constructor(private readonly tasksService: TasksService) {}
+
+  @Get()
+  findAll() { return this.tasksService.findAll(); }
+
+  @Post()
+  create(@Body() dto: CreateTaskDto) { return this.tasksService.create(dto); }
+
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) { return this.tasksService.findOne(id); }
+}</div>
+    <div class="mistake">לכתוב business logic כבדה בתוך controller — delegate ל-service.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>⚙️ service &amp; provider <span class="diff d5">קושי 5</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">👵 סבתא</div><div class="level-text">הטבח שיודע מתכונים. הקבלן מקבל הזמנה — הוא מבשל.</div></div>
+      <div class="level"><div class="level-label">🪖 חייל</div><div class="level-text"><code>@Injectable()</code> class = provider. Nest מנהל instance singleton. Service = business logic.</div></div>
+      <div class="level"><div class="level-label">🎓 סטודנט</div><div class="level-text">Provider scopes: DEFAULT (singleton), REQUEST (per-request), TRANSIENT (per-injection). Custom providers: useValue, useFactory.</div></div>
+    </div>
+    <div class="code-block">@Injectable()
+export class TasksService {
+  private tasks: Task[] = [];
+
+  findAll(): Task[] { return this.tasks; }
+  create(dto: CreateTaskDto): Task {
+    const task = { id: Date.now(), ...dto };
+    this.tasks.push(task);
+    return task;
+  }
+}</div>
+    <div class="mistake">ליצור service ידנית עם new במקום לתת ל-Nest להזריק דרך DI.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>💉 Dependency Injection <span class="diff d6">קושי 6</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">👵 סבתא</div><div class="level-text">לפתוח מקרר ולמצוא שכל המוצרים כבר שם — הילדים לא צריכים לקנות בעצמם.</div></div>
+      <div class="level"><div class="level-label">🪖 חייל</div><div class="level-text">Constructor מצהיר תלויות → Nest container מספק. <code>constructor(private tasksService: TasksService)</code></div></div>
+      <div class="level"><div class="level-label">🎓 סטודנט</div><div class="level-text">IoC + DI. TypeScript metadata → reflect-metadata. Circular DI → forwardRef. Benefits: testability, flexibility, composability.</div></div>
+    </div>
+    <div class="code-block">@Controller('tasks')
+export class TasksController {
+  constructor(private readonly tasksService: TasksService) {} // Nest injects!
+}
+
+// בבדיקות:
+const moduleRef = await Test.createTestingModule({
+  providers: [TasksService, { provide: TasksRepo, useValue: mockRepo }],
+}).compile();</div>
+    <div class="mistake">להסתיר תלות בתוך קובץ עם new — קשה לבדוק ולהחליף.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>✅ DTO + ValidationPipe <span class="diff d6">קושי 6</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">🪖 חייל</div><div class="level-text">DTO = Data Transfer Object. Class עם class-validator decorators. ValidationPipe בודק לפני handler.</div></div>
+      <div class="level"><div class="level-label">🎓 סטודנט</div><div class="level-text">Options: whitelist (strip extras), forbidNonWhitelisted (reject), transform (instance creation). PartialType, OmitType, PickType מ-mapped-types.</div></div>
+    </div>
+    <div class="code-block">// dto:
+export class CreateTaskDto {
+  @IsString() @MinLength(3)
+  title: string;
+
+  @IsOptional() @IsBoolean()
+  done?: boolean;
+}
+
+// main.ts:
+app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));</div>
+    <div class="mistake">להגדיר DTO בלי להפעיל ValidationPipe — הבדיקות לא רצות.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🛡️ Guard | 🔧 Pipe | 🔀 Interceptor | ⚠️ Exception Filter <span class="diff d6">קושי 6</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <h3>Guard — מחליט: מותר / אסור</h3>
+    <div class="code-block">@Injectable()
+export class JwtAuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const req = context.switchToHttp().getRequest();
+    return verifyToken(req.headers.authorization);
+  }
+}
+// Usage: @UseGuards(JwtAuthGuard)</div>
+
+    <h3>Pipe — ממיר / מאמת קלט</h3>
+    <div class="code-block">// Built-in: ParseIntPipe, ParseUUIDPipe, DefaultValuePipe
+@Get(':id')
+findOne(@Param('id', ParseIntPipe) id: number) { ... }</div>
+
+    <h3>Interceptor — עוטף handler (לפני + אחרי)</h3>
+    <div class="code-block">@Injectable()
+export class LoggingInterceptor implements NestInterceptor {
+  intercept(ctx: ExecutionContext, next: CallHandler): Observable<any> {
+    const start = Date.now();
+    return next.handle().pipe(tap(() => console.log(`${Date.now()-start}ms`)));
+  }
+}</div>
+
+    <h3>Exception Filter — תופס errors → HTTP response</h3>
+    <div class="code-block">@Catch(NotFoundException)
+export class NotFoundFilter implements ExceptionFilter {
+  catch(exception: NotFoundException, host: ArgumentsHost) {
+    const res = host.switchToHttp().getResponse();
+    res.status(404).json({ error: exception.message });
+  }
+}</div>
+    <div class="mistake">לבלבל interceptor עם guard: guard מחליט אם להמשיך, interceptor עוטף פעולה שממשיכה.</div>
+  </div>
+</div>
+
+</div>
+<script>
+document.querySelectorAll('.concept-header').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
+</script>
+</body>
+</html>

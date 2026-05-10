@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SVCollege 100 Master Exam Kit</title>
+<style>
+:root { --bg:#f8fafc; --ink:#0f172a; --muted:#64748b; --paper:#ffffff; --line:#0f172a; --brand:#7c3aed; --brand2:#06b6d4; --gold:#facc15; --pink:#ff4d8f; --blue:#2563eb; --green:#16a34a; --red:#dc2626; --shadow:8px 8px 0 #0f172a; }
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:Arial,'Heebo','Rubik',sans-serif;background:radial-gradient(circle at 8% 5%,#dbeafe 0,transparent 32%),radial-gradient(circle at 92% 10%,#fce7f3 0,transparent 30%),linear-gradient(180deg,#fff,#eef2ff 70%,#f8fafc);color:var(--ink);line-height:1.65}
+a{color:inherit} .hero{padding:44px 24px 24px;text-align:center;color:white;background:linear-gradient(135deg,#020617,#1e1b4b 45%,#7c3aed 78%,#06b6d4);border-bottom:6px solid #000;position:relative;overflow:hidden} .hero:before{content:'100';position:absolute;left:4%;top:-40px;font-size:190px;font-weight:900;opacity:.08} .hero h1{font-size:clamp(34px,6vw,74px);margin:0;letter-spacing:-1px} .hero p{max-width:1050px;margin:12px auto 0;color:#e0f2fe;font-size:18px} .hero .pill{display:inline-flex;gap:8px;align-items:center;background:#facc15;color:#111827;border:3px solid #000;border-radius:999px;padding:8px 16px;font-weight:900;margin-bottom:12px;box-shadow:4px 4px 0 #000}
+.topnav{position:sticky;top:0;z-index:50;display:flex;gap:8px;overflow:auto;padding:10px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:3px solid #000} .topnav a,.topnav button{white-space:nowrap;border:2px solid #000;border-radius:999px;background:#fff;padding:8px 13px;font-weight:800;text-decoration:none;cursor:pointer} .topnav a:hover,.topnav button:hover{background:#facc15} .wrap{max-width:1440px;margin:auto;padding:20px}
+.grid{display:grid;gap:18px} .stats{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:-6px} .stat{background:#fff;border:3px solid #000;border-radius:18px;padding:16px;box-shadow:5px 5px 0 #000;text-align:center} .stat b{display:block;font-size:34px;color:#7c3aed} .stat span{font-weight:800;color:#334155}
+.section{margin:28px 0;background:rgba(255,255,255,.94);border:3px solid #000;border-radius:24px;box-shadow:var(--shadow);overflow:hidden} .section-head{padding:18px 22px;background:linear-gradient(135deg,#111827,#312e81);color:white;border-bottom:3px solid #000} .section-head h2{margin:0;font-size:clamp(24px,3vw,38px)} .section-head p{margin:4px 0 0;color:#dbeafe} .section-body{padding:22px}
+.cta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px} .cta{display:block;text-decoration:none;background:linear-gradient(135deg,#fff,#fff7ed);border:3px solid #000;border-radius:18px;padding:18px;box-shadow:5px 5px 0 #000;font-weight:900} .cta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000} .cta small{display:block;color:#475569;font-weight:700;margin-top:4px}
+.searchbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fefce8;border:3px solid #000;border-radius:18px;padding:12px;margin-bottom:18px} .searchbar input{flex:1;min-width:260px;border:2px solid #000;border-radius:12px;padding:12px;font-size:16px} .searchbar button{border:2px solid #000;border-radius:12px;padding:11px 14px;background:#111827;color:#fff;font-weight:900;cursor:pointer}
+.exam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px} .exam-card{background:#fff;border:3px solid #000;border-radius:20px;box-shadow:5px 5px 0 #000;overflow:hidden} .exam-card h3{font-size:24px;margin:10px 16px 4px} .exam-card>p{margin:0 16px 14px;color:#334155;font-weight:600} .exam-top{display:flex;justify-content:space-between;gap:8px;padding:12px 16px;border-bottom:3px solid #000;background:#f8fafc} .badge,.tag{display:inline-block;background:#111827;color:#facc15;border:2px solid #000;border-radius:8px;padding:3px 9px;font-weight:900;font-size:12px} .source{font-weight:900;color:#475569;font-size:12px} .pink .exam-top{background:#ffe4ef} .blue .exam-top{background:#dbeafe} .sky .exam-top{background:#e0f2fe} .red .exam-top{background:#fee2e2} .emerald .exam-top{background:#d1fae5} .amber .exam-top{background:#fef3c7} .violet .exam-top{background:#ede9fe} .lime .exam-top{background:#ecfccb} .orange .exam-top{background:#ffedd5}
+.q-list{border-top:2px dashed #cbd5e1} .q-link{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid #e2e8f0} .q-link p{margin:3px 0 0;color:#475569;font-size:13px} .q-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end} .q-actions a,.q-actions button{border:2px solid #000;border-radius:9px;padding:6px 9px;background:#fff;text-decoration:none;font-weight:900;cursor:pointer;font-size:12px} .q-actions button{background:#facc15}
+.timeline{counter-reset:step;display:grid;gap:12px} .step{counter-increment:step;display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start} .step:before{content:counter(step);width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#facc15;border:3px solid #000;font-weight:900;font-size:20px;box-shadow:3px 3px 0 #000} .step div{background:#fff;border:2px solid #000;border-radius:14px;padding:12px} .step h3{margin:0 0 4px;font-size:18px}
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px} .mini-card{background:linear-gradient(180deg,#fff,#f8fafc);border:3px solid #000;border-radius:18px;padding:16px;box-shadow:4px 4px 0 #000} .mini-card h3{margin:0 0 6px;font-size:22px;color:#7c3aed} .muted{color:#64748b} .small{font-size:13px}
+.code-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px} .code-card{background:#0f172a;border:3px solid #000;border-radius:18px;overflow:hidden;box-shadow:5px 5px 0 #000;color:#e2e8f0} .code-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#111827;color:#facc15;border-bottom:2px solid #000} .copy-btn{background:#facc15;color:#111827;border:2px solid #000;border-radius:8px;padding:5px 9px;font-weight:900;cursor:pointer} pre{margin:0;direction:ltr;text-align:left;white-space:pre;overflow:auto;padding:15px;font-family:Consolas,'Courier New',monospace;font-size:13px;line-height:1.55} code{font-family:inherit}
+.table-wrap{overflow:auto;border:3px solid #000;border-radius:16px} table{width:100%;border-collapse:collapse;background:#fff} th{background:#111827;color:#facc15;text-align:right} th,td{border:1px solid #94a3b8;padding:10px;vertical-align:top} tr:nth-child(even) td{background:#f8fafc} input[type=checkbox]{transform:scale(1.15);margin-left:6px}
+.mistake{border:3px solid #000;border-radius:14px;background:#fff;margin:10px 0;overflow:hidden} .mistake summary{cursor:pointer;background:#fee2e2;padding:13px 16px;font-weight:900} .mistake ul{margin:0;padding:14px 34px 14px 14px} .mistake li{margin-bottom:6px}
+.split{display:grid;grid-template-columns:1.1fr .9fr;gap:18px} @media(max-width:900px){.split{grid-template-columns:1fr} .q-link{display:block} .q-actions{justify-content:flex-start;margin-top:8px}}
+.preview{position:fixed;inset:0;background:rgba(2,6,23,.82);z-index:200;display:none;padding:20px} .preview.active{display:block} .preview-box{height:100%;max-width:1400px;margin:auto;background:#fff;border:4px solid #000;border-radius:20px;overflow:hidden;box-shadow:10px 10px 0 #000;display:grid;grid-template-rows:auto 1fr} .preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;background:#facc15;border-bottom:3px solid #000;font-weight:900} .preview iframe{width:100%;height:100%;border:0} .close{border:2px solid #000;border-radius:10px;background:#111827;color:#fff;padding:7px 12px;font-weight:900;cursor:pointer}
+.print-note{background:#ecfeff;border:3px solid #000;border-radius:18px;padding:16px;font-weight:800} .kbd{display:inline-block;border:2px solid #000;border-radius:6px;background:#fff;padding:1px 6px;font-weight:900} .focus{background:linear-gradient(135deg,#fef3c7,#fff);border:3px solid #000;border-radius:18px;padding:16px;margin:12px 0}
+@media print{.topnav,.preview,.copy-btn,.q-actions,.searchbar{display:none!important} body{background:white} .section,.stat,.exam-card,.mini-card{box-shadow:none;break-inside:avoid} .hero{color:#111827;background:white}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="pill">🎯 ערכת 100 למבחן · SVCollege</div>
+  <h1>Fullstack Master Kit</h1>
+  <p>דף HTML אחד שמרכז את כל החומר: כל מבחני התרגול, פתרונות מלאים, חומרי שיעור, שיעורי בית, תבניות קוד, צ׳ק־ליסט טעויות, ותוכנית עבודה למבחן.</p>
+</header>
+<nav class="topnav">
+  <a href="#dashboard">דשבורד</a><a href="#exams">כל המבחנים</a><a href="#plan">תוכנית 4 שעות</a><a href="#topics">מפת חומר</a><a href="#templates">תבניות קוד</a><a href="#homework">שיעורי בית</a><a href="#mistakes">טעויות</a><a href="#qa">QA</a><button onclick="window.print()">הדפס</button>
+</nav>
+<main class="wrap">
+  <section id="dashboard" class="section">
+    <div class="section-head"><h2>🚀 דשבורד 100 — מה יש כאן</h2><p>התחלה מהירה לכל החומרים והפתרונות.</p></div>
+    <div class="section-body">
+      <div class="grid stats">
+        <div class="stat"><b>25</b><span>עמודי שאלות מלאים</span></div>
+        <div class="stat"><b>55</b><span>קבצי קוד מיוצאים</span></div>
+        <div class="stat"><b>4142</b><span>הערות שורה/Debug</span></div>
+        <div class="stat"><b>0</b><span>קישורים שבורים בדוח</span></div>
+        <div class="stat"><b>9</b><span>מבחנים/מערכות</span></div>
+        <div class="stat"><b>100</b><span>צ׳ק־ליסט מטרה</span></div>
+      </div>
+      <div class="focus">
+        <h3>איך להשתמש בזה בזמן לימוד?</h3>
+        <p><strong>שלב 1:</strong> פתחי את “כל המבחנים” ובחרי מערכת. <strong>שלב 2:</strong> קראי את השאלה המלאה בעמוד הפתרון. <strong>שלב 3:</strong> עברי לפי קבצים: בלוקים קטנים → קובץ מלא → קובץ הבא. <strong>שלב 4:</strong> סמני צ׳ק־ליסטים. <strong>שלב 5:</strong> תרגלי כתיבה מחדש בלי להסתכל.</p>
+      </div>
+      <div class="cta-grid">
+        <a class="cta" href="qa-bundle-r3/index.html" target="_blank">📚 אינדקס הפתרונות המלא <small>25 שאלות, עמוד נפרד לכל שאלה</small></a>
+        <a class="cta" href="round4-grade-report.html" target="_blank">📊 דוח QA וציונים <small>חולשות, תיקונים ומדדים</small></a>
+        <span class="cta" style="opacity:.5;cursor:default">💾 קוד מיוצא <small>לא זמין בגרסה זו</small></span>
+        <a class="cta" href="claude-study123-full.html" target="_blank">✨ תוצר Claude מלא <small>study123 ללא קיצוץ</small></a>
+        <a class="cta" href="fullstack-colorful-illustrated.html" target="_blank">🌈 דף Fullstack מאויר <small>זרימות, שכבות וקבצים</small></a>
+        <a class="cta" href="combined-claude-full.html" target="_blank">🧩 משולב עם Claude <small>כל התוצרים יחד</small></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="exams" class="section">
+    <div class="section-head"><h2>🧪 כל שאלות המבחנים — לא מפספסים אף שאלה</h2><p>כל כרטיס פותח עמוד מלא עם נוסח שאלה, פירוק סעיפים, בלוקים קטנים וקובץ מלא.</p></div>
+    <div class="section-body">
+      <div class="searchbar"><strong>🔎 חיפוש מהיר:</strong><input id="search" placeholder="חפשי: React, Express, Bank, useEffect, Mongo, טיסות, ולידציה..." oninput="filterCards()"><button onclick="clearSearch()">נקה</button></div>
+      <div class="exam-grid">
+    <article class="exam-card pink" id="exam-football" data-tags="Football Club עותק של מבחן אימון ניהול קבוצת כדורגל: Login, Register, Team, Add Player, Edit Player + JS סכום לפי אורך מספר + Express משחקי מחשב.">
+      <div class="exam-top"><span class="badge">React + JS + Express</span><span class="source">עותק של מבחן אימון</span></div>
+      <h3>Football Club</h3>
+      <p>ניהול קבוצת כדורגל: Login, Register, Team, Add Player, Edit Player + JS סכום לפי אורך מספר + Express משחקי מחשב.</p>
+      <div class="q-list">
+        <div class="q-link" data-tags="Football Club React — Football Club Login/Register/Team/Add/Edit, ולידציות שחקנים, ניווט לפי teamName">
+          <div><strong>שאלה 1 · React — Football Club</strong><p>Login/Register/Team/Add/Edit, ולידציות שחקנים, ניווט לפי teamName</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/football-q1.html')">תצוגה</button><a href="qa-bundle-r3/football-q1.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="Football Club JavaScript — סכום לפי אורך מספר פונקציה שמקבלת מערך ומחזירה אובייקט: אורך מספר → סכום">
+          <div><strong>שאלה 2 · JavaScript — סכום לפי אורך מספר</strong><p>פונקציה שמקבלת מערך ומחזירה אובייקט: אורך מספר → סכום</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/football-q2.html')">תצוגה</button><a href="qa-bundle-r3/football-q2.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="Football Club Express — שרת משחקי מחשב REST API למשחקים: קבלה, הוספה וסינון לפי שנה/שם/מחיר">
+          <div><strong>שאלה 3 · Express — שרת משחקי מחשב</strong><p>REST API למשחקים: קבלה, הוספה וסינון לפי שנה/שם/מחיר</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/football-q3.html')">תצוגה</button><a href="qa-bundle-r3/football-q3.html" target="_blank">פתח מלא</a></div>
+        </div></div>
+    </article>
+    <article class="exam-card blue" id="exam-parking" data-tags="SV Parking עותק של מבחן חדש 2023 אפליקציית חניה: הרשמה, כניסה, בחירת עיר ורכב, הפעלת חניה, היסטוריה ותשלום.">
+      <div class="exam-top"><span class="badge">React + JS + Server</span><span class="source">עותק של מבחן חדש 2023</span></div>
+      <h3>SV Parking</h3>
+      <p>אפליקציית חניה: הרשמה, כניסה, בחירת עיר ורכב, הפעלת חניה, היסטוריה ותשלום.</p>
+      <div class="q-list">
+        <div class="q-link" data-tags="SV Parking React — SV Parking Login/Signup/Choose/Active/History, ערים ועלויות, ולידציות רכב וסיסמה">
+          <div><strong>שאלה 1 · React — SV Parking</strong><p>Login/Signup/Choose/Active/History, ערים ועלויות, ולידציות רכב וסיסמה</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/parking-q1.html')">תצוגה</button><a href="qa-bundle-r3/parking-q1.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="SV Parking JavaScript — רצפים שסכומם יעד ספירת רצפים רציפים במערך שסכומם שווה למספר נתון">
+          <div><strong>שאלה 2 · JavaScript — רצפים שסכומם יעד</strong><p>ספירת רצפים רציפים במערך שסכומם שווה למספר נתון</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/parking-q2.html')">תצוגה</button><a href="qa-bundle-r3/parking-q2.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="SV Parking Server — DB של מורים שרת/DB עם routes לניהול נתוני מורים לפי דרישות המבחן">
+          <div><strong>שאלה 3 · Server — DB של מורים</strong><p>שרת/DB עם routes לניהול נתוני מורים לפי דרישות המבחן</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/parking-q3.html')">תצוגה</button><a href="qa-bundle-r3/parking-q3.html" target="_blank">פתח מלא</a></div>
+        </div></div>
+    </article>
+    <article class="exam-card sky" id="exam-flights" data-tags="בקרת טיסות עותק של מבחן טיסות מערכת בקרה בצד לקוח בלבד: כניסה עם סיסמה, רשימת טיסות, מיון, הוספה ומחיקה.">
+      <div class="exam-top"><span class="badge">React + JS + Server</span><span class="source">עותק של מבחן טיסות</span></div>
+      <h3>בקרת טיסות</h3>
+      <p>מערכת בקרה בצד לקוח בלבד: כניסה עם סיסמה, רשימת טיסות, מיון, הוספה ומחיקה.</p>
+      <div class="q-list">
+        <div class="q-link" data-tags="בקרת טיסות React — מערכת בקרת טיסות סיסמה 12345, Control Panel, כל הטיסות, sort/add/delete, מובייל">
+          <div><strong>שאלה 1 · React — מערכת בקרת טיסות</strong><p>סיסמה 12345, Control Panel, כל הטיסות, sort/add/delete, מובייל</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/flights-q1.html')">תצוגה</button><a href="qa-bundle-r3/flights-q1.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="בקרת טיסות JavaScript — ספירת מספרים במטריצה פונקציה לעיבוד מטריצה ומספרים לפי הדרישה">
+          <div><strong>שאלה 2 · JavaScript — ספירת מספרים במטריצה</strong><p>פונקציה לעיבוד מטריצה ומספרים לפי הדרישה</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/flights-q2.html')">תצוגה</button><a href="qa-bundle-r3/flights-q2.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="בקרת טיסות Server — DB סטודנטים שרת סטודנטים עם endpoints ופעולות נתונים">
+          <div><strong>שאלה 3 · Server — DB סטודנטים</strong><p>שרת סטודנטים עם endpoints ופעולות נתונים</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/flights-q3.html')">תצוגה</button><a href="qa-bundle-r3/flights-q3.html" target="_blank">פתח מלא</a></div>
+        </div></div>
+    </article>
+    <article class="exam-card red" id="exam-helpme" data-tags="HelpMe עותק של מבחן מועד א פולסטאק אפליקציית חירום: הרשמה חד־פעמית, מוקד נבחר, כפתור הצילו, ביטול עם סיסמה, תפריט מוקדים.">
+      <div class="exam-top"><span class="badge">React + JS/Node + Theory</span><span class="source">עותק של מבחן מועד א פולסטאק</span></div>
+      <h3>HelpMe</h3>
+      <p>אפליקציית חירום: הרשמה חד־פעמית, מוקד נבחר, כפתור הצילו, ביטול עם סיסמה, תפריט מוקדים.</p>
+      <div class="q-list">
+        <div class="q-link" data-tags="HelpMe React — HelpMe הרשמה, מסך פתיחה, מוקדים 100/101/102, הצלה וביטול">
+          <div><strong>שאלה 1 · React — HelpMe</strong><p>הרשמה, מסך פתיחה, מוקדים 100/101/102, הצלה וביטול</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/helpme-q1.html')">תצוגה</button><a href="qa-bundle-r3/helpme-q1.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="HelpMe JavaScript/Node — זיהוי סדרה פונקציה/חבילה לזיהוי סדרת מספרים לפי הדרישה">
+          <div><strong>שאלה 2 · JavaScript/Node — זיהוי סדרה</strong><p>פונקציה/חבילה לזיהוי סדרת מספרים לפי הדרישה</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/helpme-q2.html')">תצוגה</button><a href="qa-bundle-r3/helpme-q2.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="HelpMe תאוריה — HTTP/Mongo/React/functions תשובות תאוריה מסודרות לנושאי ליבה">
+          <div><strong>שאלה 3 · תאוריה — HTTP/Mongo/React/functions</strong><p>תשובות תאוריה מסודרות לנושאי ליבה</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/helpme-q3.html')">תצוגה</button><a href="qa-bundle-r3/helpme-q3.html" target="_blank">פתח מלא</a></div>
+        </div></div>
+    </article>
+    <article class="exam-card emerald" id="exam-bank" data-tags="SV Bank עותק של מבחן מועד ב פולסטאק מערכת בנק: מנהל ולקוחות, הרשמה, פעולות, עריכה, יתרה, מחיקה ופירוט הוצאות.">
+      <div class="exam-top"><span class="badge">React + JS + Express</span><span class="source">עותק של מבחן מועד ב פולסטאק</span></div>
+      <h3>SV Bank</h3>
+      <p>מערכת בנק: מנהל ולקוחות, הרשמה, פעולות, עריכה, יתרה, מחיקה ופירוט הוצאות.</p>
+      <div class="q-list">
+        <div class="q-link" data-tags="SV Bank React — SV Bank Login ADMIN/Users, Register, Client page, Action/Edit/Balance, Manager">
+          <div><strong>שאלה 1 · React — SV Bank</strong><p>Login ADMIN/Users, Register, Client page, Action/Edit/Balance, Manager</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/bank-q1.html')">תצוגה</button><a href="qa-bundle-r3/bank-q1.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="SV Bank JavaScript — מיון ספרות ללא sort אלגוריתם למיון ספרות בלי להשתמש ב-sort">
+          <div><strong>שאלה 2 · JavaScript — מיון ספרות ללא sort</strong><p>אלגוריתם למיון ספרות בלי להשתמש ב-sort</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/bank-q2.html')">תצוגה</button><a href="qa-bundle-r3/bank-q2.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="SV Bank Express — שמירת טקסט לקובץ שרת Express עם כתיבה/קריאה מקובץ טקסט">
+          <div><strong>שאלה 3 · Express — שמירת טקסט לקובץ</strong><p>שרת Express עם כתיבה/קריאה מקובץ טקסט</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/bank-q3.html')">תצוגה</button><a href="qa-bundle-r3/bank-q3.html" target="_blank">פתח מלא</a></div>
+        </div></div>
+    </article>
+    <article class="exam-card amber" id="exam-logistics" data-tags="מחסן לוגיסטי עותק של מבחן מחסן לוגיסטי מערכת מחסן: עובדים, רישיון מלגזה, מוצרים, כניסה, סימון מוצרים במקום והיסטוריה.">
+      <div class="exam-top"><span class="badge">React + JS</span><span class="source">עותק של מבחן מחסן לוגיסטי</span></div>
+      <h3>מחסן לוגיסטי</h3>
+      <p>מערכת מחסן: עובדים, רישיון מלגזה, מוצרים, כניסה, סימון מוצרים במקום והיסטוריה.</p>
+      <div class="q-list">
+        <div class="q-link" data-tags="מחסן לוגיסטי React — Logistics Management Sign up/Login, מוצרים שאינם במקום, הרשאות מלגזה, היסטוריית כניסות">
+          <div><strong>שאלה 1 · React — Logistics Management</strong><p>Sign up/Login, מוצרים שאינם במקום, הרשאות מלגזה, היסטוריית כניסות</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/logistics-q1.html')">תצוגה</button><a href="qa-bundle-r3/logistics-q1.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="מחסן לוגיסטי JavaScript — בינארי לדצימלי ופלינדרום המרה ובדיקת פלינדרום לפי דרישת המבחן">
+          <div><strong>שאלה 2 · JavaScript — בינארי לדצימלי ופלינדרום</strong><p>המרה ובדיקת פלינדרום לפי דרישת המבחן</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/logistics-q2.html')">תצוגה</button><a href="qa-bundle-r3/logistics-q2.html" target="_blank">פתח מלא</a></div>
+        </div></div>
+    </article>
+    <article class="exam-card violet" id="exam-currency" data-tags="מחשבון המרה עותק של מבחן מחשבון המרה מחשבון מטבע: המרה, רשימת המרות, עדכון/הוספת מטבעות, שיתוף בפייסבוק.">
+      <div class="exam-top"><span class="badge">React + JS</span><span class="source">עותק של מבחן מחשבון המרה</span></div>
+      <h3>מחשבון המרה</h3>
+      <p>מחשבון מטבע: המרה, רשימת המרות, עדכון/הוספת מטבעות, שיתוף בפייסבוק.</p>
+      <div class="q-list">
+        <div class="q-link" data-tags="מחשבון המרה React — Currency Exchange From/To, Start disabled עד מילוי, Update, Share, Exchange list">
+          <div><strong>שאלה 1 · React — Currency Exchange</strong><p>From/To, Start disabled עד מילוי, Update, Share, Exchange list</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/currency-q1.html')">תצוגה</button><a href="qa-bundle-r3/currency-q1.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="מחשבון המרה JavaScript — מיקום בסדרת Fibonacci מותאמת מציאת מיקום ערך בסדרה לפי דרישת המבחן">
+          <div><strong>שאלה 2 · JavaScript — מיקום בסדרת Fibonacci מותאמת</strong><p>מציאת מיקום ערך בסדרה לפי דרישת המבחן</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/currency-q2.html')">תצוגה</button><a href="qa-bundle-r3/currency-q2.html" target="_blank">פתח מלא</a></div>
+        </div></div>
+    </article>
+    <article class="exam-card lime" id="exam-willing" data-tags="Willing App עותק של מבחן פולסטאק מועד ב 2022 אפליקציית התנדבות: הוספה, מציאת התנדבות לפי עיר, בחירה/אישור ומחיקה מהרשימה.">
+      <div class="exam-top"><span class="badge">React + JS + Server</span><span class="source">עותק של מבחן פולסטאק מועד ב 2022</span></div>
+      <h3>Willing App</h3>
+      <p>אפליקציית התנדבות: הוספה, מציאת התנדבות לפי עיר, בחירה/אישור ומחיקה מהרשימה.</p>
+      <div class="q-list">
+        <div class="q-link" data-tags="Willing App React — Willing App Home/Add/Find/All, ערים ייחודיות, toggle בחירה, מחיקה אחרי אישור">
+          <div><strong>שאלה 1 · React — Willing App</strong><p>Home/Add/Find/All, ערים ייחודיות, toggle בחירה, מחיקה אחרי אישור</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/willing-q1.html')">תצוגה</button><a href="qa-bundle-r3/willing-q1.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="Willing App JavaScript — זוגיים/אי זוגיים ייחודיים ספירה בלי כפילויות ועם טיפול תקין במערך">
+          <div><strong>שאלה 2 · JavaScript — זוגיים/אי זוגיים ייחודיים</strong><p>ספירה בלי כפילויות ועם טיפול תקין במערך</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/willing-q2.html')">תצוגה</button><a href="qa-bundle-r3/willing-q2.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="Willing App Server — קורסים ב-MongoDB Express/Mongo לניהול קורסים ופעולות CRUD">
+          <div><strong>שאלה 3 · Server — קורסים ב-MongoDB</strong><p>Express/Mongo לניהול קורסים ופעולות CRUD</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/willing-q3.html')">תצוגה</button><a href="qa-bundle-r3/willing-q3.html" target="_blank">פתח מלא</a></div>
+        </div></div>
+    </article>
+    <article class="exam-card orange" id="exam-travel" data-tags="Travel-SV עותק של מבחן פולסטאק מועד ג יומן מסע: SignIn, Home עם מסעות, Add, Update, Logout, ניווט שמופעל רק אחרי התחברות.">
+      <div class="exam-top"><span class="badge">React + JS + Node package</span><span class="source">עותק של מבחן פולסטאק מועד ג</span></div>
+      <h3>Travel-SV</h3>
+      <p>יומן מסע: SignIn, Home עם מסעות, Add, Update, Logout, ניווט שמופעל רק אחרי התחברות.</p>
+      <div class="q-list">
+        <div class="q-link" data-tags="Travel-SV React — Travel-SV SignIn svcollege/abcde, nav disabled, home/add/update/logout, דפדוף מסעות">
+          <div><strong>שאלה 1 · React — Travel-SV</strong><p>SignIn svcollege/abcde, nav disabled, home/add/update/logout, דפדוף מסעות</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/travel-q1.html')">תצוגה</button><a href="qa-bundle-r3/travel-q1.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="Travel-SV JavaScript — תת־מערך לפי סדר בדיקה אם מערך חלקי מופיע בתוך מערך שלם לפי סדר">
+          <div><strong>שאלה 2 · JavaScript — תת־מערך לפי סדר</strong><p>בדיקה אם מערך חלקי מופיע בתוך מערך שלם לפי סדר</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/travel-q2.html')">תצוגה</button><a href="qa-bundle-r3/travel-q2.html" target="_blank">פתח מלא</a></div>
+        </div>
+        <div class="q-link" data-tags="Travel-SV Node package — מחלקת קובץ טקסט מחלקה/חבילה לניהול קובץ טקסט לפי דרישות">
+          <div><strong>שאלה 3 · Node package — מחלקת קובץ טקסט</strong><p>מחלקה/חבילה לניהול קובץ טקסט לפי דרישות</p></div>
+          <div class="q-actions"><button onclick="previewPage('qa-bundle-r3/travel-q3.html')">תצוגה</button><a href="qa-bundle-r3/travel-q3.html" target="_blank">פתח מלא</a></div>
+        </div></div>
+    </article></div>
+    </div>
+  </section>
+
+  <section id="plan" class="section">
+    <div class="section-head"><h2>⏱ תוכנית עבודה ל־4 שעות מבחן</h2><p>הסדר שמצמצם טעויות ומביא מקסימום ניקוד.</p></div>
+    <div class="section-body split">
+      <div class="timeline">
+        <div class="step"><div><h3>10 דקות — קריאת כל השאלה וסימון סעיפים</h3><p>מסמנים מודל נתונים, עמודים, routes, ולידציות, פעולות CRUD, ומגבלות כמו “בלי שרת”, “רק צד לקוח”, “בלי sort”.</p></div></div>
+        <div class="step"><div><h3>20 דקות — תכנון קבצים ו־state</h3><p>כותבים מערך התחלתי/Model, שמות עמודים, פונקציות add/update/delete, ותוכנית routing.</p></div></div>
+        <div class="step"><div><h3>90 דקות — שלד עובד</h3><p>Header/Nav, Routes, Home/List, טפסים בסיסיים, מעבר עמודים. קודם שהכול יעבוד, אחר כך עיצוב.</p></div></div>
+        <div class="step"><div><h3>60 דקות — ולידציות ודרישות קצה</h3><p>סיסמאות, מספרים, uniqueness, טווחים, select, checkbox, disabled buttons, alert/errors.</p></div></div>
+        <div class="step"><div><h3>45 דקות — JS / Server</h3><p>שאלת JS נקייה עם return; שאלת Express עם routes, status, body, file/db.</p></div></div>
+        <div class="step"><div><h3>30 דקות — עיצוב והתאמה למובייל</h3><p>רק אחרי שהלוגיקה עובדת. Flex/Grid, רספונסיבי, נראות מסודרת.</p></div></div>
+        <div class="step"><div><h3>15 דקות — בדיקות סופיות ושמירה</h3><p>בודקים שכל סעיף קיים, אין קוד לא קשור, השם/תיקיות נכונים, והפרויקט נשמר לפי הוראות.</p></div></div>
+      </div>
+      <div class="print-note"><h3>🧠 כלל זהב</h3><p><strong>React:</strong> state + map + validation + router. <br><strong>JS:</strong> function + checks + loops + return. <br><strong>Express:</strong> app + middleware + routes + status. <br><strong>Mongo:</strong> schema + model + await.</p><p>כל סעיף בשאלה הופך לשורת checklist. לא עוברים סעיף עד שראית אותו עובד במסך/console/network.</p></div>
+    </div>
+  </section>
+
+  <section id="topics" class="section">
+    <div class="section-head"><h2>🗺 מפת חומר לפי נושא</h2><p>כל החומר שהופיע בשיעורים, שיעורי הבית והמבחנים.</p></div>
+    <div class="section-body"><div class="mini-grid"><article class="mini-card" data-tags="React רכיבים, props, useState, useEffect, useRef, Router, useNavigate, Context כל מבחני React מתחילים ממודל נתונים + state + עמודים + ולידציות."><h3>React</h3><p><strong>רכיבים, props, useState, useEffect, useRef, Router, useNavigate, Context</strong></p><p>כל מבחני React מתחילים ממודל נתונים + state + עמודים + ולידציות.</p></article><article class="mini-card" data-tags="JavaScript מערכים, loops, map/filter/find/reduce, objects, DOM, errors, async/fetch שאלות JS הן פונקציה נקייה: קלט → בדיקות → לולאות → החזרה."><h3>JavaScript</h3><p><strong>מערכים, loops, map/filter/find/reduce, objects, DOM, errors, async/fetch</strong></p><p>שאלות JS הן פונקציה נקייה: קלט → בדיקות → לולאות → החזרה.</p></article><article class="mini-card" data-tags="Express / Node npm, package.json, routes, middleware, GET/POST/PUT/DELETE, fs שאלת Server מתחילה משרת קטן, app.use(express.json()), ואז routes."><h3>Express / Node</h3><p><strong>npm, package.json, routes, middleware, GET/POST/PUT/DELETE, fs</strong></p><p>שאלת Server מתחילה משרת קטן, app.use(express.json()), ואז routes.</p></article><article class="mini-card" data-tags="MongoDB database, collection, document, schema, model, find/create/update/delete DB לא מדבר עם Frontend. רק Backend שומר/קורא."><h3>MongoDB</h3><p><strong>database, collection, document, schema, model, find/create/update/delete</strong></p><p>DB לא מדבר עם Frontend. רק Backend שומר/קורא.</p></article><article class="mini-card" data-tags="TypeScript type, interface, enum, union, typed functions, React props/state טייפסקריפט = לחשוב מראש איזה סוג כל דבר."><h3>TypeScript</h3><p><strong>type, interface, enum, union, typed functions, React props/state</strong></p><p>טייפסקריפט = לחשוב מראש איזה סוג כל דבר.</p></article><article class="mini-card" data-tags="Tailwind / CSS layout, flex/grid, responsive, utility classes, UI/UX עיצוב בסוף, אבל חייב שיהיה ברור ומסודר."><h3>Tailwind / CSS</h3><p><strong>layout, flex/grid, responsive, utility classes, UI/UX</strong></p><p>עיצוב בסוף, אבל חייב שיהיה ברור ומסודר.</p></article><article class="mini-card" data-tags="Debug console, debugger, Network, Application, React DevTools בודקים קלט, state, render, request, response."><h3>Debug</h3><p><strong>console, debugger, Network, Application, React DevTools</strong></p><p>בודקים קלט, state, render, request, response.</p></article><article class="mini-card" data-tags="AI נכון לא להעתיק עיוור, לבדוק כל שורה, לנהל גרסאות החומר מדגיש לוודא כל שורת קוד ולא לרוץ אחרי הכלי."><h3>AI נכון</h3><p><strong>לא להעתיק עיוור, לבדוק כל שורה, לנהל גרסאות</strong></p><p>החומר מדגיש לוודא כל שורת קוד ולא לרוץ אחרי הכלי.</p></article></div></div>
+  </section>
+
+  <section id="templates" class="section">
+    <div class="section-head"><h2>🧱 תבניות קוד זהב</h2><p>בלוקים קצרים שאפשר לשנן. בעמודי הפתרונות המלאים יש פירוק לכל קובץ וקובץ.</p></div>
+    <div class="section-body"><div class="code-grid">
+      <article class="code-card">
+      <div class="code-head"><strong>React App.jsx — שלד מלא למבחן</strong><button class="copy-btn" onclick="copyCode(this)">העתק</button></div>
+      <p class="muted small">Routes, useState, add/update/delete, form, navigate</p>
+      <pre><code>// App.jsx — תבנית React למבחן
+import { useMemo, useState } from &quot;react&quot;;
+import { BrowserRouter, Routes, Route, Link, useNavigate } from &quot;react-router-dom&quot;;
+import &quot;./App.css&quot;;
+
+const initialItems = [
+  { id: 1, name: &quot;Demo&quot;, active: true, amount: 10 }
+];
+
+function isText(value, min = 1) {
+  return value.trim().length &gt;= min;
+}
+
+function App() {
+  const [items, setItems] = useState(initialItems);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  function addItem(item) {
+    setItems(prev =&gt; [...prev, { ...item, id: Date.now() }]);
+  }
+
+  function updateItem(id, updates) {
+    setItems(prev =&gt; prev.map(item =&gt; item.id === id ? { ...item, ...updates } : item));
+  }
+
+  function deleteItem(id) {
+    setItems(prev =&gt; prev.filter(item =&gt; item.id !== id));
+  }
+
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;header className=&quot;app-header&quot;&gt;
+        &lt;h1&gt;SVCollege Exam App&lt;/h1&gt;
+        &lt;nav&gt;
+          &lt;Link to=&quot;/&quot;&gt;Home&lt;/Link&gt;
+          &lt;Link to=&quot;/add&quot;&gt;Add&lt;/Link&gt;
+        &lt;/nav&gt;
+      &lt;/header&gt;
+      &lt;Routes&gt;
+        &lt;Route path=&quot;/&quot; element={&lt;Home items={items} onDelete={deleteItem} /&gt;} /&gt;
+        &lt;Route path=&quot;/add&quot; element={&lt;AddPage onAdd={addItem} /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+function Home({ items, onDelete }) {
+  return &lt;main className=&quot;grid&quot;&gt;{items.map(item =&gt; &lt;Card key={item.id} item={item} onDelete={onDelete} /&gt;)}&lt;/main&gt;;
+}
+
+function Card({ item, onDelete }) {
+  return &lt;section className=&quot;card&quot;&gt;&lt;h2&gt;{item.name}&lt;/h2&gt;&lt;button onClick={() =&gt; onDelete(item.id)}&gt;Delete&lt;/button&gt;&lt;/section&gt;;
+}
+
+function AddPage({ onAdd }) {
+  const navigate = useNavigate();
+  const [name, setName] = useState(&quot;&quot;);
+  function submit(e) {
+    e.preventDefault();
+    if (!isText(name, 2)) return alert(&quot;Name must contain at least 2 chars&quot;);
+    onAdd({ name, active: true, amount: 0 });
+    navigate(&quot;/&quot;);
+  }
+  return &lt;form onSubmit={submit}&gt;&lt;input value={name} onChange={e =&gt; setName(e.target.value)} /&gt;&lt;button&gt;Add&lt;/button&gt;&lt;/form&gt;;
+}
+
+export default App;</code></pre>
+    </article>
+      <article class="code-card">
+      <div class="code-head"><strong>Express/Mongo server.js — שלד CRUD</strong><button class="copy-btn" onclick="copyCode(this)">העתק</button></div>
+      <p class="muted small">Middleware, schema, model, GET/POST/PUT/DELETE</p>
+      <pre><code>// server.js — תבנית Express/Mongo למבחן
+import express from &quot;express&quot;;
+import cors from &quot;cors&quot;;
+import mongoose from &quot;mongoose&quot;;
+
+const app = express();
+const PORT = 5000;
+
+app.use(cors());
+app.use(express.json());
+
+mongoose.connect(&quot;mongodb://127.0.0.1:27017/sv_exam_db&quot;)
+  .then(() =&gt; console.log(&quot;Mongo connected&quot;))
+  .catch(err =&gt; console.log(err.message));
+
+const itemSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  category: String
+});
+
+const Item = mongoose.model(&quot;Item&quot;, itemSchema);
+
+app.get(&quot;/api/items&quot;, async (req, res) =&gt; {
+  const items = await Item.find();
+  res.json(items);
+});
+
+app.post(&quot;/api/items&quot;, async (req, res) =&gt; {
+  const { name, price, category } = req.body;
+  if (!name || typeof price !== &quot;number&quot;) {
+    return res.status(400).json({ message: &quot;Invalid data&quot; });
+  }
+  const item = await Item.create({ name, price, category });
+  res.status(201).json(item);
+});
+
+app.put(&quot;/api/items/:id&quot;, async (req, res) =&gt; {
+  const item = await Item.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  if (!item) return res.status(404).json({ message: &quot;Not found&quot; });
+  res.json(item);
+});
+
+app.delete(&quot;/api/items/:id&quot;, async (req, res) =&gt; {
+  await Item.findByIdAndDelete(req.params.id);
+  res.json({ message: &quot;Deleted&quot; });
+});
+
+app.listen(PORT, () =&gt; console.log(`Server running on ${PORT}`));</code></pre>
+    </article>
+      <article class="code-card">
+      <div class="code-head"><strong>JavaScript algorithm — פונקציה נקייה</strong><button class="copy-btn" onclick="copyCode(this)">העתק</button></div>
+      <p class="muted small">קלט, בדיקות, לולאה, אובייקט תוצאה, return</p>
+      <pre><code>// JS — תבנית פונקציה אלגוריתמית למבחן
+function solve(input) {
+  if (!Array.isArray(input)) {
+    throw new Error(&quot;Input must be an array&quot;);
+  }
+
+  const result = {};
+
+  for (const item of input) {
+    if (typeof item !== &quot;number&quot; || Number.isNaN(item)) {
+      throw new Error(&quot;All values must be numbers&quot;);
+    }
+
+    const key = String(Math.abs(item)).length;
+    result[key] = (result[key] || 0) + item;
+  }
+
+  return result;
+}
+
+console.log(solve([1, 15, 30, 5, 800]));
+// { 1: 6, 2: 45, 3: 800 }</code></pre>
+    </article>
+      <article class="code-card">
+      <div class="code-head"><strong>React useEffect + useRef + fetch</strong><button class="copy-btn" onclick="copyCode(this)">העתק</button></div>
+      <p class="muted small">קריאת API בלי לולאה אינסופית ופוקוס אוטומטי</p>
+      <pre><code>// React fetch נכון — בלי לולאה אינסופית
+import { useEffect, useRef, useState } from &quot;react&quot;;
+
+function ProductsPage() {
+  const [products, setProducts] = useState([]);
+  const [category, setCategory] = useState(&quot;all&quot;);
+  const selectRef = useRef(null);
+
+  useEffect(() =&gt; {
+    async function loadProducts() {
+      const res = await fetch(&quot;https://dummyjson.com/products&quot;);
+      const data = await res.json();
+      setProducts(data.products);
+    }
+    loadProducts();
+    selectRef.current?.focus();
+  }, []);
+
+  const filtered = category === &quot;all&quot;
+    ? products
+    : products.filter(product =&gt; product.category === category);
+
+  return &lt;div&gt;{filtered.map(product =&gt; &lt;p key={product.id}&gt;{product.title}&lt;/p&gt;)}&lt;/div&gt;;
+}</code></pre>
+    </article>
+      <article class="code-card">
+      <div class="code-head"><strong>ולידציות נפוצות</strong><button class="copy-btn" onclick="copyCode(this)">העתק</button></div>
+      <p class="muted small">Regex וטווחים שחוזרים כמעט בכל מבחן</p>
+      <pre><code>// ולידציות נפוצות במבחנים
+const onlyEnglish = value =&gt; /^[A-Za-z ]+$/.test(value.trim());
+const onlyLettersHebOrEng = value =&gt; /^[A-Za-zא-ת ]+$/.test(value.trim());
+const exactDigits = (value, amount) =&gt; new RegExp(`^\\d{${amount}}$`).test(value);
+const rangeNumber = (value, min, max) =&gt; Number(value) &gt;= min &amp;&amp; Number(value) &lt;= max;
+const hasUpper = value =&gt; /[A-Z]/.test(value);
+const hasSpecial = value =&gt; /[^A-Za-z0-9]/.test(value);
+const passwordExam = value =&gt; value.length &gt;= 4 &amp;&amp; value.length &lt;= 8 &amp;&amp; hasUpper(value) &amp;&amp; hasSpecial(value);
+const uniqueBy = (arr, key, value) =&gt; !arr.some(item =&gt; String(item[key]) === String(value));</code></pre>
+    </article>
+      <article class="code-card">
+      <div class="code-head"><strong>TypeScript בסיסי</strong><button class="copy-btn" onclick="copyCode(this)">העתק</button></div>
+      <p class="muted small">type, enum, array functions, immutable update</p>
+      <pre><code>// TypeScript — תבנית type/enum/functions
+export enum Genre {
+  Fiction = &quot;Fiction&quot;,
+  NonFiction = &quot;NonFiction&quot;,
+  Biography = &quot;Biography&quot;,
+  ScienceFiction = &quot;ScienceFiction&quot;,
+  Fantasy = &quot;Fantasy&quot;
+}
+
+export type Book = {
+  title: string;
+  author: string;
+  publishedDate: string;
+  available: boolean;
+  genre: Genre;
+};
+
+export function addBook(books: Book[], book: Book): Book[] {
+  return [...books, book];
+}
+
+export function searchByGenre(books: Book[], genre: Genre): Book[] {
+  return books.filter(book =&gt; book.genre === genre);
+}
+
+export function updateAvailability(books: Book[], title: string, available: boolean): Book[] {
+  return books.map(book =&gt; book.title === title ? { ...book, available } : book);
+}</code></pre>
+    </article>
+      <article class="code-card">
+      <div class="code-head"><strong>CSS מהיר למבחן</strong><button class="copy-btn" onclick="copyCode(this)">העתק</button></div>
+      <p class="muted small">עיצוב נקי, Grid, responsive, button disabled</p>
+      <pre><code>/* App.css — תבנית עיצוב מהירה למבחן */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, sans-serif; background: #f6f7fb; color: #111827; }
+.app-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background: #111827; color: white; }
+.app-header a { color: white; margin-inline: 8px; text-decoration: none; font-weight: bold; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; padding: 24px; }
+.card, form { background: white; border: 2px solid #111827; border-radius: 16px; padding: 18px; box-shadow: 5px 5px 0 #111827; }
+input, select, button { padding: 10px 12px; border: 2px solid #111827; border-radius: 10px; margin: 6px; }
+button { background: #2563eb; color: white; cursor: pointer; font-weight: bold; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+@media (max-width: 500px) { .app-header { flex-direction: column; } }</code></pre>
+    </article>
+    </div></div>
+  </section>
+
+  <section id="homework" class="section">
+    <div class="section-head"><h2>📘 שיעורי בית ושיעורים — כיסוי חומר</h2><p>טבלת חזרה על כל החומרים שהופיעו במסמכים.</p></div>
+    <div class="section-body split">
+      <div><h3>שיעורי בית / פרויקטים</h3><div class="table-wrap"><table><thead><tr><th>חומר</th><th>מה חייבים לדעת</th><th>נושא</th><th>סימון</th></tr></thead><tbody><tr><td><strong>שיעורי בית 11</strong></td><td>מערכים, sort, חיתוך/חיפוש, Arrow functions, מחשבון מטבע UI/UX עם AI</td><td><span class="tag">JS Arrays / UI</span></td><td><label><input type="checkbox" data-check="hw-1"> חזרתי</label></td></tr><tr><td><strong>שיעורי בית 12</strong></td><td>map, forEach, filter, spread, גילאים, אותיות גדולות/קטנות</td><td><span class="tag">JS Arrays</span></td><td><label><input type="checkbox" data-check="hw-2"> חזרתי</label></td></tr><tr><td><strong>שיעורי בית 13</strong></td><td>DOM, אובייקטים, מחיר מוצר בזמן הקלדה, מערכת תלמידים קטנה</td><td><span class="tag">DOM / Objects</span></td><td><label><input type="checkbox" data-check="hw-3"> חזרתי</label></td></tr><tr><td><strong>שיעורי בית 18</strong></td><td>NodeJS Login/Signup, GET/POST, form, שמירת משתמש לקובץ בשרת</td><td><span class="tag">Node / Express</span></td><td><label><input type="checkbox" data-check="hw-4"> חזרתי</label></td></tr><tr><td><strong>שיעורי בית 22</strong></td><td>React basics: Vite, students.js, Header, Dashboard, Footer, AddStudent useState</td><td><span class="tag">React Basics</span></td><td><label><input type="checkbox" data-check="hw-5"> חזרתי</label></td></tr><tr><td><strong>שיעורי בית 23</strong></td><td>Smart House: חדרים, מוצרים, routing דינמי, validations, Vercel</td><td><span class="tag">React Project</span></td><td><label><input type="checkbox" data-check="hw-6"> חזרתי</label></td></tr><tr><td><strong>שיעורי בית 24</strong></td><td>Products Filter: fetch מ-dummyjson, useEffect, useRef, select קטגוריות</td><td><span class="tag">React Hooks</span></td><td><label><input type="checkbox" data-check="hw-7"> חזרתי</label></td></tr><tr><td><strong>פרויקט 25</strong></td><td>Best Movie: דירוג, top 3, סרטים רנדומליים, add/search/delete</td><td><span class="tag">React Project</span></td><td><label><input type="checkbox" data-check="hw-8"> חזרתי</label></td></tr><tr><td><strong>TypeScript 1</strong></td><td>Book type, enum genres, add/search/update, User unions/interfaces</td><td><span class="tag">TypeScript</span></td><td><label><input type="checkbox" data-check="hw-9"> חזרתי</label></td></tr><tr><td><strong>React + TS 2</strong></td><td>Budget Manager: transactions, summary, categories, edit/delete, Tailwind</td><td><span class="tag">React + TS</span></td><td><label><input type="checkbox" data-check="hw-10"> חזרתי</label></td></tr><tr><td><strong>חוברת JavaScript</strong></td><td>Task Manager מדורג: variables → conditions → arrays → DOM → events → storage → async/fetch</td><td><span class="tag">JS Full Practice</span></td><td><label><input type="checkbox" data-check="hw-11"> חזרתי</label></td></tr></tbody></table></div></div>
+      <div><h3>שיעורים</h3><div class="table-wrap"><table><thead><tr><th>שיעור</th><th>תוכן קריטי</th><th>סימון</th></tr></thead><tbody><tr><td><strong>Lesson 11</strong></td><td>מערכים, by value/reference, sort, splice, forEach, filter, arrow functions</td><td><label><input type="checkbox" data-check="lesson-1"> הבנתי</label></td></tr><tr><td><strong>Lesson 13</strong></td><td>Objects, DOM methods, create/remove/append, Classes, inheritance</td><td><label><input type="checkbox" data-check="lesson-2"> הבנתי</label></td></tr><tr><td><strong>Lesson 15</strong></td><td>try/catch/throw, closure, async, setTimeout, Promise</td><td><label><input type="checkbox" data-check="lesson-3"> הבנתי</label></td></tr><tr><td><strong>Lesson 16</strong></td><td>NodeJS, V8, npm, CLI, package.json, require/module.exports</td><td><label><input type="checkbox" data-check="lesson-4"> הבנתי</label></td></tr><tr><td><strong>Lesson 17</strong></td><td>HTTP, URL, REST API, Express, middleware, static files, forms</td><td><label><input type="checkbox" data-check="lesson-5"> הבנתי</label></td></tr><tr><td><strong>Lesson 20</strong></td><td>Database, NoSQL, MongoDB, Atlas, collection/document, Mongoose</td><td><label><input type="checkbox" data-check="lesson-6"> הבנתי</label></td></tr><tr><td><strong>Lesson 21</strong></td><td>React setup with Vite, files, components, JSX, props</td><td><label><input type="checkbox" data-check="lesson-7"> הבנתי</label></td></tr><tr><td><strong>Lesson 22</strong></td><td>Hooks, useState, immutable vs mutable, props functions</td><td><label><input type="checkbox" data-check="lesson-8"> הבנתי</label></td></tr><tr><td><strong>Lesson 23</strong></td><td>React Router, Link, useNavigate, Context API</td><td><label><input type="checkbox" data-check="lesson-9"> הבנתי</label></td></tr><tr><td><strong>Lesson 24</strong></td><td>useEffect, useMemo, useRef, fetching without infinite loop</td><td><label><input type="checkbox" data-check="lesson-10"> הבנתי</label></td></tr><tr><td><strong>Lesson 25</strong></td><td>Tailwind CSS, utility classes, responsive design</td><td><label><input type="checkbox" data-check="lesson-11"> הבנתי</label></td></tr><tr><td><strong>Lesson 26</strong></td><td>TypeScript: types, enum, tuple, functions, objects</td><td><label><input type="checkbox" data-check="lesson-12"> הבנתי</label></td></tr><tr><td><strong>Lesson 26 part 2</strong></td><td>TypeScript + React: typed props/state/models</td><td><label><input type="checkbox" data-check="lesson-13"> הבנתי</label></td></tr><tr><td><strong>AI בפיתוח</strong></td><td>איך להשתמש ב-AI נכון: לנהל גרסאות, לוודא כל שורת קוד, לא לרוץ אחרי הכלי</td><td><label><input type="checkbox" data-check="lesson-14"> הבנתי</label></td></tr></tbody></table></div></div>
+    </div>
+  </section>
+
+  <section id="mistakes" class="section">
+    <div class="section-head"><h2>🚨 בנק טעויות — לפני שמגישים</h2><p>אלה הדברים שהכי מורידים נקודות.</p></div>
+    <div class="section-body"><details class="mistake"><summary>React — טעויות שצריך לאפס</summary><ul><li>לשנות מערך ישירות עם push במקום setState עם spread</li><li>לשכוח key ב-map</li><li>לכתוב class במקום className</li><li>לשים fetch מחוץ ל-useEffect וליצור לולאה</li><li>לנווט בלי BrowserRouter</li><li>לא להמיר input number עם Number()</li><li>להציג עמודים בלי Route מתאים</li><li>לשלוח פונקציה לילד אבל לא לקרוא לה עם הערכים הנכונים</li></ul></details><details class="mistake"><summary>JS — טעויות שצריך לאפס</summary><ul><li>לא לבדוק שהקלט הוא מערך</li><li>להשתמש ב-sort כשאסור</li><li>להחזיר console.log במקום return</li><li>להתבלבל בין index לערך</li><li>לשכוח let בתוך לולאות מקוננות</li><li>לא לטפל במספרים שליליים כשבודקים אורך ספרות</li><li>להשתמש ב-includes כשאסור בתרגיל</li><li>לא לזרוק שגיאה כשצריך</li></ul></details><details class="mistake"><summary>Express — טעויות שצריך לאפס</summary><ul><li>לשכוח app.use(express.json())</li><li>לכתוב POST בלי body parser</li><li>לא לשלוח status 201 ביצירה</li><li>לשכוח return אחרי res.status(...).json</li><li>להריץ server בלי listen</li><li>לא להתקין cors כש-frontend קורא לשרת</li><li>לערבב req.params ו-req.body</li><li>לשכוח module/type imports</li></ul></details><details class="mistake"><summary>Mongo — טעויות שצריך לאפס</summary><ul><li>Frontend מנסה להתחבר ישירות ל-Mongo</li><li>לא להמתין ל-await</li><li>לא ליצור Schema/Model</li><li>שמות collection/model לא עקביים</li><li>לא לטפל ב-404 כשאין רשומה</li><li>לשמור מספרים כמחרוזות בלי צורך</li></ul></details><details class="mistake"><summary>מבחן — טעויות שצריך לאפס</summary><ul><li>להתחיל בעיצוב לפני הלוגיקה</li><li>לא לסמן סעיפים שבוצעו</li><li>לא לבדוק כל ולידציה בנפרד</li><li>להשאיר קוד לא קשור — במבחנים זה עלול להוריד ניקוד</li><li>לא לשמור תיקיות לפי הוראות</li><li>לשכוח RAR/שם מלא/תעודת זהות לפי ההנחיות</li></ul></details></div>
+  </section>
+
+  <section id="qa" class="section">
+    <div class="section-head"><h2>✅ QA וציונים למה שכבר נבנה</h2><p>מדדי האיכות מהסבב האחרון.</p></div>
+    <div class="section-body">
+      <div class="table-wrap"><table><thead><tr><th>תחום</th><th>לפני</th><th>אחרי</th><th>הערה</th></tr></thead><tbody><tr><td>כיסוי כל שאלות המבחנים</td><td>95</td><td><strong>98</strong></td><td>25 עמודי שאלות קיימים; הדוח מקשר לכולם ומוסיף מדדי כיסוי.</td></tr><tr><td>הצגת השאלה במלואה</td><td>91</td><td><strong>94</strong></td><td>קיים נוסח מלא בכל עמוד; חולשה נשארת רק בגלל OCR לא מושלם בחלק מהקבצים.</td></tr><tr><td>פירוק סעיף ותת־סעיף</td><td>92</td><td><strong>96</strong></td><td>כל עמוד כולל פירוק, מה לעשות, למה ומה לוודא; נוספו כרטיסי Round4.</td></tr><tr><td>בלוקים קטנים ואז קובץ מלא</td><td>93</td><td><strong>98</strong></td><td>נבדקו file-seq/full-file-label; נוספו הערות סיום גם לעמודים חד־קובציים.</td></tr><tr><td>הערות מרחפות על קוד</td><td>84</td><td><strong>97</strong></td><td>תוקנו 1118 הערות גנריות; נשארו 0.</td></tr><tr><td>איכות קוד לימודית</td><td>88</td><td><strong>92</strong></td><td>הפתרונות נועדו ללמידה ולמבחן; אין עדיין build מלא לכל React/Node.</td></tr><tr><td>מפת מערכת / IDE / UX</td><td>93</td><td><strong>95</strong></td><td>ניווט, אינדקס, דוחות, קבצי export ו־ZIP.</td></tr><tr><td>אמינות מול חומרים</td><td>86</td><td><strong>91</strong></td><td>המקורות מגוונים; סימנתי מגבלת OCR ובדיקת הרצה.</td></tr><tr><td>נגישות והדפסה</td><td>91</td><td><strong>94</strong></td><td>הסברים זמינים ב־focus/hover, וקיים דף הדפסה קודם; נוספו כרטיסים ברורים.</td></tr><tr><td>בדיקות טכניות</td><td>78</td><td><strong>86</strong></td><td>נבדקו קישורים ו־node --check לחלק מקבצי JS; build מלא נשאר להמשך.</td></tr></tbody></table></div>
+      <div class="focus"><h3>מה עדיין חשוב לזכור?</h3><p>החבילה כוללת HTML, פתרונות לימודיים, קוד מיוצא ודוחות QA. בדיקה סטטית בוצעה; כדי להפוך כל פתרון לפרויקט ריצה מלא, יש לפתוח את הקוד המיוצא ב־IDE ולהריץ npm install / npm run build לפי הצורך.</p></div>
+    </div>
+  </section>
+</main>
+<div class="preview" id="preview"><div class="preview-box"><div class="preview-head"><span id="preview-title">תצוגה מקדימה</span><button class="close" onclick="closePreview()">סגור ✕</button></div><iframe id="preview-frame" src="about:blank"></iframe></div></div>
+<script>
+function copyCode(btn) {
+  const code = btn.closest('.code-card').querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(() => { btn.innerText='הועתק ✓'; setTimeout(()=>btn.innerText='העתק',1200); });
+}
+function previewPage(src) {
+  document.getElementById('preview-frame').src = src;
+  document.getElementById('preview-title').innerText = src.split('/').pop();
+  document.getElementById('preview').classList.add('active');
+}
+function closePreview() {
+  document.getElementById('preview').classList.remove('active');
+  document.getElementById('preview-frame').src = 'about:blank';
+}
+function filterCards() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const nodes = document.querySelectorAll('[data-tags]');
+  nodes.forEach(node => {
+    const text = (node.getAttribute('data-tags') + ' ' + node.innerText).toLowerCase();
+    node.style.display = !q || text.includes(q) ? '' : 'none';
+  });
+}
+function clearSearch() { document.getElementById('search').value=''; filterCards(); }
+const checks = document.querySelectorAll('input[data-check]');
+checks.forEach(ch => {
+  const key = 'sv100-' + ch.dataset.check;
+  ch.checked = localStorage.getItem(key) === '1';
+  ch.addEventListener('change', () => localStorage.setItem(key, ch.checked ? '1' : '0'));
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closePreview(); });
+</script>
+</body></html>

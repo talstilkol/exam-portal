@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>מבחן חדש 2023 — SV Parking — Server — DB של מורים</title>
+<link href="assets/style.css" rel="stylesheet"/>
+<meta name="description" content="שאלה 3: Server — DB של מורים — שאלה מלאה, פירוק סעיפים, פתרון קוד ו-Debug."/><!--portal-r3-css-->
+<style id="portal-injected-css">
+/* === Compact improvement panel (chips → tooltip) === */
+.imp-panel-compact { margin: 18px 12px; padding: 14px; border: 2.5px solid #000;
+  border-radius: 14px; background: linear-gradient(135deg, #fef3c7, #fffbeb);
+  box-shadow: 4px 4px 0 #000; }
+.imp-panel-compact .impc-head { display:flex; justify-content:space-between; align-items:center;
+  gap:10px; flex-wrap:wrap; margin-bottom:10px; padding-bottom:8px;
+  border-bottom: 2px dashed #f59e0b; }
+.imp-panel-compact .impc-title { margin:0; font-size:16px; color:#1f2937; font-weight:900; }
+.imp-panel-compact .impc-hint { font-size:11px; color:#92400e; font-style:italic; }
+.sol100-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border:2px solid #000;border-radius:8px;background:linear-gradient(135deg,#86efac,#dcfce7);color:#14532d;text-decoration:none;font-weight:900;font-size:12px;font-family:Heebo,Arial,sans-serif;box-shadow:2px 2px 0 #000;transition:.12s;white-space:nowrap;cursor:pointer}
+.sol100-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 #000;background:linear-gradient(135deg,#4ade80,#bbf7d0)}
+.imp-panel-compact .imp-score { display:inline-block; margin-right:6px; padding:2px 9px;
+  border:2px solid #000; border-radius:999px; background:#facc15; color:#000;
+  font-size:11px; font-weight:900; }
+.imp-panel-compact .impc-chips { display:flex; align-items:center; gap:4px; flex-wrap:wrap;
+  padding:6px 0; }
+.imp-panel-compact .impc-row-label { font-size:12px; font-weight:900; color:#475569;
+  margin-left:6px; min-width:110px; }
+.imp-panel-compact .sev-chip { display:inline-flex; align-items:center; justify-content:center;
+  min-width:30px; height:24px; padding:0 9px; border:1.8px solid #000;
+  border-radius:999px; font-size:11px; font-weight:900; cursor:pointer;
+  margin:1.5px; transition:.12s; box-shadow:1.5px 1.5px 0 #000; font-family:inherit; }
+.imp-panel-compact .sev-chip:hover { transform:translate(-1px,-1px); box-shadow:3px 3px 0 #000 }
+.imp-panel-compact .sev-chip.crit { background:#fca5a5; color:#7f1d1d }
+.imp-panel-compact .sev-chip.high { background:#fdba74; color:#7c2d12 }
+.imp-panel-compact .sev-chip.med  { background:#fde68a; color:#78350f }
+.imp-panel-compact .sev-chip.low  { background:#5eead4; color:#134e4a }
+.imp-panel-compact .sev-chip.fixed{ background:#86efac; color:#14532d; cursor:default }
+.imp-panel-compact .sev-chip.miss { background:#f9a8d4; color:#831843 }
+.imp-panel-compact .sev-chip.extra{ background:#c4b5fd; color:#4c1d95 }
+
+/* === Embedded tooltip (when iframe parent is unreachable) === */
+.iframe-tooltip { position:fixed; z-index:9999; max-width:520px; min-width:240px;
+  padding:14px 18px; background:linear-gradient(135deg,#0f172a,#1e293b);
+  color:#e2e8f0; border:2.5px solid #000; border-radius:14px;
+  box-shadow:6px 6px 0 #000; opacity:0; transform:scale(.96); transform-origin:top right;
+  transition:opacity .14s ease, transform .14s ease; pointer-events:auto;
+  font-family:Heebo,Arial,sans-serif; font-size:13.5px; line-height:1.65; direction:rtl; }
+.iframe-tooltip.show { opacity:1; transform:scale(1); }
+.iframe-tooltip h4 { margin:0 0 8px; font-size:16px; color:#facc15; font-weight:900 }
+.iframe-tooltip h5 { margin:8px 0 4px; font-size:13px; color:#fbbf24; text-transform:uppercase; letter-spacing:.3px }
+.iframe-tooltip p { margin:0 0 8px }
+.iframe-tooltip code { background:#0a0f1c; color:#fcd34d; padding:1px 6px; border-radius:4px;
+  font-family:Consolas,monospace; font-size:12px; direction:ltr; display:inline-block }
+.iframe-tooltip pre { margin:6px 0; padding:8px 10px; background:#0a0f1c; border-radius:8px;
+  color:#86efac; direction:ltr; text-align:left; font-family:Consolas,monospace;
+  font-size:11.5px; line-height:1.5; white-space:pre-wrap; word-break:break-all;
+  max-height:220px; overflow:auto }
+.iframe-tooltip pre.before { color:#fca5a5 }
+.iframe-tooltip .vt-tag { display:inline-block; padding:2px 8px; border-radius:999px;
+  border:1.5px solid #facc15; background:rgba(250,204,21,.12); color:#facc15;
+  font-size:11px; font-weight:900; margin-left:6px }
+.iframe-tooltip .vt-close { position:absolute; top:6px; left:6px; width:24px; height:24px;
+  border:2px solid #000; border-radius:50%; background:#facc15; color:#000;
+  font-weight:900; cursor:pointer; padding:0; line-height:1 }
+
+/* === Old-style improvement panel (kept for any leftover usage, hidden by default) === */
+.imp-panel { display:none; }
+
+/* === LEGACY (was) Improvement panel - kept for typography fallback only === */
+.imp-panel-legacy { margin: 24px 12px; padding: 16px; border: 2.5px solid #000; border-radius: 14px;
+  background: linear-gradient(135deg, #fef3c7, #fffbeb); box-shadow: 4px 4px 0 #000; }
+.imp-panel .imp-title { margin: 0 0 12px; font-size: 18px; color: #1f2937; font-weight: 900;
+  border-bottom: 2px dashed #f59e0b; padding-bottom: 8px; }
+.imp-panel .imp-score { display: inline-block; margin-right: 8px; padding: 3px 10px;
+  border: 2px solid #000; border-radius: 999px; background: #facc15; color: #000;
+  font-size: 12px; font-weight: 900; }
+.imp-bug { margin-bottom: 14px; padding: 10px; border: 2px solid #000; border-radius: 10px;
+  background: #fff; box-shadow: 2px 2px 0 #000; }
+.imp-bug-head { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;
+  font-size: 14px; line-height: 1.6; }
+.imp-bug-desc { flex: 1; }
+.sev { display: inline-block; padding: 2px 8px; border: 2px solid #000; border-radius: 999px;
+  font-size: 11px; font-weight: 900; white-space: nowrap; }
+.sev-crit { background: #fee2e2; color: #b91c1c; }
+.sev-high { background: #ffedd5; color: #c2410c; }
+.sev-med  { background: #fef3c7; color: #b45309; }
+.sev-low  { background: #ccfbf1; color: #0f766e; }
+.imp-bug-diff { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.imp-before, .imp-after { border: 1.5px solid #000; border-radius: 8px; padding: 8px;
+  background: #f8fafc; min-width: 0; }
+.imp-before { background: #fef2f2; }
+.imp-after { background: #f0fdf4; }
+.imp-label { font-weight: 900; font-size: 11px; margin-bottom: 4px;
+  text-transform: uppercase; letter-spacing: .5px; color: #475569; }
+.imp-before .imp-label { color: #b91c1c; }
+.imp-after .imp-label { color: #166534; }
+.imp-before pre, .imp-after pre { margin: 0; padding: 6px; background: #0f172a;
+  color: #e2e8f0; border-radius: 6px; direction: ltr; text-align: left;
+  font-family: Consolas, Monaco, monospace; font-size: 11.5px; line-height: 1.55;
+  white-space: pre-wrap; word-break: break-all; max-height: 220px; overflow: auto; }
+.imp-after pre { color: #86efac; }
+.imp-block { margin-top: 12px; padding: 10px 12px; border: 2px solid #000; border-radius: 10px;
+  background: #fff; box-shadow: 2px 2px 0 #000; }
+.imp-block h5 { margin: 0 0 8px; font-size: 14px; }
+.imp-block ul { margin: 0; padding-right: 20px; }
+.imp-block ul li { font-size: 13.5px; line-height: 1.65; margin-bottom: 4px; }
+.imp-missing { background: #fef2f2; }
+.imp-extras { background: #f0fdf4; }
+
+/* === Two-question notice === */
+.two-q-notice { padding: 20px; margin: 0 0 18px; border: 2.5px solid #000;
+  border-radius: 14px; background: linear-gradient(135deg, #dbeafe, #ede9fe);
+  box-shadow: 4px 4px 0 #000; }
+.two-q-notice .q-header { display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  border-bottom: 2px dashed #1e40af; padding-bottom: 10px; margin-bottom: 14px; }
+.two-q-notice .q-number { padding: 4px 10px; border: 2px solid #000; border-radius: 999px;
+  background: #fff; font-weight: 900; font-size: 13px; }
+.two-q-notice h3 { margin: 0; flex: 1; font-size: 18px; }
+.two-q-notice .topic { padding: 3px 9px; border-radius: 999px; background: #fef3c7;
+  border: 1.5px solid #000; font-size: 11px; font-weight: 900; }
+.big-100 { font-size: 22px; font-weight: 900; color: #1e40af; padding: 12px 16px;
+  border: 3px solid #000; border-radius: 12px; background: #fff;
+  box-shadow: 3px 3px 0 #000; margin-bottom: 12px; display: inline-block; }
+.q-tip { padding: 10px 12px; background: #fef3c7; border: 2px solid #f59e0b;
+  border-radius: 10px; font-size: 13.5px; line-height: 1.65; }
+.q-source-doc { margin-top: 12px; padding: 10px; background: #f8fafc;
+  border: 2px solid #cbd5e1; border-radius: 10px; }
+.q-source-doc summary { cursor: pointer; font-weight: 900; font-size: 13px; }
+.q-source-doc pre { margin: 8px 0 0; padding: 10px; background: #0f172a; color: #e2e8f0;
+  border-radius: 6px; font-size: 12px; line-height: 1.5; direction: rtl; text-align: right; }
+
+@media (max-width: 720px) {
+  .imp-bug-diff { grid-template-columns: 1fr; }
+}
+/* === Phase C: Responsive improvement panel === */
+@media(max-width:600px){
+  .imp-panel-compact{margin:10px 6px;padding:10px}
+  .imp-panel-compact .impc-title{font-size:13px}
+  .imp-panel-compact .impc-hint{display:none}
+  .imp-panel-compact .impc-row-label{min-width:80px;font-size:11px}
+  .imp-panel-compact .sev-chip{height:22px;font-size:10px;padding:0 7px}
+  .sol100-btn{font-size:11px;padding:4px 9px}
+  .iframe-tooltip{max-width:90vw;min-width:200px;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body class="question-body"><a class="skip-link" href="#main-content">דלג לתוכן השאלה</a>
+<div class="single-wrap">
+<header class="single-header">
+<span class="source-badge">עמוד 6 מתוך 25 · עותק של מבחן חדש 2023.pdf — SV Parking</span>
+<h1>שאלה 3: Server — DB של מורים</h1>
+<p>מבחן חדש 2023 — SV Parking — כל השאלה מוצגת כאן בעמוד עצמאי: קודם נוסח מלא, אחר כך פירוק סעיפים, ואז פתרון בקוד עם הערות מרחפות.</p>
+<div class="single-actions"><a href="index.html">🏠 אינדקס כל השאלות</a><a href="parking-q2.html">← שאלה קודמת</a><a href="flights-q1.html">שאלה הבאה →</a><button onclick="window.print()">🖨 הדפס/שמור PDF</button><a class="report-link" href="qa-report.html">📊 דוח QA</a></div>
+</header><div class="qa-banner"><b>גרסת QA מתוקנת:</b> פירוק הסעיפים עודכן כך שכל סעיף אומר מה עושים, למה עושים ומה בודקים. שורות הקוד נעטפות ונגישות גם במקלדת.</div><div class="round2-banner" id="qa-round2"><b>סבב בדיקות 2:</b><ul><li>נבדקו שוב קישורים, עוגנים, CSS, ניווט בין 25 השאלות ומבנה HTML.</li><li>נוספו כפתורי העתקה לבלוקי קוד, קישור דילוג לנגישות, והסברי שורות גלויים גם בהדפסה/PDF.</li><li>נבדק שכל עמוד מכיל נוסח שאלה, פירוק סעיפים, ניתוח, פתרון מלא וטעויות נפוצות.</li></ul></div>
+<div class="round3-banner"><b>סבב בדיקות 3:</b> נבדק תוכן מול חומרי המבחן, נוספה טבלת כיסוי סעיף־סעיף, ונוסף סדר פתרון לפי קבצים: בלוקים קטנים → קובץ מלא → מעבר לקובץ הבא.</div>
+<div class="page-grid" id="main-content">
+<aside class="left-rail">
+<h2 class="rail-title">📚 כל השאלות</h2>
+<a class="rail-link" href="football-q1.html"><b>מבחן אימון — Football Club — שאלה 1</b><small>React — Football Club</small></a>
+<a class="rail-link" href="football-q2.html"><b>מבחן אימון — Football Club — שאלה 2</b><small>JavaScript — סכום לפי אורך מספר</small></a>
+<a class="rail-link" href="football-q3.html"><b>מבחן אימון — Football Club — שאלה 3</b><small>Express — שרת משחקי מחשב</small></a>
+<a class="rail-link" href="parking-q1.html"><b>מבחן חדש 2023 — SV Parking — שאלה 1</b><small>React — SV Parking</small></a>
+<a class="rail-link" href="parking-q2.html"><b>מבחן חדש 2023 — SV Parking — שאלה 2</b><small>JavaScript — רצפים שסכומם שווה למספר</small></a>
+<a class="rail-link current" href="parking-q3.html"><b>מבחן חדש 2023 — SV Parking — שאלה 3</b><small>Server — DB של מורים</small></a>
+<a class="rail-link" href="flights-q1.html"><b>מבחן טיסות — Flight Control — שאלה 1</b><small>React — מערכת בקרת טיסות</small></a>
+<a class="rail-link" href="flights-q2.html"><b>מבחן טיסות — Flight Control — שאלה 2</b><small>JavaScript — ספירת מספרים במטריצה</small></a>
+<a class="rail-link" href="flights-q3.html"><b>מבחן טיסות — Flight Control — שאלה 3</b><small>Server — DB סטודנטים</small></a>
+<a class="rail-link" href="helpme-q1.html"><b>מועד א פולסטאק — HelpMe — שאלה 1</b><small>React — HelpMe</small></a>
+<a class="rail-link" href="helpme-q2.html"><b>מועד א פולסטאק — HelpMe — שאלה 2</b><small>JavaScript/Node package — זיהוי סדרה</small></a>
+<a class="rail-link" href="helpme-q3.html"><b>מועד א פולסטאק — HelpMe — שאלה 3</b><small>תאוריה — HTTP, MongoDB, React, functions</small></a>
+<a class="rail-link" href="bank-q1.html"><b>מועד ב Frontend — SV Bank — שאלה 1</b><small>React — SV Bank</small></a>
+<a class="rail-link" href="bank-q2.html"><b>מועד ב Frontend — SV Bank — שאלה 2</b><small>JavaScript — מיון ספרות ללא sort</small></a>
+<a class="rail-link" href="bank-q3.html"><b>מועד ב Frontend — SV Bank — שאלה 3</b><small>Express — שמירת טקסט לקובץ</small></a>
+<a class="rail-link" href="logistics-q1.html"><b>מבחן מחסן לוגיסטי — שאלה 1</b><small>React — Logistics Management</small></a>
+<a class="rail-link" href="logistics-q2.html"><b>מבחן מחסן לוגיסטי — שאלה 2</b><small>JavaScript — בינארי לדצימלי ואז פלינדרום</small></a>
+<a class="rail-link" href="currency-q1.html"><b>מבחן מחשבון המרה — שאלה 1</b><small>React — Currency Exchange</small></a>
+<a class="rail-link" href="currency-q2.html"><b>מבחן מחשבון המרה — שאלה 2</b><small>JavaScript — מיקום ערך בסדרת פיבונאצ׳י מותאמת</small></a>
+<a class="rail-link" href="willing-q1.html"><b>פולסטאק מועד ב 2022 — Willing App — שאלה 1</b><small>React — Willing App</small></a>
+<a class="rail-link" href="willing-q2.html"><b>פולסטאק מועד ב 2022 — Willing App — שאלה 2</b><small>JavaScript — ספירת זוגיים/אי זוגיים ייחודיים</small></a>
+<a class="rail-link" href="willing-q3.html"><b>פולסטאק מועד ב 2022 — Willing App — שאלה 3</b><small>Server — קורסים ב-MongoDB</small></a>
+<a class="rail-link" href="travel-q1.html"><b>פולסטאק מועד ג — Travel-SV — שאלה 1</b><small>React — Travel-SV</small></a>
+<a class="rail-link" href="travel-q2.html"><b>פולסטאק מועד ג — Travel-SV — שאלה 2</b><small>JavaScript — האם מערך חלקי מופיע במערך שלם לפי סדר</small></a>
+<a class="rail-link" href="travel-q3.html"><b>פולסטאק מועד ג — Travel-SV — שאלה 3</b><small>Node package — מחלקת קובץ טקסט</small></a>
+</aside>
+<main>
+<section class="page-card">
+<div class="page-card-head"><h2>1. תמונת פתרון מהירה</h2></div>
+<div class="page-card-body">
+<div class="split-summary">
+<div class="summary-chip"><b>נושא</b><span>SERVER</span></div>
+<div class="summary-chip"><b>מה צריך להגיש</b><span>פתרון עובד + קוד מסודר + ולידציות לפי נוסח השאלה.</span></div>
+<div class="summary-chip"><b>אסטרטגיית פתרון</b><span>1. לפתוח Express. 2. להגדיר middleware. 3. להגדיר מודל/מערך. 4. לכתוב routes לפי GET/POST/PUT/DELETE. 5. לבדוק req.body/params/query. 6. להחזיר JSON וסטטוס מתאים.</span></div>
+</div>
+</div>
+</section>
+<section class="page-card">
+<div class="page-card-head"><h2>2. פירוק מלא לסעיפים ותתי סעיפים</h2></div>
+<div class="page-card-body"><div class="step-list"><div class="step-item"><b>יש ליצור DBב MONGODBאשר מכיל רשימה של מורים.</b><br/><span>מה צריך לעשות:</span> לייצר מערך תצוגה בעזרת map/filter/sort בלי לשנות את המערך המקורי, ולהציג כרטיס/שורה לכל איבר.<br/><span>למה:</span> שמירת המקור מאפשרת לחזור לתצוגת “הכל” ולמנוע איבוד מידע.<br/><span>מה לוודא:</span> לבדוק תצוגה מלאה, סינון עם תוצאה אחת, כמה תוצאות ואפס תוצאות.</div><div class="step-item"><b>יש לבנות שרת EXPRESSבעל 3מתודות:</b><br/><span>מה צריך לעשות:</span> להפריד ל־Model/Routes/Controller: להגדיר Schema, route מתאים, פעולת DB ותגובה ברורה.<br/><span>למה:</span> שכבות מסודרות מקלות על בדיקת GET/POST/PUT/DELETE ומונעות ערבוב בין לוגיקה למסד.<br/><span>מה לוודא:</span> לבדוק כל route בנפרד: סטטוס, JSON/HTML שחוזר, ושינוי אמיתי במסד/מערך.</div><div class="step-item"><b>– GET .1מחזיר את כל המורים.</b><br/><span>מה צריך לעשות:</span> לייצר מערך תצוגה בעזרת map/filter/sort בלי לשנות את המערך המקורי, ולהציג כרטיס/שורה לכל איבר.<br/><span>למה:</span> שמירת המקור מאפשרת לחזור לתצוגת “הכל” ולמנוע איבוד מידע.<br/><span>מה לוודא:</span> לבדוק תצוגה מלאה, סינון עם תוצאה אחת, כמה תוצאות ואפס תוצאות.</div><div class="step-item"><b>– POST .2רק את המורים שהשכר שלהם נמוך ממה שהמשתמש</b><br/><span>מה צריך לעשות:</span> להפריד ל־Model/Routes/Controller: להגדיר Schema, route מתאים, פעולת DB ותגובה ברורה.<br/><span>למה:</span> שכבות מסודרות מקלות על בדיקת GET/POST/PUT/DELETE ומונעות ערבוב בין לוגיקה למסד.<br/><span>מה לוודא:</span> לבדוק כל route בנפרד: סטטוס, JSON/HTML שחוזר, ושינוי אמיתי במסד/מערך.</div><div class="step-item"><b>– POST .3מקבל מאפיינים של מורה ,במידה וקיים מורה עם אותו</b><br/><span>מה צריך לעשות:</span> להפריד ל־Model/Routes/Controller: להגדיר Schema, route מתאים, פעולת DB ותגובה ברורה.<br/><span>למה:</span> שכבות מסודרות מקלות על בדיקת GET/POST/PUT/DELETE ומונעות ערבוב בין לוגיקה למסד.<br/><span>מה לוודא:</span> לבדוק כל route בנפרד: סטטוס, JSON/HTML שחוזר, ושינוי אמיתי במסד/מערך.</div><div class="step-item"><b>יש להתאים את כלל המתודות לממשק המשתמש ,על כן</b><br/><span>מה צריך לעשות:</span> להפריד ל־Model/Routes/Controller: להגדיר Schema, route מתאים, פעולת DB ותגובה ברורה.<br/><span>למה:</span> שכבות מסודרות מקלות על בדיקת GET/POST/PUT/DELETE ומונעות ערבוב בין לוגיקה למסד.<br/><span>מה לוודא:</span> לבדוק כל route בנפרד: סטטוס, JSON/HTML שחוזר, ושינוי אמיתי במסד/מערך.</div></div></div>
+</section><section class="page-card qa-report-card"><div class="page-card-head"><h2>✅ QA ו־Debug — מה לוודא לפני שמגישים</h2></div><div class="page-card-body"><div class="qa-debug-grid"><div class="qa-debug-tile"><strong>1. Routes</strong><small>לבדוק כל endpoint בנפרד.</small></div><div class="qa-debug-tile"><strong>2. Body</strong><small>לוודא express.json/form parser לפני POST.</small></div><div class="qa-debug-tile"><strong>3. DB</strong><small>לוודא Schema ושמירה בפועל.</small></div><div class="qa-debug-tile"><strong>4. Status</strong><small>להחזיר שגיאות וסטטוסים ברורים.</small></div><div class="qa-debug-tile"><strong>5. Filter</strong><small>לבדוק שאילתות חלקיות ומלאות.</small></div><div class="qa-debug-tile"><strong>6. Console</strong><small>לוודא שאין crash בצד שרת.</small></div></div></div></section>
+<section class="page-card">
+<div class="page-card-head"><h2>3. מפת קבצים / IDE</h2></div>
+<div class="page-card-body">
+<p>כאן רואים אילו בלוקים קטנים מרכיבים את הפתרון, ואז את הקובץ הגדול. במבחן כדאי לעבוד בדיוק בסדר הזה: קודם עוזרים, אחר כך state/routes, אחר כך פעולות, ובסוף JSX/תצוגה.</p>
+<div class="ide-files"><div class="ide-file">Teacher Schema<small>בלוק קטן לפני הקובץ הגדול</small></div><div class="ide-file">חיפוש לפי שכר<small>בלוק קטן לפני הקובץ הגדול</small></div><div class="ide-file">כפילות<small>בלוק קטן לפני הקובץ הגדול</small></div><div class="ide-file">server.js<small>קובץ גדול מלא</small></div></div>
+</div>
+</section>
+<section class="round3-section" id="round3-content-check">
+  <div class="round3-head"><h2>🔎 סבב 3 — בדיקת תוכן, סעיפים וקבצים</h2></div>
+  <div class="round3-body">
+    <div class="round3-note"><b>נבדק מול חומר המקור:</b> מבחן חדש 2023 — SV Parking, שאלה 3. כאן יש בדיקה מפורשת שהשאלה מפורקת לסעיפים ותתי־סעיפים, ושבפתרון עובדים לפי קובץ: בלוקים קטנים → קובץ מלא → מעבר לקובץ הבא.</div>
+    <h3>א. פירוק מדויק של כל הדרישות בשאלה</h3>
+    <table class="coverage-table"><thead><tr><th>#</th><th>סעיף</th><th>מה צריך לעשות</th><th>מה לוודא</th></tr></thead><tbody><tr><td><b>1</b></td><td>MongoDB</td><td>collection של teachers עם fullName, id, salary, subject.</td><td>לבדוק ידנית במסך/console/route שהסעיף עובד בדיוק כמו שנכתב.</td></tr><tr><td><b>2</b></td><td>GET</td><td>מחזיר את כל המורים.</td><td>לבדוק ידנית במסך/console/route שהסעיף עובד בדיוק כמו שנכתב.</td></tr><tr><td><b>3</b></td><td>POST salary</td><td>מקבל salary ומחזיר רק מורים ששכרם נמוך מהערך שהמשתמש הזין.</td><td>לבדוק ידנית במסך/console/route שהסעיף עובד בדיוק כמו שנכתב.</td></tr><tr><td><b>4</b></td><td>POST create</td><td>מקבל מורה חדש; אם קיים מורה עם אותו שם ואותו מקצוע מחזיר הודעה רלוונטית; אחרת מוסיף ל־DB.</td><td>לבדוק ידנית במסך/console/route שהסעיף עובד בדיוק כמו שנכתב.</td></tr><tr><td><b>5</b></td><td>UI</td><td>להחזיר נתונים בצורה שאפשר להציג בצד לקוח וליצור מורה חדש.</td><td>לבדוק ידנית במסך/console/route שהסעיף עובד בדיוק כמו שנכתב.</td></tr></tbody></table>
+    <h3>ב. סדר כתיבת הקבצים — בדיוק לפי הבקשה שלך</h3>
+    <p>בכל קובץ מופיעים קודם בלוקים קטנים של קוד, אחר כך <b>הקובץ המלא</b>, ורק אחרי זה הערה מפורשת שעוברים לקובץ הבא.</p>
+    <article class="file-sequence">
+  <div class="file-seq-head"><h3>קובץ 1: <code>package.json</code></h3><span class="round3-audit-chip">בלוקים קטנים ← קובץ מלא</span></div>
+  <div class="file-seq-body">
+    <p><b>נושא:</b> DB מורים. קודם קוראים את הבלוקים הקטנים, ואז מעתיקים/בודקים את הקובץ המלא.</p>
+    <div class="mini-block-grid"><div class="mini-block-card"><h4>בלוק 1: type module</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">1</span><span class="src">{</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">2</span><span class="src">  &quot;name&quot;: &quot;svcollege-exam-solution&quot;,</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">  &quot;version&quot;: &quot;1.0.0&quot;,</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">4</span><span class="src">  &quot;type&quot;: &quot;module&quot;,</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">5</span><span class="src">  &quot;scripts&quot;: {</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">    &quot;start&quot;: &quot;node src/server.js&quot;,</span></div></div></div><div class="mini-block-card"><h4>בלוק 2: start script</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">1</span><span class="src">  &quot;scripts&quot;: {</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">2</span><span class="src">    &quot;start&quot;: &quot;node src/server.js&quot;,</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">    &quot;dev&quot;: &quot;node src/server.js&quot;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">4</span><span class="src">  },</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">5</span><span class="src">  &quot;dependencies&quot;: {</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">    &quot;cors&quot;: &quot;latest&quot;,</span></div></div></div><div class="mini-block-card"><h4>בלוק 3: dependencies</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">1</span><span class="src">  &quot;dependencies&quot;: {</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">2</span><span class="src">    &quot;cors&quot;: &quot;latest&quot;,</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">    &quot;express&quot;: &quot;latest&quot;,</span></div><div class="code-line" tabindex="0" data-tip="Mongo/Mongoose: מגדיר חיבור, סכמה או פעולה מול מסד הנתונים."><span class="ln">4</span><span class="src">    &quot;mongoose&quot;: &quot;latest&quot;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">5</span><span class="src">  }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">}</span></div></div></div></div>
+    <span class="full-file-label">📦 הקובץ המלא של package.json</span>
+    <div class="print-full-note">כל שורה כוללת הסבר במעבר עכבר/פוקוס. בהדפסה ההסברים מופיעים כטקסט מתחת לשורה.</div>
+    <div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">1</span><span class="src">{</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">2</span><span class="src">  &quot;name&quot;: &quot;svcollege-exam-solution&quot;,</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">  &quot;version&quot;: &quot;1.0.0&quot;,</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">4</span><span class="src">  &quot;type&quot;: &quot;module&quot;,</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">5</span><span class="src">  &quot;scripts&quot;: {</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">    &quot;start&quot;: &quot;node src/server.js&quot;,</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">7</span><span class="src">    &quot;dev&quot;: &quot;node src/server.js&quot;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">8</span><span class="src">  },</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">9</span><span class="src">  &quot;dependencies&quot;: {</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">10</span><span class="src">    &quot;cors&quot;: &quot;latest&quot;,</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">11</span><span class="src">    &quot;express&quot;: &quot;latest&quot;,</span></div><div class="code-line" tabindex="0" data-tip="Mongo/Mongoose: מגדיר חיבור, סכמה או פעולה מול מסד הנתונים."><span class="ln">12</span><span class="src">    &quot;mongoose&quot;: &quot;latest&quot;</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">13</span><span class="src">  }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">14</span><span class="src">}</span></div></div>
+    <div class="next-file-note">סיימנו את <code>package.json</code>. עכשיו עוברים לקובץ הבא, ורק אז ממשיכים בפתרון.</div>
+  </div>
+</article><article class="file-sequence">
+  <div class="file-seq-head"><h3>קובץ 2: <code>src/server.js</code></h3><span class="round3-audit-chip">בלוקים קטנים ← קובץ מלא</span></div>
+  <div class="file-seq-body">
+    <p><b>נושא:</b> DB מורים. קודם קוראים את הבלוקים הקטנים, ואז מעתיקים/בודקים את הקובץ המלא.</p>
+    <div class="mini-block-grid"><div class="mini-block-card"><h4>בלוק 1: imports + middleware</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">1</span><span class="src">import express from &quot;express&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">2</span><span class="src">import mongoose from &quot;mongoose&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">3</span><span class="src">import cors from &quot;cors&quot;;</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">4</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">5</span><span class="src">const app = express();</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">app.use(cors());</span></div></div></div><div class="mini-block-card"><h4>בלוק 2: routes לפי השאלה</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="GET route: מחזיר מידע מהשרת בלי ליצור משאב חדש."><span class="ln">1</span><span class="src">app.get(&quot;/teachers&quot;, async (req, res) =&gt; {</span></div><div class="code-line" tabindex="0" data-tip="find: מחזיר את האיבר הראשון שמתאים לתנאי או undefined."><span class="ln">2</span><span class="src">  res.json(await Teacher.find());</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">});</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">4</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="POST route: מקבל מידע מהלקוח ויוצר/מסנן/מבצע פעולה."><span class="ln">5</span><span class="src">app.post(&quot;/teachers/by-salary&quot;, async (req, res) =&gt; {</span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">6</span><span class="src">  const salary = Number(req.body.salary);</span></div></div></div><div class="mini-block-card"><h4>בלוק 3: חיבור DB/listen</h4><div class="round3-code"><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">1</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">2</span><span class="src">  const teacher = await Teacher.create({ fullName, idNumber, salary: Number(salary), subject });</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">3</span><span class="src">  res.status(201).json({ message: &quot;Teacher registered successfully&quot;, teacher });</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">4</span><span class="src">});</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">5</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">6</span><span class="src">app.listen(3000, () =&gt; console.log(&quot;Teachers server running on http://localhost:3000&quot;));</span></div></div></div></div>
+    <span class="full-file-label">📦 הקובץ המלא של src/server.js</span>
+    <div class="print-full-note">כל שורה כוללת הסבר במעבר עכבר/פוקוס. בהדפסה ההסברים מופיעים כטקסט מתחת לשורה.</div>
+    <div class="round3-code"><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">1</span><span class="src">import express from &quot;express&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">2</span><span class="src">import mongoose from &quot;mongoose&quot;;</span></div><div class="code-line" tabindex="0" data-tip="ייבוא: מביאים ספרייה או קובץ אחר כדי להשתמש בהם בקובץ הזה."><span class="ln">3</span><span class="src">import cors from &quot;cors&quot;;</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">4</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">5</span><span class="src">const app = express();</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">6</span><span class="src">app.use(cors());</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">7</span><span class="src">app.use(express.json());</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">8</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="Mongo/Mongoose: מגדיר חיבור, סכמה או פעולה מול מסד הנתונים."><span class="ln">9</span><span class="src">await mongoose.connect(&quot;mongodb://127.0.0.1:27017/teachers_exam&quot;);</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">10</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="Mongo/Mongoose: מגדיר חיבור, סכמה או פעולה מול מסד הנתונים."><span class="ln">11</span><span class="src">const teacherSchema = new mongoose.Schema({</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">12</span><span class="src">  fullName: { type: String, required: true },</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">13</span><span class="src">  idNumber: { type: String, required: true },</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">14</span><span class="src">  salary: { type: Number, required: true },</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">15</span><span class="src">  subject: { type: String, required: true }</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">16</span><span class="src">});</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">17</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="Mongo/Mongoose: מגדיר חיבור, סכמה או פעולה מול מסד הנתונים."><span class="ln">18</span><span class="src">const Teacher = mongoose.model(&quot;Teacher&quot;, teacherSchema);</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">19</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="GET route: מחזיר מידע מהשרת בלי ליצור משאב חדש."><span class="ln">20</span><span class="src">app.get(&quot;/teachers&quot;, async (req, res) =&gt; {</span></div><div class="code-line" tabindex="0" data-tip="find: מחזיר את האיבר הראשון שמתאים לתנאי או undefined."><span class="ln">21</span><span class="src">  res.json(await Teacher.find());</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">22</span><span class="src">});</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">23</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="POST route: מקבל מידע מהלקוח ויוצר/מסנן/מבצע פעולה."><span class="ln">24</span><span class="src">app.post(&quot;/teachers/by-salary&quot;, async (req, res) =&gt; {</span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">25</span><span class="src">  const salary = Number(req.body.salary);</span></div><div class="code-line" tabindex="0" data-tip="תנאי: עוצר פעולה שגויה או מפצל את הלוגיקה לפי מצב."><span class="ln">26</span><span class="src">  if (!Number.isFinite(salary)) return res.status(400).json({ message: &quot;salary must be number&quot; });</span></div><div class="code-line" tabindex="0" data-tip="find: מחזיר את האיבר הראשון שמתאים לתנאי או undefined."><span class="ln">27</span><span class="src">  const teachers = await Teacher.find({ salary: { $lt: salary } });</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">28</span><span class="src">  res.json(teachers);</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">29</span><span class="src">});</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">30</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="POST route: מקבל מידע מהלקוח ויוצר/מסנן/מבצע פעולה."><span class="ln">31</span><span class="src">app.post(&quot;/teachers&quot;, async (req, res) =&gt; {</span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">32</span><span class="src">  const { fullName, idNumber, salary, subject } = req.body;</span></div><div class="code-line" tabindex="0" data-tip="תנאי: עוצר פעולה שגויה או מפצל את הלוגיקה לפי מצב."><span class="ln">33</span><span class="src">  if (!fullName || !idNumber || !subject || !Number.isFinite(Number(salary))) {</span></div><div class="code-line" tabindex="0" data-tip="return: מחזיר ערך מפונקציה או JSX מקומפוננטה."><span class="ln">34</span><span class="src">    return res.status(400).json({ message: &quot;missing or invalid teacher data&quot; });</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">35</span><span class="src">  }</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">36</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">37</span><span class="src">  const exists = await Teacher.findOne({ fullName, subject });</span></div><div class="code-line" tabindex="0" data-tip="תנאי: עוצר פעולה שגויה או מפצל את הלוגיקה לפי מצב."><span class="ln">38</span><span class="src">  if (exists) return res.status(409).json({ message: &quot;Teacher with same name and subject already exists&quot; });</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">39</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="משתנה: שומר ערך זמני או קבוע שמשרת את הלוגיקה."><span class="ln">40</span><span class="src">  const teacher = await Teacher.create({ fullName, idNumber, salary: Number(salary), subject });</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">41</span><span class="src">  res.status(201).json({ message: &quot;Teacher registered successfully&quot;, teacher });</span></div><div class="code-line" tabindex="0" data-tip="שורת קוד: לבדוק סוגריים, שמות משתנים והקשר לדרישה הספציפית בשאלה."><span class="ln">42</span><span class="src">});</span></div><div class="code-line" tabindex="0" data-tip="שורה ריקה להפרדה וקריאות."><span class="ln">43</span><span class="src"> </span></div><div class="code-line" tabindex="0" data-tip="פונקציה: יחידת פעולה ממוקדת שקל לבדוק ולקרוא לה שוב."><span class="ln">44</span><span class="src">app.listen(3000, () =&gt; console.log(&quot;Teachers server running on http://localhost:3000&quot;));</span></div></div>
+    
+  </div>
+</article>
+  </div>
+</section>
+<section class="question-card" id="parking-q3">
+<div class="q-header">
+<span class="q-number">שאלה 3</span>
+<h3>Server — DB של מורים</h3>
+<span class="topic">server</span>
+</div>
+<div class="q-layout">
+<aside class="q-side">
+<div class="question-source">
+<h4>📜 השאלה במלואה</h4>
+<details open="">
+<summary>פתח/סגור את נוסח השאלה המקורי</summary>
+<pre class="raw-question">שאלה שלישית Server -
+יש ליצור DBב MONGODBאשר מכיל רשימה של מורים.
+
+לכל מורה המאפיינים הבאים :שם מלא ,ת"ז ,שכר ,מקצוע.
+יש לבנות שרת EXPRESSבעל 3מתודות:
+– GET .1מחזיר את כל המורים.
+– POST .2רק את המורים שהשכר שלהם נמוך ממה שהמשתמש
+הזין .
+– POST .3מקבל מאפיינים של מורה ,במידה וקיים מורה עם אותו
+שם ואותו מקצוע תוחזר הודעה רלוונטית ,אחרת יוכנס ל dBותוחזר
+הודעה על כך שנרשם בהצלחה.
+
+יש להתאים את כלל המתודות לממשק המשתמש ,על כן
+המשתמש צריך לראות את הנתונים החוזרים מהשרת כמו גם
+היכולת ליצירת מורה ב . db
+
+--- עמוד חדש ---</pre>
+</details>
+<h4>🔢 פירוק השאלה לתתי־משימות</h4>
+<ol class="subtasks"><li>– GET .1מחזיר את כל המורים.</li><li>– POST .2רק את המורים שהשכר שלהם נמוך ממה שהמשתמש</li><li>– POST .3מקבל מאפיינים של מורה ,במידה וקיים מורה עם אותו</li><li>המשתמש צריך לראות את הנתונים החוזרים מהשרת כמו גם</li><li>--- עמוד חדש ---</li></ol>
+</div>
+</aside>
+<main class="q-main">
+<div class="summary-box"><b>תקציר פתרון:</b> MongoDB collection של מורים, GET כל המורים, POST לפי שכר נמוך, POST יצירת מורה אם אין אותו שם+מקצוע.</div>
+<h4>🧠 ניתוח סעיף־סעיף בעברית</h4>
+<table class="analysis-table"><thead><tr><th>#</th><th>נושא</th><th>מה צריך לעשות</th><th>למה</th><th>מה לוודא</th></tr></thead><tbody><tr><td><b>1</b></td><td>Setup</td><td>להתקין express/mongoose ולהגדיר app.use(express.json())</td><td>כדי לפרק את הדרישה לחלק קטן שאפשר לבדוק בדיבוג ולא להילחץ מכל השאלה בבת אחת.</td><td>השרת עולה בלי שגיאה</td></tr><tr><td><b>2</b></td><td>Model</td><td>להגדיר Schema עם כל השדות</td><td>כי כל הפתרון נשען על מבנה נתונים נכון; אם האובייקט לא נכון, כל הקוד אחריו מסתבך.</td><td>סוגי הנתונים נכונים</td></tr><tr><td><b>3</b></td><td>Routes</td><td>לכתוב GET/POST/PUT/DELETE לפי האפיון</td><td>כי המבחן בודק מעבר נכון בין עמודים ולא רק הצגת מסך אחד.</td><td>סטטוס HTTP מתאים</td></tr><tr><td><b>4</b></td><td>Validation</td><td>לבדוק כפילויות ושדות חסרים</td><td>כדי לפרק את הדרישה לחלק קטן שאפשר לבדוק בדיבוג ולא להילחץ מכל השאלה בבת אחת.</td><td>מחזירים 400/404/409 כשצריך</td></tr><tr><td><b>5</b></td><td>Test</td><td>לבדוק בכלי HTTP/דפדפן שכל הנתיבים עובדים</td><td>כדי לפרק את הדרישה לחלק קטן שאפשר לבדוק בדיבוג ולא להילחץ מכל השאלה בבת אחת.</td><td>התשובה JSON/HTML לפי הדרישה</td></tr></tbody></table>
+<h4>🧭 תרשים זרימת פתרון</h4>
+<div class="flow"><div class="flow-step"><b>1</b><span>Client שולח בקשה</span><small>GET/POST/PUT לפי הדרישה</small></div><div class="flow-step"><b>2</b><span>Express Route</span><small>הנתיב הנכון מקבל req</small></div><div class="flow-step"><b>3</b><span>Validation</span><small>בודקים body/params</small></div><div class="flow-step"><b>4</b><span>MongoDB/Mongoose</span><small>find/create/update/delete</small></div><div class="flow-step"><b>5</b><span>Response</span><small>res.status(...).json(...)</small></div></div>
+<h4>🔍 ניתוח בקוד — דרישה מול מימוש</h4>
+<table class="analysis-table code-map"><thead><tr><th>#</th><th>דרישה מהשאלה</th><th>איפה זה מופיע בקוד</th><th>מה לבדוק בדיבאג</th></tr></thead><tbody><tr><td><b>1</b></td><td>Teacher Schema<br/><small>fullName, idNumber, salary, subject.</small></td><td><code>const Teacher = mongoose.model("Teacher", teacherSchema);</code></td><td>בדקו ב-Network/Postman שה-route מקבל body/params ומחזיר status נכון.</td></tr><tr><td><b>2</b></td><td>חיפוש לפי שכר<br/><small>salary נמוך מהערך שהמשתמש הזין.</small></td><td><code>Teacher.find({ salary: { $lt: salary } })</code></td><td>בדקו ב-Network/Postman שה-route מקבל body/params ומחזיר status נכון.</td></tr><tr><td><b>3</b></td><td>כפילות<br/><small>אותו שם ואותו מקצוע = לא להוסיף.</small></td><td><code>Teacher.findOne({ fullName, subject })</code></td><td>בדקו ב-Network/Postman שה-route מקבל body/params ומחזיר status נכון.</td></tr></tbody></table>
+<h4>🧩 פירוק הפתרון לבלוקים קטנים של קוד</h4>
+<div class="mini-code-block"><h5>Teacher Schema</h5><p>fullName, idNumber, salary, subject.</p><div class="annotated-code"><div class="code-title">בלוק קטן <small>רחפו על שורה כדי לראות הסבר</small><button type="button" class="copy-code" aria-label="העתק את בלוק הקוד">📋 העתק בלוק</button></div><div class="code-lines"><div aria-label="הסבר לשורת קוד 1" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">1</span><span class="src">const Teacher = mongoose.model("Teacher", teacherSchema);</span></div></div></div></div><div class="mini-code-block"><h5>חיפוש לפי שכר</h5><p>salary נמוך מהערך שהמשתמש הזין.</p><div class="annotated-code"><div class="code-title">בלוק קטן <small>רחפו על שורה כדי לראות הסבר</small><button type="button" class="copy-code" aria-label="העתק את בלוק הקוד">📋 העתק בלוק</button></div><div class="code-lines"><div aria-label="הסבר לשורת קוד 1" class="code-line" data-tip="find: מחפש ומחזיר את האיבר הראשון שעומד בתנאי, או undefined אם לא נמצא." role="button" tabindex="0"><span class="ln">1</span><span class="src">Teacher.find({ salary: { $lt: salary } })</span></div></div></div></div><div class="mini-code-block"><h5>כפילות</h5><p>אותו שם ואותו מקצוע = לא להוסיף.</p><div class="annotated-code"><div class="code-title">בלוק קטן <small>רחפו על שורה כדי לראות הסבר</small><button type="button" class="copy-code" aria-label="העתק את בלוק הקוד">📋 העתק בלוק</button></div><div class="code-lines"><div aria-label="הסבר לשורת קוד 1" class="code-line" data-tip="find: מחפש ומחזיר את האיבר הראשון שעומד בתנאי, או undefined אם לא נמצא." role="button" tabindex="0"><span class="ln">1</span><span class="src">Teacher.findOne({ fullName, subject })</span></div></div></div></div>
+<h4>📦 הקובץ הגדול המלא</h4>
+<div class="print-notes-hint">טיפ: בהדפסה / שמירה ל־PDF הסברי השורות יופיעו מתחת לכל שורה, כדי שלא יהיו תלויים רק ב־hover.</div><div class="full-file"><div class="full-file-head"><span>server.js</span><small>הקובץ הגדול המלא — עם הערות מרחפות לכל שורה</small></div><div class="annotated-code"><div class="code-title">server.js <small>רחפו על שורה כדי לראות הסבר</small><button type="button" class="copy-code" aria-label="העתק את בלוק הקוד">📋 העתק בלוק</button></div><div class="code-lines"><div aria-label="הסבר לשורת קוד 1" class="code-line" data-tip="ייבוא: מביאים ספרייה, קומפוננטה או פונקציה מקובץ אחר כדי להשתמש בה כאן." role="button" tabindex="0"><span class="ln">1</span><span class="src">import express from "express";</span></div><div aria-label="הסבר לשורת קוד 2" class="code-line" data-tip="ייבוא: מביאים ספרייה, קומפוננטה או פונקציה מקובץ אחר כדי להשתמש בה כאן." role="button" tabindex="0"><span class="ln">2</span><span class="src">import mongoose from "mongoose";</span></div><div aria-label="הסבר לשורת קוד 3" class="code-line" data-tip="ייבוא: מביאים ספרייה, קומפוננטה או פונקציה מקובץ אחר כדי להשתמש בה כאן." role="button" tabindex="0"><span class="ln">3</span><span class="src">import cors from "cors";</span></div><div aria-label="הסבר לשורת קוד 4" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">4</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 5" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">5</span><span class="src">const app = express();</span></div><div aria-label="הסבר לשורת קוד 6" class="code-line" data-tip="middleware: פונקציה שרצה לפני ה-routes, למשל JSON parser, cors או static files." role="button" tabindex="0"><span class="ln">6</span><span class="src">app.use(cors());</span></div><div aria-label="הסבר לשורת קוד 7" class="code-line" data-tip="json: מחזיר/קורא מידע בפורמט JSON — הפורמט המרכזי בין Frontend ל-Backend." role="button" tabindex="0"><span class="ln">7</span><span class="src">app.use(express.json());</span></div><div aria-label="הסבר לשורת קוד 8" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">8</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 9" class="code-line" data-tip="await: ממתין לסיום פעולה אסינכרונית לפני שממשיך לשורה הבאה." role="button" tabindex="0"><span class="ln">9</span><span class="src">await mongoose.connect("mongodb://127.0.0.1:27017/teachers_exam");</span></div><div aria-label="הסבר לשורת קוד 10" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">10</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 11" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">11</span><span class="src">const teacherSchema = new mongoose.Schema({</span></div><div aria-label="הסבר לשורת קוד 12" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">12</span><span class="src">  fullName: { type: String, required: true },</span></div><div aria-label="הסבר לשורת קוד 13" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">13</span><span class="src">  idNumber: { type: String, required: true },</span></div><div aria-label="הסבר לשורת קוד 14" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">14</span><span class="src">  salary: { type: Number, required: true },</span></div><div aria-label="הסבר לשורת קוד 15" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">15</span><span class="src">  subject: { type: String, required: true }</span></div><div aria-label="הסבר לשורת קוד 16" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">16</span><span class="src">});</span></div><div aria-label="הסבר לשורת קוד 17" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">17</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 18" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">18</span><span class="src">const Teacher = mongoose.model("Teacher", teacherSchema);</span></div><div aria-label="הסבר לשורת קוד 19" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">19</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 20" class="code-line" data-tip="GET route: נתיב שמחזיר מידע בלי לשנות את המערכת." role="button" tabindex="0"><span class="ln">20</span><span class="src">app.get("/teachers", async (req, res) =&gt; {</span></div><div aria-label="הסבר לשורת קוד 21" class="code-line" data-tip="find: מחפש ומחזיר את האיבר הראשון שעומד בתנאי, או undefined אם לא נמצא." role="button" tabindex="0"><span class="ln">21</span><span class="src">  res.json(await Teacher.find());</span></div><div aria-label="הסבר לשורת קוד 22" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">22</span><span class="src">});</span></div><div aria-label="הסבר לשורת קוד 23" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">23</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 24" class="code-line" data-tip="POST route: נתיב שיוצר מידע חדש או מקבל גוף בקשה." role="button" tabindex="0"><span class="ln">24</span><span class="src">app.post("/teachers/by-salary", async (req, res) =&gt; {</span></div><div aria-label="הסבר לשורת קוד 25" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">25</span><span class="src">  const salary = Number(req.body.salary);</span></div><div aria-label="הסבר לשורת קוד 26" class="code-line" data-tip="תנאי: בודקים האם משהו נכון. אם כן, מבצעים את הבלוק שבתוך התנאי." role="button" tabindex="0"><span class="ln">26</span><span class="src">  if (!Number.isFinite(salary)) return res.status(400).json({ message: "salary must be number" });</span></div><div aria-label="הסבר לשורת קוד 27" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">27</span><span class="src">  const teachers = await Teacher.find({ salary: { $lt: salary } });</span></div><div aria-label="הסבר לשורת קוד 28" class="code-line" data-tip="json: מחזיר/קורא מידע בפורמט JSON — הפורמט המרכזי בין Frontend ל-Backend." role="button" tabindex="0"><span class="ln">28</span><span class="src">  res.json(teachers);</span></div><div aria-label="הסבר לשורת קוד 29" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">29</span><span class="src">});</span></div><div aria-label="הסבר לשורת קוד 30" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">30</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 31" class="code-line" data-tip="POST route: נתיב שיוצר מידע חדש או מקבל גוף בקשה." role="button" tabindex="0"><span class="ln">31</span><span class="src">app.post("/teachers", async (req, res) =&gt; {</span></div><div aria-label="הסבר לשורת קוד 32" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">32</span><span class="src">  const { fullName, idNumber, salary, subject } = req.body;</span></div><div aria-label="הסבר לשורת קוד 33" class="code-line" data-tip="תנאי: בודקים האם משהו נכון. אם כן, מבצעים את הבלוק שבתוך התנאי." role="button" tabindex="0"><span class="ln">33</span><span class="src">  if (!fullName || !idNumber || !subject || !Number.isFinite(Number(salary))) {</span></div><div aria-label="הסבר לשורת קוד 34" class="code-line" data-tip="json: מחזיר/קורא מידע בפורמט JSON — הפורמט המרכזי בין Frontend ל-Backend." role="button" tabindex="0"><span class="ln">34</span><span class="src">    return res.status(400).json({ message: "missing or invalid teacher data" });</span></div><div aria-label="הסבר לשורת קוד 35" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">35</span><span class="src">  }</span></div><div aria-label="הסבר לשורת קוד 36" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">36</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 37" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">37</span><span class="src">  const exists = await Teacher.findOne({ fullName, subject });</span></div><div aria-label="הסבר לשורת קוד 38" class="code-line" data-tip="תנאי: בודקים האם משהו נכון. אם כן, מבצעים את הבלוק שבתוך התנאי." role="button" tabindex="0"><span class="ln">38</span><span class="src">  if (exists) return res.status(409).json({ message: "Teacher with same name and subject already exists" });</span></div><div aria-label="הסבר לשורת קוד 39" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">39</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 40" class="code-line" data-tip="const: משתנה קבוע שאי אפשר להקצות לו ערך חדש. מתאים לערכים שלא מוחלפים." role="button" tabindex="0"><span class="ln">40</span><span class="src">  const teacher = await Teacher.create({ fullName, idNumber, salary: Number(salary), subject });</span></div><div aria-label="הסבר לשורת קוד 41" class="code-line" data-tip="json: מחזיר/קורא מידע בפורמט JSON — הפורמט המרכזי בין Frontend ל-Backend." role="button" tabindex="0"><span class="ln">41</span><span class="src">  res.status(201).json({ message: "Teacher registered successfully", teacher });</span></div><div aria-label="הסבר לשורת קוד 42" class="code-line" data-tip="שורת קוד רגילה: חלק מהפתרון. בדקו את המשתנים, הסוגריים והקשר לשורות שמעל ומתחת." role="button" tabindex="0"><span class="ln">42</span><span class="src">});</span></div><div aria-label="הסבר לשורת קוד 43" class="code-line" data-tip="שורה ריקה להפרדה וקריאות." role="button" tabindex="0"><span class="ln">43</span><span class="src"> </span></div><div aria-label="הסבר לשורת קוד 44" class="code-line" data-tip="Arrow function: פונקציה קצרה. נפוצה ב-map, filter, handlers ו-callbacks." role="button" tabindex="0"><span class="ln">44</span><span class="src">app.listen(3000, () =&gt; console.log("Teachers server running on http://localhost:3000"));</span></div></div></div></div>
+<div class="mistakes"><h4>⚠️ כל האפשרויות לעשות טעויות — כדי שלא תטעי</h4><ul><li>לשכר צריך $lt ולא $gt</li><li>כפילות לפי שם+מקצוע, לא רק תז</li><li>POST סינון ו-POST יצירה הם שני נתיבים שונים</li></ul></div>
+</main>
+</div>
+</section>
+<section class="expanded-mistakes">
+<h3>⚠️ טעויות מורחבות שלא ליפול בהן</h3>
+<ul><li>לא לשכוח app.use(express.json()) לפני routes שקוראים req.body.</li><li>לא לשכוח cors() אם הלקוח רץ מפורט אחר.</li><li>לא לכתוב route בלי res.json/res.send — כל בקשה חייבת להסתיים בתגובה.</li><li>ב-Mongo/Mongoose להשתמש ב-async/await ולטפל בשגיאות עם try/catch.</li><li>לא לבלבל בין req.params, req.query ו-req.body.</li><li>אם יש פילטרים אופציונליים — לבנות query בהדרגה ולא להניח שכל השדות קיימים.</li><li>לא לשמור סיסמאות/מידע רגיש בקוד קשיח בפרויקט אמיתי; במבחן לציין אם משתמשים בדמו.</li><li>לא לשכוח app.listen(PORT). בלי זה השרת לא עולה.</li><li>ב-POST להחזיר 201 כאשר יוצרים משאב חדש.</li><li>לא לשלוח node_modules בהגשה אם הדרישה אומרת לא לשלוח.</li></ul>
+</section>
+<div class="single-actions" style="justify-content:center;margin-top:24px"><a href="index.html">🏠 חזרה לאינדקס</a><a href="parking-q2.html">← שאלה קודמת</a><a href="flights-q1.html">שאלה הבאה →</a></div>
+</main>
+</div>
+</div>
+<script>
+(function(){
+  function collectCode(block){
+    return Array.from(block.querySelectorAll('.code-line .src'))
+      .map(el => el.textContent.replace(/ /g, ' '))
+      .join('\n');
+  }
+  async function copyCode(btn){
+    const block = btn.closest('.annotated-code') || btn.closest('.full-file') || document;
+    const code = collectCode(block);
+    if (!code.trim()) return;
+    try {
+      await navigator.clipboard.writeText(code);
+      const old = btn.textContent;
+      btn.textContent = '✅ הועתק';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = old; btn.classList.remove('copied'); }, 1400);
+    } catch(e) {
+      alert('לא הצלחתי להעתיק אוטומטית. אפשר לסמן את הקוד ידנית.');
+    }
+  }
+  document.addEventListener('click', (event) => {
+    const btn = event.target.closest('.copy-code');
+    if (btn) copyCode(btn);
+  });
+})();
+</script><!--portal-r3-panel-start-->
+    <div class="imp-panel-compact" data-qid="parking-q3">
+      <div class="impc-head">
+        <h4 class="impc-title">🔧 שיפורים לציון 100 — Express + MongoDB — שרת מורים <span class="imp-score">25 נק׳</span></h4>
+        <a class="sol100-btn" href="../solutions100/parking-q3.html" target="_blank">🏆 פתרון 100</a>
+        <span class="impc-hint">לחיצה על צ'יפ פותחת חלון מרחף עם הפירוט</span>
+      </div>
+      <div class="impc-chips">
+        <span class="impc-row-label">באגים מתוקנים:</span>
+        <span class="sev-chip fixed" aria-label="באגים מתוקנים">✓ 2 מתוקנים</span>
+        <button class="sev-chip crit" data-tip-payload="{&quot;kind&quot;: &quot;bug&quot;, &quot;sev&quot;: &quot;critical&quot;, &quot;sev_label&quot;: &quot;קריטי&quot;, &quot;desc&quot;: &quot;POST /low-salary: הדרישה אומרת לקבל minSalary ב־body ולהחזיר רק מורים עם שכר &lt;strong&gt;נמוך מ-minSalary&lt;/strong&gt;&quot;, &quot;before&quot;: &quot;// תנאי פילטר לא תואם לדרישה&quot;, &quot;after&quot;: &quot;const teachers = await Teacher.find({ salary: { $lt: req.body.minSalary } });&quot;, &quot;qid&quot;: &quot;parking-q3&quot;, &quot;num&quot;: 1, &quot;total&quot;: 2}" aria-label="באג 1 — קריטי">1 ק</button> <button class="sev-chip crit" data-tip-payload="{&quot;kind&quot;: &quot;bug&quot;, &quot;sev&quot;: &quot;critical&quot;, &quot;sev_label&quot;: &quot;קריטי&quot;, &quot;desc&quot;: &quot;POST /add-or-update: הדרישה אומרת — אם המורה &lt;strong&gt;קיים&lt;/strong&gt; (לפי ID), עדכן; אחרת צור חדש. צריך upsert עם findOneAndUpdate&quot;, &quot;before&quot;: &quot;// כתיבת if-else ידנית עם find ואז update/create&quot;, &quot;after&quot;: &quot;await Teacher.findOneAndUpdate({ id: req.body.id }, req.body, { upsert: true, new: true });&quot;, &quot;qid&quot;: &quot;parking-q3&quot;, &quot;num&quot;: 2, &quot;total&quot;: 2}" aria-label="באג 2 — קריטי">2 ק</button>
+      </div>
+      <div class="impc-chips"><span class="impc-row-label">דרישות חסרות:</span><button class="sev-chip miss" data-tip-payload="{&quot;kind&quot;: &quot;missing&quot;, &quot;text&quot;: &quot;validation על body (id, name, salary)&quot;, &quot;num&quot;: 1, &quot;qid&quot;: &quot;parking-q3&quot;}" aria-label="דרישה חסרה 1">M1</button> <button class="sev-chip miss" data-tip-payload="{&quot;kind&quot;: &quot;missing&quot;, &quot;text&quot;: &quot;טיפול בשגיאת חיבור ל־MongoDB (try/catch סביב mongoose.connect)&quot;, &quot;num&quot;: 2, &quot;qid&quot;: &quot;parking-q3&quot;}" aria-label="דרישה חסרה 2">M2</button></div>
+      <div class="impc-chips"><span class="impc-row-label">פיצ'רים מעבר:</span><button class="sev-chip extra" data-tip-payload="{&quot;kind&quot;: &quot;extra&quot;, &quot;text&quot;: &quot;Index על teacher.id ל־performance&quot;, &quot;num&quot;: 1, &quot;qid&quot;: &quot;parking-q3&quot;}" aria-label="פיצ'ר נוסף 1">+1</button> <button class="sev-chip extra" data-tip-payload="{&quot;kind&quot;: &quot;extra&quot;, &quot;text&quot;: &quot;Mongoose schema עם validators (min/max salary)&quot;, &quot;num&quot;: 2, &quot;qid&quot;: &quot;parking-q3&quot;}" aria-label="פיצ'ר נוסף 2">+2</button></div>
+    </div>
+    <!--portal-r3-panel-end--><!--portal-r3-script-->
+<script id="portal-injected-script">
+(function(){
+  // Embed a small tooltip element in the iframe document
+  let tip = document.getElementById('iframe-tooltip-el');
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.id = 'iframe-tooltip-el';
+    tip.className = 'iframe-tooltip';
+    tip.setAttribute('role','dialog');
+    tip.innerHTML = '<button class="vt-close" type="button" aria-label="סגירה">×</button><div class="iframe-tooltip-body"></div>';
+    document.body.appendChild(tip);
+    tip.querySelector('.vt-close').addEventListener('click', () => tip.classList.remove('show'));
+  }
+  const tipBody = tip.querySelector('.iframe-tooltip-body');
+
+  function showTip(target, html) {
+    tipBody.innerHTML = html;
+    tip.classList.add('show');
+    tip.style.left = '0px'; tip.style.top = '0px';
+    requestAnimationFrame(() => {
+      const rect = target.getBoundingClientRect();
+      const tw = tip.offsetWidth, th = tip.offsetHeight;
+      let x = rect.left + rect.width/2 - tw/2;
+      let y = rect.bottom + 12;
+      if (y + th > window.innerHeight - 10) y = Math.max(10, rect.top - th - 12);
+      x = Math.max(10, Math.min(window.innerWidth - tw - 10, x));
+      tip.style.left = x + 'px';
+      tip.style.top = y + 'px';
+    });
+  }
+
+  function hideTip() { tip.classList.remove('show'); }
+
+  function escHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+  }
+
+  function decodeAttr(s) {
+    const t = document.createElement('textarea');
+    t.innerHTML = s;
+    return t.value;
+  }
+
+  function buildBugTooltip(p) {
+    const sevColors = {critical:'#dc2626',high:'#ea580c',medium:'#facc15',low:'#14b8a6'};
+    const c = sevColors[p.sev] || '#facc15';
+    return `
+      <h4>🐛 באג ${p.num} מתוך ${p.total} <span class="vt-tag" style="border-color:${c};color:${c};background:${c}1a">${p.sev_label}</span></h4>
+      <p>${p.desc}</p>
+      <h5>לפני (קוד מקור)</h5>
+      <pre class="before">${escHtml(p.before)}</pre>
+      <h5>אחרי (לציון 100)</h5>
+      <pre>${escHtml(p.after)}</pre>
+    `;
+  }
+
+  function buildMissingTooltip(p) {
+    return `
+      <h4>📋 דרישה חסרה ${p.num}</h4>
+      <p>${p.text}</p>
+      <p style="margin-top:8px;color:#cbd5e1;font-size:12px">דרישה זו לא מומשה בפתרון המקורי. בגרסה המתוקנת היא הושלמה.</p>
+    `;
+  }
+
+  function buildExtraTooltip(p) {
+    return `
+      <h4>✨ פיצ'ר מעבר לדרישה ${p.num}</h4>
+      <p>${p.text}</p>
+      <p style="margin-top:8px;color:#cbd5e1;font-size:12px">פוליש מעבר לנדרש בשאלה — שיפור איכות שלא מוריד נקודות אם חסר.</p>
+    `;
+  }
+
+  document.addEventListener('click', e => {
+    const chip = e.target.closest('[data-tip-payload]');
+    if (chip) {
+      e.stopPropagation();
+      let payload;
+      try { payload = JSON.parse(decodeAttr(chip.getAttribute('data-tip-payload'))); }
+      catch (err) { console.error('bad payload', err); return; }
+      let html = '';
+      if (payload.kind === 'bug')     html = buildBugTooltip(payload);
+      else if (payload.kind === 'missing') html = buildMissingTooltip(payload);
+      else if (payload.kind === 'extra')   html = buildExtraTooltip(payload);
+      showTip(chip, html);
+      return;
+    }
+    if (!tip.contains(e.target)) hideTip();
+  });
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+})();
+</script>
+</body>
+</html>

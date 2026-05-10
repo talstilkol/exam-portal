@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎯 סימולטור מבחן Full-Stack (Pro)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); background-attachment: fixed; color: #e0e0e0; min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+  
+  header { text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); width: 100%; max-width: 800px; position: relative; overflow: hidden; }
+  header h1 { font-size: 2.2em; color: white; margin-bottom: 10px; }
+  header p { font-size: 1.1em; color: rgba(255,255,255,0.9); }
+  
+  .timer { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 8px; font-family: monospace; font-size: 1.4em; font-weight: bold; color: #ffd93d; border: 1px solid #ffd93d; display: none; }
+  .timer.danger { color: #ff6b6b; border-color: #ff6b6b; animation: pulse 1s infinite; }
+  @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+  
+  .back-link { align-self: flex-start; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; }
+  .back-link:hover { background: rgba(255,217,61,0.25); }
+
+  .container-card { width: 100%; max-width: 800px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 30px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); }
+  
+  /* Setup Screen */
+  #setup-container { text-align: center; }
+  #setup-container h2 { color: #4ecdc4; margin-bottom: 25px; font-size: 1.8em; }
+  .mode-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .mode-card { background: rgba(0,0,0,0.3); border: 2px solid rgba(78,205,196,0.2); border-radius: 12px; padding: 25px; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .mode-card:hover { transform: translateY(-5px); border-color: #4ecdc4; box-shadow: 0 10px 20px rgba(78,205,196,0.2); background: rgba(78,205,196,0.1); }
+  .mode-card h3 { color: white; margin-bottom: 10px; font-size: 1.3em; }
+  .mode-card p { color: #aaa; font-size: 0.9em; line-height: 1.4; }
+
+  /* Quiz Screen */
+  #quiz-container { display: none; }
+  .progress-text { color: #4ecdc4; font-weight: bold; margin-bottom: 15px; font-size: 1.1em; display: flex; justify-content: space-between; align-items: center; }
+  .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #4ecdc4; transition: width 0.3s ease; width: 0%; }
+  
+  .question-text { font-size: 1.4em; font-weight: bold; margin-bottom: 20px; line-height: 1.4; color: white; }
+  
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .option { background: rgba(0,0,0,0.3); border: 2px solid rgba(78,205,196,0.3); border-radius: 10px; padding: 15px 20px; cursor: pointer; transition: all 0.2s ease; font-size: 1.1em; display: flex; align-items: center; gap: 12px; }
+  .option:hover:not(.disabled) { background: rgba(78,205,196,0.15); border-color: #4ecdc4; transform: translateX(-5px); }
+  .option.selected { background: rgba(78,205,196,0.25); border-color: #4ecdc4; }
+  .option.disabled { cursor: default; }
+  
+  /* Practice Mode feedback */
+  .option.correct { background: rgba(40,167,69,0.2) !important; border-color: #28a745 !important; }
+  .option.wrong { background: rgba(220,53,69,0.2) !important; border-color: #dc3545 !important; opacity: 0.7; }
+  
+  .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; }
+  .btn { padding: 12px 25px; border: none; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.2s; color: white; }
+  .btn-next { background: linear-gradient(135deg, #4ecdc4, #44a8a3); }
+  .btn-submit { background: linear-gradient(135deg, #28a745, #218838); display: none; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+  .btn:disabled { background: #555; color: #888; cursor: not-allowed; }
+
+  /* Results Screen */
+  #results-container { display: none; text-align: center; }
+  .score-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid #4ecdc4; display: flex; align-items: center; justify-content: center; font-size: 3em; font-weight: bold; margin: 0 auto 20px; color: white; }
+  .feedback-list { text-align: right; margin-top: 30px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 10px; }
+  .feedback-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .feedback-item:last-child { border-bottom: none; }
+  .feedback-q { font-weight: bold; color: #ffd93d; margin-bottom: 5px; }
+  .feedback-wrong { color: #ff6b6b; text-decoration: line-through; margin-left: 10px; }
+  .feedback-correct { color: #28a745; }
+  .feedback-link { display: inline-block; margin-top: 8px; font-size: 0.85em; color: #4ecdc4; text-decoration: none; background: rgba(78,205,196,0.1); padding: 3px 8px; border-radius: 4px; }
+  
+  .code-block { background: #0d1117; padding: 10px; border-radius: 5px; font-family: monospace; direction: ltr; text-align: left; margin: 10px 0; font-size: 0.9em; }
+</style>
+  <link rel="stylesheet" href="light-mode.css">
+  <link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+
+<a href="00_dashboard.html" class="back-link">← חזרה לדשבורד</a>
+
+<header>
+  <h1>🎯 סימולטור מבחן — Full Stack</h1>
+  <p id="header-desc">בחר מצב סימולציה כדי להתחיל</p>
+  <div class="timer" id="timer">00:00</div>
+</header>
+
+<!-- SETUP SCREEN -->
+<div class="container-card" id="setup-container">
+  <h2>בחר מצב סימולטור</h2>
+
+  <div style="margin-bottom:24px; background:rgba(78,205,196,0.08); border:1px solid rgba(78,205,196,0.25); border-radius:12px; padding:18px;">
+    <label style="display:block; color:#4ecdc4; font-weight:bold; margin-bottom:10px;">🏷️ סנן לפי נושא:</label>
+    <select id="tag-filter" style="width:100%; padding:10px 14px; border-radius:8px; background:#1e293b; border:1px solid rgba(78,205,196,0.3); color:#e0e0e0; font-size:1em; cursor:pointer;">
+      <option value="all">📚 כל הנושאים</option>
+      <option value="js-core">⚡ JS Core</option>
+      <option value="react">⚛️ React</option>
+      <option value="async">⏳ Async & Promises</option>
+      <option value="typescript">📘 TypeScript</option>
+      <option value="node-express">🟢 Node.js & Express</option>
+      <option value="nestjs">🪹 Nest.js Architecture</option>
+      <option value="database">🗃️ Database & MongoDB</option>
+      <option value="sql-postgres">🐘 SQL & PostgreSQL</option>
+      <option value="auth-security">🔒 Auth & Security</option>
+      <option value="html-css">🎨 HTML & CSS</option>
+      <option value="design-systems">💅 Design Systems & Tailwind</option>
+      <option value="devops">🐳 DevOps & Docker</option>
+      <option value="algorithms">🧮 Algorithms</option>
+      <option value="testing">🧪 Testing</option>
+      <option value="nextjs">▲ Next.js</option>
+      <option value="ai-engineering">🤖 AI Engineering</option>
+    </select>
+    <p id="tag-count" style="color:#888; font-size:0.85em; margin-top:8px; text-align:center;">כל 220 השאלות זמינות</p>
+  </div>
+
+  <div class="mode-cards">
+    <div class="mode-card" onclick="startQuiz('mini')">
+      <h3>⏱️ Mini Quiz</h3>
+      <p>10 שאלות אקראיות מהנושא שנבחר. זמן הקצבה: 20 דקות.</p>
+    </div>
+    <div class="mode-card" onclick="startQuiz('practice')">
+      <h3>🏋️ מצב תרגול</h3>
+      <p>כל שאלות הנושא, זמן ללא הגבלה. משוב מיידי לאחר כל תשובה.</p>
+    </div>
+    <div class="mode-card" onclick="startQuiz('full')">
+      <h3>🔥 מבחן אמת (Full)</h3>
+      <p>כל שאלות הנושא. זמן הקצבה: שעתיים וחצי.</p>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div class="container-card" id="quiz-container">
+  <div class="progress-text">
+    <span id="progress-text-count">שאלה 1 מתוך X</span>
+    <span id="practice-feedback" style="display:none;font-size:0.9em;"></span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  
+  <div class="question-text" id="question-text">טוען שאלה...</div>
+  
+  <div class="options" id="options-container">
+    <!-- Options injected by JS -->
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-next" style="background:#555" onclick="abortQuiz()">יציאה</button>
+    <button class="btn btn-next" id="btn-next" onclick="nextQuestion()" disabled>הבא →</button>
+    <button class="btn btn-submit" id="btn-submit" onclick="submitQuiz()">סיים מבחן</button>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div class="container-card" id="results-container">
+  <h2 style="margin-bottom:20px;color:#4ecdc4;">התוצאות שלך</h2>
+  <div class="score-circle" id="score-display">100</div>
+  <p style="font-size:1.2em;color:#e0e0e0;" id="score-msg">מצוין! אתה מוכן למבחן.</p>
+  
+  <div class="feedback-list" id="feedback-list">
+    <!-- Errors injected here -->
+  </div>
+  
+  <br>
+  <button class="btn btn-next" onclick="location.reload()">חזור לבחירת מצב</button>
+</div>
+
+<script src="quiz_data.js"></script>
+<script>
+  let selectedQuestions = [];
+  let currentQuestion = 0;
+  let userAnswers = [];
+  let currentMode = '';
+  
+  let timerInterval = null;
+  let timeLeft = 0;
+
+  const setupEl = document.getElementById('setup-container');
+  const quizEl = document.getElementById('quiz-container');
+  const resultsEl = document.getElementById('results-container');
+  const timerEl = document.getElementById('timer');
+  const headerDesc = document.getElementById('header-desc');
+  
+  const qText = document.getElementById('question-text');
+  const optContainer = document.getElementById('options-container');
+  const progTextCount = document.getElementById('progress-text-count');
+  const progFill = document.getElementById('progress-fill');
+  const btnNext = document.getElementById('btn-next');
+  const btnSubmit = document.getElementById('btn-submit');
+  const practiceFeedback = document.getElementById('practice-feedback');
+
+  function getFilteredQuestions() {
+    const tag = document.getElementById('tag-filter').value;
+    if (tag === 'all') return [...questions];
+    return questions.filter(q => q.tag === tag);
+  }
+
+  // Update count when filter changes
+  document.addEventListener('DOMContentLoaded', () => {
+    const sel = document.getElementById('tag-filter');
+    const cnt = document.getElementById('tag-count');
+    if (sel && cnt) {
+      cnt.textContent = `סה"כ ${questions.length} שאלות במאגר זמינות לתרגול`;
+      sel.addEventListener('change', () => {
+        const filtered = getFilteredQuestions();
+        const tagLabel = sel.options[sel.selectedIndex].text;
+        cnt.textContent = filtered.length + ' שאלות זמינות — ' + tagLabel;
+      });
+    }
+  });
+
+  function startQuiz(mode) {
+    if (typeof questions === 'undefined' || questions.length === 0) {
+      alert('בנק השאלות ריק או לא נטען. בדוק את קובץ quiz_data.js');
+      return;
+    }
+
+    const pool = getFilteredQuestions();
+    if (pool.length === 0) {
+      alert('אין שאלות בנושא זה. בחר נושא אחר.');
+      return;
+    }
+    
+    currentMode = mode;
+    currentQuestion = 0;
+    const tagSel = document.getElementById('tag-filter');
+    const tagLabel = tagSel ? tagSel.options[tagSel.selectedIndex].text : 'כל הנושאים';
+    
+    // Setup mode logic
+    if (mode === 'mini') {
+      selectedQuestions = [...pool].sort(() => 0.5 - Math.random()).slice(0, Math.min(10, pool.length));
+      timeLeft = 20 * 60;
+      headerDesc.textContent = 'Mini Quiz — ' + tagLabel + ' (20 דקות)';
+      startTimer();
+    } 
+    else if (mode === 'full') {
+      selectedQuestions = [...pool].sort(() => 0.5 - Math.random());
+      timeLeft = 150 * 60;
+      headerDesc.textContent = 'מבחן אמת — ' + tagLabel;
+      startTimer();
+    }
+    else if (mode === 'practice') {
+      selectedQuestions = [...pool].sort(() => 0.5 - Math.random());
+      timeLeft = 0;
+      headerDesc.textContent = 'מצב תרגול — ' + tagLabel;
+      timerEl.style.display = 'none';
+      practiceFeedback.style.display = 'inline-block';
+    }
+
+    userAnswers = new Array(selectedQuestions.length).fill(null);
+    
+    setupEl.style.display = 'none';
+    quizEl.style.display = 'block';
+    
+    renderQuestion();
+  }
+
+  function startTimer() {
+    timerEl.style.display = 'inline-block';
+    updateTimerDisplay();
+    
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimerDisplay();
+      
+      if (timeLeft <= 60) timerEl.classList.add('danger');
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        submitQuiz(); // Auto submit
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const h = Math.floor(timeLeft / 3600);
+    const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    timerEl.textContent = h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
+  }
+
+  function renderQuestion() {
+    const q = selectedQuestions[currentQuestion];
+    progTextCount.textContent = `שאלה ${currentQuestion + 1} מתוך ${selectedQuestions.length}`;
+    progFill.style.width = `${((currentQuestion) / selectedQuestions.length) * 100}%`;
+    qText.innerHTML = q.q;
+    practiceFeedback.textContent = '';
+    
+    optContainer.innerHTML = '';
+    
+    const hasAnswered = userAnswers[currentQuestion] !== null;
+    
+    q.options.forEach((opt, index) => {
+      const div = document.createElement('div');
+      div.className = 'option';
+      
+      if (hasAnswered) {
+        if (currentMode === 'practice') {
+          div.classList.add('disabled');
+          if (index === q.correct) div.classList.add('correct');
+          else if (userAnswers[currentQuestion] === index) div.classList.add('wrong');
+        } else {
+          if (userAnswers[currentQuestion] === index) div.classList.add('selected');
+        }
+      }
+      
+      div.innerHTML = `<span style="font-weight:bold;color:#4ecdc4;width:20px;">${index+1}.</span> ${opt}`;
+      
+      if (!hasAnswered || currentMode !== 'practice') {
+        div.onclick = () => selectOption(index, div);
+      }
+      optContainer.appendChild(div);
+    });
+
+    updateNavButtons();
+  }
+
+  function selectOption(index, el) {
+    if (currentMode === 'practice' && userAnswers[currentQuestion] !== null) return; // Prevent re-click in practice
+    
+    userAnswers[currentQuestion] = index;
+    const q = selectedQuestions[currentQuestion];
+    
+    if (currentMode === 'practice') {
+      const allOpts = document.querySelectorAll('.option');
+      allOpts.forEach(o => o.classList.add('disabled')); // Disable all
+      
+      if (index === q.correct) {
+        el.classList.add('correct');
+        practiceFeedback.textContent = '✅ תשובה נכונה!';
+        practiceFeedback.style.color = '#28a745';
+        if (window.ProgressEngine) window.ProgressEngine.recordCorrect(q.tag || 'General');
+      } else {
+        el.classList.add('wrong');
+        allOpts[q.correct].classList.add('correct');
+        practiceFeedback.textContent = '❌ תשובה שגויה!';
+        practiceFeedback.style.color = '#ff6b6b';
+        if (window.ProgressEngine) window.ProgressEngine.recordMistake(q.tag || 'General');
+      }
+    } else {
+      const allOpts = document.querySelectorAll('.option');
+      allOpts.forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+    
+    updateNavButtons();
+  }
+
+  function updateNavButtons() {
+    const hasAnswered = userAnswers[currentQuestion] !== null;
+    btnNext.disabled = !hasAnswered;
+
+    if (currentQuestion === selectedQuestions.length - 1) {
+      btnNext.style.display = 'none';
+      btnSubmit.style.display = 'block';
+      btnSubmit.disabled = !hasAnswered;
+    } else {
+      btnNext.style.display = 'block';
+      btnSubmit.style.display = 'none';
+    }
+  }
+
+  function nextQuestion() {
+    if (currentQuestion < selectedQuestions.length - 1) {
+      currentQuestion++;
+      renderQuestion();
+    }
+  }
+
+  function abortQuiz() {
+    if (confirm('האם אתה בטוח שברצונך לצאת? ההתקדמות לא תישמר.')) {
+      location.reload();
+    }
+  }
+
+  function submitQuiz() {
+    clearInterval(timerInterval);
+    timerEl.style.display = 'none';
+    quizEl.style.display = 'none';
+    resultsEl.style.display = 'block';
+    
+    let correctCount = 0;
+    const feedbackList = document.getElementById('feedback-list');
+    feedbackList.innerHTML = '<h3>פירוט שגיאות ונושאים לחיזוק:</h3><br>';
+    
+    selectedQuestions.forEach((q, index) => {
+      if (userAnswers[index] === q.correct) {
+        correctCount++;
+        if (currentMode !== 'practice' && typeof recordCorrect === 'function') recordCorrect(q.tag || 'General');
+      } else {
+        if (currentMode !== 'practice' && typeof recordMistake === 'function') recordMistake(q.tag || 'General');
+        const item = document.createElement('div');
+        item.className = 'feedback-item';
+        const userAnsText = userAnswers[index] !== null ? q.options[userAnswers[index]] : 'לא נענה';
+        item.innerHTML = `
+          <div class="feedback-q">${index + 1}. ${q.q.replace(/<[^>]*>?/gm, '')}</div>
+          <div>בחרת: <span class="feedback-wrong">${userAnsText}</span></div>
+          <div>נכון: <span class="feedback-correct">${q.options[q.correct]}</span></div>
+          <a href="${q.link}" target="_blank" class="feedback-link">📚 קפוץ לנושא בחומר הלימוד</a>
+        `;
+        feedbackList.appendChild(item);
+      }
+    });
+
+    if (correctCount === selectedQuestions.length) {
+      feedbackList.innerHTML = '<div style="color:#28a745;font-size:1.2em;font-weight:bold;">מושלם! לא היו לך טעויות כלל.</div>';
+    }
+
+    const score = Math.round((correctCount / selectedQuestions.length) * 100);
+    const scoreCircle = document.getElementById('score-display');
+    scoreCircle.textContent = score;
+    
+    if (score >= 90) { scoreCircle.style.borderColor = '#28a745'; document.getElementById('score-msg').textContent = 'גאון! מוכן למבחן!'; }
+    else if (score >= 70) { scoreCircle.style.borderColor = '#ffd93d'; document.getElementById('score-msg').textContent = 'טוב מאוד, אך יש עוד קצת עבודה.'; }
+    else { scoreCircle.style.borderColor = '#ff6b6b'; document.getElementById('score-msg').textContent = 'מומלץ לחזור על החומר התיאורטי.'; }
+    
+    // Track that a quiz was completed today (only if in full or mini mode)
+    if (currentMode !== 'practice' && typeof trackQuizCompleted === 'function') {
+        trackQuizCompleted();
+    }
+  }
+
+  // KEYBOARD NAVIGATION
+  document.addEventListener('keydown', (e) => {
+    if (quizEl.style.display !== 'block') return; // Only active during quiz
+    
+    // In LTR languages Right Arrow is next, but in RTL layout Left Arrow is visually "Next"
+    // So Left Arrow = Next question
+    if (e.key === 'ArrowLeft') {
+      if (!btnNext.disabled && btnNext.style.display !== 'none') {
+        nextQuestion();
+      } else if (!btnSubmit.disabled && btnSubmit.style.display !== 'none') {
+        submitQuiz();
+      }
+    }
+  });
+</script>
+
+<script src="progress-engine.js"></script>
+<script src="theme-toggle.js"></script>
+<script src="breadcrumbs.js"></script>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

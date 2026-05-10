@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>סנפטים מוכנים — קוד להעתקה</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); background-attachment: fixed; color: #e0e0e0; line-height: 1.7; min-height: 100vh; padding: 20px; }
+  .container { max-width: 1300px; margin: 0 auto; }
+  header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #ffd93d 0%, #f59e0b 50%, #d97706 100%); border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+  header h1 { font-size: 2.5em; color: #1a1a2e; margin-bottom: 10px; }
+  header p { color: rgba(26,26,46,0.85); font-size: 1.2em; }
+  .back-link { display: inline-block; margin-bottom: 20px; color: #ffd93d; text-decoration: none; padding: 10px 20px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; }
+  .back-link:hover { background: rgba(255,217,61,0.25); }
+  .toc { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 30px; }
+  .toc h2 { color: #4ecdc4; margin-bottom: 20px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+  .toc a { color: #ffd93d; text-decoration: none; padding: 10px 14px; background: rgba(255,217,61,0.1); border-radius: 8px; transition: all 0.3s ease; border: 1px solid rgba(255,217,61,0.2); }
+  .toc a:hover { background: rgba(255,217,61,0.25); transform: translateY(-2px); }
+  section { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 35px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); scroll-margin-top: 30px; }
+  section h2 { color: #4ecdc4; font-size: 1.8em; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 3px solid rgba(78,205,196,0.3); }
+  section h3 { color: #ffd93d; margin: 25px 0 15px; font-size: 1.2em; padding-right: 15px; border-right: 4px solid #ffd93d; }
+  .snippet-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,217,61,0.3); border-radius: 10px; padding: 20px; margin: 15px 0; }
+  .snippet-title { color: #ffd93d; font-weight: bold; margin-bottom: 10px; font-size: 1.1em; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .copy-btn { background: linear-gradient(135deg, #4ecdc4, #44a8a3); color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85em; font-family: inherit; font-weight: bold; transition: all 0.3s ease; }
+  .copy-btn:hover { transform: translateY(-2px); }
+  .copy-btn.copied { background: linear-gradient(135deg, #28a745, #1e7e34); }
+  .code-block { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; font-family: 'Consolas', monospace; direction: ltr; text-align: left; overflow-x: auto; margin: 10px 0; color: #e6edf3; font-size: 0.9em; line-height: 1.6; white-space: pre; }
+  code.inline { background: rgba(78,205,196,0.15); color: #4ecdc4; padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.95em; direction: ltr; display: inline-block; }
+  .tip { background: rgba(40,167,69,0.15); border-right: 4px solid #28a745; padding: 12px 18px; border-radius: 8px; margin: 12px 0; font-size: 0.95em; }
+  .tip::before { content: "✅ "; }
+  .scroll-top { position: fixed; bottom: 30px; left: 30px; background: linear-gradient(135deg, #4ecdc4, #44a8a3); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(78,205,196,0.4); border: none; font-size: 1.8em; opacity: 0; transition: all 0.3s ease; z-index: 1000; }
+  .scroll-top.visible { opacity: 1; }
+  @media (max-width: 768px) { section { padding: 20px 15px; } }
+</style>
+  <link rel="stylesheet" href="light-mode.css">
+  <link rel="stylesheet" href="print-mobile.css">
+</head>
+<body>
+
+<div class="container">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;">
+    <a href="00_dashboard.html" class="back-link">← דשבורד</a>
+    <a href="IDE_project.html" class="back-link" style="background:rgba(88,166,255,0.15);border-color:rgba(88,166,255,0.4);color:#79c0ff;">💻 פתח IDE</a>
+    <a href="MAP_master.html" class="back-link" style="background:rgba(255,217,61,0.15);border-color:rgba(255,217,61,0.4);color:#ffd93d;">🗺️ המפה הגדולה</a>
+    <a href="DEBUG_errors.html" class="back-link" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.4);color:#fca5a5;">🛠️ מילון שגיאות</a>
+    <a href="BUILD_walkthrough.html" class="back-link" style="background:rgba(132,204,22,0.15);border-color:rgba(132,204,22,0.4);color:#bef264;">🛠️ בנה מאפס</a>
+  </div>
+
+  <header>
+    <h1>📋 סנפטים מוכנים — Copy & Paste</h1>
+    <p>תבניות קוד מוכנות להעתקה במבחן</p>
+  </header>
+
+  <!-- ============= DIDACTIC HERO: 7 Snippet Categories with Top Snippet Preview ============= -->
+  <style>
+    .snip-hero { background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%); border-radius:18px; padding:32px; margin-bottom:30px; box-shadow:0 12px 40px rgba(0,0,0,0.4); border:2px solid rgba(78,205,196,0.2); }
+    .snip-hero .sh-title { text-align:center; margin-bottom:24px; }
+    .snip-hero .sh-title h2 { color:#4ecdc4; font-size:1.8em; margin-bottom:8px; border:none; padding:0; }
+    .snip-hero .sh-title p { color:#cbd5e1; font-size:1.05em; }
+    .snip-hero .sh-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); gap:18px; }
+    .sh-card { background:#fff; border-radius:13px; padding:18px; transition:all .25s; text-decoration:none; color:#0f172a; display:block; border-top:5px solid; }
+    .sh-card:hover { transform:translateY(-4px); box-shadow:0 14px 30px rgba(0,0,0,0.4); }
+    .sh-card.s1 { border-color:#0ea5e9; }
+    .sh-card.s2 { border-color:#06b6d4; }
+    .sh-card.s3 { border-color:#a855f7; }
+    .sh-card.s4 { border-color:#22c55e; }
+    .sh-card.s5 { border-color:#f59e0b; }
+    .sh-card.s6 { border-color:#06b6d4; }
+    .sh-card.s7 { border-color:#ef4444; }
+    .sh-card h3 { color:#0f172a; font-size:1.15em; margin-bottom:6px; padding:0; border:none; }
+    .sh-card .sh-tag { display:inline-block; padding:3px 10px; border-radius:4px; font-size:0.72em; font-weight:bold; color:#fff; margin-bottom:8px; }
+    .sh-card.s1 .sh-tag { background:#0ea5e9; }
+    .sh-card.s2 .sh-tag { background:#06b6d4; }
+    .sh-card.s3 .sh-tag { background:#a855f7; }
+    .sh-card.s4 .sh-tag { background:#22c55e; }
+    .sh-card.s5 .sh-tag { background:#f59e0b; }
+    .sh-card.s6 .sh-tag { background:#06b6d4; }
+    .sh-card.s7 .sh-tag { background:#ef4444; }
+    .sh-card .sh-desc { color:#64748b; font-size:0.85em; margin-bottom:10px; line-height:1.5; }
+    .sh-card pre { background:#0f172a; color:#a7f3d0; padding:11px 13px; border-radius:7px; font-size:0.78em; overflow-x:auto; margin:0; line-height:1.55; font-family:'SF Mono','Monaco','Consolas',monospace; direction:ltr; text-align:left; }
+    .sh-card pre .k { color:#f472b6; }
+    .sh-card pre .s { color:#fde68a; }
+    .sh-card pre .c { color:#64748b; font-style:italic; }
+    .sh-card pre .v { color:#93c5fd; }
+    .sh-card pre .g { color:#86efac; }
+    .sh-card .sh-counter { display:inline-block; padding:3px 8px; background:#f1f5f9; color:#475569; border-radius:4px; font-size:0.78em; font-weight:600; margin-left:8px; }
+    .sh-card .sh-link { display:inline-block; margin-top:12px; color:#0ea5e9; font-size:0.85em; font-weight:600; }
+  </style>
+
+  <section class="snip-hero">
+    <div class="sh-title">
+      <h2>� 7 קטגוריות סניפטים — הקוד הקריטי בכל אחת</h2>
+      <p>תוצאה של <strong style="color:#4ecdc4;">העתק-הדבק</strong>. קח את ה-snippet, החלף משתנים, סיים מהר.</p>
+    </div>
+
+    <div class="sh-grid">
+
+      <a href="#setup" class="sh-card s1">
+        <span class="sh-tag">קטגוריה 1</span>
+        <h3>🚀 פקודות התקנה <span class="sh-counter">3 commands</span></h3>
+        <div class="sh-desc">שורות הזהב להקמת פרויקט מלא ב-30 שניות.</div>
+<pre><span class="c"># React + Vite + TS</span>
+npm create vite@latest .
+<span class="c"># Backend</span>
+npm i express mongoose
+<span class="c"># Tailwind</span>
+npm i -D tailwindcss</pre>
+        <span class="sh-link">→ ראה כל הפקודות</span>
+      </a>
+
+      <a href="#react" class="sh-card s2">
+        <span class="sh-tag">קטגוריה 2</span>
+        <h3>⚛️ React Templates <span class="sh-counter">5+ תבניות</span></h3>
+        <div class="sh-desc">Functional component עם state, props ו-TypeScript types.</div>
+<pre><span class="k">function</span> <span class="v">UserCard</span>({ name }:
+  { name: <span class="g">string</span> }) {
+  <span class="k">const</span> [open, setOpen] =
+    <span class="v">useState</span>(<span class="k">false</span>);
+  <span class="k">return</span> &lt;<span class="v">div</span>&gt;{name}&lt;/<span class="v">div</span>&gt;;
+}</pre>
+        <span class="sh-link">→ ראה כל התבניות</span>
+      </a>
+
+      <a href="#hooks" class="sh-card s3">
+        <span class="sh-tag">קטגוריה 3</span>
+        <h3>🪝 Hooks Patterns <span class="sh-counter">useEffect + cleanup</span></h3>
+        <div class="sh-desc">הדפוס הקריטי: cleanup function. בלי זה — memory leaks.</div>
+<pre><span class="v">useEffect</span>(() =&gt; {
+  <span class="k">const</span> id = <span class="v">setInterval</span>(fn, 1000);
+  <span class="k">return</span> () =&gt;
+    <span class="v">clearInterval</span>(id); <span class="c">// ✅</span>
+}, []);</pre>
+        <span class="sh-link">→ ראה כל ה-Hooks</span>
+      </a>
+
+      <a href="#express" class="sh-card s4">
+        <span class="sh-tag">קטגוריה 4</span>
+        <h3>🚂 Express + MongoDB <span class="sh-counter">CRUD מלא</span></h3>
+        <div class="sh-desc">REST endpoint עם async/await + error handling.</div>
+<pre>app.<span class="v">get</span>(<span class="s">'/users'</span>, <span class="k">async</span> (req, res) =&gt; {
+  <span class="k">try</span> {
+    <span class="k">const</span> users = <span class="k">await</span>
+      <span class="v">User</span>.<span class="v">find</span>();
+    res.<span class="v">json</span>(users);
+  } <span class="k">catch</span> (e) { res.<span class="v">status</span>(500); }
+});</pre>
+        <span class="sh-link">→ ראה כל ה-Endpoints</span>
+      </a>
+
+      <a href="#router" class="sh-card s5">
+        <span class="sh-tag">קטגוריה 5</span>
+        <h3>🧭 React Router <span class="sh-counter">v6+</span></h3>
+        <div class="sh-desc">Routes + Link + dynamic params + Outlet pattern.</div>
+<pre>&lt;<span class="v">BrowserRouter</span>&gt;
+  &lt;<span class="v">Routes</span>&gt;
+    &lt;<span class="v">Route</span> path=<span class="s">"/"</span> element=
+      {&lt;<span class="v">Home</span> /&gt;} /&gt;
+    &lt;<span class="v">Route</span> path=<span class="s">"/u/:id"</span> ... /&gt;
+  &lt;/<span class="v">Routes</span>&gt;
+&lt;/<span class="v">BrowserRouter</span>&gt;</pre>
+        <span class="sh-link">→ ראה Router pattern</span>
+      </a>
+
+      <a href="#tailwind" class="sh-card s6">
+        <span class="sh-tag">קטגוריה 6</span>
+        <h3>🎨 Tailwind <span class="sh-counter">utility classes</span></h3>
+        <div class="sh-desc">המחלקות הכי שימושיות: flex, grid, spacing, colors.</div>
+<pre>&lt;<span class="v">div</span> className=<span class="s">"flex
+  items-center justify-between
+  p-4 bg-blue-500
+  rounded-lg shadow-md
+  hover:bg-blue-600"</span>&gt;</pre>
+        <span class="sh-link">→ ראה כל ה-classes</span>
+      </a>
+
+      <a href="#git" class="sh-card s7">
+        <span class="sh-tag">קטגוריה 7</span>
+        <h3>📝 Git + הגשה <span class="sh-counter">workflow מלא</span></h3>
+        <div class="sh-desc">הפקודות שחייבים לדעת בעל-פה לפני המבחן.</div>
+<pre>git init
+git add .
+git commit -m <span class="s">"Initial"</span>
+git remote add origin URL
+git push -u origin main
+<span class="c"># זיפ הגשה:</span>
+zip -r submit.zip . -x <span class="s">"node_modules/*"</span></pre>
+        <span class="sh-link">→ ראה כל הפקודות</span>
+      </a>
+
+    </div>
+
+    <div style="margin-top:24px;padding:18px;background:rgba(255,217,61,0.1);border-radius:12px;border-right:4px solid #ffd93d;color:#cbd5e1;">
+      💡 <strong style="color:#ffd93d;">טיפ זהב:</strong> שלוט ב-Setup + Hooks Patterns + Express CRUD — אלה 80% מהמבחן. השאר זה אופטימיזציה.
+    </div>
+  </section>
+
+  <!-- (Old market hidden) -->
+  <section style="display:none;">
+    <svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+      <defs><filter id="m5sh"><feDropShadow dx="2" dy="3" stdDeviation="2" flood-opacity="0.3"/></filter></defs>
+      <!-- Sky -->
+      <rect width="1200" height="180" fill="#f4d4a8"/>
+      <!-- Ground/cobblestones -->
+      <rect y="180" width="1200" height="220" fill="#8b6f47"/>
+      <g fill="#a0826d">
+        <ellipse cx="100" cy="380" rx="20" ry="6"/><ellipse cx="200" cy="385" rx="20" ry="6"/><ellipse cx="350" cy="380" rx="20" ry="6"/>
+        <ellipse cx="500" cy="385" rx="20" ry="6"/><ellipse cx="650" cy="380" rx="20" ry="6"/><ellipse cx="800" cy="385" rx="20" ry="6"/>
+        <ellipse cx="1000" cy="380" rx="20" ry="6"/><ellipse cx="1150" cy="385" rx="20" ry="6"/>
+      </g>
+
+      <!-- 7 Stalls with awnings -->
+      <!-- Stall 1: Setup -->
+      <a href="#setup"><g style="cursor:pointer" filter="url(#m5sh)">
+        <polygon points="50,160 160,160 145,200 65,200" fill="#ff6b6b"/>
+        <rect x="60" y="200" width="90" height="120" fill="#fff9c4"/>
+        <rect x="65" y="210" width="80" height="60" fill="#16213e"/>
+        <text x="105" y="235" text-anchor="middle" font-size="14" fill="#4ecdc4">$ npm</text>
+        <text x="105" y="255" text-anchor="middle" font-size="11" fill="#4ecdc4">install</text>
+        <text x="105" y="305" text-anchor="middle" font-size="13" font-weight="bold" fill="#16213e">🚀 Setup</text>
+      </g></a>
+      <!-- Stall 2: React -->
+      <a href="#react"><g style="cursor:pointer" filter="url(#m5sh)">
+        <polygon points="180,160 290,160 275,200 195,200" fill="#61dafb"/>
+        <rect x="190" y="200" width="90" height="120" fill="#fff"/>
+        <g transform="translate(235,250)">
+          <ellipse rx="22" ry="8" fill="none" stroke="#16213e" stroke-width="2"/>
+          <ellipse rx="22" ry="8" fill="none" stroke="#16213e" stroke-width="2" transform="rotate(60)"/>
+          <ellipse rx="22" ry="8" fill="none" stroke="#16213e" stroke-width="2" transform="rotate(120)"/>
+        </g>
+        <text x="235" y="305" text-anchor="middle" font-size="13" font-weight="bold" fill="#16213e">⚛️ React</text>
+      </g></a>
+      <!-- Stall 3: Hooks -->
+      <a href="#hooks"><g style="cursor:pointer" filter="url(#m5sh)">
+        <polygon points="310,160 420,160 405,200 325,200" fill="#9b59b6"/>
+        <rect x="320" y="200" width="90" height="120" fill="#f8d7e8"/>
+        <text x="365" y="260" text-anchor="middle" font-size="40">🪝</text>
+        <text x="365" y="305" text-anchor="middle" font-size="13" font-weight="bold" fill="#16213e">Hooks</text>
+      </g></a>
+      <!-- Stall 4: Express+Mongo -->
+      <a href="#express"><g style="cursor:pointer" filter="url(#m5sh)">
+        <polygon points="440,160 550,160 535,200 455,200" fill="#4db33d"/>
+        <rect x="450" y="200" width="90" height="120" fill="#d5e8d4"/>
+        <text x="495" y="245" text-anchor="middle" font-size="22">🚂</text>
+        <text x="495" y="280" text-anchor="middle" font-size="22">📦</text>
+        <text x="495" y="305" text-anchor="middle" font-size="12" font-weight="bold" fill="#16213e">Express+Mongo</text>
+      </g></a>
+      <!-- Stall 5: Router -->
+      <a href="#router"><g style="cursor:pointer" filter="url(#m5sh)">
+        <polygon points="570,160 680,160 665,200 585,200" fill="#f39c12"/>
+        <rect x="580" y="200" width="90" height="120" fill="#fef5e7"/>
+        <text x="625" y="260" text-anchor="middle" font-size="40">🧭</text>
+        <text x="625" y="305" text-anchor="middle" font-size="13" font-weight="bold" fill="#16213e">Router</text>
+      </g></a>
+      <!-- Stall 6: Tailwind -->
+      <a href="#tailwind"><g style="cursor:pointer" filter="url(#m5sh)">
+        <polygon points="700,160 810,160 795,200 715,200" fill="#06b6d4"/>
+        <rect x="710" y="200" width="90" height="120" fill="#e0f7fa"/>
+        <text x="755" y="260" text-anchor="middle" font-size="40">🎨</text>
+        <text x="755" y="305" text-anchor="middle" font-size="13" font-weight="bold" fill="#16213e">Tailwind</text>
+      </g></a>
+      <!-- Stall 7: Git -->
+      <a href="#git"><g style="cursor:pointer" filter="url(#m5sh)">
+        <polygon points="830,160 940,160 925,200 845,200" fill="#e74c3c"/>
+        <rect x="840" y="200" width="90" height="120" fill="#fff9c4"/>
+        <text x="885" y="260" text-anchor="middle" font-size="40">📝</text>
+        <text x="885" y="305" text-anchor="middle" font-size="13" font-weight="bold" fill="#16213e">Git</text>
+      </g></a>
+
+      <!-- Grandma with shopping bag -->
+      <g transform="translate(1050,260)">
+        <ellipse cx="0" cy="20" rx="18" ry="26" fill="#9b59b6"/>
+        <circle cx="0" cy="-8" r="14" fill="#fde0c5"/>
+        <ellipse cx="0" cy="-18" rx="15" ry="8" fill="#ecf0f1"/>
+        <circle cx="-5" cy="-8" r="4" fill="none" stroke="#16213e" stroke-width="1.5"/>
+        <circle cx="5" cy="-8" r="4" fill="none" stroke="#16213e" stroke-width="1.5"/>
+        <path d="M -3 0 Q 0 4 3 0" fill="none" stroke="#16213e" stroke-width="1.5"/>
+        <!-- Basket -->
+        <rect x="20" y="20" width="30" height="24" fill="#d4a574"/>
+        <rect x="22" y="22" width="26" height="3" fill="#8b6f47"/>
+        <text x="35" y="38" text-anchor="middle" font-size="9" font-weight="bold" fill="#16213e">📜📜</text>
+      </g>
+      <!-- Sign -->
+      <g transform="translate(600,80)">
+        <rect x="-100" y="0" width="200" height="50" rx="10" fill="#16213e"/>
+        <text x="0" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#ffd93d" direction="rtl">🛒 שוק הקוד</text>
+      </g>
+    </svg>
+    <div style="text-align:center;margin-top:14px;color:#fff9c4;font-size:0.95em;font-style:italic;">
+      📜 קח אתך את כל הסניפטים שאתה צריך — לחץ על דוכן
+    </div>
+  </section>
+
+  <nav class="toc">
+    <h2>📚 קטגוריות</h2>
+    <div class="toc-grid">
+      <a href="#setup">🚀 פקודות התקנה</a>
+      <a href="#react">⚛️ React Templates</a>
+      <a href="#hooks">🪝 Hooks Patterns</a>
+      <a href="#express">🚂 Express + MongoDB</a>
+      <a href="#router">🧭 React Router</a>
+      <a href="#tailwind">🎨 Tailwind</a>
+      <a href="#git">📦 Git + RAR</a>
+    </div>
+  </nav>
+
+  <!-- ============ SETUP ============ -->
+  <section id="setup">
+    <h2>🚀 פקודות התקנה והפעלה</h2>
+
+    <div class="snippet-box">
+      <div class="snippet-title">React + Vite + TypeScript
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">npm create vite@latest my-app -- --template react-ts
+cd my-app
+npm install
+npm run dev</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">React + Vite + JavaScript
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">npm create vite@latest my-app -- --template react
+cd my-app
+npm install
+npm run dev</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">React + React Router + Axios
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">npm install react-router-dom axios</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Tailwind CSS על Vite
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+# tailwind.config.js
+module.exports = {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: { extend: {} },
+  plugins: [],
+}
+
+# src/index.css — בראש הקובץ:
+@tailwind base;
+@tailwind components;
+@tailwind utilities;</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Express + MongoDB Setup מלא
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">mkdir backend && cd backend
+npm init -y
+npm install express mongoose cors dotenv
+npm install -D nodemon
+
+# package.json — הוסף:
+"scripts": {
+  "dev": "nodemon server.js",
+  "start": "node server.js"
+}</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Next.js Setup
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">npx create-next-app@latest my-app
+cd my-app
+npm run dev</div>
+    </div>
+  </section>
+
+  <!-- ============ REACT ============ -->
+  <section id="react">
+    <h2>⚛️ React Templates</h2>
+
+    <div class="snippet-box">
+      <div class="snippet-title">קומפוננטה בסיסית עם TypeScript
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">type Props = {
+  title: string;
+  count?: number;
+  onClick: () =&gt; void;
+};
+
+export default function MyComponent({ title, count = 0, onClick }: Props) {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;{title}&lt;/h2&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={onClick}&gt;לחץ&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Form עם Controlled Inputs
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">import { useState, FormEvent } from 'react';
+
+export default function MyForm() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [age, setAge] = useState(0);
+
+  const handleSubmit = (e: FormEvent) =&gt; {
+    e.preventDefault();
+    if (!name.trim()) return alert('שם חובה');
+    if (!email.includes('@')) return alert('אימייל לא תקין');
+
+    console.log({ name, email, age });
+    // reset
+    setName('');
+    setEmail('');
+    setAge(0);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        type="text"
+        placeholder="שם"
+        value={name}
+        onChange={e =&gt; setName(e.target.value)}
+      /&gt;
+      &lt;input
+        type="email"
+        placeholder="אימייל"
+        value={email}
+        onChange={e =&gt; setEmail(e.target.value)}
+      /&gt;
+      &lt;input
+        type="number"
+        placeholder="גיל"
+        value={age}
+        onChange={e =&gt; setAge(Number(e.target.value))}
+      /&gt;
+      &lt;button type="submit"&gt;שלח&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">List + Map + Key
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">type Item = { id: string; name: string };
+
+export default function ItemList({ items }: { items: Item[] }) {
+  if (items.length === 0) return &lt;p&gt;אין פריטים&lt;/p&gt;;
+
+  return (
+    &lt;ul&gt;
+      {items.map(item =&gt; (
+        &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">CRUD בקומפוננטה אחת
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">import { useState } from 'react';
+
+type Todo = { id: string; text: string; done: boolean };
+
+export default function TodoApp() {
+  const [todos, setTodos] = useState&lt;Todo[]&gt;([]);
+  const [input, setInput] = useState('');
+
+  const add = () =&gt; {
+    if (!input.trim()) return;
+    setTodos(prev =&gt; [...prev, {
+      id: Date.now().toString(),
+      text: input,
+      done: false
+    }]);
+    setInput('');
+  };
+
+  const toggle = (id: string) =&gt; {
+    setTodos(prev =&gt; prev.map(t =&gt;
+      t.id === id ? { ...t, done: !t.done } : t
+    ));
+  };
+
+  const remove = (id: string) =&gt; {
+    setTodos(prev =&gt; prev.filter(t =&gt; t.id !== id));
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input value={input} onChange={e =&gt; setInput(e.target.value)} /&gt;
+      &lt;button onClick={add}&gt;הוסף&lt;/button&gt;
+      &lt;ul&gt;
+        {todos.map(t =&gt; (
+          &lt;li key={t.id}&gt;
+            &lt;input type="checkbox" checked={t.done} onChange={() =&gt; toggle(t.id)} /&gt;
+            &lt;span&gt;{t.text}&lt;/span&gt;
+            &lt;button onClick={() =&gt; remove(t.id)}&gt;×&lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Conditional Rendering
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">// Ternary
+{isLoading ? &lt;Spinner /&gt; : &lt;Content /&gt;}
+
+// && (לרינדור על תנאי, בלי else)
+{error && &lt;Alert&gt;{error}&lt;/Alert&gt;}
+
+// Early return
+if (!data) return &lt;Loading /&gt;;
+if (error) return &lt;Error message={error} /&gt;;
+return &lt;MainContent data={data} /&gt;;</div>
+    </div>
+  </section>
+
+  <!-- ============ HOOKS ============ -->
+  <section id="hooks">
+    <h2>🪝 Hooks Patterns</h2>
+
+    <div class="snippet-box">
+      <div class="snippet-title">useState — פטרנים נכונים
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">// ערך פשוט
+const [count, setCount] = useState(0);
+
+// אובייקט
+const [user, setUser] = useState({ name: '', age: 0 });
+setUser(prev =&gt; ({ ...prev, name: 'תל' }));
+
+// מערך
+const [items, setItems] = useState&lt;Item[]&gt;([]);
+setItems(prev =&gt; [...prev, newItem]);          // הוספה
+setItems(prev =&gt; prev.filter(i =&gt; i.id !== id)); // מחיקה
+setItems(prev =&gt; prev.map(i =&gt; i.id === id ? {...i, done: true} : i)); // עדכון
+
+// Lazy initialization
+const [data, setData] = useState(() =&gt; {
+  const saved = localStorage.getItem('data');
+  return saved ? JSON.parse(saved) : [];
+});</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">useEffect — fetch + cleanup
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">useEffect(() =&gt; {
+  let cancelled = false;
+
+  async function fetchData() {
+    try {
+      const res = await fetch(`/api/users/${id}`);
+      if (!res.ok) throw new Error('Failed');
+      const data = await res.json();
+      if (!cancelled) setUser(data);
+    } catch (err) {
+      if (!cancelled) setError(err.message);
+    }
+  }
+
+  fetchData();
+
+  return () =&gt; { cancelled = true; };
+}, [id]);
+
+// או עם AbortController
+useEffect(() =&gt; {
+  const controller = new AbortController();
+
+  fetch(url, { signal: controller.signal })
+    .then(r =&gt; r.json())
+    .then(setData)
+    .catch(err =&gt; {
+      if (err.name !== 'AbortError') console.error(err);
+    });
+
+  return () =&gt; controller.abort();
+}, [url]);</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">useEffect + localStorage
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">function App() {
+  // טעינה ראשונית
+  const [todos, setTodos] = useState(() =&gt; {
+    const saved = localStorage.getItem('todos');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // שמירה אוטומטית בכל שינוי
+  useEffect(() =&gt; {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
+}</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">useRef — DOM access + render counter
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">// 1. גישה ל-DOM
+const inputRef = useRef&lt;HTMLInputElement&gt;(null);
+useEffect(() =&gt; { inputRef.current?.focus(); }, []);
+return &lt;input ref={inputRef} /&gt;;
+
+// 2. ערך שלא גורם re-render
+const renderCount = useRef(0);
+useEffect(() =&gt; { renderCount.current += 1; });
+
+// 3. previous value
+const prevValueRef = useRef&lt;number&gt;();
+useEffect(() =&gt; { prevValueRef.current = value; }, [value]);</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Custom Hook — useFetch
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">function useFetch&lt;T&gt;(url: string) {
+  const [data, setData] = useState&lt;T | null&gt;(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  useEffect(() =&gt; {
+    let cancelled = false;
+    setLoading(true);
+
+    fetch(url)
+      .then(r =&gt; {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(d =&gt; {
+        if (!cancelled) {
+          setData(d);
+          setLoading(false);
+        }
+      })
+      .catch(err =&gt; {
+        if (!cancelled) {
+          setError(err.message);
+          setLoading(false);
+        }
+      });
+
+    return () =&gt; { cancelled = true; };
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+// שימוש
+const { data, loading, error } = useFetch&lt;User[]&gt;('/api/users');</div>
+    </div>
+  </section>
+
+  <!-- ============ EXPRESS ============ -->
+  <section id="express">
+    <h2>🚂 Express + MongoDB</h2>
+
+    <div class="snippet-box">
+      <div class="snippet-title">server.js בסיסי מלא
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.get('/api/health', (req, res) =&gt; {
+  res.json({ status: 'ok' });
+});
+
+// Connect DB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() =&gt; console.log('✅ MongoDB connected'))
+  .catch(err =&gt; console.error('❌ DB error:', err));
+
+// Start
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =&gt; console.log(`🚀 Server on ${PORT}`));</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">.env file
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">PORT=3000
+MONGODB_URI=mongodb://localhost:27017/mydb
+JWT_SECRET=super-secret-key-change-me</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Mongoose Model + CRUD
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">// models/Task.js
+const mongoose = require('mongoose');
+
+const taskSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: String,
+  done: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('Task', taskSchema);
+
+// routes — CRUD מלא
+const Task = require('./models/Task');
+
+// READ all
+app.get('/api/tasks', async (req, res) =&gt; {
+  try {
+    const tasks = await Task.find().sort({ createdAt: -1 });
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// READ one
+app.get('/api/tasks/:id', async (req, res) =&gt; {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) return res.status(404).json({ error: 'Not found' });
+    res.json(task);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// CREATE
+app.post('/api/tasks', async (req, res) =&gt; {
+  try {
+    const task = await Task.create(req.body);
+    res.status(201).json(task);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// UPDATE
+app.put('/api/tasks/:id', async (req, res) =&gt; {
+  try {
+    const task = await Task.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!task) return res.status(404).json({ error: 'Not found' });
+    res.json(task);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// DELETE
+app.delete('/api/tasks/:id', async (req, res) =&gt; {
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id);
+    if (!task) return res.status(404).json({ error: 'Not found' });
+    res.json({ message: 'Deleted' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Auth middleware (JWT)
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">const jwt = require('jsonwebtoken');
+
+function authMiddleware(req, res, next) {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: 'No token' });
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = payload;
+    next();
+  } catch {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+}
+
+// שימוש
+app.get('/api/protected', authMiddleware, (req, res) =&gt; {
+  res.json({ user: req.user });
+});</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Login + bcrypt + JWT
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+// Register
+app.post('/api/register', async (req, res) =&gt; {
+  const { email, password, name } = req.body;
+  const hash = await bcrypt.hash(password, 10);
+  const user = await User.create({ email, password: hash, name });
+  res.status(201).json({ id: user._id });
+});
+
+// Login
+app.post('/api/login', async (req, res) =&gt; {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) return res.status(401).json({ error: 'Invalid' });
+
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) return res.status(401).json({ error: 'Invalid' });
+
+  const token = jwt.sign(
+    { userId: user._id, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' }
+  );
+
+  res.json({ token, user: { id: user._id, name: user.name } });
+});</div>
+    </div>
+  </section>
+
+  <!-- ============ ROUTER ============ -->
+  <section id="router">
+    <h2>🧭 React Router</h2>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Setup מלא
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+import Profile from './pages/Profile';
+import NotFound from './pages/NotFound';
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;nav&gt;
+        &lt;Link to="/"&gt;בית&lt;/Link&gt;
+        &lt;Link to="/about"&gt;אודות&lt;/Link&gt;
+        &lt;Link to="/profile/123"&gt;פרופיל&lt;/Link&gt;
+      &lt;/nav&gt;
+
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+        &lt;Route path="/profile/:id" element={&lt;Profile /&gt;} /&gt;
+        &lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">useParams + useNavigate
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">import { useParams, useNavigate } from 'react-router-dom';
+
+function Profile() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;פרופיל {id}&lt;/h1&gt;
+      &lt;button onClick={() =&gt; navigate('/')}&gt;חזור&lt;/button&gt;
+      &lt;button onClick={() =&gt; navigate(-1)}&gt;חזור אחורה&lt;/button&gt;
+      &lt;button onClick={() =&gt; navigate('/login', { replace: true })}&gt;התחבר&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Protected Route
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">import { Navigate, useLocation } from 'react-router-dom';
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
+  const location = useLocation();
+
+  if (!user) {
+    return &lt;Navigate to="/login" state={{ from: location }} replace /&gt;;
+  }
+
+  return &lt;&gt;{children}&lt;/&gt;;
+}
+
+// שימוש
+&lt;Route path="/dashboard" element={
+  &lt;ProtectedRoute&gt;
+    &lt;Dashboard /&gt;
+  &lt;/ProtectedRoute&gt;
+} /&gt;</div>
+    </div>
+  </section>
+
+  <!-- ============ TAILWIND ============ -->
+  <section id="tailwind">
+    <h2>🎨 Tailwind Cheatsheet</h2>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Layout & Spacing
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">// Display
+flex / inline-flex / grid / hidden / block
+
+// Flex
+flex-row / flex-col
+items-center / items-start / items-end
+justify-center / justify-between / justify-around
+gap-2 / gap-4 / gap-6 / gap-8
+
+// Grid
+grid-cols-1 / grid-cols-2 / grid-cols-3
+grid-cols-[200px_1fr] / md:grid-cols-2
+
+// Spacing (p=padding, m=margin, gap=gap)
+p-4 / px-4 / py-2 / pt-4 / pb-2
+m-4 / mx-auto / my-2
+gap-4
+
+// Width / Height
+w-full / w-1/2 / w-screen / max-w-md
+h-full / h-screen / min-h-screen</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Colors & Typography
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">// Background
+bg-white / bg-gray-100 / bg-blue-500
+bg-gradient-to-r from-blue-500 to-purple-500
+
+// Text
+text-white / text-gray-700 / text-blue-600
+text-sm / text-base / text-lg / text-xl / text-2xl
+font-bold / font-semibold / font-medium
+text-center / text-right / text-left
+
+// Border
+border / border-2 / border-gray-300
+rounded / rounded-md / rounded-lg / rounded-full
+border-blue-500</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Components - דוגמה
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">// Card
+&lt;div className="bg-white rounded-lg shadow-md p-6 border border-gray-200"&gt;
+  &lt;h2 className="text-xl font-bold mb-2"&gt;כותרת&lt;/h2&gt;
+  &lt;p className="text-gray-600"&gt;תוכן&lt;/p&gt;
+&lt;/div&gt;
+
+// Button
+&lt;button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition"&gt;
+  לחץ
+&lt;/button&gt;
+
+// Input
+&lt;input className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" /&gt;
+
+// Form
+&lt;form className="space-y-4 max-w-md mx-auto p-6 bg-white rounded-lg shadow"&gt;
+  &lt;input className="w-full px-3 py-2 border rounded" /&gt;
+  &lt;button className="w-full bg-blue-500 text-white py-2 rounded"&gt;שלח&lt;/button&gt;
+&lt;/form&gt;</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Responsive
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">// Breakpoints: sm:640px, md:768px, lg:1024px, xl:1280px
+
+// דוגמה
+&lt;div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"&gt;
+  ...
+&lt;/div&gt;
+
+// טקסט בגודל שונה
+&lt;h1 className="text-2xl md:text-4xl lg:text-6xl"&gt;כותרת&lt;/h1&gt;
+
+// הסתרה במובייל
+&lt;div className="hidden md:block"&gt;רק בדסקטופ&lt;/div&gt;
+&lt;div className="md:hidden"&gt;רק במובייל&lt;/div&gt;</div>
+    </div>
+  </section>
+
+  <!-- ============ GIT ============ -->
+  <section id="git">
+    <h2>📦 Git + הגשה</h2>
+
+    <div class="snippet-box">
+      <div class="snippet-title">Git workflow מלא
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false"># התחלה של פרויקט חדש
+git init
+git add .
+git commit -m "initial commit"
+git branch -M main
+git remote add origin https://github.com/USER/REPO.git
+git push -u origin main
+
+# עבודה יומיומית
+git status
+git add .
+git commit -m "feat: add login form"
+git push
+
+# ענפים
+git checkout -b feature/login
+git checkout main
+git merge feature/login</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">.gitignore חיוני
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false">node_modules/
+dist/
+build/
+.env
+.env.local
+.DS_Store
+*.log
+coverage/</div>
+    </div>
+
+    <div class="snippet-box">
+      <div class="snippet-title">פקודות RAR להגשה
+        <button class="copy-btn" onclick="copyCode(this)">העתק</button>
+      </div>
+<div class="code-block" contenteditable="true" spellcheck="false"># Windows — RAR
+# 1. מחק node_modules:
+rmdir /s /q node_modules
+
+# 2. צור RAR (אם יש WinRAR):
+"C:\Program Files\WinRAR\Rar.exe" a -r my-project.rar my-project
+
+# Mac/Linux — ZIP
+rm -rf node_modules
+zip -r my-project.zip my-project -x "*/node_modules/*" "*.git/*"</div>
+    </div>
+
+    <div class="tip">
+      <strong>חשוב מאוד:</strong> לפני הגשה — מחק <code class="inline">node_modules</code>! הוא ענק (מאות MB) ויהיה גדול מדי. בודק יוכל להריץ <code class="inline">npm install</code>.
+    </div>
+  </section>
+
+  <footer style="text-align:center;padding:30px;color:rgba(255,255,255,0.6);">
+    <p>📚 חזור לדשבורד לראות את ההתקדמות שלך</p>
+    <p>🎯 100/100 — בא לקראתך</p>
+  </footer>
+
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
+<script>
+  function copyCode(btn) {
+    const code = btn.closest('.snippet-box').querySelector('.code-block').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '✓ הועתק!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'העתק';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    if (window.scrollY > 300) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+  });
+</script>
+
+<script src="concept-widget.js"></script>
+<script src="theme-toggle.js"></script>
+<script src="breadcrumbs.js"></script>
+<script src="collapse-sections.js"></script>
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>

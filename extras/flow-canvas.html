@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🗺 מפת זרימה — כל שאלות המבחן</title>
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--purple:#7c3aed;--cyan:#06b6d4;--shadow:5px 5px 0 #0f172a;--comp:#dbeafe;--state:#dcfce7;--route:#ede9fe;--valid:#fef3c7;--bug:#fee2e2;--express:#e0f2fe;--js:#fef9c3;--tree-w:320px}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:28px 24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(24px,4vw,38px);margin:0}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:15px}
+.app{display:grid;grid-template-columns:260px var(--tree-w) 6px 1fr;min-height:calc(100vh - 120px)}
+.app.tree-hidden{grid-template-columns:260px 1fr}
+.app.tree-hidden .tree-resize{display:none}
+.sidebar{order:1}.tree-panel{order:2}.tree-resize{order:3}.canvas{order:4}
+.sidebar{background:#fff;border-left:3px solid #000;padding:12px;overflow-y:auto;max-height:calc(100vh - 120px);position:sticky;top:0}
+.sb-group{margin-bottom:10px}
+.sb-title{font-weight:900;font-size:14px;padding:6px 8px;background:linear-gradient(135deg,#111827,#312e81);color:#fff;border-radius:10px;margin-bottom:4px}
+.sb-btn{display:flex;align-items:center;gap:6px;width:100%;border:2px solid transparent;border-radius:8px;padding:7px 10px;background:none;cursor:pointer;font:inherit;font-size:13px;font-weight:700;text-align:right;transition:.15s}
+.sb-btn:hover{background:#f1f5f9;border-color:#cbd5e1}
+.sb-btn.active{background:var(--gold);border-color:#000;box-shadow:2px 2px 0 #000}
+.sb-icon{font-size:16px;min-width:20px;text-align:center}
+.sb-pts{margin-right:auto;font-size:11px;color:#64748b;font-weight:800}
+.canvas{padding:24px;overflow-y:auto;max-height:calc(100vh - 120px)}
+.q-header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.q-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border:2px solid #000;border-radius:8px;font-weight:900;font-size:12px;box-shadow:2px 2px 0 #000}
+.q-badge.react{background:#dbeafe;color:#1e40af}
+.q-badge.js{background:#fef9c3;color:#854d0e}
+.q-badge.express{background:#d1fae5;color:#065f46}
+.q-badge.theory{background:#ede9fe;color:#5b21b6}
+.q-title{font-size:22px;font-weight:900}
+.q-summary{color:#475569;font-size:14px;font-weight:600;margin-bottom:14px}
+.q-pts{background:#111827;color:var(--gold);padding:3px 9px;border-radius:6px;font-weight:900;font-size:12px;border:2px solid #000}
+
+/* Question text + tasks */
+.q-fulltext{background:#1e1b4b;color:#e2e8f0;border:3px solid #000;border-radius:16px;padding:16px 18px;margin-bottom:16px;box-shadow:var(--shadow);font-size:13px;line-height:1.8;direction:rtl;position:relative}
+.q-fulltext summary{cursor:pointer;font-weight:900;font-size:15px;color:var(--gold);list-style:none;display:flex;align-items:center;gap:8px}
+.q-fulltext summary::before{content:'📋'}
+.q-fulltext summary::after{content:'▼';font-size:11px;transition:.2s;margin-right:auto}
+.q-fulltext[open] summary::after{transform:rotate(180deg)}
+.q-fulltext-body{margin-top:12px;padding-top:12px;border-top:1px solid #334155}
+.q-tasks{margin-top:14px;background:#111827;border:2px solid var(--gold);border-radius:12px;padding:14px 16px}
+.q-tasks h4{color:var(--gold);font-size:14px;margin:0 0 8px}
+.q-task-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #1e293b;font-size:13px;color:#e2e8f0}
+.q-task-item:last-child{border:none}
+.q-task-num{background:var(--brand);color:#fff;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0}
+
+/* Flow diagram */
+.flow-section{margin-bottom:16px;background:var(--card);border:3px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.flow-head{padding:10px 14px;font-weight:900;font-size:14px;border-bottom:2px solid #000;display:flex;align-items:center;gap:6px}
+.flow-head.routes-h{background:var(--route)}
+.flow-head.comp-h{background:var(--comp)}
+.flow-head.state-h{background:var(--state)}
+.flow-head.valid-h{background:var(--valid)}
+.flow-head.bug-h{background:var(--bug)}
+.flow-head.layer-h{background:var(--express)}
+.flow-head.step-h{background:var(--js)}
+.flow-body{padding:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
+
+/* Nodes */
+.node{border:2px solid #000;border-radius:12px;padding:10px 14px;min-width:130px;cursor:pointer;transition:.15s;position:relative;text-align:center}
+.node:hover{transform:translateY(-3px);box-shadow:4px 4px 0 #000}
+.node.selected{box-shadow:0 0 0 3px var(--brand),4px 4px 0 #000}
+.node-icon{font-size:22px;display:block;margin-bottom:2px}
+.node-label{font-weight:900;font-size:13px}
+.node-desc{font-size:11px;color:#475569;margin-top:2px}
+.node.comp{background:var(--comp)}
+.node.state{background:var(--state)}
+.node.route{background:var(--route)}
+.node.valid{background:var(--valid)}
+.node.layer{background:var(--express)}
+.node.step{background:var(--js)}
+.node.bug{background:var(--bug)}
+.node.persist::after{content:'💾';position:absolute;top:-8px;left:-8px;font-size:14px}
+
+/* Arrows */
+.arrow-row{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.arrow{color:#64748b;font-size:20px;font-weight:900;padding:0 4px;min-width:28px;text-align:center}
+.arrow-down{display:flex;justify-content:center;padding:4px 0;color:#64748b;font-size:18px;font-weight:900}
+
+/* Routes strip */
+.route-strip{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.route-chip{background:var(--route);border:2px solid #000;border-radius:8px;padding:5px 10px;font-weight:800;font-size:12px;direction:ltr}
+.route-arrow{font-weight:900;color:var(--purple)}
+
+/* Validation list */
+.valid-list{list-style:none;padding:0;margin:0}
+.valid-list li{padding:5px 8px;border-bottom:1px solid #e2e8f0;font-size:13px;font-weight:600}
+.valid-list li:last-child{border:none}
+.valid-list li::before{content:'🛡 ';font-size:14px}
+
+/* Bug chips */
+.bug-chips{display:flex;flex-wrap:wrap;gap:6px}
+.bug-chip{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border:2px solid #000;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;transition:.15s}
+.bug-chip:hover{transform:translateY(-2px);box-shadow:3px 3px 0 #000}
+.bug-chip.critical{background:#fecaca;color:#991b1b}
+.bug-chip.high{background:#fed7aa;color:#9a3412}
+.bug-chip.medium{background:#fef08a;color:#854d0e}
+.bug-chip.low{background:#d1fae5;color:#065f46}
+
+/* Express layers */
+.layer-pipeline{display:flex;flex-direction:column;gap:0;align-items:stretch;max-width:500px;margin:0 auto}
+.layer-node{border:2px solid #000;border-radius:12px;padding:12px 16px;background:var(--express);cursor:pointer;transition:.15s}
+.layer-node:hover{background:#bae6fd;transform:translateX(-3px)}
+.layer-node .node-icon{display:inline;margin-left:6px}
+.layer-items{list-style:none;padding:4px 0 0 20px;margin:4px 0 0;font-size:12px;font-weight:600;direction:ltr;text-align:left}
+.layer-items li{padding:2px 0}
+.layer-items li::before{content:'▸ '}
+.pipe-arrow{text-align:center;font-size:20px;color:#0284c7;font-weight:900;padding:2px 0}
+
+/* Detail panel */
+.detail{margin-top:16px;background:#fff;border:3px solid var(--brand);border-radius:16px;overflow:hidden;box-shadow:4px 4px 0 var(--brand);display:none}
+.detail.open{display:block}
+.detail-head{padding:10px 14px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;font-weight:900;display:flex;justify-content:space-between;align-items:center}
+.detail-close{background:none;border:2px solid #fff;color:#fff;border-radius:8px;padding:3px 8px;cursor:pointer;font-weight:900}
+.detail-body{padding:14px}
+.detail-code{direction:ltr;text-align:left;background:#0f172a;color:#e2e8f0;padding:12px;border-radius:10px;font-family:Consolas,'Courier New',monospace;font-size:13px;line-height:1.5;overflow-x:auto;margin:8px 0}
+.detail-tip{background:#ecfdf5;border:2px solid #16a34a;border-radius:10px;padding:10px;margin-top:8px;font-weight:700;font-size:13px}
+.detail-tip::before{content:'💡 טיפ למבחן: '}
+
+/* Placeholder */
+.placeholder{text-align:center;padding:80px 20px;color:#94a3b8}
+.placeholder .big{font-size:60px;display:block;margin-bottom:12px}
+
+/* ===== FILE TREE PANEL ===== */
+.tree-panel{background:#fff;border-right:3px solid #000;overflow-y:auto;max-height:calc(100vh - 120px);position:sticky;top:0;display:flex;flex-direction:column}
+.app.tree-hidden .tree-panel{display:none}
+.tree-toolbar{display:flex;align-items:center;gap:6px;padding:8px 10px;background:linear-gradient(135deg,#111827,#312e81);border-bottom:2px solid #000;flex-shrink:0}
+.tree-toolbar-title{color:#fff;font-weight:900;font-size:13px;flex:1}
+.tree-toolbar button{background:none;border:1px solid #94a3b8;color:#e2e8f0;border-radius:6px;padding:2px 7px;cursor:pointer;font-size:14px;font-weight:900;transition:.15s}
+.tree-toolbar button:hover{background:#334155;border-color:#fff}
+.tree-content{padding:10px;flex:1;overflow-y:auto;font-size:13px}
+.tree-empty{text-align:center;color:#94a3b8;padding:40px 10px;font-size:13px}
+
+/* Tree nodes */
+.tree-layer{margin-bottom:6px}
+.tree-layer-head{display:flex;align-items:center;gap:6px;padding:6px 8px;background:linear-gradient(135deg,#1e293b,#0f172a);color:#fff;border-radius:8px;cursor:pointer;font-weight:900;font-size:13px;user-select:none;border:2px solid #334155;transition:.15s}
+.tree-layer-head:hover{border-color:var(--brand)}
+.tree-layer-head .chevron{transition:.2s;display:inline-block;font-size:10px;min-width:14px}
+.tree-layer-head.open .chevron{transform:rotate(90deg)}
+.tree-layer-desc{font-size:11px;color:#94a3b8;padding:3px 0 4px 42px;font-weight:600;line-height:1.4}
+.tree-children{overflow:hidden;transition:.2s}
+.tree-children.collapsed{max-height:0;opacity:0;padding:0}
+.tree-children.expanded{max-height:2000px;opacity:1}
+
+/* Level indentation — deliberately large */
+.tree-l2{padding-right:32px}
+.tree-l3{padding-right:64px}
+.tree-l4{padding-right:96px}
+
+.tree-item{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;font-weight:600;font-size:12px;cursor:default;transition:.1s}
+.tree-item:hover{background:#f1f5f9}
+.tree-item .tree-icon{font-size:15px;min-width:18px;text-align:center}
+.tree-item .tree-fname{direction:ltr;unicode-bidi:isolate}
+.tree-item .tree-role{color:#64748b;font-size:11px;font-weight:400;margin-right:auto}
+.tree-dir-head{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;font-weight:800;font-size:12px;cursor:pointer;user-select:none;transition:.1s}
+.tree-dir-head:hover{background:#f1f5f9}
+.tree-dir-head .chevron{font-size:9px;min-width:12px;transition:.2s;display:inline-block}
+.tree-dir-head.open .chevron{transform:rotate(90deg)}
+
+/* Resize handle */
+.tree-resize{cursor:col-resize;background:#e2e8f0;transition:.15s;position:relative}
+.tree-resize:hover,.tree-resize.active{background:var(--brand)}
+.tree-resize::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2px;height:30px;border-left:1px solid #94a3b8;border-right:1px solid #94a3b8}
+
+/* Toggle tree button (floating) */
+.tree-toggle{position:fixed;left:8px;bottom:12px;z-index:100;background:var(--brand);color:#fff;border:2px solid #000;border-radius:10px;padding:6px 12px;font-weight:900;font-size:13px;cursor:pointer;box-shadow:3px 3px 0 #000;transition:.15s}
+.tree-toggle:hover{transform:translateY(-2px);box-shadow:4px 5px 0 #000}
+
+/* ===== FEATURE 1: CROSS-HIGHLIGHTING ===== */
+.crosslink{cursor:pointer;transition:all .2s}
+.crosslink.glow{outline:3px solid var(--gold);outline-offset:2px;box-shadow:0 0 18px rgba(250,204,21,.5);z-index:5;position:relative}
+.crosslink.dim{opacity:.22;filter:grayscale(.5)}
+.node.glow,.layer-node.glow{outline:3px solid var(--gold);outline-offset:2px;box-shadow:0 0 18px rgba(250,204,21,.5);transform:translateY(-4px);z-index:5}
+.q-task-item.glow{background:linear-gradient(90deg,rgba(250,204,21,.25),transparent);border-radius:8px;outline:2px solid var(--gold)}
+.q-task-item.dim{opacity:.22}
+.tree-item.glow{background:linear-gradient(90deg,rgba(250,204,21,.25),transparent)!important;border:2px solid var(--gold)!important;border-radius:8px}
+.tree-item.dim,.tree-dir-head.dim,.tree-layer-head.dim{opacity:.22}
+.route-chip.glow{outline:3px solid var(--gold);box-shadow:0 0 12px rgba(250,204,21,.5)}
+.route-chip.dim{opacity:.22}
+.bug-chip.glow{outline:2px solid var(--gold);box-shadow:0 0 12px rgba(250,204,21,.4)}
+.valid-list li.glow{background:rgba(250,204,21,.2);border-radius:6px}
+.valid-list li.dim{opacity:.22}
+.flow-section.glow{outline:3px solid var(--gold);outline-offset:-2px;box-shadow:0 0 20px rgba(250,204,21,.3)}
+
+/* ===== FEATURE 2: COLLAPSIBLE PANELS ===== */
+.panel-collapse-btn{background:#111827;color:#fff;border:2px solid #000;border-radius:8px;padding:4px 8px;font-size:16px;cursor:pointer;font-weight:900;transition:.15s;line-height:1}
+.panel-collapse-btn:hover{background:var(--brand)}
+.sb-collapse-bar{display:flex;align-items:center;gap:4px;padding:0 0 6px;border-bottom:2px solid #334155;margin-bottom:6px}
+.sb-collapse-bar span{font-weight:900;font-size:12px;white-space:nowrap;overflow:hidden}
+.app.sb-collapsed{grid-template-columns:44px var(--tree-w) 6px 1fr}
+.app.sb-collapsed .sidebar{padding:8px 4px;overflow:hidden}
+.app.sb-collapsed .sb-group{display:none}
+.app.sb-collapsed .sb-collapse-bar span{display:none}
+.app.sb-collapsed .sb-collapse-bar{flex-direction:column}
+.app.tree-mini{grid-template-columns:260px 44px 6px 1fr}
+.app.sb-collapsed.tree-mini{grid-template-columns:44px 44px 6px 1fr}
+.app.tree-mini .tree-content{display:none}
+.app.tree-mini .tree-toolbar .tree-toolbar-title,.app.tree-mini .tree-toolbar button:not(.panel-collapse-btn){display:none}
+.app.tree-mini .tree-toolbar{flex-direction:column;padding:6px 2px;gap:8px}
+
+/* ===== FEATURE 3: LIVE FLOW MAP ===== */
+.flow-player{background:linear-gradient(135deg,#020617,#1e1b4b);border:3px solid var(--gold);border-radius:16px;padding:16px 18px;margin-bottom:16px;box-shadow:0 0 20px rgba(250,204,21,.15)}
+.flow-player-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.flow-player-title{color:var(--gold);font-weight:900;font-size:15px;flex:1}
+.flow-player-btn{background:var(--gold);color:#000;border:2px solid #000;border-radius:10px;padding:6px 14px;font-weight:900;font-size:13px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:4px}
+.flow-player-btn:hover{transform:translateY(-2px);box-shadow:3px 3px 0 #000}
+.flow-player-btn.playing{background:#dc2626;color:#fff;border-color:#000}
+.flow-steps{display:flex;align-items:center;gap:0;overflow-x:auto;padding:8px 4px}
+.flow-step{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px;padding:10px 8px;border-radius:12px;border:2px solid #334155;background:rgba(255,255,255,.05);transition:all .3s;cursor:pointer;position:relative}
+.flow-step .fs-num{width:26px;height:26px;border-radius:50%;background:#334155;color:#94a3b8;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;transition:.3s}
+.flow-step .fs-icon{font-size:20px}
+.flow-step .fs-label{color:#94a3b8;font-size:10px;font-weight:700;text-align:center;max-width:70px;line-height:1.2;transition:.3s}
+.flow-step.active{border-color:var(--gold);background:rgba(250,204,21,.12);transform:scale(1.08)}
+.flow-step.active .fs-num{background:var(--gold);color:#000}
+.flow-step.active .fs-label{color:var(--gold)}
+.flow-step.done{border-color:#16a34a;background:rgba(22,163,74,.1)}
+.flow-step.done .fs-num{background:#16a34a;color:#fff}
+.flow-step.done .fs-label{color:#16a34a}
+.flow-step-arrow{color:#334155;font-size:18px;font-weight:900;min-width:20px;text-align:center;transition:color .3s}
+.flow-step-arrow.done{color:#16a34a}
+.flow-step-arrow.active{color:var(--gold)}
+.flow-step-detail{margin-top:10px;padding:12px 14px;background:#111827;border:2px solid var(--gold);border-radius:12px;color:#e2e8f0;font-size:13px;line-height:1.6;display:none}
+.flow-step-detail.visible{display:block;animation:fadeUp .3s ease}
+.flow-step-detail strong{color:var(--gold)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 8px rgba(250,204,21,.3)}50%{box-shadow:0 0 24px rgba(250,204,21,.7)}}
+.flow-step.active{animation:pulseGlow 1.5s ease-in-out infinite}
+
+/* Dark mode */
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155;--comp:#1e3a5f;--state:#14532d;--route:#3b1f6e;--valid:#78350f;--bug:#7f1d1d;--express:#0c4a6e;--js:#713f12;--shadow:5px 5px 0 #000}
+  body{background:var(--bg);color:var(--ink)}
+  .sidebar{background:#1e293b;border-color:#334155}
+  .sb-btn:hover{background:#334155}
+  .sb-btn.active{background:var(--gold);color:#000}
+  .node-desc,.q-summary{color:#94a3b8}
+  .valid-list li{border-color:#334155}
+  .detail{border-color:var(--brand)}
+  .detail-body{background:#1e293b}
+  .detail-tip{background:#064e3b;border-color:#059669;color:#a7f3d0}
+  .bug-chip.critical{background:#450a0a;color:#fca5a5}
+  .bug-chip.high{background:#431407;color:#fed7aa}
+  .bug-chip.medium{background:#422006;color:#fde047}
+  .tree-panel{background:#1e293b;border-color:#334155}
+  .tree-item:hover,.tree-dir-head:hover{background:#334155}
+  .tree-layer-desc{color:#64748b}
+  .tree-resize{background:#334155}
+  .tree-resize:hover,.tree-resize.active{background:var(--brand)}
+}
+@media(max-width:768px){
+  .app{grid-template-columns:1fr !important}
+  .sidebar{max-height:none;position:static;border-left:none;border-bottom:3px solid #000;display:flex;flex-wrap:wrap;gap:4px;padding:8px}
+  .sb-group{margin:0}
+  .sb-title{font-size:12px;padding:4px 6px}
+  .canvas{max-height:none}
+  .node{min-width:100px}
+  .tree-panel{display:none !important}
+  .tree-toggle{display:none}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>🗺 מפת זרימה אינטראקטיבית</h1>
+  <p>בחרו שאלה → ראו איך הנתונים זורמים בין כל השכבות. לחיצה על node → פרטים + קוד + באגים נפוצים.</p>
+</header>
+<div class="app" id="app-grid">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-collapse-bar"><span>📋 שאלות</span><button class="panel-collapse-btn" onclick="toggleSidebar()" title="כווץ/הרחב">◀</button></div>
+  </aside>
+  <main class="canvas" id="canvas">
+    <div class="placeholder"><span class="big">👈</span><h2>בחרו שאלה מהתפריט</h2><p>לחצו על שאלה כדי לראות את מפת הזרימה שלה</p></div>
+  </main>
+  <div class="tree-resize" id="tree-resize"></div>
+  <aside class="tree-panel" id="tree-panel">
+    <div class="tree-toolbar">
+      <span class="tree-toolbar-title">📁 עץ קבצים</span>
+      <button onclick="expandAllTree()" title="פתח הכל">＋</button>
+      <button onclick="collapseAllTree()" title="סגור הכל">－</button>
+      <button class="panel-collapse-btn" onclick="collapseTreePanel()" title="כווץ/הרחב">◀</button>
+    </div>
+    <div class="tree-content" id="tree-content">
+      <div class="tree-empty">👈 בחרו שאלה לראות את עץ הקבצים שלה</div>
+    </div>
+  </aside>
+</div>
+<button class="tree-toggle" id="tree-toggle" onclick="toggleTreePanel()">📁 עץ קבצים</button>
+<script>
+const FLOWS={
+"football-q1":{title:"Football Club",type:"react",points:50,exam:"Football Club",
+question:"בנו אפליקציית React לניהול קבוצת כדורגל.\n• דף כניסה — username ו-password, אם לא נמצא → alert\n• דף הרשמה — username, teamName (אנגלית, אות גדולה), password (8-20, upper+lower+digit+special), confirmPassword\n• דף קבוצה — navbar עם שם הקבוצה, רשימת שחקנים (cards), חיפוש, Show All\n• עריכת שחקן — form עם ערכים מראש מ-URL params\n• שמירה ב-localStorage לכל state",
+tasks:["בנה BrowserRouter עם 3 routes: /, /team/:teamName, /team/:name/edit/:id","צור state ב-App: users[], teams{}, currentUser — כולם עם localStorage","בנה LoginForm: בדוק username+password מול users[], navigate אחרי הצלחה","בנה RegisterForm: 4 שדות, ולידציות regex, שמירה ל-users + teams","בנה TeamPage: navbar + search + player cards + Show All toggle","בנה EditPlayer: קרא params מ-URL, הצג form עם ערכים מראש, שמור"],
+summary:"ניהול קבוצת כדורגל: Login, Register, Team, Add Player, Edit Player",components:[{id:"app",label:"App",icon:"⚛️",desc:"BrowserRouter + state ראשי + routes"},{id:"login",label:"LoginForm",icon:"🔐",desc:"username + password → alert on fail"},{id:"register",label:"RegisterForm",icon:"📝",desc:"4 שדות: username, teamName, password, confirm"},{id:"team",label:"TeamPage",icon:"⚽",desc:"navbar, search, player cards, Show All toggle"},{id:"edit",label:"EditPlayer",icon:"✏️",desc:"form עם ערכים מראש מ-route params"}],state:[{id:"users",label:"users[]",owner:"app",persist:true},{id:"currentUser",label:"currentUser",owner:"app"},{id:"teams",label:"teams{}",owner:"app",persist:true},{id:"errors",label:"errors{}",owner:"register"}],routes:[{path:"/",comp:"login",label:"כניסה/הרשמה"},{path:"/team/:teamName",comp:"team",label:"דף קבוצה"},{path:"/team/:name/edit/:id",comp:"edit",label:"עריכת שחקן"}],flows:[{from:"login",to:"currentUser",action:"setCurrentUser(user)"},{from:"register",to:"users",action:"setUsers([...users, newUser])"},{from:"register",to:"teams",action:"setTeams({...teams, [teamName]: []})"},{from:"team",to:"teams",action:"filter/search שחקנים"},{from:"edit",to:"teams",action:"updatePlayer(id, data)"}],validations:["teamName: אנגלית בלבד, אות גדולה בתחילת כל מילה","password: 8-20 תווים, uppercase + lowercase + digit + special char","confirmPassword: חייב להתאים ל-password","username: לא ריק, ייחודי"],bugs:[{text:"ולידציה לא מנקה שגיאות בזמן הקלדה — צריך onChange handler",severity:"high"},{text:"חסר key ייחודי ב-map של שחקנים",severity:"medium"},{text:"localStorage לא מסונכרן עם state ב-useEffect",severity:"high"}],code:"// State ב-App\nconst [users, setUsers] = useState(\n  JSON.parse(localStorage.getItem('users')) || []\n);\nconst [teams, setTeams] = useState(\n  JSON.parse(localStorage.getItem('teams')) || {}\n);\n\n// Navigate אחרי login\nconst navigate = useNavigate();\nnavigate(`/team/${user.teamName}`);",tip:"תמיד תשמרו ל-localStorage בתוך useEffect שמאזין ל-state, לא בתוך הפונקציה עצמה"},
+"football-q2":{title:"סכום לפי אורך מספר",type:"js",points:25,exam:"Football Club",
+question:"כתבו פונקציה sumByDigitLength שמקבלת מערך מספרים ומחזירה אובייקט.\nהמפתח = מספר הספרות, הערך = סכום כל המספרים עם אותו מספר ספרות.\nדוגמה: [1, 15, 30, 5, 800] → {1: 6, 2: 45, 3: 800}\nטפלו במספרים שליליים (Math.abs).",
+tasks:["קבל מערך, בדוק שזה מערך ושכל הערכים הם מספרים","עבור על כל מספר — חשב אורך ספרות עם String(Math.abs(n)).length","צבור לאובייקט: result[key] = (result[key] || 0) + n","החזר את האובייקט"],
+summary:"פונקציה שמקבלת מערך ומחזירה אובייקט: אורך מספר → סכום",steps:[{id:"input",label:"קלט",icon:"📥",desc:"מערך מספרים [1, 15, 30, 5, 800]"},{id:"validate",label:"בדיקת קלט",icon:"🛡",desc:"Array.isArray(input) + typeof === 'number'"},{id:"loop",label:"לולאה",icon:"🔄",desc:"for (const item of input)"},{id:"abs",label:"ערך מוחלט",icon:"🔢",desc:"Math.abs(item) — טיפול בשליליים"},{id:"len",label:"חישוב אורך",icon:"📏",desc:"String(Math.abs(item)).length"},{id:"accum",label:"צבירה",icon:"➕",desc:"result[key] = (result[key] || 0) + item"},{id:"output",label:"פלט",icon:"📤",desc:"return result → {1: 6, 2: 45, 3: 800}"}],bugs:[{text:"לא מטפל במספרים שליליים — חובה Math.abs לפני .length",severity:"critical"},{text:"לא זורק שגיאה אם הקלט לא מערך",severity:"high"},{text:"NaN לא נבדק — צריך Number.isNaN check",severity:"medium"}],code:"function solve(input) {\n  if (!Array.isArray(input)) throw new Error('...');\n  const result = {};\n  for (const item of input) {\n    const key = String(Math.abs(item)).length;\n    result[key] = (result[key] || 0) + item;\n  }\n  return result;\n}",tip:"תמיד Math.abs לפני חישוב אורך — מספר שלילי -5 הוא באורך 1, לא 2"},
+"football-q3":{title:"שרת משחקי מחשב",type:"express",points:25,exam:"Football Club",
+question:"בנו שרת Express לניהול משחקי מחשב.\n• GET /games — כל המשחקים\n• GET /games/:id — משחק לפי ID\n• POST /games — הוספת משחק (name, releaseYear, price)\n• POST /games/filter — סינון לפי yearMin, name, priceMax (AND logic)\n• הנתונים במערך בזיכרון. middleware: express.json() + cors()",
+tasks:["התקן express + cors, הגדר middleware","צור מערך games[] ראשוני בזיכרון","GET /games — res.json(games)","GET /games/:id — מצא לפי id, 404 אם לא קיים","POST /games — דחוף למערך, status 201","POST /games/filter — filter שרשרת (AND logic) על yearMin, name, priceMax"],
+summary:"REST API למשחקים: קבלה, הוספה וסינון לפי שנה/שם/מחיר",layers:[{id:"client",label:"Client (Browser/Postman)",icon:"🌐",desc:"שולח HTTP requests"},{id:"middleware",label:"Middleware",icon:"⚙️",desc:"express.json() + cors()",items:["app.use(express.json())","app.use(cors())"]},{id:"routes",label:"Routes",icon:"🛣",items:["GET /games — כל המשחקים","GET /games/:id — משחק לפי ID","POST /games — הוספת משחק חדש","POST /games/filter — סינון (yearMin, name, priceMax)"]},{id:"data",label:"Data Store",icon:"📦",desc:"games[] — מערך בזיכרון"},{id:"response",label:"Response",icon:"📤",desc:"res.json(data) + status code"}],bugs:[{text:"חסר express.json() — req.body יהיה undefined",severity:"critical"},{text:"חסר status(201) בהוספת משחק חדש",severity:"medium"},{text:"סינון חייב להיות AND (כל הפילטרים חייבים להתקיים ביחד)",severity:"high"}],code:"// POST /games/filter — AND logic\napp.post('/games/filter', (req, res) => {\n  let filtered = [...games];\n  if (req.body.yearMin)\n    filtered = filtered.filter(g => g.releaseYear >= req.body.yearMin);\n  if (req.body.name)\n    filtered = filtered.filter(g =>\n      g.name.toLowerCase().includes(req.body.name.toLowerCase()));\n  if (req.body.priceMax)\n    filtered = filtered.filter(g => g.price <= req.body.priceMax);\n  res.json(filtered);\n});",tip:"סינון AND = filter שרשרת. כל filter מצמצם את התוצאה הקודמת"},
+"parking-q1":{title:"SV Parking",type:"react",points:50,exam:"SV Parking",question:"בנו אפליקציית React לחניה.\n• הרשמה: username, carNumber (7 ספרות), password (6+)\n• כניסה: username + password\n• בחירת חניה: select עיר + מספר רכב → Start\n• חניה פעילה: timer + חישוב עלות + Stop\n• היסטוריה: רשימת חניות קודמות\n• localStorage לכל הנתונים",tasks:["הגדר Router עם routes: /, /signup, /choose, /active, /history","State: users[], currentUser, parkings[], cities[]","Signup: ולידציות — carNumber 7 ספרות, password 6+","ChooseParking: select עיר, הזנת מספר רכב, כפתור Start","ActiveParking: setInterval לtimer, חישוב עלות, cleanup ב-useEffect","History: הצגת כל החניות הקודמות של המשתמש"],summary:"אפליקציית חניה: הרשמה, כניסה, בחירת עיר ורכב, חניה פעילה, היסטוריה",components:[{id:"app",label:"App",icon:"⚛️",desc:"Router + state + cities/prices data"},{id:"login",label:"Login",icon:"🔐",desc:"username + password"},{id:"signup",label:"Signup",icon:"📝",desc:"username + carNumber + password"},{id:"choose",label:"ChooseParking",icon:"🅿️",desc:"select עיר + מספר רכב → Start"},{id:"active",label:"ActiveParking",icon:"🟢",desc:"timer + עלות + Stop button"},{id:"history",label:"History",icon:"📜",desc:"רשימת חניות קודמות"}],state:[{id:"users",label:"users[]",owner:"app",persist:true},{id:"currentUser",label:"currentUser",owner:"app"},{id:"parkings",label:"parkings[]",owner:"app",persist:true},{id:"activePark",label:"activePark",owner:"active"}],routes:[{path:"/",comp:"login",label:"כניסה"},{path:"/signup",comp:"signup",label:"הרשמה"},{path:"/choose",comp:"choose",label:"בחירת חניה"},{path:"/active",comp:"active",label:"חניה פעילה"},{path:"/history",comp:"history",label:"היסטוריה"}],flows:[{from:"signup",to:"users",action:"addUser({username, carNumber, password})"},{from:"login",to:"currentUser",action:"setCurrentUser(found)"},{from:"choose",to:"activePark",action:"startParking({city, car, startTime})"},{from:"active",to:"parkings",action:"endParking({...park, endTime, cost})"}],validations:["carNumber: 7 ספרות בדיוק","password: 6 תווים לפחות","username: לא ריק + ייחודי","עיר: חובה לבחור מ-select"],bugs:[{text:"Timer לא מנוקה ב-useEffect cleanup — memory leak",severity:"critical"},{text:"חישוב עלות לא מעוגל — צריך toFixed(2)",severity:"medium"},{text:"חניה פעילה לא נשמרת ב-localStorage — אובדת ברענון",severity:"high"}],code:"// Timer with cleanup\nuseEffect(() => {\n  const id = setInterval(() => {\n    setElapsed(prev => prev + 1);\n  }, 1000);\n  return () => clearInterval(id); // cleanup!\n}, []);",tip:"תמיד return cleanup function מ-useEffect שמריץ setInterval"},
+"parking-q2":{title:"רצפים שסכומם יעד",type:"js",points:25,exam:"SV Parking",question:"כתבו פונקציה countTargetSequences שמקבלת מערך מספרים ו-target.\nהחזירו כמה רצפים רציפים (contiguous subsequences) סכומם שווה ל-target.\nדוגמה: [1,2,3,4,5], target=5 → 2 (רצפים: [2,3] ו-[5])",tasks:["קבל arr ו-target, בדוק תקינות","לולאה חיצונית i מ-0 עד length","לולאה פנימית j מ-i, צבור sum","אם sum === target → count++","החזר count"],summary:"ספירת רצפים רציפים במערך שסכומם שווה למספר נתון",steps:[{id:"input",label:"קלט",icon:"📥",desc:"מערך מספרים + target number"},{id:"validate",label:"בדיקת קלט",icon:"🛡",desc:"Array.isArray + typeof target === 'number'"},{id:"outer",label:"לולאה חיצונית",icon:"🔄",desc:"for i = 0 → arr.length"},{id:"inner",label:"לולאה פנימית",icon:"🔁",desc:"for j = i → arr.length, sum += arr[j]"},{id:"check",label:"בדיקת סכום",icon:"✅",desc:"if (sum === target) count++"},{id:"output",label:"פלט",icon:"📤",desc:"return count"}],bugs:[{text:"לולאה אחת במקום שתיים — חייבים nested loops",severity:"critical"},{text:"לא בודק אם target הוא מספר",severity:"medium"}],code:"function countSeq(arr, target) {\n  let count = 0;\n  for (let i = 0; i < arr.length; i++) {\n    let sum = 0;\n    for (let j = i; j < arr.length; j++) {\n      sum += arr[j];\n      if (sum === target) count++;\n    }\n  }\n  return count;\n}",tip:"הטריק: לולאה פנימית מתחילה מ-i (לא מ-0) וצוברת sum בהדרגה"},
+"parking-q3":{title:"שרת מורים — MongoDB",type:"express",points:25,exam:"SV Parking",question:"בנו שרת Express + MongoDB (Mongoose) לניהול מורים.\n• POST /add — הוספת מורה {name, salary, subject}\n• POST /low-salary — מורים עם שכר נמוך מ-X (req.body.max)\n• POST /add-or-update — upsert: אם קיים → עדכן, אם לא → הוסף\n• Schema: Teacher {name, salary, subject}",tasks:["mongoose.connect + express.json middleware","הגדר Schema ו-Model עבור Teacher","POST /add — Teacher.create(req.body)","POST /low-salary — Teacher.find({ salary: { $lt: max } })","POST /add-or-update — findOneAndUpdate עם {upsert:true, new:true}","try/catch + status codes"],summary:"שרת/DB עם routes לניהול נתוני מורים",layers:[{id:"client",label:"Client",icon:"🌐",desc:"HTTP requests"},{id:"middleware",label:"Middleware",icon:"⚙️",desc:"express.json() + cors() + mongoose.connect()"},{id:"schema",label:"Schema + Model",icon:"📋",desc:"Teacher: {name, salary, subject}",items:["const teacherSchema = new Schema({...})","const Teacher = model('Teacher', teacherSchema)"]},{id:"routes",label:"Routes",icon:"🛣",items:["POST /add — הוספת מורה","POST /low-salary — מורים עם שכר נמוך מ-X","POST /add-or-update — upsert לפי ID"]},{id:"db",label:"MongoDB",icon:"🗄",desc:"Atlas / localhost:27017"},{id:"response",label:"Response",icon:"📤",desc:"JSON + status"}],bugs:[{text:"חסר await לפני פעולות Mongoose",severity:"critical"},{text:"upsert: חייב {upsert:true, new:true} ב-findOneAndUpdate",severity:"high"},{text:"חסר error handling — try/catch",severity:"medium"}],code:"// Upsert pattern\napp.post('/add-or-update', async (req, res) => {\n  const teacher = await Teacher.findOneAndUpdate(\n    { _id: req.body.id },\n    req.body,\n    { upsert: true, new: true }\n  );\n  res.json(teacher);\n});",tip:"upsert = update if exists, insert if not. תמיד עם {new: true} כדי לקבל את המסמך המעודכן"},
+"flights-q1":{title:"מערכת בקרת טיסות",type:"react",points:50,exam:"בקרת טיסות",question:"בנו אפליקציית React לבקרת טיסות.\n• כניסה עם סיסמה קבועה: 12345\n• Control Panel: סטטיסטיקות\n• AllFlights: טבלה, sort לפי תאריך, מחיקה עם confirm\n• AddFlight: form — flight#, from, to, date\n• Nav מוצג רק אחרי login\n• localStorage",tasks:["Router: /, /panel, /all, /add","Login: בדוק סיסמה === '12345'","AllFlights: טבלה + sort לפי תאריך (spread לפני sort!)","AddFlight: form עם כל השדות, push ל-flights","Nav: conditional rendering — רק כש-isAuth === true","localStorage sync עם useEffect"],summary:"כניסה עם סיסמה, רשימת טיסות, מיון, הוספה ומחיקה — צד לקוח בלבד",components:[{id:"app",label:"App",icon:"⚛️",desc:"Router + flights state + password check"},{id:"login",label:"Login",icon:"🔐",desc:"סיסמה קבועה 12345"},{id:"panel",label:"ControlPanel",icon:"🎛",desc:"דשבורד עם סטטיסטיקות"},{id:"all",label:"AllFlights",icon:"✈️",desc:"טבלה + sort + delete"},{id:"add",label:"AddFlight",icon:"➕",desc:"form: flight#, from, to, date"}],state:[{id:"flights",label:"flights[]",owner:"app",persist:true},{id:"isAuth",label:"isLoggedIn",owner:"app"},{id:"sortOrder",label:"sortOrder",owner:"all"}],routes:[{path:"/",comp:"login",label:"כניסה"},{path:"/panel",comp:"panel",label:"Control Panel"},{path:"/all",comp:"all",label:"כל הטיסות"},{path:"/add",comp:"add",label:"הוספת טיסה"}],flows:[{from:"login",to:"isAuth",action:"if(pass==='12345') setAuth(true)"},{from:"add",to:"flights",action:"setFlights([...flights, newFlight])"},{from:"all",to:"flights",action:"deleteFlight(id) / sort"}],validations:["סיסמה: בדיוק '12345'","flight number: לא ריק","from/to: לא ריקים","date: פורמט תקין"],bugs:[{text:"Nav מוצג גם לפני login — צריך conditional rendering",severity:"high"},{text:"sort משנה את המערך המקורי — חייב spread לפני sort",severity:"critical"},{text:"מחיקה בלי אישור — חסר window.confirm",severity:"medium"}],code:"// Sort without mutating state!\nconst sorted = [...flights].sort((a, b) =>\n  sortOrder === 'asc'\n    ? a.date.localeCompare(b.date)\n    : b.date.localeCompare(a.date)\n);",tip:"לעולם לא .sort() ישירות על state — תמיד [...arr].sort() עם spread"},
+"flights-q2":{title:"ספירת מספרים במטריצה",type:"js",points:25,exam:"בקרת טיסות",question:"כתבו פונקציה countNumbersInMatrix שמקבלת מטריצה (מערך של מערכים) ומערך מספרים לחיפוש.\nהחזירו כמה פעמים מופיעים המספרים במטריצה.\nדוגמה: matrix=[[1,2],[3,1]], numbers=[1,3] → 3",tasks:["קבל matrix ו-numbers, בדוק שזה מערך של מערכים","לולאה חיצונית על שורות","לולאה פנימית על עמודות","בדוק numbers.includes(cell) → count++","החזר count"],summary:"פונקציה לעיבוד מטריצה וספירת מספרים",steps:[{id:"input",label:"קלט",icon:"📥",desc:"מטריצה (מערך של מערכים) + מספרים לחיפוש"},{id:"validate",label:"בדיקת קלט",icon:"🛡",desc:"כל שורה היא מערך, כל ערך הוא מספר"},{id:"outer",label:"לולאה על שורות",icon:"🔄",desc:"for (const row of matrix)"},{id:"inner",label:"לולאה על עמודות",icon:"🔁",desc:"for (const cell of row)"},{id:"check",label:"בדיקת התאמה",icon:"🔍",desc:"numbers.includes(cell)"},{id:"output",label:"פלט",icon:"📤",desc:"return count"}],bugs:[{text:"לא בודק שהקלט הוא מטריצה תקינה",severity:"medium"},{text:"includes על מערך גדול — O(n) לכל בדיקה",severity:"low"}],code:"function countInMatrix(matrix, numbers) {\n  let count = 0;\n  for (const row of matrix)\n    for (const cell of row)\n      if (numbers.includes(cell)) count++;\n  return count;\n}",tip:"מטריצה = מערך של מערכים. שתי לולאות מקוננות — שורות ואז עמודות"},
+"flights-q3":{title:"DB סטודנטים",type:"express",points:25,exam:"בקרת טיסות",question:"בנו שרת Express + MongoDB לניהול סטודנטים.\n• GET /students — כל הסטודנטים\n• POST /students — הוספה\n• PUT /students/:id — עדכון\n• DELETE /students/:id — מחיקה\n• Schema: Student {name, age, grade}\n• mongoose.connect()",tasks:["הגדר Schema: {name: String, age: Number, grade: Number}","mongoose.connect + middleware","GET /students — Student.find()","POST /students — Student.create, status 201","PUT /students/:id — findByIdAndUpdate({new:true})","DELETE /students/:id — findByIdAndDelete + 404 check"],summary:"שרת Express + MongoDB לניהול סטודנטים",layers:[{id:"client",label:"Client",icon:"🌐",desc:"HTTP requests"},{id:"middleware",label:"Middleware",icon:"⚙️",desc:"express.json() + mongoose.connect()"},{id:"schema",label:"Student Schema",icon:"📋",desc:"{name, age, grade}",items:["const studentSchema = new Schema({name: String, age: Number, grade: Number})","const Student = model('Student', studentSchema)"]},{id:"routes",label:"CRUD Routes",icon:"🛣",items:["GET /students — כל הסטודנטים","POST /students — הוספה","PUT /students/:id — עדכון","DELETE /students/:id — מחיקה"]},{id:"db",label:"MongoDB",icon:"🗄",desc:"students collection"},{id:"response",label:"Response",icon:"📤",desc:"JSON + status codes"}],bugs:[{text:"חסר status 201 ב-POST",severity:"medium"},{text:"PUT בלי {new:true} מחזיר את המסמך הישן",severity:"high"},{text:"DELETE בלי 404 check",severity:"medium"}],code:"// Full CRUD pattern\napp.get('/students', async (req, res) => {\n  res.json(await Student.find());\n});\napp.post('/students', async (req, res) => {\n  const s = await Student.create(req.body);\n  res.status(201).json(s);\n});",tip:"CRUD = Create(201) Read(200) Update(200) Delete(200). תמיד status מתאים"},
+"helpme-q1":{title:"HelpMe",type:"react",points:75,exam:"HelpMe",question:"בנו אפליקציית חירום HelpMe.\n• הרשמה חד-פעמית: שם (2+), טלפון (10 ספרות), סיסמה (6+)\n• אם כבר נרשם — דלג ישר ל-Home\n• Home: 3 כפתורי מוקד (100/101/102)\n• דף מוקד: כפתור 'הצילו!' — לוחצים פעם אחת, אחרי זה disabled\n• ביטול: הזנת סיסמה נכונה בלבד\n• תפריט מוקדים",tasks:["useEffect עם []: אם יש user ב-localStorage → navigate('/home')","RegisterForm: 3 שדות + ולידציות, שמירה ל-localStorage","Home: 3 כפתורים לבחירת מוקד","CenterPage: כפתור הצילו (disabled אחרי לחיצה), ביטול עם סיסמה","Menu: תצוגת מוקדים","Router: /, /home, /center/:id, /menu"],summary:"אפליקציית חירום: הרשמה חד-פעמית, מוקד נבחר, כפתור הצילו, ביטול עם סיסמה",components:[{id:"app",label:"App",icon:"⚛️",desc:"Router + user state"},{id:"register",label:"Register",icon:"📝",desc:"שם + טלפון + סיסמה (חד-פעמי)"},{id:"home",label:"Home",icon:"🏠",desc:"3 כפתורי מוקד: 100/101/102"},{id:"center",label:"CenterPage",icon:"🚨",desc:"הצילו! button + ביטול עם סיסמה"},{id:"menu",label:"Menu",icon:"📋",desc:"תפריט מוקדים"}],state:[{id:"user",label:"user{}",owner:"app",persist:true},{id:"selectedCenter",label:"selectedCenter",owner:"app"},{id:"isActive",label:"isActive",owner:"center"},{id:"calls",label:"calls[]",owner:"app"}],routes:[{path:"/",comp:"register",label:"הרשמה (פעם אחת)"},{path:"/home",comp:"home",label:"בחירת מוקד"},{path:"/center/:id",comp:"center",label:"דף מוקד"},{path:"/menu",comp:"menu",label:"תפריט"}],flows:[{from:"register",to:"user",action:"setUser({name, phone, password})"},{from:"home",to:"selectedCenter",action:"setCenter(100/101/102)"},{from:"center",to:"calls",action:"addCall({center, time})"},{from:"center",to:"isActive",action:"toggle on הצילו / off ביטול+סיסמה"}],validations:["שם: 2 תווים לפחות","טלפון: 10 ספרות בדיוק","סיסמה: 6 תווים לפחות","ביטול: חייב להזין סיסמה נכונה"],bugs:[{text:"הרשמה חד-פעמית — אם יש user ב-localStorage, לדלג ישר ל-home",severity:"critical"},{text:"כפתור הצילו לא מושבת אחרי לחיצה ראשונה",severity:"high"},{text:"ביטול בלי בדיקת סיסמה מאפשר ביטול חופשי",severity:"critical"}],code:"// One-time registration check\nuseEffect(() => {\n  const saved = localStorage.getItem('user');\n  if (saved) {\n    setUser(JSON.parse(saved));\n    navigate('/home');\n  }\n}, []);",tip:"הרשמה חד-פעמית = בדיקת localStorage ב-useEffect עם [] + navigate אם קיים"},
+"helpme-q2":{title:"זיהוי סוג סדרה",type:"js",points:25,exam:"HelpMe",question:"כתבו פונקציה detectSeries שמקבלת מערך מספרים ומחזירה:\n• 'arithmetic' — אם ההפרש בין כל שני עוקבים שווה\n• 'geometric' — אם היחס בין כל שני עוקבים שווה\n• 'none' — אם אף אחד\nטפלו ב-edge cases: מערך קצר, חילוק באפס.",tasks:["בדוק length >= 2, אחרת 'none'","חשב הפרש d = arr[1]-arr[0], בדוק שכל ההפרשים שווים","אם לא חשבונית: בדוק arr[0] !== 0 (חילוק באפס!)","חשב יחס r = arr[1]/arr[0], בדוק שכל היחסים שווים","החזר 'arithmetic' / 'geometric' / 'none'"],summary:"פונקציה שמזהה אם סדרת מספרים היא חשבונית, הנדסית או אף אחת",steps:[{id:"input",label:"קלט",icon:"📥",desc:"מערך מספרים"},{id:"validate",label:"בדיקת קלט",icon:"🛡",desc:"length >= 2, all numbers"},{id:"arith",label:"בדיקה חשבונית",icon:"➕",desc:"d = arr[1]-arr[0], כל הפרשים שווים?"},{id:"geo",label:"בדיקה הנדסית",icon:"✖️",desc:"r = arr[1]/arr[0], כל היחסים שווים?"},{id:"output",label:"פלט",icon:"📤",desc:"'arithmetic' / 'geometric' / 'none'"}],bugs:[{text:"חילוק באפס בסדרה הנדסית — arr[0]===0",severity:"critical"},{text:"floating point: 0.1+0.2 !== 0.3 — השוואה עם epsilon",severity:"high"}],code:"function detectSeries(arr) {\n  if (arr.length < 2) return 'none';\n  const d = arr[1] - arr[0];\n  const isArith = arr.every((v, i) =>\n    i === 0 || v - arr[i-1] === d);\n  if (isArith) return 'arithmetic';\n  if (arr[0] === 0) return 'none';\n  const r = arr[1] / arr[0];\n  const isGeo = arr.every((v, i) =>\n    i === 0 || v / arr[i-1] === r);\n  return isGeo ? 'geometric' : 'none';\n}",tip:"תמיד בדוק חילוק באפס לפני סדרה הנדסית!"},
+"helpme-q3":{title:"תאוריה: HTTP/Mongo/React",type:"theory",points:25,exam:"HelpMe",question:"ענו על שאלות תאוריה:\n1. מה ההבדל בין HTTP Methods: GET, POST, PUT, DELETE, PATCH?\n2. מה זה MongoDB? מהם documents, collections?\n3. מה ההבדל בין React לבין Vanilla JS?\n4. מה ההבדל בין function רגילה לבין Arrow Function?\n5. מה זה רקורסיה? תנו דוגמה.",tasks:["GET=קריאה, POST=יצירה, PUT=עדכון מלא, DELETE=מחיקה, PATCH=עדכון חלקי","MongoDB: NoSQL, document-based, flexible schema, JSON-like","React: Virtual DOM, components, declarative | Vanilla: imperative, direct DOM","Arrow: לא this משלו, לא hoisting, לא arguments | Regular: יש this, hoisting, arguments","רקורסיה: פונקציה שקוראת לעצמה, חייב base case"],summary:"תשובות תאוריה: HTTP methods, MongoDB, React vs Vanilla, function vs arrow, recursion",steps:[{id:"q1",label:"HTTP Methods",icon:"🌐",desc:"GET=קריאה, POST=יצירה, PUT=עדכון מלא, DELETE=מחיקה, PATCH=עדכון חלקי"},{id:"q2",label:"MongoDB",icon:"🗄",desc:"NoSQL, documents, collections, flexible schema, JSON-like"},{id:"q3",label:"React vs Vanilla",icon:"⚛️",desc:"Virtual DOM, components, state management, declarative vs imperative"},{id:"q4",label:"Function vs Arrow",icon:"🔧",desc:"this binding, hoisting, arguments object, constructor"},{id:"q5",label:"רקורסיה",icon:"🔁",desc:"פונקציה שקוראת לעצמה, base case + recursive case"}],bugs:[],code:"// Arrow vs Function — this\nconst obj = {\n  name: 'test',\n  regular() { return this.name; },    // 'test'\n  arrow: () => { return this.name; }   // undefined\n};",tip:"בתאוריה: תנו דוגמת קוד קצרה לכל תשובה — זה מוסיף נקודות"},
+"bank-q1":{title:"SV Bank",type:"react",points:65,exam:"SV Bank",question:"בנו מערכת בנק ב-React.\n• Login: ADMIN (admin+סיסמה מיוחדת) או User רגיל\n• Register: username ייחודי + password + initial deposit\n• ClientPage: Action (deposit/withdraw), Edit, Balance, Expense details\n• ManagerPage: רשימת כל הלקוחות + מחיקה\n• withdrawal: לא יותר מהיתרה\n• localStorage לכל הנתונים",tasks:["Router: /, /register, /client/:id, /manager","Login: בדוק ADMIN קודם, אח\"כ user רגיל","Register: ולידציות — username ייחודי, password, initial deposit","ClientPage: deposit/withdraw עם בדיקת יתרה","ManagerPage: הצגת כל המשתמשים + כפתור מחיקה (מוחק גם account!)","localStorage sync + dual-role auth"],summary:"מערכת בנק: מנהל ולקוחות, הרשמה, פעולות, עריכה, יתרה, מחיקה",components:[{id:"app",label:"App",icon:"⚛️",desc:"Router + dual-role auth (admin/user)"},{id:"login",label:"Login",icon:"🔐",desc:"ADMIN login או user login"},{id:"register",label:"Register",icon:"📝",desc:"username + password + initial deposit"},{id:"client",label:"ClientPage",icon:"💳",desc:"Action, Edit, Balance, Expense details"},{id:"manager",label:"ManagerPage",icon:"👔",desc:"רשימת כל הלקוחות + מחיקה"}],state:[{id:"users",label:"users[]",owner:"app",persist:true},{id:"currentUser",label:"currentUser",owner:"app"},{id:"accounts",label:"accounts[]",owner:"app",persist:true}],routes:[{path:"/",comp:"login",label:"כניסה"},{path:"/register",comp:"register",label:"הרשמה"},{path:"/client/:id",comp:"client",label:"דף לקוח"},{path:"/manager",comp:"manager",label:"דף מנהל"}],flows:[{from:"login",to:"currentUser",action:"role check: ADMIN → /manager, else → /client/:id"},{from:"register",to:"users",action:"addUser + initial account"},{from:"client",to:"accounts",action:"deposit/withdraw/edit"},{from:"manager",to:"users",action:"deleteUser(id)"}],validations:["ADMIN: username='admin', password מיוחד","deposit: amount > 0","username: ייחודי","withdrawal: לא יותר מהיתרה"],bugs:[{text:"ADMIN routing: אם admin מנסה להיכנס כ-client, צריך redirect",severity:"high"},{text:"מחיקת user לא מוחקת את ה-account שלו",severity:"critical"},{text:"withdraw מאפשר יתרה שלילית",severity:"critical"}],code:"// Dual-role login\nfunction handleLogin(username, password) {\n  if (username === 'admin' && password === ADMIN_PASS) {\n    navigate('/manager');\n  } else {\n    const user = users.find(u =>\n      u.username === username && u.password === password);\n    if (user) navigate(`/client/${user.id}`);\n    else alert('Invalid credentials');\n  }\n}",tip:"מערכת dual-role: תמיד בדקו ADMIN קודם, ואז user רגיל"},
+"bank-q2":{title:"מיון ספרות ללא sort",type:"js",points:20,exam:"SV Bank",question:"כתבו פונקציה sortDigitsWithoutSort שמקבלת מספר ומחזירה את המספר עם ספרותיו ממוינות.\nאסור להשתמש ב-.sort()!\nדוגמה: 52431 → 12345\nטפלו בשליליים.",tasks:["פרק את המספר לספרות: String(Math.abs(num)).split('').map(Number)","מיין עם Bubble Sort (לולאות מקוננות + swap)","חבר חזרה: Number(digits.join(''))","טפל בסימן שלילי: num < 0 ? -result : result"],summary:"אלגוריתם למיון ספרות מספר בלי להשתמש ב-.sort()",steps:[{id:"input",label:"קלט",icon:"📥",desc:"מספר שלם (למשל 52431)"},{id:"split",label:"פירוק לספרות",icon:"🔢",desc:"String(num).split('').map(Number)"},{id:"algo",label:"Bubble/Selection Sort",icon:"🔄",desc:"לולאה מקוננת עם swap"},{id:"swap",label:"החלפה",icon:"🔀",desc:"[arr[i], arr[j]] = [arr[j], arr[i]]"},{id:"join",label:"חיבור",icon:"🔗",desc:"Number(digits.join(''))"},{id:"output",label:"פלט",icon:"📤",desc:"return sorted number → 12345"}],bugs:[{text:"שימוש ב-.sort() — אסור לפי הוראות!",severity:"critical"},{text:"לא מטפל במספר שלילי",severity:"medium"},{text:"מחזיר string במקום number",severity:"medium"}],code:"function sortDigits(num) {\n  const digits = String(Math.abs(num)).split('').map(Number);\n  // Bubble sort\n  for (let i = 0; i < digits.length; i++)\n    for (let j = 0; j < digits.length - 1 - i; j++)\n      if (digits[j] > digits[j+1])\n        [digits[j], digits[j+1]] = [digits[j+1], digits[j]];\n  return Number(digits.join('')) * (num < 0 ? -1 : 1);\n}",tip:"אם כתוב 'בלי sort' — השתמשו ב-Bubble Sort, הכי פשוט לכתוב במבחן"},
+"bank-q3":{title:"שמירת טקסט לקובץ",type:"express",points:15,exam:"SV Bank",question:"בנו שרת Express שמנהל קובץ טקסט.\n• POST /save — שמירת טקסט (append!) לקובץ file.txt\n• GET /read — קריאת כל תוכן הקובץ\n• שימוש ב-fs (file system)\n• appendFile ולא writeFile!",tasks:["express + express.json middleware","POST /save — fs.appendFile('file.txt', text + '\\n')","GET /read — fs.readFile('file.txt', 'utf8')","טפל ב-ENOENT (קובץ לא קיים)","Status codes: 200 לקריאה, 201 לשמירה"],summary:"שרת Express עם כתיבה/קריאה מקובץ טקסט",layers:[{id:"client",label:"Client",icon:"🌐",desc:"POST text / GET read"},{id:"middleware",label:"Middleware",icon:"⚙️",desc:"express.json()"},{id:"routes",label:"Routes",icon:"🛣",items:["POST /save — שמירת טקסט לקובץ","GET /read — קריאת כל הקובץ"]},{id:"fs",label:"File System",icon:"📁",desc:"fs.appendFile / fs.readFile → file.txt"},{id:"response",label:"Response",icon:"📤",desc:"success message / file content"}],bugs:[{text:"writeFile במקום appendFile — דורס את התוכן!",severity:"critical"},{text:"חסר encoding 'utf8' ב-readFile",severity:"medium"},{text:"חסר טיפול ב-ENOENT (קובץ לא קיים)",severity:"medium"}],code:"const fs = require('fs').promises;\n\n// APPEND, not WRITE!\napp.post('/save', async (req, res) => {\n  await fs.appendFile('file.txt', req.body.text + '\\n');\n  res.json({ message: 'Saved' });\n});\n\napp.get('/read', async (req, res) => {\n  const data = await fs.readFile('file.txt', 'utf8');\n  res.json({ content: data });\n});",tip:"appendFile מוסיף. writeFile דורס. במבחן תמיד appendFile אלא אם כתוב אחרת"},
+"logistics-q1":{title:"Logistics Management",type:"react",points:75,exam:"מחסן לוגיסטי",question:"בנו מערכת ניהול מחסן לוגיסטי ב-React.\n• כניסה/הרשמה: workerID (5 ספרות), fullName (4+ ללא רווחים)\n• WelcomePage: שם, מספר כניסות, רישיון מלגזה\n• ProductList: מוצרים שלא במקום, כפתור 'שים במקום'\n• בדיקת רישיון: אם מוצר צריך מלגזה ולעובד אין רישיון → alert\n• Classes: Worker, Product",tasks:["Router: /, /welcome/:id, /products","Auth: ולידציה — workerID 5 ספרות, fullName 4+ תווים","WelcomePage: הצג שם, visits++, רישיון","ProductList: filter מוצרים ש-inPlace===false","בדיקת רישיון לפני עדכון מוצר","setWorkers/setProducts עם spread (לא mutation!)"],summary:"מערכת מחסן: עובדים, רישיון מלגזה, מוצרים, כניסה, סימון מוצרים",components:[{id:"app",label:"App",icon:"⚛️",desc:"Router + Workers/Products classes"},{id:"auth",label:"Auth (Login/Signup)",icon:"🔐",desc:"worker ID (5 ספרות) + fullName"},{id:"welcome",label:"WelcomePage",icon:"👋",desc:"שם, רישיון, מספר כניסות"},{id:"products",label:"ProductList",icon:"📦",desc:"מוצרים שלא במקום + כפתור עדכון"}],state:[{id:"workers",label:"workers[]",owner:"app"},{id:"products",label:"products[]",owner:"app"},{id:"currentWorker",label:"currentWorker",owner:"app"}],routes:[{path:"/",comp:"auth",label:"כניסה/הרשמה"},{path:"/welcome/:id",comp:"welcome",label:"ברוכים הבאים"},{path:"/products",comp:"products",label:"רשימת מוצרים"}],flows:[{from:"auth",to:"workers",action:"addWorker / findWorker"},{from:"auth",to:"currentWorker",action:"setCurrentWorker(worker)"},{from:"welcome",to:"currentWorker",action:"worker.visit() → visits++"},{from:"products",to:"products",action:"if(!needsFork || hasLicense) → inPlace=true"}],validations:["workerID: 5 ספרות בדיוק /^\\d{5}$/","fullName: אותיות ורווח, 4+ בלי רווחים","רישיון: אם מוצר צריך מלגזה ואין רישיון → alert"],bugs:[{text:"visit() לא מעדכן state — צריך setWorkers עם spread",severity:"critical"},{text:"filter מוצרים שלא במקום: products.filter(p => !p.inPlace)",severity:"high"},{text:"בדיקת רישיון חייבת להיות לפני העדכון",severity:"critical"}],code:"// License check before update\nfunction handleUpdate(product) {\n  if (product.needsForklift && !currentWorker.hasLicense) {\n    alert('יש צורך ברישיון למלגזה');\n    return;\n  }\n  setProducts(prev => prev.map(p =>\n    p.id === product.id ? {...p, inPlace: true} : p\n  ));\n}",tip:"תמיד בדקו תנאים (רישיון, הרשאה) לפני שמשנים state"},
+"logistics-q2":{title:"בינארי לדצימלי + פלינדרום",type:"js",points:25,exam:"מחסן לוגיסטי",question:"כתבו פונקציה שמקבלת מחרוזת בינארית ומחזירה אובייקט:\n• decimal — הערך הדצימלי\n• isPalindrome — האם המחרוזת פלינדרום\nדוגמה: '1010' → {decimal: 10, isPalindrome: false}\nאל תשתמשו ב-parseInt.",tasks:["בדוק שהקלט מכיל רק '0' ו-'1'","המרה ידנית: digit × 2^position (position מימין)","בדיקת פלינדרום: str === str.split('').reverse().join('')","החזר {decimal, isPalindrome}"],summary:"המרת מספר בינארי לדצימלי + בדיקת פלינדרום",steps:[{id:"input",label:"קלט",icon:"📥",desc:"מחרוזת בינארית '1010'"},{id:"validate",label:"בדיקת קלט",icon:"🛡",desc:"רק 0 ו-1, לא ריק"},{id:"convert",label:"המרה",icon:"🔢",desc:"לולאה: digit × 2^position"},{id:"palindrome",label:"פלינדרום",icon:"🔄",desc:"str === str.split('').reverse().join('')"},{id:"output",label:"פלט",icon:"📤",desc:"{decimal: 10, isPalindrome: false}"}],bugs:[{text:"שימוש ב-parseInt(str,2) — לא תמיד מותר",severity:"medium"},{text:"לא בודק שהקלט מכיל רק 0/1",severity:"high"}],code:"function binaryToDecimal(bin) {\n  let decimal = 0;\n  for (let i = 0; i < bin.length; i++) {\n    decimal += Number(bin[i]) * Math.pow(2, bin.length - 1 - i);\n  }\n  const isPalindrome = bin === bin.split('').reverse().join('');\n  return { decimal, isPalindrome };\n}",tip:"2^position: המיקום נספר מימין (bin.length - 1 - i)"},
+"currency-q1":{title:"Currency Exchange",type:"react",points:80,exam:"מחשבון המרה",question:"בנו מחשבון המרת מטבעות ב-React.\n• Calculator: בחר from, to, amount → Start (disabled עד שהכל מלא)\n• ExchangeList: רשימת המרות + מחיקה\n• UpdateCurrency: הוסף מטבע חדש או עדכן קיים\n• type: אנגלית בלבד, value: מספר\n• תצוגה: '#N\\nFROM {from} TO {to}\\n{amount} = {result}'",tasks:["Router: /, /list, /update","Calculator: 3 שדות, disabled={!from||!to||!amount}","המרה: (amount × fromRate) / toRate","ExchangeList: הצגה + כפתור מחיקה לכל המרה","UpdateCurrency: if exists → update value, else → push new","ולידציות: type אנגלית, value מספר, from !== to"],summary:"מחשבון מטבע: המרה, רשימת המרות, עדכון/הוספת מטבעות",components:[{id:"app",label:"App",icon:"⚛️",desc:"Router + currencies + exchanges state"},{id:"calc",label:"Calculator",icon:"💱",desc:"from + to + amount → Start (disabled until filled)"},{id:"list",label:"ExchangeList",icon:"📋",desc:"היסטוריית המרות + X delete"},{id:"update",label:"UpdateCurrency",icon:"🔄",desc:"type + value → Update existing or Add new"}],state:[{id:"currencies",label:"currencies[]",owner:"app"},{id:"exchanges",label:"exchanges[]",owner:"app"},{id:"selected",label:"{from, to, amount}",owner:"calc"}],routes:[{path:"/",comp:"calc",label:"מחשבון"},{path:"/list",comp:"list",label:"רשימת המרות"},{path:"/update",comp:"update",label:"עדכון מטבעות"}],flows:[{from:"calc",to:"exchanges",action:"addExchange({from, to, amount, result})"},{from:"calc",to:"currencies",action:"read rates for conversion"},{from:"update",to:"currencies",action:"update existing rate / add new currency"},{from:"list",to:"exchanges",action:"deleteExchange(index)"}],validations:["type: אנגלית בלבד /^[A-Za-z]+$/","value: חייב להיות מספר","Start: disabled עד שכל 3 שדות מלאים","from !== to (לא להמיר מטבע לעצמו)"],bugs:[{text:"Start button לא disabled — חסר check על 3 שדות",severity:"critical"},{text:"update: אם type קיים → update.value, אם לא → push new",severity:"high"},{text:"פורמט תצוגה לא תואם: '#N\\nFROM {from} TO {to}\\n{amount} = {result}'",severity:"medium"}],code:"// Conversion logic\nfunction convert(from, to, amount) {\n  const fromRate = currencies.find(c => c.type === from).value;\n  const toRate = currencies.find(c => c.type === to).value;\n  return (amount * fromRate) / toRate;\n}\n\n// Update or Add\nfunction handleUpdate(type, value) {\n  const exists = currencies.find(c => c.type === type);\n  if (exists) {\n    setCurrencies(prev => prev.map(c =>\n      c.type === type ? {...c, value} : c));\n  } else {\n    setCurrencies(prev => [...prev, {type, value}]);\n  }\n}",tip:"disabled={!from || !to || !amount} — ככה מונעים submit לפני מילוי"},
+"currency-q2":{title:"סדרת פיבונאצ'י מותאמת",type:"js",points:20,exam:"מחשבון המרה",question:"כתבו פונקציה fibPosition שמקבלת מספר ומחזירה את המיקום שלו בסדרת פיבונאצ'י.\nאם המספר לא בסדרה — החזירו -1.\nסדרה: 0, 1, 1, 2, 3, 5, 8, 13...",tasks:["אתחול: a=0, b=1, idx=0","while (a < target): [a,b] = [b, a+b], idx++","אם a === target → return idx","אם a > target → return -1 (לא בסדרה)"],summary:"מציאת מיקום ערך בסדרת פיבונאצ'י מותאמת",steps:[{id:"input",label:"קלט",icon:"📥",desc:"מספר target"},{id:"init",label:"אתחול",icon:"🔢",desc:"a=0, b=1, index=0"},{id:"loop",label:"לולאה",icon:"🔄",desc:"while (a < target): next=a+b, a=b, b=next, index++"},{id:"check",label:"בדיקה",icon:"✅",desc:"a === target?"},{id:"output",label:"פלט",icon:"📤",desc:"return index or -1"}],bugs:[{text:"infinite loop אם target לא בסדרה",severity:"critical"},{text:"off-by-one ב-index",severity:"high"}],code:"function fibPosition(target) {\n  let a = 0, b = 1, idx = 0;\n  while (a < target) {\n    [a, b] = [b, a + b];\n    idx++;\n  }\n  return a === target ? idx : -1;\n}",tip:"destructuring swap: [a, b] = [b, a + b] — קצר ונקי"},
+"willing-q1":{title:"Willing App",type:"react",points:40,exam:"Willing App",question:"בנו אפליקציית התנדבות ב-React.\n• Home: דשבורד\n• AddVolunteering: form — title, city, description\n• FindByCity: select עיר → filter (ערים ייחודיות!)\n• AllVolunteerings: הצגה + toggle select + delete (עם confirm)\n• localStorage",tasks:["Router: /, /add, /find, /all","AddVolunteering: 3 שדות, push ל-volunteerings","FindByCity: [...new Set(vols.map(v=>v.city))] לערים ייחודיות","AllVolunteerings: toggle selection עם Set","Delete: window.confirm → filter out selected","localStorage sync עם useEffect"],summary:"אפליקציית התנדבות: הוספה, מציאת התנדבות לפי עיר, בחירה/אישור ומחיקה",components:[{id:"app",label:"App",icon:"⚛️",desc:"Router + volunteerings state"},{id:"home",label:"Home",icon:"🏠",desc:"דשבורד ראשי"},{id:"add",label:"AddVolunteering",icon:"➕",desc:"form: title, city, description"},{id:"find",label:"FindByCity",icon:"🔍",desc:"select עיר → filter results"},{id:"all",label:"AllVolunteerings",icon:"📋",desc:"כולם + toggle select + delete"}],state:[{id:"vols",label:"volunteerings[]",owner:"app",persist:true},{id:"selectedCity",label:"selectedCity",owner:"find"},{id:"selected",label:"selected Set",owner:"all"}],routes:[{path:"/",comp:"home",label:"דף הבית"},{path:"/add",comp:"add",label:"הוספה"},{path:"/find",comp:"find",label:"חיפוש לפי עיר"},{path:"/all",comp:"all",label:"כל ההתנדבויות"}],flows:[{from:"add",to:"vols",action:"setVols([...vols, newVol])"},{from:"find",to:"vols",action:"vols.filter(v => v.city === selectedCity)"},{from:"all",to:"selected",action:"toggle: click → add/remove from Set"},{from:"all",to:"vols",action:"after confirm → delete selected"}],validations:["title: לא ריק","city: לא ריק","ערים ייחודיות ב-select (Set/filter)","מחיקה: רק אחרי window.confirm"],bugs:[{text:"ערים כפולות ב-select — צריך [...new Set(vols.map(v=>v.city))]",severity:"high"},{text:"toggle selection לא עובד — צריך Set או מערך עם includes",severity:"high"},{text:"מחיקה בלי confirm — חסר window.confirm",severity:"medium"}],code:"// Unique cities for select\nconst cities = [...new Set(\n  volunteerings.map(v => v.city)\n)];\n\n// Toggle selection\nfunction toggleSelect(id) {\n  setSelected(prev => {\n    const next = new Set(prev);\n    next.has(id) ? next.delete(id) : next.add(id);\n    return next;\n  });\n}",tip:"Set בשביל ערכים ייחודיים. [...new Set(arr)] להסרת כפולות"},
+"willing-q2":{title:"זוגיים/אי-זוגיים ייחודיים",type:"js",points:35,exam:"Willing App",question:"כתבו פונקציה countUniqueEvenOdd שמקבלת מערך מספרים.\nהסירו כפולות, ספרו כמה זוגיים וכמה אי-זוגיים.\nהחזירו {evens, odds}.\n0 הוא זוגי!",tasks:["הסר כפולות: [...new Set(arr)]","עבור על הייחודיים: n % 2 === 0 → even, else → odd","ספור ובנה אובייקט {evens, odds}","זכור: 0 % 2 === 0 (זוגי!)"],summary:"ספירת מספרים זוגיים ואי-זוגיים ייחודיים במערך",steps:[{id:"input",label:"קלט",icon:"📥",desc:"מערך מספרים (אפשר כפולים)"},{id:"validate",label:"בדיקת קלט",icon:"🛡",desc:"Array.isArray, all numbers"},{id:"unique",label:"הסרת כפולות",icon:"🔑",desc:"[...new Set(arr)] או filter"},{id:"split",label:"חלוקה",icon:"🔀",desc:"n % 2 === 0 → even, else → odd"},{id:"count",label:"ספירה",icon:"🔢",desc:"{evens: count, odds: count}"},{id:"output",label:"פלט",icon:"📤",desc:"return {evens, odds}"}],bugs:[{text:"לא מסיר כפולות — סופר כל מופע",severity:"critical"},{text:"לא מטפל ב-0 (זוגי!)",severity:"medium"}],code:"function countUniqueEvenOdd(arr) {\n  const unique = [...new Set(arr)];\n  let evens = 0, odds = 0;\n  for (const n of unique) {\n    n % 2 === 0 ? evens++ : odds++;\n  }\n  return { evens, odds };\n}",tip:"0 הוא זוגי! 0 % 2 === 0. תמיד הסרת כפולות קודם אם כתוב 'ייחודיים'"},
+"willing-q3":{title:"קורסים ב-MongoDB",type:"express",points:25,exam:"Willing App",question:"בנו שרת Express + MongoDB לניהול קורסים.\n• GET /courses — כל הקורסים\n• POST /courses — הוספה\n• PUT /courses/:id — עדכון\n• DELETE /courses/:id — מחיקה + 404 check\n• Schema: Course {name, instructor, students}",tasks:["Schema: {name: String, instructor: String, students: Number}","mongoose.connect + middleware","GET — Course.find()","POST — Course.create, status 201","PUT — findByIdAndUpdate({new:true})","DELETE — findByIdAndDelete + 404 if null"],summary:"Express/Mongo לניהול קורסים ופעולות CRUD",layers:[{id:"client",label:"Client",icon:"🌐",desc:"HTTP requests"},{id:"middleware",label:"Middleware",icon:"⚙️",desc:"express.json() + mongoose.connect()"},{id:"schema",label:"Course Schema",icon:"📋",desc:"{name, instructor, students}",items:["const courseSchema = new Schema({name: String, instructor: String, students: Number})","const Course = model('Course', courseSchema)"]},{id:"routes",label:"CRUD Routes",icon:"🛣",items:["GET /courses — כל הקורסים","POST /courses — הוספה","PUT /courses/:id — עדכון","DELETE /courses/:id — מחיקה"]},{id:"db",label:"MongoDB",icon:"🗄",desc:"courses collection"},{id:"response",label:"Response",icon:"📤",desc:"JSON + status codes"}],bugs:[{text:"חסר await — פעולות Mongoose הן async",severity:"critical"},{text:"POST בלי validation על body",severity:"medium"},{text:"DELETE לא מחזיר 404 אם לא נמצא",severity:"medium"}],code:"app.delete('/courses/:id', async (req, res) => {\n  const course = await Course.findByIdAndDelete(req.params.id);\n  if (!course) return res.status(404).json({msg: 'Not found'});\n  res.json({ message: 'Deleted' });\n});",tip:"תמיד בדקו אם findById מחזיר null → 404"},
+"travel-q1":{title:"Travel-SV",type:"react",points:50,exam:"Travel-SV",question:"בנו יומן מסע ב-React.\n• SignIn: username=svcollege, password=abcde (בדיוק)\n• Home: רשימת מסעות + Pagination\n• AddTravel: destination, date, description\n• UpdateTravel: עדכון מסע קיים\n• Nav: disabled לפני login!\n• Logout מנקה state",tasks:["Login: exact match — svcollege + abcde","Router: /, /home, /add, /update/:id","Nav: disabled={!isLoggedIn} או conditional render","Home: pagination — slice(page*size, (page+1)*size)","AddTravel: 3 שדות, push ל-travels","Logout: setIsAuth(false), navigate('/')"],summary:"יומן מסע: SignIn, Home עם מסעות, Add, Update, Logout — nav מושבת לפני login",components:[{id:"app",label:"App",icon:"⚛️",desc:"Router + auth + travels state"},{id:"signin",label:"SignIn",icon:"🔐",desc:"username=svcollege, password=abcde"},{id:"home",label:"Home",icon:"🏠",desc:"רשימת מסעות + דפדוף (pagination)"},{id:"add",label:"AddTravel",icon:"➕",desc:"destination, date, description"},{id:"update",label:"UpdateTravel",icon:"✏️",desc:"עדכון מסע קיים"}],state:[{id:"isAuth",label:"isLoggedIn",owner:"app"},{id:"travels",label:"travels[]",owner:"app",persist:true},{id:"page",label:"currentPage",owner:"home"}],routes:[{path:"/",comp:"signin",label:"כניסה"},{path:"/home",comp:"home",label:"מסעות"},{path:"/add",comp:"add",label:"הוספה"},{path:"/update/:id",comp:"update",label:"עדכון"}],flows:[{from:"signin",to:"isAuth",action:"exact match: svcollege + abcde"},{from:"home",to:"travels",action:"paginate: slice(page*size, (page+1)*size)"},{from:"add",to:"travels",action:"setTravels([...travels, newTravel])"},{from:"update",to:"travels",action:"updateTravel(id, data)"}],validations:["username: בדיוק 'svcollege'","password: בדיוק 'abcde'","nav: disabled={!isLoggedIn}","כל שדות הטופס חובה"],bugs:[{text:"Nav links פעילים לפני login — חסר disabled/conditional",severity:"critical"},{text:"Pagination חישוב שגוי — Math.ceil(total/pageSize)",severity:"high"},{text:"Logout לא מנקה state",severity:"medium"}],code:"// Conditional nav\n<nav>\n  <Link to='/home'\n    className={!isAuth ? 'disabled' : ''}>\n    Home\n  </Link>\n  {/* Or better: */}\n  {isAuth && <Link to='/home'>Home</Link>}\n</nav>\n\n// Pagination\nconst pageSize = 5;\nconst displayed = travels.slice(\n  page * pageSize, (page + 1) * pageSize\n);",tip:"Nav disabled = או className disabled עם pointer-events:none, או conditional render עם &&"},
+"travel-q2":{title:"תת-מערך לפי סדר",type:"js",points:25,exam:"Travel-SV",question:"כתבו פונקציה isOrderedSubsequence שבודקת אם מערך חלקי מופיע בתוך מערך שלם לפי סדר.\nלא חייב רציף — רק שהסדר נשמר.\nדוגמה: arr=[1,2,3,4,5], sub=[2,4] → true\narr=[1,2,3], sub=[3,1] → false",tasks:["אם subArr ריק → true","Two Pointers: j=0 על subArr","עבור על arr: אם arr[i] === subArr[j] → j++","אם j === subArr.length → כולם נמצאו → true","אחרת false"],summary:"בדיקה אם מערך חלקי מופיע בתוך מערך שלם לפי סדר",steps:[{id:"input",label:"קלט",icon:"📥",desc:"arr (ראשי) + subArr (חלקי)"},{id:"validate",label:"בדיקת קלט",icon:"🛡",desc:"שניהם מערכים, subArr.length <= arr.length"},{id:"pointer",label:"Two Pointers",icon:"👆",desc:"j=0, עובר על arr, כשמוצא arr[i]===subArr[j] → j++"},{id:"check",label:"בדיקת סיום",icon:"✅",desc:"j === subArr.length → כל הערכים נמצאו בסדר"},{id:"output",label:"פלט",icon:"📤",desc:"return j === subArr.length"}],bugs:[{text:"חיפוש indexOf במקום two pointers — לא שומר סדר",severity:"critical"},{text:"לא בודק edge case: subArr ריק → true",severity:"medium"}],code:"function isSubSequence(arr, subArr) {\n  if (subArr.length === 0) return true;\n  let j = 0;\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === subArr[j]) j++;\n    if (j === subArr.length) return true;\n  }\n  return false;\n}",tip:"Two Pointers: pointer אחד על המערך הגדול, אחד על הקטן. O(n) ויפה"},
+"travel-q3":{title:"מחלקת קובץ טקסט",type:"express",points:25,exam:"Travel-SV",question:"בנו מחלקה (class) ב-Node.js לניהול קובץ טקסט.\n• constructor(filename)\n• read() → Promise<string>\n• write(text) → דורס\n• append(text) → מוסיף\n• clear() → מרוקן\n• שימוש ב-fs.promises",tasks:["class TextFilePackage עם constructor(filename)","read(): fs.readFile(this.filename, 'utf8')","write(text): fs.writeFile(this.filename, text)","append(text): fs.appendFile(this.filename, text+'\\n')","clear(): fs.writeFile(this.filename, '')","כל methods עם async/await"],summary:"מחלקה/חבילת Node לניהול קובץ טקסט — read, write, append, clear",layers:[{id:"caller",label:"Caller (test.js)",icon:"📄",desc:"const pkg = new TextFilePackage('data.txt')"},{id:"class",label:"TextFilePackage",icon:"📦",desc:"class עם methods",items:["constructor(filename)","read() → Promise<string>","write(text) → Promise","append(text) → Promise","clear() → Promise"]},{id:"fs",label:"File System (fs)",icon:"📁",desc:"fs.promises.readFile / writeFile / appendFile"},{id:"file",label:"data.txt",icon:"📝",desc:"הקובץ בדיסק"}],bugs:[{text:"חסר async/await — כל פעולות fs הן async",severity:"critical"},{text:"write דורס תוכן — לפעמים צריך append",severity:"high"},{text:"חסר constructor שמקבל filename",severity:"medium"}],code:"const fs = require('fs').promises;\n\nclass TextFilePackage {\n  constructor(filename) {\n    this.filename = filename;\n  }\n  async read() {\n    return fs.readFile(this.filename, 'utf8');\n  }\n  async write(text) {\n    return fs.writeFile(this.filename, text);\n  }\n  async append(text) {\n    return fs.appendFile(this.filename, text + '\\n');\n  }\n  async clear() {\n    return fs.writeFile(this.filename, '');\n  }\n}",tip:"class + async methods + fs.promises — זה התבנית. constructor שומר filename, כל method משתמש בו"}
+};
+
+// File trees for each question
+const TREES={
+"football-q1":{layers:[
+  {name:"React (Vite)",icon:"⚛️",desc:"שכבת UI — קומפוננטות, state, routing",children:[
+    {name:"src/",icon:"📂",desc:"קוד מקור",children:[
+      {name:"main.jsx",icon:"⚙️",role:"Entry point — BrowserRouter עוטף את App"},
+      {name:"App.jsx",icon:"⚛️",role:"קומפוננטה ראשית — Routes + State + localStorage"},
+      {name:"App.css",icon:"🎨",role:"עיצוב — cards, navbar, forms, buttons"}
+    ]},
+    {name:"package.json",icon:"📋",role:"react, react-router-dom, vite"}
+  ]}
+]},
+"football-q2":{layers:[
+  {name:"JavaScript",icon:"🟨",desc:"קובץ פונקציה בודד — לוגיקה טהורה",children:[
+    {name:"sumByDigitLength.js",icon:"📄",role:"הפונקציה הראשית — קלט → חישוב → פלט"}
+  ]}
+]},
+"football-q3":{layers:[
+  {name:"Node.js + Express",icon:"🟢",desc:"שכבת שרת — API endpoints + data",children:[
+    {name:"src/",icon:"📂",desc:"קוד שרת",children:[
+      {name:"server.js",icon:"🖥️",role:"Express app, routes, middleware, games[]"}
+    ]},
+    {name:"public/",icon:"📂",desc:"קבצי static",children:[
+      {name:"index.html",icon:"🌐",role:"דף HTML ראשי (אם יש frontend)"}
+    ]},
+    {name:"package.json",icon:"📋",role:"express, cors, nodemon"}
+  ]}
+]},
+"parking-q1":{layers:[
+  {name:"React (Vite)",icon:"⚛️",desc:"שכבת UI — 6 קומפוננטות, timer, localStorage",children:[
+    {name:"src/",icon:"📂",desc:"קוד מקור",children:[
+      {name:"main.jsx",icon:"⚙️",role:"Entry point — BrowserRouter"},
+      {name:"App.jsx",icon:"⚛️",role:"Router + State (users, parkings, cities)"},
+      {name:"App.css",icon:"🎨",role:"עיצוב"}
+    ]},
+    {name:"package.json",icon:"📋",role:"react, react-router-dom"}
+  ]}
+]},
+"parking-q2":{layers:[
+  {name:"JavaScript",icon:"🟨",desc:"פונקציה אלגוריתמית — nested loops",children:[
+    {name:"countTargetSequences.js",icon:"📄",role:"הפונקציה — שתי לולאות מקוננות, sum, count"}
+  ]}
+]},
+"parking-q3":{layers:[
+  {name:"Node.js + Express + MongoDB",icon:"🟢",desc:"שרת + בסיס נתונים",children:[
+    {name:"src/",icon:"📂",desc:"קוד שרת",children:[
+      {name:"server.js",icon:"🖥️",role:"Express + Mongoose, Schema, routes, upsert"}
+    ]},
+    {name:"package.json",icon:"📋",role:"express, mongoose, cors"}
+  ]},
+  {name:"MongoDB (Atlas)",icon:"🗄",desc:"שכבת נתונים — Teacher collection",children:[
+    {name:"teachers",icon:"📊",role:"Collection: {name, salary, subject}"}
+  ]}
+]},
+"flights-q1":{layers:[
+  {name:"React (Vite)",icon:"⚛️",desc:"UI — כניסה, טבלת טיסות, מיון, הוספה",children:[
+    {name:"src/",icon:"📂",desc:"קוד מקור",children:[
+      {name:"main.jsx",icon:"⚙️",role:"Entry point"},
+      {name:"App.jsx",icon:"⚛️",role:"Router + flights[] + isAuth + sort logic"},
+      {name:"App.css",icon:"🎨",role:"עיצוב — טבלה, forms"}
+    ]},
+    {name:"package.json",icon:"📋",role:"react, react-router-dom"}
+  ]}
+]},
+"flights-q2":{layers:[
+  {name:"JavaScript",icon:"🟨",desc:"פונקציה — nested loops על מטריצה",children:[
+    {name:"countNumbersInMatrix.js",icon:"📄",role:"הפונקציה — 2 לולאות מקוננות, includes check"}
+  ]}
+]},
+"flights-q3":{layers:[
+  {name:"Node.js + Express + MongoDB",icon:"🟢",desc:"שרת CRUD מלא",children:[
+    {name:"src/",icon:"📂",children:[
+      {name:"server.js",icon:"🖥️",role:"Express + Mongoose, Student CRUD"}
+    ]},
+    {name:"package.json",icon:"📋",role:"express, mongoose"}
+  ]},
+  {name:"MongoDB",icon:"🗄",desc:"students collection — CRUD operations",children:[
+    {name:"students",icon:"📊",role:"Collection: {name, age, grade}"}
+  ]}
+]},
+"helpme-q1":{layers:[
+  {name:"React (Vite)",icon:"⚛️",desc:"אפליקציית חירום — הרשמה חד-פעמית, מוקדים",children:[
+    {name:"src/",icon:"📂",children:[
+      {name:"main.jsx",icon:"⚙️",role:"Entry point"},
+      {name:"App.jsx",icon:"⚛️",role:"Router + user state + one-time check"},
+      {name:"App.css",icon:"🎨",role:"עיצוב — כפתורי מוקד, forms"}
+    ]},
+    {name:"package.json",icon:"📋",role:"react, react-router-dom"}
+  ]}
+]},
+"helpme-q2":{layers:[
+  {name:"JavaScript",icon:"🟨",desc:"זיהוי סדרות — חשבונית / הנדסית",children:[
+    {name:"detectSeries.js",icon:"📄",role:"הפונקציה — every() לבדיקת הפרש/יחס"},
+    {name:"test.js",icon:"🧪",role:"בדיקות — דוגמאות קלט/פלט"},
+    {name:"package.json",icon:"📋",role:"הגדרות"}
+  ]}
+]},
+"helpme-q3":{layers:[
+  {name:"תאוריה",icon:"📖",desc:"קובץ תשובות — לא קוד",children:[
+    {name:"answers.txt",icon:"📝",role:"5 תשובות תאוריה: HTTP, MongoDB, React, Arrow, Recursion"}
+  ]}
+]},
+"bank-q1":{layers:[
+  {name:"React (Vite)",icon:"⚛️",desc:"מערכת בנק — dual-role auth, חשבונות",children:[
+    {name:"src/",icon:"📂",children:[
+      {name:"main.jsx",icon:"⚙️",role:"Entry point"},
+      {name:"App.jsx",icon:"⚛️",role:"Router + users[] + accounts[] + ADMIN logic"},
+      {name:"App.css",icon:"🎨",role:"עיצוב"}
+    ]},
+    {name:"package.json",icon:"📋",role:"react, react-router-dom"}
+  ]}
+]},
+"bank-q2":{layers:[
+  {name:"JavaScript",icon:"🟨",desc:"מיון ידני — Bubble Sort ללא .sort()",children:[
+    {name:"sortDigitsWithoutSort.js",icon:"📄",role:"פירוק → Bubble Sort → חיבור"}
+  ]}
+]},
+"bank-q3":{layers:[
+  {name:"Node.js + Express",icon:"🟢",desc:"שרת קבצים — fs.appendFile/readFile",children:[
+    {name:"src/",icon:"📂",children:[
+      {name:"server.js",icon:"🖥️",role:"Express + fs — POST /save, GET /read"}
+    ]},
+    {name:"public/",icon:"📂",children:[
+      {name:"index.html",icon:"🌐",role:"Frontend פשוט"}
+    ]},
+    {name:"package.json",icon:"📋",role:"express"}
+  ]},
+  {name:"File System",icon:"📁",desc:"שכבת אחסון — file.txt על הדיסק",children:[
+    {name:"file.txt",icon:"📝",role:"הקובץ שנכתב ונקרא — appendFile!"}
+  ]}
+]},
+"logistics-q1":{layers:[
+  {name:"React (Vite)",icon:"⚛️",desc:"מחסן לוגיסטי — Workers + Products + רישיון",children:[
+    {name:"src/",icon:"📂",children:[
+      {name:"main.jsx",icon:"⚙️",role:"Entry point"},
+      {name:"App.jsx",icon:"⚛️",role:"Router + classes + license check"},
+      {name:"App.css",icon:"🎨",role:"עיצוב"}
+    ]},
+    {name:"package.json",icon:"📋",role:"react, react-router-dom"}
+  ]}
+]},
+"logistics-q2":{layers:[
+  {name:"JavaScript",icon:"🟨",desc:"המרה בינארית + פלינדרום",children:[
+    {name:"binaryToDecimalPalindrome.js",icon:"📄",role:"לולאה עם Math.pow + reverse check"}
+  ]}
+]},
+"currency-q1":{layers:[
+  {name:"React (Vite)",icon:"⚛️",desc:"מחשבון המרה — currencies, exchanges, disabled button",children:[
+    {name:"src/",icon:"📂",children:[
+      {name:"main.jsx",icon:"⚙️",role:"Entry point"},
+      {name:"App.jsx",icon:"⚛️",role:"Router + currencies[] + exchanges[] + conversion"},
+      {name:"App.css",icon:"🎨",role:"עיצוב"}
+    ]},
+    {name:"package.json",icon:"📋",role:"react, react-router-dom"}
+  ]}
+]},
+"currency-q2":{layers:[
+  {name:"JavaScript",icon:"🟨",desc:"פיבונאצ'י — while loop + destructuring",children:[
+    {name:"fibonacciPosition.js",icon:"📄",role:"while(a < target) + [a,b]=[b,a+b]"}
+  ]}
+]},
+"willing-q1":{layers:[
+  {name:"React (Vite)",icon:"⚛️",desc:"אפליקציית התנדבות — Set, unique cities, toggle",children:[
+    {name:"src/",icon:"📂",children:[
+      {name:"main.jsx",icon:"⚙️",role:"Entry point"},
+      {name:"App.jsx",icon:"⚛️",role:"Router + volunteerings[] + Set for selection"},
+      {name:"App.css",icon:"🎨",role:"עיצוב"}
+    ]},
+    {name:"package.json",icon:"📋",role:"react, react-router-dom"}
+  ]}
+]},
+"willing-q2":{layers:[
+  {name:"JavaScript",icon:"🟨",desc:"ייחודיים + זוגי/אי-זוגי",children:[
+    {name:"countUniqueEvenOdd.js",icon:"📄",role:"new Set → filter → count evens/odds"}
+  ]}
+]},
+"willing-q3":{layers:[
+  {name:"Node.js + Express + MongoDB",icon:"🟢",desc:"שרת CRUD קורסים",children:[
+    {name:"src/",icon:"📂",children:[
+      {name:"server.js",icon:"🖥️",role:"Express + Mongoose, Course CRUD"}
+    ]},
+    {name:"public/",icon:"📂",children:[
+      {name:"index.html",icon:"🌐",role:"Frontend"}
+    ]},
+    {name:"package.json",icon:"📋",role:"express, mongoose"}
+  ]},
+  {name:"MongoDB",icon:"🗄",desc:"courses collection",children:[
+    {name:"courses",icon:"📊",role:"Collection: {name, instructor, students}"}
+  ]}
+]},
+"travel-q1":{layers:[
+  {name:"React (Vite)",icon:"⚛️",desc:"יומן מסע — exact credentials, pagination, disabled nav",children:[
+    {name:"src/",icon:"📂",children:[
+      {name:"main.jsx",icon:"⚙️",role:"Entry point"},
+      {name:"App.jsx",icon:"⚛️",role:"Router + isAuth + travels[] + pagination"},
+      {name:"App.css",icon:"🎨",role:"עיצוב"}
+    ]},
+    {name:"package.json",icon:"📋",role:"react, react-router-dom"}
+  ]}
+]},
+"travel-q2":{layers:[
+  {name:"JavaScript",icon:"🟨",desc:"Two Pointers — תת-סדרה",children:[
+    {name:"isOrderedSubsequence.js",icon:"📄",role:"pointer j על subArr, לולאה על arr"}
+  ]}
+]},
+"travel-q3":{layers:[
+  {name:"Node.js (Class)",icon:"🟢",desc:"מחלקה לניהול קובץ — OOP + fs.promises",children:[
+    {name:"TextFilePackage.js",icon:"📦",role:"class עם constructor, read, write, append, clear"},
+    {name:"test.js",icon:"🧪",role:"בדיקות — create instance, call methods"},
+    {name:"package.json",icon:"📋",role:"הגדרות"}
+  ]},
+  {name:"File System",icon:"📁",desc:"שכבת אחסון",children:[
+    {name:"data.txt",icon:"📝",role:"הקובץ שנוצר/נקרא/מתעדכן"}
+  ]}
+]}
+};
+
+const EXAMS=[
+{name:"Football Club",icon:"⚽",qs:["football-q1","football-q2","football-q3"]},
+{name:"SV Parking",icon:"🅿️",qs:["parking-q1","parking-q2","parking-q3"]},
+{name:"בקרת טיסות",icon:"✈️",qs:["flights-q1","flights-q2","flights-q3"]},
+{name:"HelpMe",icon:"🚨",qs:["helpme-q1","helpme-q2","helpme-q3"]},
+{name:"SV Bank",icon:"🏦",qs:["bank-q1","bank-q2","bank-q3"]},
+{name:"מחסן לוגיסטי",icon:"📦",qs:["logistics-q1","logistics-q2"]},
+{name:"מחשבון המרה",icon:"💱",qs:["currency-q1","currency-q2"]},
+{name:"Willing App",icon:"🤝",qs:["willing-q1","willing-q2","willing-q3"]},
+{name:"Travel-SV",icon:"🌍",qs:["travel-q1","travel-q2","travel-q3"]}
+];
+
+const TYPE_ICONS={react:"⚛️",js:"🟨",express:"🟢",theory:"📖"};
+const TYPE_LABELS={react:"React",js:"JavaScript",express:"Express/Server",theory:"תאוריה"};
+
+// Build sidebar
+const sb=document.getElementById('sidebar');
+EXAMS.forEach(exam=>{
+  const g=document.createElement('div');
+  g.className='sb-group';
+  g.innerHTML=`<div class="sb-title">${exam.icon} ${exam.name}</div>`;
+  exam.qs.forEach(qid=>{
+    const f=FLOWS[qid];
+    const btn=document.createElement('button');
+    btn.className='sb-btn';
+    btn.dataset.qid=qid;
+    btn.innerHTML=`<span class="sb-icon">${TYPE_ICONS[f.type]}</span>${f.title}<span class="sb-pts">${f.points} נק׳</span>`;
+    btn.onclick=()=>selectQuestion(qid);
+    g.appendChild(btn);
+  });
+  sb.appendChild(g);
+});
+
+function toggleSidebar(){
+  document.getElementById('app-grid').classList.toggle('sb-collapsed');
+}
+function collapseTreePanel(){
+  document.getElementById('app-grid').classList.toggle('tree-mini');
+}
+
+let activeQid=null;
+
+function selectQuestion(qid){
+  activeQid=qid;
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.toggle('active',b.dataset.qid===qid));
+  const f=FLOWS[qid];
+  const canvas=document.getElementById('canvas');
+  if(f.type==='react') renderReact(f,canvas);
+  else if(f.type==='js') renderJS(f,canvas);
+  else if(f.type==='express') renderExpress(f,canvas);
+  else if(f.type==='theory') renderTheory(f,canvas);
+  renderTree(qid);
+  buildCrossLinks(f);
+}
+
+function renderQuestionBlock(f){
+  if(!f.question) return '';
+  let html=`<details class="q-fulltext" open>
+    <summary>📋 השאלה המלאה</summary>
+    <div class="q-fulltext-body">${f.question.replace(/\n/g,'<br>')}</div>`;
+  if(f.tasks && f.tasks.length){
+    html+=`<div class="q-tasks"><h4>🔧 משימות טכניות לביצוע:</h4>`;
+    f.tasks.forEach((t,i)=>{
+      html+=`<div class="q-task-item crosslink" data-link="task-${i}" onclick="crossHighlight('task-${i}')"><span class="q-task-num">${i+1}</span><span>${t}</span></div>`;
+    });
+    html+=`</div>`;
+  }
+  html+=`</details>`;
+  return html;
+}
+
+// ===== FEATURE 3: LIVE FLOW PLAYER =====
+function renderFlowPlayer(f){
+  let steps=[];
+  if(f.type==='react'){
+    steps=[
+      {icon:'🌐',label:'User Action',desc:'המשתמש נכנס לדף, לוחץ כפתור או ממלא טופס'},
+      {icon:'🛣',label:'Route',desc:'React Router מזהה את ה-URL ומציג את הקומפוננטה המתאימה'},
+      {icon:'⚛️',label:'Component',desc:'הקומפוננטה מתרנדרת — JSX הופך ל-HTML על המסך'},
+      {icon:'🛡',label:'Validation',desc:'בדיקת קלט: regex, אורך, התאמה — לפני שמירה'},
+      {icon:'📦',label:'State Update',desc:'setState / useState — עדכון הנתונים ב-React'},
+      {icon:'💾',label:'localStorage',desc:'שמירה ל-localStorage כדי ששינויים ישרדו רענון'},
+      {icon:'🔄',label:'Re-render',desc:'React מזהה שינוי ב-state ומעדכן את ה-DOM'}
+    ];
+  } else if(f.type==='js'){
+    steps=(f.steps||[]).map(s=>({icon:s.icon,label:s.label,desc:s.desc}));
+  } else if(f.type==='express'){
+    steps=[
+      {icon:'🌐',label:'HTTP Request',desc:'הלקוח שולח בקשת HTTP (GET/POST/PUT/DELETE)'},
+      {icon:'⚙️',label:'Middleware',desc:'express.json() פורס את ה-body, cors() מאפשר גישה'},
+      {icon:'🛣',label:'Route Match',desc:'Express מתאים את ה-URL ל-route handler הנכון'},
+      {icon:'🛡',label:'Validation',desc:'בדיקת req.body / req.params — האם הנתונים תקינים'},
+      {icon:'📦',label:'Data Layer',desc:'פעולה על המידע — מערך בזיכרון, קובץ, או MongoDB'},
+      {icon:'📤',label:'Response',desc:'res.json() + status code — התשובה חוזרת ללקוח'}
+    ];
+  } else {
+    steps=(f.steps||[]).map(s=>({icon:s.icon,label:s.label,desc:s.desc}));
+  }
+  if(!steps.length) return '';
+  let html=`<div class="flow-player" id="flow-player">
+    <div class="flow-player-head">
+      <span class="flow-player-title">▶ מפת זרימה חיה — שלב אחר שלב</span>
+      <button class="flow-player-btn" id="fp-play" onclick="toggleFlowPlay()">▶ הפעל</button>
+      <button class="flow-player-btn" onclick="resetFlowPlay()" style="background:#334155;color:#e2e8f0">↺ אפס</button>
+    </div>
+    <div class="flow-steps" id="flow-steps">`;
+  steps.forEach((s,i)=>{
+    if(i>0) html+=`<span class="flow-step-arrow" data-fi="${i}">→</span>`;
+    html+=`<div class="flow-step" data-fi="${i}" onclick="jumpToFlowStep(${i})">
+      <span class="fs-num">${i+1}</span>
+      <span class="fs-icon">${s.icon}</span>
+      <span class="fs-label">${s.label}</span>
+    </div>`;
+  });
+  html+=`</div><div class="flow-step-detail" id="fp-detail"></div></div>`;
+  window._flowSteps=steps;
+  return html;
+}
+
+function renderReact(f,el){
+  let html=`<div class="q-header">
+    <span class="q-badge react">${TYPE_ICONS.react} React</span>
+    <span class="q-pts">${f.points} נק׳</span>
+    <span class="q-title">${f.title}</span>
+  </div>
+  <div class="q-summary">${f.summary}</div>`;
+  html+=renderQuestionBlock(f);
+  html+=renderFlowPlayer(f);
+  html+=`<div class="flow-section" data-section="routes"><div class="flow-head routes-h">🛣 Routes — מסלולי ניווט</div><div class="flow-body"><div class="route-strip">`;
+  f.routes.forEach((r,i)=>{
+    if(i>0) html+=`<span class="route-arrow">→</span>`;
+    html+=`<span class="route-chip crosslink" data-link="route-${r.comp}" onclick="crossHighlight('route-${r.comp}')" title="${r.label}">${r.path}</span>`;
+  });
+  html+=`</div></div></div>`;
+  html+=`<div class="arrow-down">↕</div>`;
+  html+=`<div class="flow-section" data-section="components"><div class="flow-head comp-h">⚛️ Components — רכיבים</div><div class="flow-body">`;
+  f.components.forEach(c=>{
+    html+=`<div class="node comp crosslink" data-link="comp-${c.id}" onclick="nodeClick(this,'comp-${c.id}')" data-code="${esc(f.code||'')}" data-tip="${esc(f.tip||'')}" data-desc="${esc(c.desc)}"><span class="node-icon">${c.icon}</span><span class="node-label">${c.label}</span><div class="node-desc">${c.desc}</div></div>`;
+  });
+  html+=`</div></div>`;
+  html+=`<div class="arrow-down">↕</div>`;
+  html+=`<div class="flow-section" data-section="state"><div class="flow-head state-h">📦 State — ניהול מצב</div><div class="flow-body">`;
+  f.state.forEach(s=>{
+    html+=`<div class="node state${s.persist?' persist':''} crosslink" data-link="state-${s.id}" onclick="nodeClick(this,'state-${s.id}')" data-code="${esc(f.code||'')}" data-tip="${esc(f.tip||'')}" data-desc="owner: ${s.owner}${s.persist?' · 💾 localStorage':''}"><span class="node-icon">📊</span><span class="node-label">${s.label}</span><div class="node-desc">owner: ${s.owner}</div></div>`;
+  });
+  html+=`</div></div>`;
+  html+=`<div class="arrow-down">↕</div>`;
+  html+=`<div class="flow-section" data-section="flows"><div class="flow-head comp-h">🔄 Data Flows — זרימת נתונים</div><div class="flow-body" style="flex-direction:column;gap:6px">`;
+  f.flows.forEach((fl,i)=>{
+    html+=`<div class="crosslink" data-link="flow-${i}" onclick="crossHighlight('flow-${i}')" style="display:flex;align-items:center;gap:8px;padding:4px 8px;background:#f1f5f9;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer"><span style="color:var(--blue)">${fl.from}</span><span style="color:#64748b">→</span><span style="color:var(--green)">${fl.to}</span><span style="color:#64748b;font-weight:400;margin-right:8px">${fl.action}</span></div>`;
+  });
+  html+=`</div></div>`;
+  html+=`<div class="arrow-down">↕</div>`;
+  html+=`<div class="flow-section" data-section="validations"><div class="flow-head valid-h">🛡 Validations — ולידציות</div><div class="flow-body"><ul class="valid-list">`;
+  f.validations.forEach((v,i)=>html+=`<li class="crosslink" data-link="valid-${i}" onclick="crossHighlight('valid-${i}')">${v}</li>`);
+  html+=`</ul></div></div>`;
+  html+=renderBugs(f.bugs);
+  html+=`<div class="detail" id="detail-panel"><div class="detail-head"><span id="detail-title">—</span><button class="detail-close" onclick="closeDetail()">✕</button></div><div class="detail-body"><div id="detail-desc"></div><pre class="detail-code" id="detail-code"></pre><div class="detail-tip" id="detail-tip"></div></div></div>`;
+  el.innerHTML=html;
+}
+
+function renderJS(f,el){
+  let html=`<div class="q-header">
+    <span class="q-badge js">${TYPE_ICONS.js} JavaScript</span>
+    <span class="q-pts">${f.points} נק׳</span>
+    <span class="q-title">${f.title}</span>
+  </div>
+  <div class="q-summary">${f.summary}</div>`;
+  html+=renderQuestionBlock(f);
+  html+=renderFlowPlayer(f);
+  html+=`<div class="flow-section"><div class="flow-head step-h">📐 Algorithm Flow — שלבי האלגוריתם</div><div class="flow-body"><div class="arrow-row">`;
+  f.steps.forEach((s,i)=>{
+    if(i>0) html+=`<span class="arrow">→</span>`;
+    html+=`<div class="node step crosslink" data-link="step-${i}" onclick="nodeClick(this,'step-${i}')" data-code="${esc(f.code||'')}" data-tip="${esc(f.tip||'')}" data-desc="${esc(s.desc)}"><span class="node-icon">${s.icon}</span><span class="node-label">${s.label}</span><div class="node-desc">${s.desc}</div></div>`;
+  });
+  html+=`</div></div></div>`;
+  html+=renderBugs(f.bugs);
+  html+=`<div class="detail" id="detail-panel"><div class="detail-head"><span id="detail-title">—</span><button class="detail-close" onclick="closeDetail()">✕</button></div><div class="detail-body"><div id="detail-desc"></div><pre class="detail-code" id="detail-code"></pre><div class="detail-tip" id="detail-tip"></div></div></div>`;
+  el.innerHTML=html;
+}
+
+function renderExpress(f,el){
+  let html=`<div class="q-header">
+    <span class="q-badge express">${TYPE_ICONS.express} Express/Server</span>
+    <span class="q-pts">${f.points} נק׳</span>
+    <span class="q-title">${f.title}</span>
+  </div>
+  <div class="q-summary">${f.summary}</div>`;
+  html+=renderQuestionBlock(f);
+  html+=renderFlowPlayer(f);
+  html+=`<div class="flow-section"><div class="flow-head layer-h">🏗 Server Pipeline — צינור הבקשה</div><div class="flow-body" style="justify-content:center;width:100%"><div class="layer-pipeline">`;
+  f.layers.forEach((l,i)=>{
+    if(i>0) html+=`<div class="pipe-arrow">⬇</div>`;
+    html+=`<div class="layer-node crosslink" data-link="layer-${l.id}" onclick="nodeClick(this,'layer-${l.id}')" data-code="${esc(f.code||'')}" data-tip="${esc(f.tip||'')}" data-desc="${esc(l.desc||'')}"><span class="node-icon">${l.icon}</span> <strong>${l.label}</strong>${l.desc?` — <span style="font-weight:400">${l.desc}</span>`:''}`;
+    if(l.items){
+      html+=`<ul class="layer-items">`;
+      l.items.forEach(item=>html+=`<li>${item}</li>`);
+      html+=`</ul>`;
+    }
+    html+=`</div>`;
+  });
+  html+=`</div></div></div>`;
+  html+=renderBugs(f.bugs);
+  html+=`<div class="detail" id="detail-panel"><div class="detail-head"><span id="detail-title">—</span><button class="detail-close" onclick="closeDetail()">✕</button></div><div class="detail-body"><div id="detail-desc"></div><pre class="detail-code" id="detail-code"></pre><div class="detail-tip" id="detail-tip"></div></div></div>`;
+  el.innerHTML=html;
+}
+
+function renderTheory(f,el){
+  let html=`<div class="q-header">
+    <span class="q-badge theory">${TYPE_ICONS.theory} תאוריה</span>
+    <span class="q-pts">${f.points} נק׳</span>
+    <span class="q-title">${f.title}</span>
+  </div>
+  <div class="q-summary">${f.summary}</div>`;
+  html+=renderQuestionBlock(f);
+  html+=renderFlowPlayer(f);
+  html+=`<div class="flow-section"><div class="flow-head step-h">📖 נושאי תאוריה</div><div class="flow-body">`;
+  f.steps.forEach((s,i)=>{
+    html+=`<div class="node step crosslink" data-link="step-${i}" onclick="nodeClick(this,'step-${i}')" data-code="${esc(f.code||'')}" data-tip="${esc(f.tip||'')}" data-desc="${esc(s.desc)}"><span class="node-icon">${s.icon}</span><span class="node-label">${s.label}</span><div class="node-desc">${s.desc}</div></div>`;
+  });
+  html+=`</div></div>`;
+  html+=renderBugs(f.bugs);
+  html+=`<div class="detail" id="detail-panel"><div class="detail-head"><span id="detail-title">—</span><button class="detail-close" onclick="closeDetail()">✕</button></div><div class="detail-body"><div id="detail-desc"></div><pre class="detail-code" id="detail-code"></pre><div class="detail-tip" id="detail-tip"></div></div></div>`;
+  el.innerHTML=html;
+}
+
+function renderBugs(bugs){
+  if(!bugs||!bugs.length) return '';
+  let html=`<div class="flow-section"><div class="flow-head bug-h">⚠️ באגים נפוצים — מה לא לשכוח</div><div class="flow-body"><div class="bug-chips">`;
+  bugs.forEach(b=>{
+    html+=`<span class="bug-chip ${b.severity}">${b.severity==='critical'?'🔴':b.severity==='high'?'🟠':b.severity==='medium'?'🟡':'🟢'} ${b.text}</span>`;
+  });
+  html+=`</div></div></div>`;
+  return html;
+}
+
+function nodeClick(node, linkId){
+  showDetail(node);
+  crossHighlight(linkId);
+}
+
+function showDetail(node){
+  document.querySelectorAll('.node,.layer-node').forEach(n=>n.classList.remove('selected'));
+  node.classList.add('selected');
+  const panel=document.getElementById('detail-panel');
+  const label=node.querySelector('.node-label');
+  document.getElementById('detail-title').textContent=label?label.textContent:'פרטים';
+  document.getElementById('detail-desc').textContent=node.dataset.desc||'';
+  document.getElementById('detail-code').textContent=node.dataset.code||'';
+  document.getElementById('detail-tip').textContent=node.dataset.tip||'';
+  document.getElementById('detail-tip').style.display=node.dataset.tip?'block':'none';
+  panel.classList.add('open');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function closeDetail(){
+  document.getElementById('detail-panel').classList.remove('open');
+  document.querySelectorAll('.node,.layer-node').forEach(n=>n.classList.remove('selected'));
+  clearCrossHighlight();
+}
+
+// ===== FEATURE 1: CROSS-HIGHLIGHTING =====
+let _activeLinkId=null;
+let _crossMap={};
+
+function buildCrossLinks(f){
+  _crossMap={};
+  if(!f) return;
+  if(f.type==='react'){
+    (f.components||[]).forEach((c,i)=>{
+      const links=['comp-'+c.id];
+      (f.routes||[]).forEach(r=>{ if(r.comp===c.id) links.push('route-'+r.comp); });
+      (f.state||[]).forEach(s=>{ if(s.owner===c.id) links.push('state-'+s.id); });
+      (f.flows||[]).forEach((fl,fi)=>{ if(fl.from===c.id||fl.to===c.id) links.push('flow-'+fi); });
+      (f.tasks||[]).forEach((t,ti)=>{
+        const low=t.toLowerCase();
+        if(low.includes(c.label.toLowerCase())||low.includes(c.id.toLowerCase())) links.push('task-'+ti);
+      });
+      links.forEach(l=>{_crossMap[l]=_crossMap[l]||new Set();links.forEach(l2=>{if(l!==l2)_crossMap[l].add(l2);});});
+    });
+    (f.state||[]).forEach(s=>{
+      const links=['state-'+s.id];
+      (f.flows||[]).forEach((fl,fi)=>{ if(fl.to===s.id||fl.from===s.id) links.push('flow-'+fi); });
+      links.forEach(l=>{_crossMap[l]=_crossMap[l]||new Set();links.forEach(l2=>{if(l!==l2)_crossMap[l].add(l2);});});
+    });
+  }
+  if(f.type==='js' && f.steps){
+    f.steps.forEach((s,i)=>{
+      const links=['step-'+i];
+      (f.tasks||[]).forEach((t,ti)=>{
+        const low=t.toLowerCase();
+        if(low.includes(s.label.toLowerCase())) links.push('task-'+ti);
+      });
+      if(f.tasks && f.tasks[i]) links.push('task-'+i);
+      links.forEach(l=>{_crossMap[l]=_crossMap[l]||new Set();links.forEach(l2=>{if(l!==l2)_crossMap[l].add(l2);});});
+    });
+  }
+  if(f.type==='express' && f.layers){
+    f.layers.forEach((l,i)=>{
+      const links=['layer-'+l.id];
+      (f.tasks||[]).forEach((t,ti)=>{
+        const low=t.toLowerCase();
+        if(low.includes(l.label.toLowerCase())||low.includes(l.id)) links.push('task-'+ti);
+      });
+      links.forEach(lnk=>{_crossMap[lnk]=_crossMap[lnk]||new Set();links.forEach(l2=>{if(lnk!==l2)_crossMap[lnk].add(l2);});});
+    });
+  }
+  // Link tree items to file names mentioned in tasks/components
+  addTreeCrossLinks(f);
+}
+
+function addTreeCrossLinks(f){
+  const treeItems=document.querySelectorAll('#tree-content .tree-item');
+  treeItems.forEach(item=>{
+    const fname=item.querySelector('.tree-fname');
+    if(!fname) return;
+    const name=fname.textContent.trim().toLowerCase();
+    const linkId='file-'+name.replace(/[^a-z0-9]/g,'');
+    item.dataset.link=linkId;
+    item.classList.add('crosslink');
+    item.onclick=()=>crossHighlight(linkId);
+    const related=[];
+    if(f.type==='react' && f.components){
+      if(name.includes('app.jsx')) {
+        related.push('comp-app');
+        f.state&&f.state.forEach(s=>{if(s.owner==='app') related.push('state-'+s.id);});
+      }
+      f.components.forEach(c=>{
+        if(name.includes(c.label.toLowerCase()+'.jsx')||name.includes(c.id+'.jsx'))
+          related.push('comp-'+c.id);
+      });
+    }
+    if(name.includes('server.js') && f.type==='express' && f.layers){
+      f.layers.forEach(l=>related.push('layer-'+l.id));
+    }
+    if(name.includes('package.json')){
+      related.push(linkId);
+    }
+    if(related.length){
+      _crossMap[linkId]=_crossMap[linkId]||new Set();
+      related.forEach(r=>{
+        _crossMap[linkId].add(r);
+        _crossMap[r]=_crossMap[r]||new Set();
+        _crossMap[r].add(linkId);
+      });
+    }
+  });
+}
+
+function crossHighlight(linkId){
+  if(_activeLinkId===linkId){clearCrossHighlight();return;}
+  _activeLinkId=linkId;
+  const related=_crossMap[linkId]||new Set();
+  const allLinked=new Set([linkId,...related]);
+  document.querySelectorAll('[data-link]').forEach(el=>{
+    el.classList.remove('glow','dim');
+    if(allLinked.has(el.dataset.link)){
+      el.classList.add('glow');
+    } else {
+      el.classList.add('dim');
+    }
+  });
+}
+
+function clearCrossHighlight(){
+  _activeLinkId=null;
+  document.querySelectorAll('[data-link]').forEach(el=>{
+    el.classList.remove('glow','dim');
+  });
+}
+
+// ===== FEATURE 3: LIVE FLOW PLAYER LOGIC =====
+let _fpPlaying=false, _fpStep=-1, _fpTimer=null;
+window._flowSteps=[];
+
+function toggleFlowPlay(){
+  if(_fpPlaying){stopFlowPlay();return;}
+  _fpPlaying=true;
+  const btn=document.getElementById('fp-play');
+  btn.textContent='⏸ עצור';
+  btn.classList.add('playing');
+  if(_fpStep<0||_fpStep>=window._flowSteps.length-1) _fpStep=-1;
+  advanceFlowStep();
+}
+
+function stopFlowPlay(){
+  _fpPlaying=false;
+  clearTimeout(_fpTimer);
+  const btn=document.getElementById('fp-play');
+  if(btn){btn.textContent='▶ המשך';btn.classList.remove('playing');}
+}
+
+function resetFlowPlay(){
+  stopFlowPlay();
+  _fpStep=-1;
+  const btn=document.getElementById('fp-play');
+  if(btn) btn.textContent='▶ הפעל';
+  document.querySelectorAll('.flow-step').forEach(s=>s.classList.remove('active','done'));
+  document.querySelectorAll('.flow-step-arrow').forEach(a=>a.classList.remove('done','active'));
+  const det=document.getElementById('fp-detail');
+  if(det){det.classList.remove('visible');det.innerHTML='';}
+}
+
+function advanceFlowStep(){
+  if(!_fpPlaying) return;
+  _fpStep++;
+  if(_fpStep>=window._flowSteps.length){
+    stopFlowPlay();
+    const btn=document.getElementById('fp-play');
+    if(btn) btn.textContent='✓ סיום';
+    return;
+  }
+  renderFlowStepState();
+  _fpTimer=setTimeout(advanceFlowStep,2200);
+}
+
+function jumpToFlowStep(idx){
+  stopFlowPlay();
+  _fpStep=idx;
+  renderFlowStepState();
+}
+
+function renderFlowStepState(){
+  document.querySelectorAll('.flow-step').forEach(s=>{
+    const fi=parseInt(s.dataset.fi);
+    s.classList.remove('active','done');
+    if(fi<_fpStep) s.classList.add('done');
+    else if(fi===_fpStep) s.classList.add('active');
+  });
+  document.querySelectorAll('.flow-step-arrow').forEach(a=>{
+    const fi=parseInt(a.dataset.fi);
+    a.classList.remove('done','active');
+    if(fi<=_fpStep) a.classList.add('done');
+    if(fi===_fpStep) a.classList.add('active');
+  });
+  const step=window._flowSteps[_fpStep];
+  const det=document.getElementById('fp-detail');
+  if(step&&det){
+    det.innerHTML=`<strong>${step.icon} שלב ${_fpStep+1}: ${step.label}</strong><br>${step.desc}`;
+    det.classList.add('visible');
+  }
+}
+
+// ===== FILE TREE =====
+function renderTree(qid){
+  const tc=document.getElementById('tree-content');
+  const tree=TREES[qid];
+  if(!tree){tc.innerHTML='<div class="tree-empty">אין עץ קבצים לשאלה זו</div>';return;}
+  let html='';
+  tree.layers.forEach(layer=>{
+    html+=`<div class="tree-layer">`;
+    html+=`<div class="tree-layer-head open" onclick="toggleTreeNode(this)"><span class="chevron">▶</span>${layer.icon} ${layer.name}</div>`;
+    if(layer.desc) html+=`<div class="tree-layer-desc">${layer.desc}</div>`;
+    html+=`<div class="tree-children expanded">`;
+    html+=renderTreeChildren(layer.children||[],2);
+    html+=`</div></div>`;
+  });
+  tc.innerHTML=html;
+}
+
+function renderTreeChildren(items,level){
+  let html='';
+  items.forEach(item=>{
+    if(item.children){
+      html+=`<div class="tree-l${level}">`;
+      html+=`<div class="tree-dir-head open" onclick="toggleTreeNode(this)"><span class="chevron">▶</span><span class="tree-icon">${item.icon}</span><span class="tree-fname">${item.name}</span></div>`;
+      if(item.desc) html+=`<div class="tree-layer-desc" style="padding-right:${level*32+10}px">${item.desc}</div>`;
+      html+=`<div class="tree-children expanded">`;
+      html+=renderTreeChildren(item.children,level+1);
+      html+=`</div></div>`;
+    } else {
+      html+=`<div class="tree-item tree-l${level}"><span class="tree-icon">${item.icon}</span><span class="tree-fname">${item.name}</span><span class="tree-role">${item.role||''}</span></div>`;
+    }
+  });
+  return html;
+}
+
+function toggleTreeNode(head){
+  head.classList.toggle('open');
+  const children=head.parentElement.querySelector('.tree-children');
+  if(!children) return;
+  children.classList.toggle('collapsed');
+  children.classList.toggle('expanded');
+}
+
+function expandAllTree(){
+  document.querySelectorAll('.tree-layer-head,.tree-dir-head').forEach(h=>h.classList.add('open'));
+  document.querySelectorAll('.tree-children').forEach(c=>{c.classList.remove('collapsed');c.classList.add('expanded');});
+}
+function collapseAllTree(){
+  document.querySelectorAll('.tree-layer-head,.tree-dir-head').forEach(h=>h.classList.remove('open'));
+  document.querySelectorAll('.tree-children').forEach(c=>{c.classList.add('collapsed');c.classList.remove('expanded');});
+}
+
+function toggleTreePanel(){
+  const app=document.getElementById('app-grid');
+  app.classList.toggle('tree-hidden');
+  const btn=document.getElementById('tree-toggle');
+  btn.style.display=app.classList.contains('tree-hidden')?'block':'none';
+}
+
+// Resize tree panel
+(function(){
+  const handle=document.getElementById('tree-resize');
+  let dragging=false,startX,startW;
+  handle.addEventListener('mousedown',e=>{
+    dragging=true;startX=e.clientX;
+    startW=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--tree-w'));
+    handle.classList.add('active');
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!dragging) return;
+    const diff=startX-e.clientX;
+    const newW=Math.max(200,Math.min(600,startW+diff));
+    document.documentElement.style.setProperty('--tree-w',newW+'px');
+  });
+  document.addEventListener('mouseup',()=>{dragging=false;handle.classList.remove('active');});
+})();
+
+function esc(s){return s.replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Next.js — App Router, SSR, Server Components | Full-Stack Portal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',sans-serif;line-height:1.8}
+header{background:#161b22;border-bottom:1px solid #30363d;padding:1rem 2rem;display:flex;align-items:center;gap:1rem}
+header h1{font-size:1.3rem;color:#000;background:#fff;padding:.2rem .8rem;border-radius:6px}
+.back-btn{background:#21262d;border:1px solid #30363d;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;text-decoration:none;font-size:.85rem}
+.container{max-width:960px;margin:0 auto;padding:1.5rem}
+.concept{background:#161b22;border:1px solid #30363d;border-radius:12px;margin-bottom:1.2rem;overflow:hidden}
+.concept-header{background:#21262d;padding:.9rem 1.3rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.concept-header:hover{background:#30363d}
+.concept-header h2{font-size:.98rem;color:#e6edf3;display:flex;align-items:center;gap:.6rem}
+.diff{display:inline-block;border-radius:4px;padding:.1rem .5rem;font-size:.72rem;font-weight:700}
+.d3{background:#1a2f1a;color:#56d364;border:1px solid #56d364}
+.d4{background:#1f3a1f;color:#3fb950;border:1px solid #3fb950}
+.d5{background:#2d2016;color:#f0883e;border:1px solid #f0883e}
+.d6{background:#2d1616;color:#f85149;border:1px solid #f85149}
+.concept-body{padding:1.3rem;display:none}
+.concept.open .concept-body{display:block}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.7rem;margin:.7rem 0}
+.level{background:#0d1117;border-radius:8px;padding:.7rem;border:1px solid #21262d;font-size:.85rem}
+.level-label{font-size:.7rem;color:#8b949e;font-weight:700;text-transform:uppercase;margin-bottom:.2rem}
+.code-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:.9rem;margin:.7rem 0;font-family:'Courier New',monospace;font-size:.79rem;overflow-x:auto;white-space:pre}
+.mistake{background:#1f1117;border-left:3px solid #f85149;padding:.6rem .9rem;border-radius:0 8px 8px 0;margin:.4rem 0;font-size:.85rem}
+.why{background:#112316;border-left:3px solid #3fb950;padding:.6rem .9rem;border-radius:0 8px 8px 0;margin:.4rem 0;font-size:.85rem}
+.compare{width:100%;border-collapse:collapse;margin:.7rem 0;font-size:.82rem}
+.compare th{background:#21262d;color:#79c0ff;padding:.5rem .7rem;text-align:right;border:1px solid #30363d}
+.compare td{padding:.45rem .7rem;border:1px solid #30363d;vertical-align:top}
+.compare tr:nth-child(even) td{background:#0d1117}
+.compare td:first-child{font-weight:600}
+.badge{display:inline-block;border-radius:4px;padding:.1rem .4rem;font-size:.72rem}
+.s{background:#112316;color:#3fb950}
+.c{background:#1d2d45;color:#58a6ff}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-btn" href="00_dashboard.html">← דשבורד</a>
+  <h1>Next.js</h1>
+</header>
+<div class="container">
+
+<div class="concept open">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>⚡ Next.js — מה זה ולמה <span class="diff d4">קושי 4</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="levels">
+      <div class="level"><div class="level-label">👵 סבתא</div>ערכת בנייה לבית: חדרים מוכנים, חיווט, צנרת — רק מסדרים פנים.</div>
+      <div class="level"><div class="level-label">🪖 חייל</div>Framework מעל React: file-system routing, SSR/SSG/ISR, API routes, image optimization, code splitting אוטומטי.</div>
+      <div class="level"><div class="level-label">🎓 סטודנט</div>Hybrid rendering: server components, client components, streaming, suspense. App Router = הדור החדש.</div>
+    </div>
+    <div class="why">מחבר React, routing, שרת, data fetching, SEO ו-deploy לאפליקציה אחת.</div>
+    <div class="mistake">Next מחליף React — Next משתמש ב-React ומוסיף שכבות שרת/routing/build.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>📁 App Router — file-system routing <span class="diff d4">קושי 4</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="code-block">app/
+  layout.jsx          ← root layout (HTML+body — חובה)
+  page.jsx            ← /
+  about/
+    page.jsx          ← /about
+  products/
+    page.jsx          ← /products
+    [id]/
+      page.jsx        ← /products/123 (dynamic)
+  (auth)/             ← group folder — לא משפיע על URL
+    login/page.jsx    ← /login
+  dashboard/
+    layout.jsx        ← nested layout
+    page.jsx          ← /dashboard</div>
+    <div class="levels">
+      <div class="level"><div class="level-label">קבצים מיוחדים</div>page.jsx, layout.jsx, loading.jsx, error.jsx, route.js, not-found.jsx</div>
+      <div class="level"><div class="level-label">dynamic segments</div>[param] → משתנה, [...slug] → catch-all, [[...slug]] → optional</div>
+    </div>
+    <div class="mistake">ליצור קובץ component רגיל ולצפות שיהפוך ל-route בלי page.jsx.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🖥️ Server Component vs Client Component <span class="diff d5">קושי 5</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <table class="compare">
+      <tr><th>ציר</th><th>Server Component 🖥️</th><th>Client Component 💻</th></tr>
+      <tr><td>סימון</td><td>ברירת מחדל</td><td>"use client" בראש הקובץ</td></tr>
+      <tr><td>מורשה</td><td>await db.query, secrets, FS</td><td>useState, useEffect, onClick, browser APIs</td></tr>
+      <tr><td>אסור</td><td>useState, useEffect, onClick</td><td>DB access, secrets</td></tr>
+      <tr><td>Bundle JS</td><td>0 bytes לדפדפן</td><td>נשלח כ-JS bundle</td></tr>
+      <tr><td>Hydration</td><td>לא מתבצעת</td><td>כן</td></tr>
+    </table>
+    <div class="code-block"><span class="badge s">S</span> // server component — ברירת מחדל
+export default async function OrdersPage() {
+  const orders = await db.orders.findMany(); // ✅ ישירות לDB
+  return &lt;OrdersTable orders={orders} /&gt;;
+}
+
+<span class="badge c">C</span> // client component
+"use client";
+export function Counter() {
+  const [count, setCount] = useState(0);
+  return &lt;button onClick={() =&gt; setCount(c =&gt; c+1)}&gt;{count}&lt;/button&gt;;
+}</div>
+    <div class="mistake">להפוך כל עץ ל-"use client" — מבטל יתרון RSC, מגדיל bundle.</div>
+    <div class="why">RSC = 0 JS לדפדפן + גישה ישירה ל-DB בלי לחשוף secrets.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🔄 SSR / SSG / ISR <span class="diff d5">קושי 5</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <table class="compare">
+      <tr><th>מצב</th><th>מתי HTML נוצר</th><th>מתאים ל</th><th>Next API</th></tr>
+      <tr><td>SSG</td><td>build time</td><td>תוכן יציב: docs, blog, marketing</td><td>ברירת מחדל (ללא dynamic)</td></tr>
+      <tr><td>SSR</td><td>כל request</td><td>נתונים משתנים, auth-gated</td><td>dynamic = 'force-dynamic' / cookies()</td></tr>
+      <tr><td>ISR</td><td>build + רענון</td><td>תוכן שמתעדכן מדי פעם</td><td>export const revalidate = 60</td></tr>
+      <tr><td>CSR</td><td>דפדפן (useEffect)</td><td>dashboard behind login, real-time</td><td>"use client" + useEffect</td></tr>
+    </table>
+    <div class="code-block">// SSG (ברירת מחדל)
+export default async function BlogPage() { ... }
+
+// SSR — נתונים משתנים
+export const dynamic = 'force-dynamic';
+
+// ISR — רענון כל 5 דקות
+export const revalidate = 300;
+
+// ISR on-demand
+import { revalidatePath } from 'next/cache';
+revalidatePath('/products');</div>
+    <div class="mistake">SSR לכל page — עלות שרת מיותרת. ISR לתוכן real-time — stale data.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🛣️ Route Handler + Server Action <span class="diff d5">קושי 5+6</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="code-block">// app/api/tasks/route.js — Route Handler
+export async function GET() {
+  const tasks = await db.task.findMany();
+  return Response.json(tasks);
+}
+export async function POST(request) {
+  const body = await request.json();
+  // validate + save
+  return Response.json(created, { status: 201 });
+}
+
+// Server Action — "use server"
+"use server";
+export async function createTask(formData) {
+  await requireUser(); // auth check חובה!
+  const title = formData.get('title');
+  const task = await db.task.create({ data: { title } });
+  revalidatePath('/tasks');
+  return task;
+}</div>
+    <div class="mistake">להניח ש-server action מבטלת צורך ב-validation — client יכול לזייף formData.</div>
+  </div>
+</div>
+
+<div class="concept">
+  <div class="concept-header" onclick="this.parentElement.classList.toggle('open')">
+    <h2>🔍 Metadata API + SEO <span class="diff d4">קושי 4</span></h2><span>▾</span>
+  </div>
+  <div class="concept-body">
+    <div class="code-block">// Static metadata
+export const metadata = {
+  title: { default: 'My App', template: '%s | My App' },
+  description: 'Full-Stack learning portal',
+  openGraph: { images: ['https://myapp.com/og.png'] },
+  robots: { index: true, follow: true },
+};
+
+// Dynamic metadata
+export async function generateMetadata({ params }) {
+  const product = await getProduct(params.id);
+  return { title: product.name, description: product.desc };
+}</div>
+    <h3>SEO עיקרים לדעת:</h3>
+    <div class="levels">
+      <div class="level"><div class="level-label">Technical</div>SSR/SSG לSEO, sitemap.xml, robots.txt, canonical URLs, Core Web Vitals</div>
+      <div class="level"><div class="level-label">On-page</div>title ייחודי לכל עמוד, h1 אחד, alt לתמונות, HTML סמנטי</div>
+      <div class="level"><div class="level-label">Structured Data</div>JSON-LD כ-script tag (Next לא מטפל אוטומטית)</div>
+    </div>
+    <div class="mistake">כל עמודים עם אותו title — SEO גרוע מאוד.</div>
+  </div>
+</div>
+
+</div>
+<script>
+document.querySelectorAll('.concept-header').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
+</script>
+</body>
+</html>

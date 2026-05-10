@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💻 IDE — פרויקט Full-Stack אמיתי</title>
+  <link rel="stylesheet" href="light-mode.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:'Segoe UI','Arial Hebrew',system-ui,sans-serif;
+    background:#0d1117;
+    color:#e6edf3;
+    line-height:1.6;
+    min-height:100vh;
+  }
+  a { color:inherit; text-decoration:none; }
+
+  /* === Top header === */
+  .ide-header {
+    background:linear-gradient(135deg,#1f2937,#111827);
+    padding:12px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid #30363d;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .ide-header .brand { display:flex; align-items:center; gap:12px; }
+  .ide-header h1 { font-size:1.15em; color:#58a6ff; font-weight:600; }
+  .ide-header .tag { padding:3px 10px; background:rgba(88,166,255,0.15); color:#58a6ff; border-radius:12px; font-size:0.78em; }
+  .ide-header nav { display:flex; gap:10px; flex-wrap:wrap; font-size:0.9em; }
+  .ide-header nav a { padding:6px 14px; border-radius:8px; background:rgba(255,255,255,0.05); transition:all .2s; border:1px solid transparent; }
+  .ide-header nav a:hover { background:rgba(88,166,255,0.15); border-color:#58a6ff; }
+  .ide-header nav a.primary { background:#1f6feb; color:#fff; }
+  .ide-header nav a.primary:hover { background:#388bfd; }
+
+  /* === Intro Banner === */
+  .intro-banner {
+    background:linear-gradient(135deg,rgba(31,111,235,0.15),rgba(168,85,247,0.1));
+    border-bottom:1px solid #30363d;
+    padding:24px 30px;
+    text-align:center;
+  }
+  .intro-banner h2 { color:#a5d6ff; font-size:1.4em; margin-bottom:8px; }
+  .intro-banner p { color:#8b949e; max-width:900px; margin:0 auto; font-size:0.98em; }
+  .intro-banner .tip-row { display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin-top:16px; }
+  .intro-banner .tip { padding:6px 14px; background:rgba(255,255,255,0.05); border-radius:20px; font-size:0.85em; color:#c9d1d9; border:1px solid rgba(255,255,255,0.1); }
+
+  /* === Main IDE Layout === */
+  .ide-main {
+    display:grid;
+    grid-template-columns:280px 1fr 360px;
+    height:calc(100vh - 130px);
+    min-height:700px;
+  }
+  @media (max-width:1100px) {
+    .ide-main { grid-template-columns:240px 1fr; }
+    .ide-explain { display:none; }
+  }
+  @media (max-width:700px) {
+    .ide-main { display:block; height:auto; }
+    .ide-sidebar, .ide-content, .ide-explain { width:100%; }
+    .ide-sidebar { border-bottom:1px solid #30363d; }
+  }
+
+  /* === Sidebar (File Tree) === */
+  .ide-sidebar {
+    background:#161b22;
+    border-left:1px solid #30363d;
+    overflow-y:auto;
+    padding:16px 0;
+  }
+  .sidebar-title {
+    padding:6px 18px 12px;
+    font-size:0.78em;
+    text-transform:uppercase;
+    color:#7d8590;
+    letter-spacing:0.5px;
+    font-weight:700;
+    border-bottom:1px solid #21262d;
+    margin-bottom:8px;
+  }
+  .tree { font-size:0.92em; }
+  .tree-item {
+    padding:5px 10px 5px 16px;
+    cursor:pointer;
+    user-select:none;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:background .12s;
+    color:#c9d1d9;
+  }
+  .tree-item:hover { background:rgba(88,166,255,0.1); }
+  .tree-item.folder { font-weight:500; }
+  .tree-item.folder .caret { display:inline-block; width:14px; transition:transform .15s; color:#7d8590; }
+  .tree-item.folder.open .caret { transform:rotate(90deg); }
+  .tree-item.file { padding-right:30px; }
+  .tree-item.file.active { background:rgba(88,166,255,0.18); color:#fff; border-right:2px solid #58a6ff; }
+  .tree-children { margin-right:14px; border-right:1px dashed #30363d; padding-right:8px; }
+  .tree-children.hidden { display:none; }
+  .tree-icon { width:18px; text-align:center; flex-shrink:0; }
+  .file-badge {
+    margin-right:auto;
+    font-size:0.7em;
+    padding:1px 6px;
+    border-radius:8px;
+    background:rgba(255,255,255,0.06);
+    color:#7d8590;
+  }
+  .file-badge.bk { background:rgba(34,197,94,0.15); color:#7ee2a3; }
+  .file-badge.fr { background:rgba(88,166,255,0.15); color:#79c0ff; }
+  .file-badge.cf { background:rgba(168,85,247,0.15); color:#d2a8ff; }
+
+  /* === Content (Code Editor) === */
+  .ide-content { display:flex; flex-direction:column; background:#0d1117; min-width:0; }
+  .ide-tabs {
+    background:#161b22;
+    display:flex;
+    border-bottom:1px solid #30363d;
+    overflow-x:auto;
+    flex-shrink:0;
+  }
+  .ide-tab {
+    padding:9px 18px;
+    border-right:1px solid #30363d;
+    cursor:pointer;
+    display:flex;
+    gap:8px;
+    align-items:center;
+    font-size:0.86em;
+    color:#7d8590;
+    background:#0d1117;
+    transition:all .15s;
+    flex-shrink:0;
+  }
+  .ide-tab.active { background:#0d1117; color:#fff; border-bottom:2px solid #58a6ff; }
+  .ide-tab:hover { color:#fff; }
+  .ide-tab .close { color:#7d8590; font-size:1em; padding:0 3px; border-radius:4px; }
+  .ide-tab .close:hover { background:rgba(255,255,255,0.1); }
+  .filepath-bar {
+    background:#0d1117;
+    border-bottom:1px solid #21262d;
+    padding:5px 16px;
+    font-size:0.78em;
+    color:#7d8590;
+    font-family:'SF Mono','Consolas',monospace;
+  }
+  .editor {
+    flex:1;
+    overflow:auto;
+    direction:ltr;
+    text-align:left;
+  }
+  .code-table {
+    width:100%;
+    border-collapse:collapse;
+    font-family:'SF Mono','Consolas','Monaco',monospace;
+    font-size:0.85em;
+  }
+  .code-table td.num {
+    padding:0 12px 0 8px;
+    text-align:right;
+    color:#484f58;
+    user-select:none;
+    width:1%;
+    border-left:1px solid #21262d;
+    vertical-align:top;
+    line-height:1.55;
+  }
+  .code-table td.line {
+    padding:0 16px;
+    white-space:pre;
+    line-height:1.55;
+    color:#e6edf3;
+  }
+  .code-table tr:hover td.line { background:rgba(255,255,255,0.02); }
+
+  /* Syntax highlighting */
+  .tk { color:#ff7b72; } /* keywords */
+  .ts { color:#a5d6ff; } /* strings */
+  .tc { color:#8b949e; font-style:italic; } /* comments */
+  .tn { color:#79c0ff; } /* numbers */
+  .tf { color:#d2a8ff; } /* function names */
+  .ty { color:#ffa657; } /* types */
+  .tt { color:#7ee787; } /* tags */
+  .tp { color:#79c0ff; } /* properties */
+
+  /* === Explain Panel === */
+  .ide-explain {
+    background:#0d1117;
+    border-right:1px solid #30363d;
+    overflow-y:auto;
+    padding:18px 22px;
+  }
+  .ide-explain h2 {
+    font-size:0.78em;
+    text-transform:uppercase;
+    color:#7d8590;
+    letter-spacing:0.5px;
+    font-weight:700;
+    margin-bottom:14px;
+    padding-bottom:10px;
+    border-bottom:1px solid #21262d;
+  }
+  .ex-file-name {
+    font-size:1.15em;
+    color:#79c0ff;
+    margin-bottom:8px;
+    word-break:break-all;
+    font-family:'SF Mono',monospace;
+  }
+  .ex-title { color:#fff; font-size:1.05em; font-weight:600; margin-bottom:10px; }
+  .ex-desc { color:#c9d1d9; margin-bottom:18px; line-height:1.6; }
+  .ex-section { margin-bottom:18px; }
+  .ex-section-title {
+    color:#a5d6ff;
+    font-size:0.82em;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:8px;
+    font-weight:600;
+  }
+  .ex-key-points { list-style:none; }
+  .ex-key-points li {
+    padding:7px 0 7px 24px;
+    position:relative;
+    color:#c9d1d9;
+    font-size:0.9em;
+    line-height:1.55;
+  }
+  .ex-key-points li::before {
+    content:"▸";
+    position:absolute;
+    right:0;
+    color:#58a6ff;
+    font-weight:bold;
+  }
+  .ex-topics { display:flex; flex-wrap:wrap; gap:6px; }
+  .ex-topic {
+    padding:3px 10px;
+    background:rgba(88,166,255,0.12);
+    color:#79c0ff;
+    border-radius:12px;
+    font-size:0.78em;
+    border:1px solid rgba(88,166,255,0.25);
+  }
+  .ex-links { display:flex; flex-direction:column; gap:8px; }
+  .ex-link {
+    padding:10px 14px;
+    background:rgba(88,166,255,0.08);
+    border:1px solid rgba(88,166,255,0.2);
+    border-radius:8px;
+    color:#79c0ff;
+    font-size:0.88em;
+    transition:all .2s;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .ex-link:hover { background:rgba(88,166,255,0.18); border-color:#58a6ff; }
+  .ex-tip {
+    padding:12px 14px;
+    background:rgba(245,158,11,0.08);
+    border:1px solid rgba(245,158,11,0.25);
+    border-radius:8px;
+    color:#ffd966;
+    font-size:0.88em;
+    line-height:1.55;
+    margin-bottom:14px;
+  }
+  .ex-tip strong { color:#ffd966; }
+
+  /* === Status bar === */
+  .status-bar {
+    background:#1f6feb;
+    color:#fff;
+    padding:5px 18px;
+    font-size:0.78em;
+    display:flex;
+    gap:18px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .status-bar span { display:flex; align-items:center; gap:5px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-track { background:#0d1117; }
+  ::-webkit-scrollbar-thumb { background:#30363d; border-radius:5px; }
+  ::-webkit-scrollbar-thumb:hover { background:#484f58; }
+</style>
+</head>
+<body>
+
+<!-- ============= TOP HEADER ============= -->
+<div class="ide-header">
+  <div class="brand">
+    <h1>💻 IDE — Task Manager Pro</h1>
+    <span class="tag">Full-Stack Project · React + Express + MongoDB</span>
+  </div>
+  <nav>
+    <a href="00_dashboard.html">📊 דשבורד</a>
+    <a href="MAP_master.html">🗺️ המפה הגדולה</a>
+    <a href="DEBUG_errors.html">🛠️ מילון שגיאות</a>
+    <a href="BUILD_walkthrough.html">🛠️ בנה מאפס</a>
+    <a href="01_master_theory.html" class="primary">📖 פתח תיאוריה</a>
+  </nav>
+</div>
+
+<!-- ============= INTRO BANNER ============= -->
+<div class="intro-banner">
+  <h2>🎯 כך נראה פרויקט Full-Stack אמיתי</h2>
+  <p>זוהי דוגמה אמיתית לפרויקט מלא — Backend (Express+MongoDB) + Frontend (React+TS) + Auth (JWT). לחץ על כל קובץ בעץ משמאל כדי לראות את הקוד וההסבר. <strong style="color:#79c0ff;">כל קובץ מקושר לחומר הלימוד הרלוונטי.</strong></p>
+  <div class="tip-row">
+    <span class="tip">📁 <strong>22 קבצים</strong></span>
+    <span class="tip">⚛️ React + TypeScript</span>
+    <span class="tip">🚂 Express REST API</span>
+    <span class="tip">📦 MongoDB + Mongoose</span>
+    <span class="tip">🔐 JWT Auth</span>
+    <span class="tip">🎨 Tailwind CSS</span>
+  </div>
+</div>
+
+<!-- ============= MAIN IDE ============= -->
+<div class="ide-main">
+
+  <!-- ===== SIDEBAR: File Tree ===== -->
+  <aside class="ide-sidebar">
+    <div class="sidebar-title">📁 EXPLORER · task-manager-pro</div>
+    <div class="tree" id="fileTree"></div>
+  </aside>
+
+  <!-- ===== MAIN: Tabs + Editor ===== -->
+  <section class="ide-content">
+    <div class="ide-tabs" id="tabsBar"></div>
+    <div class="filepath-bar" id="pathBar">— select a file —</div>
+    <div class="editor" id="editor"></div>
+  </section>
+
+  <!-- ===== EXPLAIN PANEL ===== -->
+  <aside class="ide-explain" id="explainPanel">
+    <h2>💡 What is this file?</h2>
+    <p style="color:#7d8590;">בחר קובץ מהעץ משמאל כדי לראות הסבר מפורט.</p>
+  </aside>
+
+</div>
+
+<!-- ============= STATUS BAR ============= -->
+<div class="status-bar">
+  <span>🌐 Project: task-manager-pro</span>
+  <span>📦 Branch: main</span>
+  <span>🔧 Node 20+ · React 18 · MongoDB 6</span>
+  <span style="margin-right:auto;">UTF-8 · LF · Spaces:2</span>
+</div>
+
+<script>
+/* ====================================================================
+   FILE DATA — Real Full-Stack Task Manager Project
+   ==================================================================== */
+const FILES = [
+  // ============ ROOT ============
+  {
+    path:'README.md', icon:'📘', kind:'cf',
+    title:'תיעוד הפרויקט',
+    desc:'הקובץ הראשון שכל אחד קורא — איך מריצים, מה הפרויקט עושה, ומה ה-Stack.',
+    topics:['Documentation','Submission'],
+    keyPoints:[
+      'איך מריצים את הפרויקט (npm install + npm run dev)',
+      'תיאור קצר של מה האפליקציה עושה',
+      'רשימת ה-Stack: React, Express, MongoDB',
+      'במבחן: README ברור = +5 נקודות 🎯'
+    ],
+    portalLinks:[
+      {text:'📋 צ\'קליסט הגשה',href:'06_strategy.html#submission'}
+    ],
+    code:`# Task Manager Pro
+
+Full-Stack app to manage personal tasks with auth.
+
+## Stack
+- **Frontend**: React 18 + TypeScript + Tailwind + React Router
+- **Backend**: Express + Mongoose + JWT
+- **Database**: MongoDB
+
+## Run
+
+\`\`\`bash
+# 1. Install
+cd server && npm install
+cd ../client && npm install
+
+# 2. Set env vars
+cp server/.env.example server/.env
+
+# 3. Run (2 terminals)
+cd server && npm run dev   # → :3000
+cd client && npm run dev   # → :5173
+\`\`\`
+
+## Features
+- 🔐 Register / Login with JWT
+- ✅ Create / Read / Update / Delete tasks
+- 🏷️ Filter by status (active / done)
+- 📱 Responsive UI
+
+## Author
+Submitted by [Your Name]`
+  },
+
+  {
+    path:'.gitignore', icon:'🙈', kind:'cf',
+    title:'מה לא להעלות ל-git',
+    desc:'לעולם לא להעלות node_modules, .env, dist. הקובץ הזה אומר ל-git "תתעלם מהדברים האלה".',
+    topics:['Git','DevOps','Security'],
+    keyPoints:[
+      'node_modules/ — נוצר אוטומטית מ-npm install (כבד מאוד!)',
+      '.env — מכיל סודות (DB password, JWT secret) — אסור ב-git',
+      'dist/ ו-build/ — תוצרי build, נוצרים מחדש',
+      '.DS_Store — קבצי mac שלא רלוונטיים'
+    ],
+    portalLinks:[
+      {text:'🚀 ראה DevOps',href:'01_master_theory.html#devops'}
+    ],
+    code:`# Dependencies
+node_modules/
+
+# Production builds
+dist/
+build/
+
+# Environment variables (SECRETS!)
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/`
+  },
+
+  // ============ SERVER ============
+  {
+    path:'server/package.json', icon:'📦', kind:'bk',
+    title:'תלויות ופקודות הצד-שרת',
+    desc:'package.json של ה-Backend. רושם את הספריות שצריך ואת הפקודות (npm run dev/start).',
+    topics:['Node.js','npm','package.json'],
+    keyPoints:[
+      'scripts → איך להריץ (npm run dev)',
+      'dependencies → ספריות שרצות בהרצה (express, mongoose)',
+      'devDependencies → רק לפיתוח (typescript, ts-node-dev)',
+      '"type":"module" → לאפשר import/export מודרני'
+    ],
+    portalLinks:[
+      {text:'📋 ראה package.json',href:'02_missing_topics.html#pkg-json'},
+      {text:'🚂 ראה Express',href:'01_master_theory.html#express'}
+    ],
+    code:`{
+  "name": "task-manager-server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "ts-node-dev --respawn src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongoose": "^8.4.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "ts-node-dev": "^2.0.0",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6"
+  }
+}`
+  },
+
+  {
+    path:'server/.env.example', icon:'🔑', kind:'bk',
+    title:'משתני סביבה — תבנית',
+    desc:'.env מכיל סודות (לעולם לא ב-git!). זו התבנית שאחרים יעתיקו ל-.env שלהם.',
+    topics:['ENV Vars','Security','Auth'],
+    keyPoints:[
+      'PORT — על איזה port השרת מאזין',
+      'MONGO_URI — כתובת ה-DB (local או cloud)',
+      'JWT_SECRET — מחרוזת אקראית לחתימת tokens — חייב להיות חזק!',
+      'process.env.X — ככה ניגשים בקוד'
+    ],
+    portalLinks:[
+      {text:'🔑 ראה ENV',href:'02_missing_topics.html#env-vars'},
+      {text:'🔐 ראה Auth',href:'01_master_theory.html#auth'}
+    ],
+    code:`# Server
+PORT=3000
+
+# MongoDB connection
+MONGO_URI=mongodb://localhost:27017/taskmanager
+
+# JWT secret — generate with: openssl rand -base64 32
+JWT_SECRET=replace-with-long-random-string-min-32-chars
+
+# Frontend URL (for CORS)
+CLIENT_URL=http://localhost:5173`
+  },
+
+  {
+    path:'server/src/server.ts', icon:'🚂', kind:'bk',
+    title:'נקודת הכניסה לשרת',
+    desc:'הקובץ הראשי. יוצר את אפליקציית Express, מתחבר ל-MongoDB, ומאזין על port. כל בקשה לשרת מתחילה כאן.',
+    topics:['Express','Node.js','Middleware'],
+    tip:'<strong>סדר ה-middleware קריטי!</strong> CORS חייב לבוא לפני ה-routes, אחרת הדפדפן ידחה. authMiddleware רק על routes פרטיים.',
+    keyPoints:[
+      'express() — יוצר מופע של אפליקציה',
+      'app.use(cors()) — מאפשר לפרונטנד מ-port אחר לקרוא לשרת',
+      'app.use(express.json()) — פותח את ה-body של בקשות JSON',
+      'app.use("/api/auth", authRouter) — מחבר routes לקבוצה',
+      'app.listen(PORT) — מתחיל להאזין ל-HTTP'
+    ],
+    portalLinks:[
+      {text:'🚂 Express מלא',href:'01_master_theory.html#express'},
+      {text:'🟢 Node.js',href:'01_master_theory.html#node'}
+    ],
+    code:`import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { connectDB } from './db.js';
+import authRouter from './routes/auth.js';
+import tasksRouter from './routes/tasks.js';
+
+dotenv.config();
+const app = express();
+
+// === Middleware ===
+app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use(express.json());
+
+// === Routes ===
+app.use('/api/auth', authRouter);
+app.use('/api/tasks', tasksRouter);
+
+// === Health check ===
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok', time: new Date() });
+});
+
+// === Error handler (catches all thrown errors) ===
+app.use((err: any, _req, res, _next) => {
+  console.error(err);
+  res.status(err.status || 500).json({
+    error: err.message || 'Server error'
+  });
+});
+
+// === Start ===
+const PORT = process.env.PORT || 3000;
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(\`✅ Server on http://localhost:\${PORT}\`);
+  });
+});`
+  },
+
+  {
+    path:'server/src/db.ts', icon:'📦', kind:'bk',
+    title:'חיבור ל-MongoDB',
+    desc:'פונקציה שמחברת את האפליקציה ל-MongoDB. מופעלת פעם אחת בעלייה של השרת.',
+    topics:['MongoDB','Mongoose'],
+    keyPoints:[
+      'mongoose.connect() — פותח חיבור ל-MongoDB',
+      'process.env.MONGO_URI — קורא את הכתובת מ-.env',
+      'try/catch — אם החיבור נכשל, השרת לא יעלה',
+      'process.exit(1) — אם נכשל, סוגר את התהליך עם שגיאה'
+    ],
+    portalLinks:[
+      {text:'📦 MongoDB מלא',href:'01_master_theory.html#database'}
+    ],
+    code:`import mongoose from 'mongoose';
+
+export async function connectDB() {
+  try {
+    const uri = process.env.MONGO_URI!;
+    await mongoose.connect(uri);
+    console.log('📦 MongoDB connected');
+  } catch (err) {
+    console.error('❌ DB connection failed:', err);
+    process.exit(1);
+  }
+}`
+  },
+
+  {
+    path:'server/src/models/User.ts', icon:'👤', kind:'bk',
+    title:'מודל משתמש (Mongoose Schema)',
+    desc:'תיאור מבנה המשתמש ב-DB. סיסמה תמיד מוצפנת (bcrypt) לפני שמירה.',
+    topics:['Mongoose','Schema','bcrypt','Auth'],
+    tip:'<strong>חוק זהב:</strong> לעולם <strong>לא</strong> שומרים סיסמה כ-plain text! תמיד hash + salt עם bcrypt. אם ה-DB נגנב — הסיסמאות מוגנות.',
+    keyPoints:[
+      'Schema = הטופס שכל User חייב למלא',
+      'unique:true — אסור 2 משתמשים עם אותו email',
+      'pre("save") hook — רץ לפני שמירה. כאן: hash לסיסמה',
+      'comparePassword — method שמשווה סיסמה ב-login'
+    ],
+    portalLinks:[
+      {text:'🔐 Auth + bcrypt',href:'01_master_theory.html#auth'},
+      {text:'📦 Mongoose',href:'01_master_theory.html#database'}
+    ],
+    code:`import mongoose, { Schema, Document } from 'mongoose';
+import bcrypt from 'bcryptjs';
+
+export interface IUser extends Document {
+  email: string;
+  password: string;
+  name: string;
+  comparePassword(plain: string): Promise<boolean>;
+}
+
+const userSchema = new Schema<IUser>({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 6
+  },
+  name: { type: String, required: true }
+}, { timestamps: true });
+
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+// Compare password on login
+userSchema.methods.comparePassword = function(plain: string) {
+  return bcrypt.compare(plain, this.password);
+};
+
+export default mongoose.model<IUser>('User', userSchema);`
+  },
+
+  {
+    path:'server/src/models/Task.ts', icon:'✅', kind:'bk',
+    title:'מודל משימה',
+    desc:'מבנה משימה ב-DB. כל משימה שייכת ל-user (ref) ויש לה title, status, ותאריכים.',
+    topics:['Mongoose','Schema','Relationships'],
+    keyPoints:[
+      'ref: "User" — קישור למסמך אחר (כמו foreign key ב-SQL)',
+      'enum — מגביל לערכים מסוימים בלבד',
+      'timestamps:true — Mongoose מוסיף createdAt + updatedAt אוטומטית',
+      'default — ערך ברירת מחדל אם לא נשלח'
+    ],
+    portalLinks:[
+      {text:'📦 Mongoose Schema',href:'01_master_theory.html#database'},
+      {text:'🏗️ ראה ארכיטקטורות מבחן',href:'03_exam_solutions.html'}
+    ],
+    code:`import mongoose, { Schema, Document, Types } from 'mongoose';
+
+export interface ITask extends Document {
+  title: string;
+  status: 'active' | 'done';
+  user: Types.ObjectId;
+  dueDate?: Date;
+}
+
+const taskSchema = new Schema<ITask>({
+  title: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 200
+  },
+  status: {
+    type: String,
+    enum: ['active', 'done'],
+    default: 'active'
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',          // 🔗 link to User model
+    required: true
+  },
+  dueDate: Date
+}, { timestamps: true });
+
+// Index for fast queries by user
+taskSchema.index({ user: 1, createdAt: -1 });
+
+export default mongoose.model<ITask>('Task', taskSchema);`
+  },
+
+  {
+    path:'server/src/middleware/auth.ts', icon:'🛡️', kind:'bk',
+    title:'Middleware של אימות JWT',
+    desc:'בודק את ה-token בכל בקשה ל-route מוגן. אם תקין — מצרף את ה-userId ל-req. אם לא — 401.',
+    topics:['JWT','Middleware','Auth'],
+    tip:'<strong>זה ה-Bouncer של האפליקציה.</strong> כל route שמוגן עובר דרכו. בלי token תקין — לא נכנסים.',
+    keyPoints:[
+      'req.headers.authorization → "Bearer eyJhbGc..."',
+      'jwt.verify() → מאמת חתימה. אם פגום → זורק שגיאה',
+      'מחבר את ה-userId ל-req דרך הרחבה של Request type',
+      'next() → מעבירים לטיפול הבא בשרשרת'
+    ],
+    portalLinks:[
+      {text:'🔐 JWT מלא',href:'01_master_theory.html#auth'},
+      {text:'🚂 Middleware',href:'01_master_theory.html#express'}
+    ],
+    code:`import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+
+// Extend Express Request to include userId
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: string;
+    }
+  }
+}
+
+export function authMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const header = req.headers.authorization;
+  if (!header?.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Token required' });
+  }
+
+  const token = header.slice(7); // remove "Bearer "
+
+  try {
+    const payload = jwt.verify(
+      token,
+      process.env.JWT_SECRET!
+    ) as { userId: string };
+
+    req.userId = payload.userId;
+    next();   // ✅ pass to next handler
+  } catch {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+}`
+  },
+
+  {
+    path:'server/src/routes/auth.ts', icon:'🔓', kind:'bk',
+    title:'נתיבי אימות (Register + Login)',
+    desc:'POST /register יוצר משתמש חדש. POST /login בודק סיסמה ומחזיר JWT.',
+    topics:['JWT','bcrypt','Routes','Validation'],
+    tip:'תמיד <strong>תחזיר את אותה הודעת שגיאה</strong> ל-"user not found" ול-"wrong password". אחרת תוקף יודע אילו אימיילים קיימים.',
+    keyPoints:[
+      'register: יוצר User → מחזיר JWT',
+      'login: מוצא User → comparePassword → מחזיר JWT',
+      'jwt.sign() — חותם token עם userId + תפוגה (7d)',
+      'expiresIn: "7d" — token תקף שבוע'
+    ],
+    portalLinks:[
+      {text:'🔐 Auth Flow',href:'01_master_theory.html#auth'},
+      {text:'📋 ראה Snippet',href:'05_snippets.html#express'}
+    ],
+    code:`import { Router } from 'express';
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
+
+const router = Router();
+
+// POST /api/auth/register
+router.post('/register', async (req, res) => {
+  try {
+    const { email, password, name } = req.body;
+    if (!email || !password || !name) {
+      return res.status(400).json({ error: 'Missing fields' });
+    }
+
+    const existing = await User.findOne({ email });
+    if (existing) {
+      return res.status(409).json({ error: 'Email taken' });
+    }
+
+    const user = await User.create({ email, password, name });
+    const token = signToken(user.id);
+
+    res.json({ token, user: { id: user.id, email, name } });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/auth/login
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user || !(await user.comparePassword(password))) {
+    return res.status(401).json({ error: 'Bad credentials' });
+  }
+  const token = signToken(user.id);
+  res.json({ token, user: { id: user.id, email, name: user.name } });
+});
+
+function signToken(userId: string) {
+  return jwt.sign({ userId }, process.env.JWT_SECRET!, {
+    expiresIn: '7d'
+  });
+}
+
+export default router;`
+  },
+
+  {
+    path:'server/src/routes/tasks.ts', icon:'📋', kind:'bk',
+    title:'נתיבי משימות (CRUD מלא)',
+    desc:'GET, POST, PUT, DELETE על משימות. כולם מוגנים ב-authMiddleware. כל user רואה רק את שלו.',
+    topics:['REST API','CRUD','Express','Mongoose'],
+    tip:'<strong>חשוב:</strong> תמיד מסננים <code>{ user: req.userId }</code> כדי שמשתמש אחד לא יראה משימות של אחר!',
+    keyPoints:[
+      'router.use(authMiddleware) — מגן על כל ה-routes כאן',
+      'GET / — רשימת משימות של המשתמש',
+      'POST / — יוצר משימה חדשה',
+      'PUT /:id — מעדכן משימה (רק אם שייכת למשתמש)',
+      'DELETE /:id — מוחק'
+    ],
+    portalLinks:[
+      {text:'🚂 Express CRUD',href:'01_master_theory.html#express'},
+      {text:'📋 ראה Snippet',href:'05_snippets.html#express'}
+    ],
+    code:`import { Router } from 'express';
+import Task from '../models/Task.js';
+import { authMiddleware } from '../middleware/auth.js';
+
+const router = Router();
+router.use(authMiddleware);   // 🛡️ all routes below need auth
+
+// GET /api/tasks  → list user's tasks
+router.get('/', async (req, res) => {
+  const tasks = await Task.find({ user: req.userId })
+    .sort({ createdAt: -1 });
+  res.json(tasks);
+});
+
+// POST /api/tasks  → create
+router.post('/', async (req, res) => {
+  try {
+    const task = await Task.create({
+      ...req.body,
+      user: req.userId    // ⚠️ force from token, not body
+    });
+    res.status(201).json(task);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// PUT /api/tasks/:id  → update
+router.put('/:id', async (req, res) => {
+  const task = await Task.findOneAndUpdate(
+    { _id: req.params.id, user: req.userId },
+    req.body,
+    { new: true, runValidators: true }
+  );
+  if (!task) return res.status(404).json({ error: 'Not found' });
+  res.json(task);
+});
+
+// DELETE /api/tasks/:id
+router.delete('/:id', async (req, res) => {
+  const result = await Task.deleteOne({
+    _id: req.params.id,
+    user: req.userId
+  });
+  if (result.deletedCount === 0) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  res.status(204).end();
+});
+
+export default router;`
+  },
+
+  // ============ CLIENT ============
+  {
+    path:'client/package.json', icon:'📦', kind:'fr',
+    title:'תלויות הצד-לקוח',
+    desc:'package.json של React. כולל Vite (build tool מהיר), TypeScript, Tailwind, React Router.',
+    topics:['npm','Vite','React'],
+    keyPoints:[
+      'vite — שרת פיתוח מהיר (חליפה ל-CRA)',
+      'react-router-dom — ניווט בין דפים',
+      'devDependencies — חבילות שלא רצות בייצור',
+      '"dev": "vite" — npm run dev מפעיל'
+    ],
+    portalLinks:[
+      {text:'📋 ראה Setup',href:'05_snippets.html#setup'},
+      {text:'⚛️ React',href:'01_master_theory.html#react'}
+    ],
+    code:`{
+  "name": "task-manager-client",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.0"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "typescript": "^5.4.5",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "tailwindcss": "^3.4.3",
+    "postcss": "^8.4.38",
+    "autoprefixer": "^10.4.19"
+  }
+}`
+  },
+
+  {
+    path:'client/src/main.tsx', icon:'🚀', kind:'fr',
+    title:'נקודת הכניסה ל-React',
+    desc:'הקובץ הראשון שרץ ב-frontend. מחבר את App לאלמנט #root ב-HTML.',
+    topics:['React','Vite'],
+    keyPoints:[
+      'createRoot() — API החדש של React 18',
+      'StrictMode — מזהה bugs בפיתוח (לפעמים מריץ render פעמיים)',
+      'document.getElementById("root") — תופס את ה-div ב-index.html'
+    ],
+    portalLinks:[
+      {text:'⚛️ React Setup',href:'01_master_theory.html#react'}
+    ],
+    code:`import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App.tsx';
+import './index.css';
+
+createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+);`
+  },
+
+  {
+    path:'client/src/App.tsx', icon:'⚛️', kind:'fr',
+    title:'הקומפוננטה הראשית — Router + Auth Guard',
+    desc:'מגדיר את כל ה-routes באפליקציה. מציג Login אם לא מחובר, Dashboard אם כן.',
+    topics:['React Router','Hooks','Conditional Rendering'],
+    keyPoints:[
+      'Routes — הגדרה של כל הדפים האפשריים',
+      'PrivateRoute — wrapper שמגן על דפים פרטיים',
+      'Navigate — מפנה אוטומטית (כמו redirect)',
+      'useAuth — custom hook שמחזיר אם המשתמש מחובר'
+    ],
+    portalLinks:[
+      {text:'🧭 React Router',href:'02_missing_topics.html#router'},
+      {text:'🪝 Custom Hooks',href:'01_master_theory.html#hooks'}
+    ],
+    code:`import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './hooks/useAuth';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+
+function PrivateRoute({ children }: { children: JSX.Element }) {
+  const { token } = useAuth();
+  return token ? children : <Navigate to="/login" />;
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
+  );
+}`
+  },
+
+  {
+    path:'client/src/types/index.ts', icon:'📘', kind:'fr',
+    title:'TypeScript types משותפים',
+    desc:'הגדרת ה-types שכל האפליקציה משתמשת בהם. מבטיח עקביות בין רכיבים.',
+    topics:['TypeScript','Interfaces'],
+    keyPoints:[
+      'interface Task — מבנה אובייקט משימה',
+      'export — מאפשר import מקובצים אחרים',
+      '? אחרי שדה = optional',
+      'union types: "active" | "done" — רק 2 ערכים אפשריים'
+    ],
+    portalLinks:[
+      {text:'📘 TypeScript',href:'01_master_theory.html#ts'}
+    ],
+    code:`export interface User {
+  id: string;
+  email: string;
+  name: string;
+}
+
+export interface Task {
+  _id: string;
+  title: string;
+  status: 'active' | 'done';
+  user: string;
+  dueDate?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: User;
+}
+
+export interface ApiError {
+  error: string;
+}`
+  },
+
+  {
+    path:'client/src/api/client.ts', icon:'📡', kind:'fr',
+    title:'fetch wrapper — מצרף JWT אוטומטית',
+    desc:'במקום לקרוא ל-fetch ישירות, כל קריאה עוברת כאן. שיטה אחת מוסיפה headers ובודקת errors.',
+    topics:['fetch','Async','JWT'],
+    tip:'<strong>זה ה-DRY של ה-frontend.</strong> במקום להוסיף Authorization בכל פעם, יש מקום אחד שעושה את זה לכולם.',
+    keyPoints:[
+      'localStorage.getItem("token") — שולף את ה-JWT',
+      'Authorization: Bearer X — הפורמט הסטנדרטי',
+      'res.ok = false → זורק error',
+      'Generic <T> — type-safe response'
+    ],
+    portalLinks:[
+      {text:'📡 fetch מתקדם',href:'02_missing_topics.html#fetch-extra'},
+      {text:'🔐 JWT in Headers',href:'01_master_theory.html#auth'}
+    ],
+    code:`const BASE = 'http://localhost:3000/api';
+
+async function request<T>(
+  path: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const token = localStorage.getItem('token');
+
+  const res = await fetch(\`\${BASE}\${path}\`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: \`Bearer \${token}\` }),
+      ...options.headers,
+    },
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || \`HTTP \${res.status}\`);
+  }
+
+  return res.status === 204 ? (null as T) : res.json();
+}
+
+export const api = {
+  get:    <T>(path: string) => request<T>(path),
+  post:   <T>(path: string, body: unknown) =>
+            request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
+  put:    <T>(path: string, body: unknown) =>
+            request<T>(path, { method: 'PUT',  body: JSON.stringify(body) }),
+  delete: <T>(path: string) =>
+            request<T>(path, { method: 'DELETE' }),
+};`
+  },
+
+  {
+    path:'client/src/hooks/useAuth.ts', icon:'🪝', kind:'fr',
+    title:'Custom Hook — ניהול אימות',
+    desc:'Hook שמחזיר את ה-token + פונקציות login/logout. עוטף את localStorage.',
+    topics:['Custom Hooks','useState','localStorage'],
+    keyPoints:[
+      'Hook = פונקציה שמתחילה ב-"use"',
+      'useState עם initializer — קורא מ-localStorage פעם אחת',
+      'login() — שומר token + מעדכן state',
+      'logout() — מוחק + מנקה'
+    ],
+    portalLinks:[
+      {text:'🪝 Hooks',href:'01_master_theory.html#hooks'},
+      {text:'💾 localStorage',href:'02_missing_topics.html#storage'}
+    ],
+    code:`import { useState, useCallback } from 'react';
+import { api } from '../api/client';
+import type { AuthResponse, User } from '../types';
+
+export function useAuth() {
+  const [token, setToken] = useState<string | null>(
+    () => localStorage.getItem('token')
+  );
+  const [user, setUser] = useState<User | null>(
+    () => JSON.parse(localStorage.getItem('user') || 'null')
+  );
+
+  const login = useCallback(async (email: string, password: string) => {
+    const data = await api.post<AuthResponse>('/auth/login', { email, password });
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    setToken(data.token);
+    setUser(data.user);
+  }, []);
+
+  const logout = useCallback(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
+  }, []);
+
+  return { token, user, login, logout };
+}`
+  },
+
+  {
+    path:'client/src/pages/Login.tsx', icon:'🔓', kind:'fr',
+    title:'דף התחברות',
+    desc:'טופס פשוט עם email + password. מתחבר ל-/api/auth/login דרך useAuth.',
+    topics:['Forms','useState','Async','Tailwind'],
+    keyPoints:[
+      'controlled inputs — value + onChange',
+      'preventDefault — מונע submit לטעון את הדף',
+      'try/catch async — תופס שגיאות login',
+      'useNavigate — מפנה לדף הבית אחרי הצלחה'
+    ],
+    portalLinks:[
+      {text:'⚛️ Forms ב-React',href:'01_master_theory.html#react'},
+      {text:'🧭 useNavigate',href:'02_missing_topics.html#router'}
+    ],
+    code:`import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      await login(email, password);
+      navigate('/');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-96">
+        <h1 className="text-2xl font-bold mb-6">Login</h1>
+
+        {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-3">{error}</div>}
+
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          className="w-full p-2 border rounded mb-3"
+          required
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          className="w-full p-2 border rounded mb-4"
+          required
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:opacity-50"
+        >
+          {loading ? 'Loading...' : 'Login'}
+        </button>
+      </form>
+    </div>
+  );
+}`
+  },
+
+  {
+    path:'client/src/pages/Dashboard.tsx', icon:'📊', kind:'fr',
+    title:'הדף הראשי — לוח משימות',
+    desc:'מציג את רשימת המשימות + טופס להוספה. מעדכן ב-real time עם setState.',
+    topics:['useState','useEffect','Components Composition'],
+    tip:'<strong>State lifting:</strong> ה-tasks state יושב ב-Dashboard, אבל TaskList ו-TaskForm משתמשים בו דרך props. זה הדפוס הקלאסי של React.',
+    keyPoints:[
+      'useEffect עם [] — רץ פעם אחת בטעינת הדף',
+      'setTasks(prev => [new, ...prev]) — functional update (חשוב!)',
+      'useAuth().logout() — מוציא משתמש',
+      'Conditional rendering: loading state'
+    ],
+    portalLinks:[
+      {text:'🪝 useEffect',href:'01_master_theory.html#hooks'},
+      {text:'⚛️ State Management',href:'01_master_theory.html#react'}
+    ],
+    code:`import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../api/client';
+import { useAuth } from '../hooks/useAuth';
+import type { Task } from '../types';
+import TaskList from '../components/TaskList';
+import TaskForm from '../components/TaskForm';
+
+export default function Dashboard() {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  // Load tasks on mount
+  useEffect(() => {
+    api.get<Task[]>('/tasks')
+      .then(setTasks)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleAdd = (task: Task) => {
+    setTasks((prev) => [task, ...prev]);   // ✅ functional update
+  };
+
+  const handleToggle = async (id: string, status: Task['status']) => {
+    const updated = await api.put<Task>(\`/tasks/\${id}\`, { status });
+    setTasks((prev) => prev.map((t) => (t._id === id ? updated : t)));
+  };
+
+  const handleDelete = async (id: string) => {
+    await api.delete(\`/tasks/\${id}\`);
+    setTasks((prev) => prev.filter((t) => t._id !== id));
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto p-6">
+      <header className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Hi, {user?.name} 👋</h1>
+        <button onClick={handleLogout} className="text-sm text-gray-500 hover:text-red-500">
+          Logout
+        </button>
+      </header>
+
+      <TaskForm onAdd={handleAdd} />
+
+      {loading
+        ? <p>Loading...</p>
+        : <TaskList tasks={tasks} onToggle={handleToggle} onDelete={handleDelete} />
+      }
+    </div>
+  );
+}`
+  },
+
+  {
+    path:'client/src/components/TaskForm.tsx', icon:'➕', kind:'fr',
+    title:'טופס להוספת משימה',
+    desc:'controlled input אחד + כפתור. בלחיצה — שולח ל-API ומעביר את התוצאה ל-parent.',
+    topics:['Forms','Props','Callbacks'],
+    keyPoints:[
+      'props.onAdd — callback מ-Dashboard',
+      'reset state אחרי שליחה (setTitle(""))',
+      'disabled={!title.trim()} — UI נכון: לא מאפשר ריק'
+    ],
+    portalLinks:[
+      {text:'⚛️ Forms',href:'01_master_theory.html#react'}
+    ],
+    code:`import { useState } from 'react';
+import { api } from '../api/client';
+import type { Task } from '../types';
+
+interface Props {
+  onAdd: (task: Task) => void;
+}
+
+export default function TaskForm({ onAdd }: Props) {
+  const [title, setTitle] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return;
+
+    setSubmitting(true);
+    try {
+      const task = await api.post<Task>('/tasks', { title });
+      onAdd(task);
+      setTitle('');   // 🧹 reset
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex gap-2 mb-6">
+      <input
+        type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="What needs to be done?"
+        className="flex-1 p-2 border rounded"
+      />
+      <button
+        type="submit"
+        disabled={!title.trim() || submitting}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+      >
+        Add
+      </button>
+    </form>
+  );
+}`
+  },
+
+  {
+    path:'client/src/components/TaskList.tsx', icon:'📋', kind:'fr',
+    title:'רשימת משימות',
+    desc:'מקבל tasks דרך props. מציג כל אחד עם checkbox + delete. callback מחזיר ל-parent.',
+    topics:['Props','Lists','keys'],
+    tip:'<strong>חוק זהב ב-React:</strong> לכל item ברשימה צריך key ייחודי (לא index!). כאן השתמשנו ב-_id מ-Mongo.',
+    keyPoints:[
+      'tasks.map(...) — מייצר רשימת JSX',
+      'key={task._id} — חיוני! לא index',
+      'optional chaining: task?.dueDate',
+      'derived state: filteredTasks (לא state נפרד!)'
+    ],
+    portalLinks:[
+      {text:'⚛️ Lists & Keys',href:'01_master_theory.html#react'},
+      {text:'🔁 map/filter',href:'02_missing_topics.html#loops'}
+    ],
+    code:`import type { Task } from '../types';
+
+interface Props {
+  tasks: Task[];
+  onToggle: (id: string, status: Task['status']) => void;
+  onDelete: (id: string) => void;
+}
+
+export default function TaskList({ tasks, onToggle, onDelete }: Props) {
+  if (tasks.length === 0) {
+    return <p className="text-gray-500 text-center py-4">No tasks yet 🎉</p>;
+  }
+
+  return (
+    <ul className="space-y-2">
+      {tasks.map((task) => (
+        <li
+          key={task._id}
+          className="flex items-center gap-3 p-3 bg-white rounded shadow-sm"
+        >
+          <input
+            type="checkbox"
+            checked={task.status === 'done'}
+            onChange={(e) =>
+              onToggle(task._id, e.target.checked ? 'done' : 'active')
+            }
+            className="w-5 h-5"
+          />
+          <span
+            className={\`flex-1 \${
+              task.status === 'done' ? 'line-through text-gray-400' : ''
+            }\`}
+          >
+            {task.title}
+          </span>
+          <button
+            onClick={() => onDelete(task._id)}
+            className="text-red-500 hover:text-red-700"
+            aria-label="Delete"
+          >
+            🗑️
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}`
+  },
+
+  {
+    path:'client/src/index.css', icon:'🎨', kind:'fr',
+    title:'CSS גלובלי + Tailwind',
+    desc:'מייבא את 3 השכבות של Tailwind. כל ה-utility classes זמינים בקבצי TSX.',
+    topics:['Tailwind','CSS'],
+    keyPoints:[
+      '@tailwind base — reset + defaults',
+      '@tailwind components — utility classes לרכיבים',
+      '@tailwind utilities — כל ה-classes (flex, p-4, וכו\')',
+      'אפשר להוסיף CSS מותאם אישית מתחת'
+    ],
+    portalLinks:[
+      {text:'🎨 Tailwind',href:'05_snippets.html#tailwind'}
+    ],
+    code:`@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles */
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f3f4f6;
+}`
+  }
+];
+
+/* ====================================================================
+   BUILD FILE TREE
+   ==================================================================== */
+function buildTree(files) {
+  const root = { name:'task-manager-pro', children:{}, isFolder:true };
+  for (const f of files) {
+    const parts = f.path.split('/');
+    let node = root;
+    for (let i=0; i<parts.length-1; i++) {
+      const name = parts[i];
+      if (!node.children[name]) {
+        node.children[name] = { name, children:{}, isFolder:true };
+      }
+      node = node.children[name];
+    }
+    const fileName = parts[parts.length-1];
+    node.children[fileName] = { name:fileName, file:f, isFolder:false };
+  }
+  return root;
+}
+
+const tree = buildTree(FILES);
+const treeEl = document.getElementById('fileTree');
+const tabsBar = document.getElementById('tabsBar');
+const editor = document.getElementById('editor');
+const pathBar = document.getElementById('pathBar');
+const explainPanel = document.getElementById('explainPanel');
+const openTabs = [];
+let currentPath = null;
+
+// Folders open by default: root level + src
+const DEFAULT_OPEN = new Set(['', 'server', 'client', 'server/src', 'client/src']);
+
+function renderTree(node, container, path='', depth=0) {
+  const entries = Object.values(node.children).sort((a,b) => {
+    if (a.isFolder !== b.isFolder) return a.isFolder ? -1 : 1;
+    return a.name.localeCompare(b.name);
+  });
+  for (const entry of entries) {
+    const fullPath = path ? path + '/' + entry.name : entry.name;
+    const item = document.createElement('div');
+    item.className = 'tree-item ' + (entry.isFolder ? 'folder' : 'file');
+    item.style.paddingRight = (16 + depth*14) + 'px';
+
+    if (entry.isFolder) {
+      const isOpen = DEFAULT_OPEN.has(fullPath);
+      item.innerHTML = `<span class="caret">▶</span><span class="tree-icon">📁</span><span>${entry.name}</span>`;
+      if (isOpen) item.classList.add('open');
+      const childContainer = document.createElement('div');
+      childContainer.className = 'tree-children' + (isOpen ? '' : ' hidden');
+      item.addEventListener('click', () => {
+        item.classList.toggle('open');
+        childContainer.classList.toggle('hidden');
+      });
+      container.appendChild(item);
+      container.appendChild(childContainer);
+      renderTree(entry, childContainer, fullPath, depth+1);
+    } else {
+      const f = entry.file;
+      item.dataset.path = f.path;
+      const badgeText = f.kind==='bk'?'BACK':f.kind==='fr'?'FRONT':'CONFIG';
+      item.innerHTML = `<span class="tree-icon">${f.icon}</span><span>${entry.name}</span><span class="file-badge ${f.kind}">${badgeText}</span>`;
+      item.addEventListener('click', () => openFile(f.path));
+      container.appendChild(item);
+    }
+  }
+}
+renderTree(tree, treeEl);
+
+/* ====================================================================
+   SYNTAX HIGHLIGHTING (basic)
+   ==================================================================== */
+const KEYWORDS = ['import','from','export','default','const','let','var','function','async','await','return','if','else','for','while','of','in','class','extends','super','new','this','typeof','interface','type','enum','public','private','protected','readonly','as','try','catch','finally','throw','declare','namespace','keyof','undefined','null','true','false'];
+
+function escape(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function highlight(code, lang) {
+  // Markdown / JSON / shell — minimal
+  if (lang === 'md' || lang === 'sh' || lang === 'env') {
+    return escape(code).replace(/(#[^\n]*)/g, '<span class="tc">$1</span>');
+  }
+  if (lang === 'json') {
+    return escape(code)
+      .replace(/("[^"]*")(\s*:)/g, '<span class="tp">$1</span>$2')
+      .replace(/:\s*("[^"]*")/g, ': <span class="ts">$1</span>')
+      .replace(/(\b\d+\b)/g, '<span class="tn">$1</span>');
+  }
+  if (lang === 'gitignore') {
+    return escape(code).replace(/(#[^\n]*)/g, '<span class="tc">$1</span>');
+  }
+  // TS/TSX/JS
+  let s = escape(code);
+  // comments first (will not be re-processed because of the span)
+  s = s.replace(/(\/\/[^\n]*)/g, '<span class="tc">$1</span>');
+  s = s.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="tc">$1</span>');
+  // strings (template, single, double)
+  s = s.replace(/(`[^`]*`|'[^'\n]*'|"[^"\n]*")/g, '<span class="ts">$1</span>');
+  // numbers
+  s = s.replace(/\b(\d+)\b/g, '<span class="tn">$1</span>');
+  // keywords
+  const keywordRegex = new RegExp('\\b(' + KEYWORDS.join('|') + ')\\b', 'g');
+  s = s.replace(keywordRegex, '<span class="tk">$1</span>');
+  // JSX tags
+  s = s.replace(/(&lt;\/?)([A-Z][a-zA-Z0-9]*)/g, '$1<span class="tt">$2</span>');
+  s = s.replace(/(&lt;\/?)([a-z][a-zA-Z0-9]*)/g, '$1<span class="tt">$2</span>');
+  return s;
+}
+
+function detectLang(path) {
+  if (path.endsWith('.ts') || path.endsWith('.tsx') || path.endsWith('.js') || path.endsWith('.jsx')) return 'ts';
+  if (path.endsWith('.json')) return 'json';
+  if (path.endsWith('.md')) return 'md';
+  if (path.endsWith('.css')) return 'ts';
+  if (path.endsWith('.example') || path.includes('.env')) return 'env';
+  if (path === '.gitignore') return 'gitignore';
+  return 'ts';
+}
+
+/* ====================================================================
+   FILE OPENING + TABS
+   ==================================================================== */
+function openFile(path) {
+  const file = FILES.find(f => f.path === path);
+  if (!file) return;
+  if (!openTabs.includes(path)) openTabs.push(path);
+  currentPath = path;
+  renderTabs();
+  renderEditor(file);
+  renderExplain(file);
+  // mark active in tree
+  document.querySelectorAll('.tree-item.file').forEach(el => {
+    el.classList.toggle('active', el.dataset.path === path);
+  });
+}
+
+function closeTab(path, ev) {
+  ev.stopPropagation();
+  const idx = openTabs.indexOf(path);
+  if (idx > -1) openTabs.splice(idx, 1);
+  if (currentPath === path) {
+    currentPath = openTabs[openTabs.length-1] || null;
+    if (currentPath) {
+      const f = FILES.find(x => x.path === currentPath);
+      renderEditor(f);
+      renderExplain(f);
+    } else {
+      editor.innerHTML = '';
+      pathBar.textContent = '— select a file —';
+      explainPanel.innerHTML = '<h2>💡 What is this file?</h2><p style="color:#7d8590;">בחר קובץ מהעץ משמאל.</p>';
+    }
+  }
+  renderTabs();
+  document.querySelectorAll('.tree-item.file').forEach(el => {
+    el.classList.toggle('active', el.dataset.path === currentPath);
+  });
+}
+
+function renderTabs() {
+  tabsBar.innerHTML = '';
+  for (const path of openTabs) {
+    const f = FILES.find(x => x.path === path);
+    const tab = document.createElement('div');
+    tab.className = 'ide-tab' + (path === currentPath ? ' active' : '');
+    tab.innerHTML = `${f.icon} ${f.path.split('/').pop()} <span class="close">×</span>`;
+    tab.addEventListener('click', () => openFile(path));
+    tab.querySelector('.close').addEventListener('click', (ev) => closeTab(path, ev));
+    tabsBar.appendChild(tab);
+  }
+}
+
+function renderEditor(file) {
+  pathBar.textContent = file.path;
+  const lang = detectLang(file.path);
+  const lines = file.code.split('\n');
+  let html = '<table class="code-table"><tbody>';
+  lines.forEach((line, i) => {
+    html += `<tr><td class="num">${i+1}</td><td class="line">${highlight(line, lang) || ' '}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  editor.innerHTML = html;
+}
+
+function renderExplain(file) {
+  let html = `<h2>💡 What is this file?</h2>`;
+  html += `<div class="ex-file-name">${file.path}</div>`;
+  html += `<div class="ex-title">${file.title}</div>`;
+  html += `<div class="ex-desc">${file.desc}</div>`;
+
+  if (file.tip) {
+    html += `<div class="ex-tip">⚡ ${file.tip}</div>`;
+  }
+
+  html += `<div class="ex-section">
+    <div class="ex-section-title">🎯 נקודות מפתח</div>
+    <ul class="ex-key-points">${file.keyPoints.map(p => `<li>${p}</li>`).join('')}</ul>
+  </div>`;
+
+  html += `<div class="ex-section">
+    <div class="ex-section-title">🏷️ נושאים מהמבחן</div>
+    <div class="ex-topics">${file.topics.map(t => `<span class="ex-topic">${t}</span>`).join('')}</div>
+  </div>`;
+
+  html += `<div class="ex-section">
+    <div class="ex-section-title">📚 קישורים לחומר</div>
+    <div class="ex-links">${file.portalLinks.map(l => `<a class="ex-link" href="${l.href}">→ ${l.text}</a>`).join('')}</div>
+  </div>`;
+
+  explainPanel.innerHTML = html;
+}
+
+// Open server.ts by default
+openFile('server/src/server.ts');
+</script>
+
+<script src="lightbox.js"></script>
+<script src="sandbox.js"></script>
+  <script src="sidebar.js"></script>
+<script src="progress-engine.js"></script>
+</body>
+</html>
