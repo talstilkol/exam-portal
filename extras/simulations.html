@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎮 סימולציות — בנה צעד אחר צעד</title>
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--shadow:5px 5px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:28px 24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(24px,4vw,38px);margin:0}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:15px}
+.sim-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:24px;max-width:1200px;margin:0 auto}
+.sim-card{background:var(--card);border:3px solid var(--border);border-radius:16px;padding:20px;cursor:pointer;transition:.15s;box-shadow:var(--shadow)}
+.sim-card:hover{transform:translateY(-4px);box-shadow:6px 8px 0 #000}
+.sim-card .ico{font-size:40px;margin-bottom:8px}
+.sim-card h3{font-size:18px;font-weight:900;margin:0 0 6px}
+.sim-card p{color:#475569;font-size:13px;margin:0 0 10px;line-height:1.5}
+.sim-card .meta{display:flex;gap:6px;flex-wrap:wrap}
+.sim-card .tag{background:#f1f5f9;border:2px solid #e2e8f0;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800}
+.sim-card .tag.react{background:#dbeafe;color:#1e40af;border-color:#93c5fd}
+.sim-card .tag.express{background:#d1fae5;color:#065f46;border-color:#6ee7b7}
+.sim-card .tag.js{background:#fef9c3;color:#854d0e;border-color:#fde047}
+
+/* Active simulation */
+.sim-active{display:none;max-width:900px;margin:0 auto;padding:24px}
+.sim-active.visible{display:block}
+.sim-back{background:none;border:2px solid var(--border);border-radius:8px;padding:6px 14px;font-weight:900;cursor:pointer;font-size:13px;margin-bottom:16px;transition:.15s}
+.sim-back:hover{background:#f1f5f9}
+.sim-progress{display:flex;align-items:center;gap:4px;margin-bottom:16px;flex-wrap:wrap}
+.sim-dot{width:32px;height:32px;border-radius:50%;border:2px solid #cbd5e1;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#94a3b8;transition:.3s;cursor:pointer}
+.sim-dot.done{background:var(--green);color:#fff;border-color:var(--green)}
+.sim-dot.current{background:var(--brand);color:#fff;border-color:var(--brand);transform:scale(1.15)}
+.sim-dot-line{width:16px;height:2px;background:#cbd5e1;transition:.3s}
+.sim-dot-line.done{background:var(--green)}
+
+.sim-step{background:var(--card);border:3px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.sim-step-head{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px}
+.sim-step-num{background:var(--gold);color:#000;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+.sim-step-title{font-weight:900;font-size:16px;flex:1}
+.sim-step-body{padding:18px}
+.sim-explain{font-size:14px;line-height:1.8;margin-bottom:14px}
+.sim-code{direction:ltr;text-align:left;background:#0f172a;color:#e2e8f0;padding:14px;border-radius:12px;font-family:Consolas,'Courier New',monospace;font-size:13px;line-height:1.6;overflow-x:auto;border:2px solid #334155;margin:12px 0;position:relative}
+.sim-code .highlight-line{background:rgba(250,204,21,.15);display:block;margin:0 -14px;padding:0 14px;border-right:3px solid var(--gold)}
+.sim-tip{background:#ecfdf5;border:2px solid var(--green);border-radius:10px;padding:10px 12px;font-weight:700;font-size:13px;margin-top:10px}
+.sim-tip::before{content:'💡 '}
+.sim-warn{background:#fef3c7;border:2px solid var(--orange);border-radius:10px;padding:10px 12px;font-weight:700;font-size:13px;margin-top:10px}
+.sim-warn::before{content:'⚠️ טעות נפוצה: '}
+.sim-nav{display:flex;gap:10px;margin-top:18px;justify-content:space-between}
+.sim-nav-btn{border:2px solid #000;border-radius:10px;padding:10px 20px;font-weight:900;font-size:14px;cursor:pointer;box-shadow:2px 2px 0 #000;transition:.15s}
+.sim-nav-btn:hover{transform:translateY(-2px);box-shadow:3px 4px 0 #000}
+.sim-nav-btn.next{background:var(--brand);color:#fff}
+.sim-nav-btn.prev{background:#f1f5f9}
+.sim-nav-btn.finish{background:var(--green);color:#fff}
+.sim-nav-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155;--shadow:5px 5px 0 #000}
+  body{background:var(--bg)}
+  .sim-card{background:#1e293b}
+  .sim-card p{color:#94a3b8}
+  .sim-card .tag{background:#334155;border-color:#475569;color:#e2e8f0}
+  .sim-back{color:#e2e8f0;border-color:#475569}
+  .sim-back:hover{background:#334155}
+  .sim-tip{background:#064e3b;border-color:#059669;color:#a7f3d0}
+  .sim-warn{background:#422006;border-color:var(--orange);color:#fde68a}
+}
+.filter-chip{padding:6px 14px;border:2.5px solid #000;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;background:#f1f5f9;transition:.15s;font-family:inherit;box-shadow:2px 2px 0 #000}
+.filter-chip:hover{transform:translateY(-1px);box-shadow:3px 3px 0 #000}
+.filter-chip.active{background:var(--brand);color:#fff}
+.sim-card .diff-tag{position:absolute;top:10px;left:10px;font-size:10px;font-weight:900;padding:2px 8px;border-radius:6px;border:2px solid #000}
+.sim-card .diff-tag.easy{background:#dcfce7;color:#166534}
+.sim-card .diff-tag.medium{background:#fef9c3;color:#854d0e}
+.sim-card .diff-tag.hard{background:#fee2e2;color:#991b1b}
+.sim-card{position:relative}
+.sim-card .done-badge{position:absolute;top:10px;right:10px;background:var(--green);color:#fff;font-size:12px;font-weight:900;padding:2px 8px;border-radius:6px;border:2px solid #000}
+.sim-card .step-info{font-size:11px;font-weight:800;color:#64748b;margin-top:6px}
+@media(max-width:768px){.sim-cards{grid-template-columns:1fr;padding:12px}#filter-bar{padding:12px}}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  .hero{padding:12px!important;background:#333!important;-webkit-print-color-adjust:exact}
+  .sidebar{display:none}
+  .sim-controls button{display:none}
+  .app,.sim-layout{grid-template-columns:1fr!important}
+  main,.sim-main{max-height:none!important;overflow:visible!important}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>🎮 סימולציות — בנה צעד אחר צעד</h1>
+  <p>סימולציות אינטראקטיביות: כל שלב מוסיף קוד ומסביר למה. כמו לבנות את הפרויקט מאפס.</p>
+  <div id="hero-progress" style="margin-top:10px;font-size:13px;font-weight:700;color:#a5b4fc"></div>
+</header>
+
+<div id="filter-bar" style="max-width:1200px;margin:0 auto;padding:16px 24px 0;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+  <input id="sim-search" type="text" placeholder="🔎 חיפוש סימולציה..." oninput="filterCards()" style="flex:1;min-width:200px;padding:8px 14px;border:3px solid #000;border-radius:10px;font-size:14px;font-weight:700;font-family:inherit;box-shadow:3px 3px 0 #000">
+  <button class="filter-chip active" data-filter="all" onclick="setFilter('all')">📋 הכל</button>
+  <button class="filter-chip" data-filter="react" onclick="setFilter('react')">⚛️ React</button>
+  <button class="filter-chip" data-filter="express" onclick="setFilter('express')">🟢 Express</button>
+  <button class="filter-chip" data-filter="js" onclick="setFilter('js')">🟨 JS</button>
+  <button class="filter-chip" data-filter="debug" onclick="setFilter('debug')">🐛 Debug</button>
+</div>
+
+<div class="sim-cards" id="sim-cards"></div>
+<div class="sim-active" id="sim-active"></div>
+
+<script>
+const SIMS = [
+{
+  id:"react-app",title:"בנה אפליקציית React מאפס",icon:"⚛️",
+  desc:"מ-create-react-app עד אפליקציה מלאה: components, state, routing, localStorage. בדיוק כמו שאלה 1 במבחן.",
+  difficulty:"hard",category:"react",
+  tags:[{label:"React",cls:"react"},{label:"Router",cls:"react"},{label:"localStorage",cls:"js"}],
+  steps:[
+    {title:"הקמת פרויקט + מבנה",
+     explain:"התחלה: npm create vite@latest my-app -- --template react. נוצר מבנה תיקיות עם src/main.jsx ו-src/App.jsx.",
+     code:'<span class="highlight-line">// src/main.jsx</span>\nimport React from \'react\';\nimport ReactDOM from \'react-dom/client\';\nimport { BrowserRouter } from \'react-router-dom\';\nimport App from \'./App\';\n\nReactDOM.createRoot(document.getElementById(\'root\')).render(\n  &lt;BrowserRouter&gt;\n    &lt;App /&gt;\n  &lt;/BrowserRouter&gt;\n);',
+     tip:"BrowserRouter חייב לעטוף את App — בלי זה Routes ו-useNavigate לא יעבדו."},
+    {title:"App Component + State",
+     explain:"App הוא הקומפוננטה הראשית. כאן מגדירים את כל ה-state ואת ה-Routes.",
+     code:'<span class="highlight-line">// src/App.jsx</span>\nimport { useState, useEffect } from \'react\';\nimport { Routes, Route } from \'react-router-dom\';\n\nfunction App() {\n<span class="highlight-line">  const [users, setUsers] = useState(</span>\n<span class="highlight-line">    JSON.parse(localStorage.getItem(\'users\')) || []</span>\n<span class="highlight-line">  );</span>\n  const [currentUser, setCurrentUser] = useState(null);\n\n  useEffect(() =&gt; {\n    localStorage.setItem(\'users\', JSON.stringify(users));\n  }, [users]);\n\n  return (\n    &lt;Routes&gt;\n      &lt;Route path="/" element={&lt;Login /&gt;} /&gt;\n      &lt;Route path="/home" element={&lt;Home /&gt;} /&gt;\n    &lt;/Routes&gt;\n  );\n}',
+     tip:"useState מאותחל עם JSON.parse(localStorage.getItem(...)) || []. useEffect שומר בכל שינוי.",
+     warn:"לא לשים את ה-localStorage.setItem ישירות בפונקציה — רק ב-useEffect!"},
+    {title:"LoginForm Component",
+     explain:"טופס כניסה: שדות username + password, כפתור submit, ולידציה.",
+     code:'function LoginForm({ users, setCurrentUser }) {\n  const [username, setUsername] = useState(\'\');\n  const [password, setPassword] = useState(\'\');\n  const navigate = useNavigate();\n\n  function handleLogin(e) {\n    e.preventDefault();\n<span class="highlight-line">    const user = users.find(u =&gt;</span>\n<span class="highlight-line">      u.username === username &amp;&amp; u.password === password</span>\n<span class="highlight-line">    );</span>\n    if (user) {\n      setCurrentUser(user);\n      navigate(\'/home\');\n    } else {\n      alert(\'Invalid credentials\');\n    }\n  }\n\n  return (\n    &lt;form onSubmit={handleLogin}&gt;\n      &lt;input value={username}\n        onChange={e =&gt; setUsername(e.target.value)} /&gt;\n      &lt;input type="password" value={password}\n        onChange={e =&gt; setPassword(e.target.value)} /&gt;\n      &lt;button type="submit"&gt;Login&lt;/button&gt;\n    &lt;/form&gt;\n  );\n}',
+     warn:"e.preventDefault() חובה ב-onSubmit! בלי זה הדף ירנדר מחדש ותאבדו את ה-state."},
+    {title:"RegisterForm + ולידציות",
+     explain:"טופס הרשמה עם שדות נוספים וולידציות regex על כל שדה.",
+     code:'function RegisterForm({ users, setUsers }) {\n  const [form, setForm] = useState({\n    username: \'\', password: \'\', confirm: \'\'\n  });\n<span class="highlight-line">  const [errors, setErrors] = useState({});</span>\n\n  function validate() {\n    const errs = {};\n    if (form.username.length &lt; 2)\n      errs.username = \'2+ תווים\';\n    if (!/(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}/.test(form.password))\n      errs.password = \'8+, upper+lower+digit\';\n    if (form.password !== form.confirm)\n      errs.confirm = \'סיסמאות לא תואמות\';\n    return errs;\n  }\n\n  function handleSubmit(e) {\n    e.preventDefault();\n    const errs = validate();\n<span class="highlight-line">    if (Object.keys(errs).length) {</span>\n<span class="highlight-line">      setErrors(errs); return;</span>\n<span class="highlight-line">    }</span>\n    setUsers(prev =&gt; [...prev, form]);\n    navigate(\'/\');\n  }\n}',
+     tip:"Object.keys(errors).length > 0 = יש שגיאות. אם 0 = הכל תקין, אפשר לשמור."},
+    {title:"Protected Page + Routing",
+     explain:"דף שמוצג רק למשתמש מחובר. אם לא מחובר — redirect ל-login.",
+     code:'function HomePage({ currentUser, items }) {\n  const navigate = useNavigate();\n\n<span class="highlight-line">  useEffect(() =&gt; {</span>\n<span class="highlight-line">    if (!currentUser) navigate(\'/\');</span>\n<span class="highlight-line">  }, []);</span>\n\n  if (!currentUser) return null;\n\n  return (\n    &lt;div&gt;\n      &lt;h1&gt;Welcome {currentUser.username}&lt;/h1&gt;\n      &lt;nav&gt;\n        &lt;Link to="/home"&gt;Home&lt;/Link&gt;\n        &lt;Link to="/add"&gt;Add&lt;/Link&gt;\n      &lt;/nav&gt;\n      {items.map(item =&gt;\n        &lt;div key={item.id}&gt;{item.name}&lt;/div&gt;\n      )}\n    &lt;/div&gt;\n  );\n}',
+     warn:"map בלי key ייתן warning. תמיד key={item.id} — לא index (אלא אם אין ברירה)."},
+    {title:"סיכום + צ'קליסט",
+     explain:"זהו! אפליקציית React מלאה. בדקו שיש לכם:",
+     code:'✅ BrowserRouter עוטף App\n✅ useState + useEffect לכל state שצריך localStorage\n✅ Routes עם path ו-element\n✅ useNavigate לניווט פרוגרמטי\n✅ ולידציות לפני שמירה\n✅ key ב-map\n✅ e.preventDefault() ב-form\n✅ Conditional rendering (&&, ternary, early return)\n✅ Props מ-App לcomponents ילדים\n✅ localStorage sync pattern',
+     tip:"זו בדיוק המבנה של כל שאלה 1 במבחן. רק השדות וה-routes משתנים."}
+  ]
+},
+{
+  id:"express-api",title:"בנה REST API מאפס",icon:"🟢",
+  desc:"מ-npm init עד שרת Express + MongoDB עובד: routes, middleware, Schema, Model, CRUD. כמו שאלה 3 במבחן.",
+  difficulty:"hard",category:"express",
+  tags:[{label:"Express",cls:"express"},{label:"MongoDB",cls:"express"},{label:"Mongoose",cls:"express"}],
+  steps:[
+    {title:"הקמת פרויקט + imports",
+     explain:"npm init -y, התקנת express, mongoose, cors. קובץ server.js יחיד.",
+     code:'<span class="highlight-line">const express = require(\'express\');</span>\nconst mongoose = require(\'mongoose\');\nconst cors = require(\'cors\');\n\nconst app = express();\nconst PORT = 3000;\nconst MONGO_URL = \'mongodb://localhost:27017/mydb\';\n\n<span class="highlight-line">app.use(express.json());</span>\n<span class="highlight-line">app.use(cors());</span>',
+     tip:"express.json() חובה לפני כל route שקורא req.body. שכחתם? body = undefined!"},
+    {title:"Schema + Model",
+     explain:"מגדירים את מבנה הנתונים עם Mongoose Schema ויוצרים Model.",
+     code:'const { Schema, model } = mongoose;\n\n<span class="highlight-line">const itemSchema = new Schema({</span>\n<span class="highlight-line">  name: { type: String, required: true },</span>\n<span class="highlight-line">  price: { type: Number, required: true },</span>\n<span class="highlight-line">  category: String</span>\n<span class="highlight-line">});</span>\n\nconst Item = model(\'Item\', itemSchema);',
+     tip:"required: true = ולידציה אוטומטית. אם חסר שדה — Mongoose יזרוק ValidationError."},
+    {title:"GET Routes — קריאה",
+     explain:"GET כל הפריטים + GET פריט יחיד לפי ID.",
+     code:'// GET all\napp.get(\'/items\', async (req, res) =&gt; {\n  const items = await Item.find();\n  res.json(items);\n});\n\n// GET by ID\napp.get(\'/items/:id\', async (req, res) =&gt; {\n  try {\n    const item = await Item.findById(req.params.id);\n<span class="highlight-line">    if (!item) return res.status(404).json({error: \'Not found\'});</span>\n    res.json(item);\n  } catch (e) {\n    res.status(500).json({error: e.message});\n  }\n});',
+     warn:"findById מחזיר null אם לא נמצא — חובה לבדוק ולהחזיר 404!"},
+    {title:"POST + PUT + DELETE",
+     explain:"יצירה, עדכון ומחיקה — כולם עם async/await ו-try/catch.",
+     code:'app.post(\'/items\', async (req, res) =&gt; {\n  try {\n    const item = await Item.create(req.body);\n<span class="highlight-line">    res.status(201).json(item); // 201!</span>\n  } catch (e) {\n    res.status(400).json({error: e.message});\n  }\n});\n\napp.put(\'/items/:id\', async (req, res) =&gt; {\n  const item = await Item.findByIdAndUpdate(\n    req.params.id, req.body,\n<span class="highlight-line">    { new: true, runValidators: true }</span>\n  );\n  if (!item) return res.status(404).json({error: \'Not found\'});\n  res.json(item);\n});\n\napp.delete(\'/items/:id\', async (req, res) =&gt; {\n  const item = await Item.findByIdAndDelete(req.params.id);\n  if (!item) return res.status(404).json({error: \'Not found\'});\n  res.status(200).json({message: \'Deleted\'});\n});',
+     tip:"{new: true} מחזיר את המסמך אחרי העדכון. {runValidators: true} מפעיל ולידציות גם בעדכון."},
+    {title:"Connect + Listen",
+     explain:"חיבור ל-MongoDB והפעלת השרת. listen בתוך callback של connect!",
+     code:'<span class="highlight-line">(async () =&gt; {</span>\n<span class="highlight-line">  await mongoose.connect(MONGO_URL);</span>\n<span class="highlight-line">  console.log(\'Connected to MongoDB\');</span>\n<span class="highlight-line">  app.listen(PORT, () =&gt;</span>\n<span class="highlight-line">    console.log(`Server on port ${PORT}`)</span>\n<span class="highlight-line">  );</span>\n<span class="highlight-line">})();</span>',
+     tip:"listen חייב להיות אחרי connect מצליח. ככה מבטיחים שה-DB מחובר לפני שמקבלים requests."}
+  ]
+},
+{
+  id:"debug-exam",title:"Debug שאלת מבחן",icon:"🐛",
+  desc:"קוד עם 5 באגים נפוצים. בכל שלב מזהים באג, מבינים למה הוא קורה, ומתקנים.",
+  difficulty:"medium",category:"debug",
+  tags:[{label:"Debug",cls:"js"},{label:"React",cls:"react"},{label:"נפוץ במבחן",cls:"express"}],
+  steps:[
+    {title:"באג #1: state לא מתעדכן",
+     explain:"הקוד הבא לא עובד — לחיצה על כפתור לא מוסיפה למערך. למה?",
+     code:'function App() {\n  const [items, setItems] = useState([]);\n\n  function addItem(item) {\n<span class="highlight-line">    items.push(item);     // ❌ הבאג!</span>\n<span class="highlight-line">    setItems(items);      // ❌ אותו reference!</span>\n  }\n\n  // ✅ תיקון:\n  function addItem(item) {\n<span class="highlight-line">    setItems([...items, item]);  // ✅ מערך חדש!</span>\n  }\n}',
+     warn:"לעולם לא לשנות state ישירות (push/splice). תמיד spread ליצירת עותק חדש!"},
+    {title:"באג #2: useEffect infinite loop",
+     explain:"האפליקציה קורסת עם infinite re-renders. למה?",
+     code:'function App() {\n  const [data, setData] = useState([]);\n\n<span class="highlight-line">  useEffect(() =&gt; {</span>\n<span class="highlight-line">    setData(fetchData()); // ❌ ללא dependency array!</span>\n<span class="highlight-line">  });</span>\n\n  // ✅ תיקון: הוספת [] לhookup פעם אחת\n  useEffect(() =&gt; {\n    setData(fetchData());\n<span class="highlight-line">  }, []); // ✅ ריק = פעם אחת</span>\n}',
+     tip:"useEffect בלי [] = רץ אחרי כל render. עם [] = רץ רק פעם אחת. עם [dep] = רץ כש-dep משתנה."},
+    {title:"באג #3: sort משנה את ה-state",
+     explain:"מיון גורם לבאג מוזר — הנתונים מתערבבים. למה?",
+     code:'function AllItems({ items }) {\n<span class="highlight-line">  const sorted = items.sort((a, b) =&gt;</span>\n<span class="highlight-line">    a.name.localeCompare(b.name)</span>\n<span class="highlight-line">  ); // ❌ sort משנה את המערך המקורי!</span>\n\n  // ✅ תיקון: spread לפני sort\n<span class="highlight-line">  const sorted = [...items].sort((a, b) =&gt;</span>\n<span class="highlight-line">    a.name.localeCompare(b.name)</span>\n<span class="highlight-line">  ); // ✅ עותק חדש!</span>\n}',
+     warn:".sort() משנה את המערך in-place! אם items הוא state — חייבים [...items].sort()."},
+    {title:"באג #4: req.body undefined",
+     explain:"POST request מגיע לשרת אבל req.body ריק. למה?",
+     code:'const app = express();\n// app.use(express.json()); // ❌ חסר!\n\napp.post(\'/items\', (req, res) =&gt; {\n<span class="highlight-line">  console.log(req.body); // undefined!</span>\n});\n\n// ✅ תיקון:\nconst app = express();\n<span class="highlight-line">app.use(express.json()); // ✅ חובה!</span>\n\napp.post(\'/items\', (req, res) =&gt; {\n  console.log(req.body); // { name: \'...\', ... }\n});',
+     tip:"express.json() = middleware שפורס JSON body. בלעדיו — req.body = undefined. תמיד שמים לפני ה-routes."},
+    {title:"באג #5: async בלי await",
+     explain:"Route handler עם MongoDB — מחזיר ריק או Promise object.",
+     code:'app.get(\'/items\', async (req, res) =&gt; {\n<span class="highlight-line">  const items = Item.find();  // ❌ חסר await!</span>\n  res.json(items); // שולח Promise object!\n});\n\n// ✅ תיקון:\napp.get(\'/items\', async (req, res) =&gt; {\n<span class="highlight-line">  const items = await Item.find(); // ✅</span>\n  res.json(items);\n});',
+     warn:"כל פעולת Mongoose היא async. בלי await — מקבלים Promise ולא data!"}
+  ]
+},
+{
+  id:"form-validation-sim",title:"Form Validation צעד אחר צעד",icon:"🛡",
+  desc:"בניית מערכת ולידציה מלאה: controlled inputs, regex checks, error display, real-time validation.",
+  difficulty:"medium",category:"react",
+  tags:[{label:"React",cls:"react"},{label:"Validation",cls:"js"},{label:"Regex",cls:"js"}],
+  steps:[
+    {title:"Controlled Inputs — state לכל שדה",
+     explain:"כל שדה בטופס מנוהל ע\"י state. כך React שולט לגמרי בערכים.",
+     code:'function RegisterForm() {\n<span class="highlight-line">  const [form, setForm] = useState({</span>\n<span class="highlight-line">    username: \'\',</span>\n<span class="highlight-line">    password: \'\',</span>\n<span class="highlight-line">    confirmPassword: \'\'</span>\n<span class="highlight-line">  });</span>\n  const [errors, setErrors] = useState({});\n\n  function handleChange(e) {\n    setForm({ ...form, [e.target.name]: e.target.value });\n  }\n\n  return (\n    &lt;input name="username" value={form.username}\n      onChange={handleChange} /&gt;\n  );\n}',
+     tip:"[e.target.name]: e.target.value — שם דינאמי של שדה. כך handleChange אחד עובד לכל השדות!"},
+    {title:"פונקציית ולידציה — כל הבדיקות",
+     explain:"פונקציה שבודקת כל שדה ומחזירה אובייקט שגיאות. אם ריק — הכל תקין.",
+     code:'function validate() {\n  const errs = {};\n<span class="highlight-line">  if (form.username.length &lt; 2)</span>\n<span class="highlight-line">    errs.username = \'שם: לפחות 2 תווים\';</span>\n<span class="highlight-line">  if (!/^[A-Za-z]+$/.test(form.username))</span>\n<span class="highlight-line">    errs.username = \'שם: אנגלית בלבד\';</span>\n  if (!/(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$]).{8,20}/\n      .test(form.password))\n    errs.password = \'8-20, upper+lower+digit+special\';\n  if (form.password !== form.confirmPassword)\n    errs.confirmPassword = \'סיסמאות לא תואמות\';\n  return errs;\n}',
+     tip:"Regex lookahead: (?=.*[A-Z]) = חייב לפחות אות גדולה אחת. (?=.*\\d) = חייב מספר. וכו'."},
+    {title:"הצגת שגיאות ב-JSX",
+     explain:"כל שדה מציג את השגיאה שלו אם קיימת. conditional rendering עם &&.",
+     code:'&lt;div className="form-group"&gt;\n  &lt;label&gt;Username&lt;/label&gt;\n  &lt;input name="username" value={form.username}\n    onChange={handleChange}\n<span class="highlight-line">    className={errors.username ? \'error\' : \'\'}</span>\n  /&gt;\n<span class="highlight-line">  {errors.username &amp;&amp;</span>\n<span class="highlight-line">    &lt;span className="err-msg"&gt;</span>\n<span class="highlight-line">      {errors.username}</span>\n<span class="highlight-line">    &lt;/span&gt;}</span>\n&lt;/div&gt;',
+     tip:"className={errors.x ? 'error' : ''} — ככה מוסיפים border אדום לשדה עם שגיאה."},
+    {title:"Submit — ולידציה לפני שמירה",
+     explain:"ב-submit: קודם validate, אם יש שגיאות — הציגו. אם אין — שמרו.",
+     code:'function handleSubmit(e) {\n<span class="highlight-line">  e.preventDefault();</span>\n  const errs = validate();\n<span class="highlight-line">  if (Object.keys(errs).length &gt; 0) {</span>\n<span class="highlight-line">    setErrors(errs);</span>\n<span class="highlight-line">    return; // לא שומר!</span>\n<span class="highlight-line">  }</span>\n  // אם הגענו לכאן — הכל תקין\n  setErrors({});\n  onSubmit(form);\n}',
+     warn:"Object.keys(errs).length — ככה בודקים אם אובייקט ריק. לא errs === {} (זה תמיד false!)."},
+    {title:"ולידציה בזמן אמת (onChange)",
+     explain:"אופציונלי: ולידציה בזמן הקלדה — מנקה שגיאות ברגע שהמשתמש מתקן.",
+     code:'function handleChange(e) {\n  const { name, value } = e.target;\n  setForm({ ...form, [name]: value });\n\n  // Real-time: clear error when user types\n<span class="highlight-line">  if (errors[name]) {</span>\n<span class="highlight-line">    setErrors(prev =&gt; {</span>\n<span class="highlight-line">      const next = { ...prev };</span>\n<span class="highlight-line">      delete next[name];</span>\n<span class="highlight-line">      return next;</span>\n<span class="highlight-line">    });</span>\n<span class="highlight-line">  }</span>\n}',
+     tip:"ניקוי שגיאות ב-onChange = UX טוב. המשתמש רואה שהשגיאה נעלמת ברגע שהוא מתקן."}
+  ]
+},
+{
+  id:"mongodb-crud",title:"MongoDB CRUD — פעולות על Collection",icon:"🍃",
+  desc:"סימולציה אינטראקטיבית של פעולות MongoDB: connect, insertOne, find, updateOne, deleteOne, aggregate. עם Collection ויזואלי שמשתנה בזמן אמת.",
+  difficulty:"medium",category:"express",
+  tags:[{label:"MongoDB",cls:"express"},{label:"CRUD",cls:"js"},{label:"Mongoose",cls:"express"}],
+  steps:[
+    {title:"התחברות למסד נתונים",
+     explain:"השלב הראשון — חיבור ל-MongoDB דרך Mongoose. נגדיר URL ונחבר עם async/await. רק אחרי חיבור מוצלח אפשר לבצע פעולות.",
+     code:'const mongoose = require(\'mongoose\');\n\n<span class="highlight-line">const MONGO_URL = \'mongodb://localhost:27017/schoolDB\';</span>\n\nasync function main() {\n<span class="highlight-line">  await mongoose.connect(MONGO_URL);</span>\n<span class="highlight-line">  console.log(\'✅ Connected to MongoDB!\');</span>\n}\n\nmain().catch(err =&gt; console.error(\'Connection failed:\', err));',
+     tip:"mongoose.connect מחזיר Promise — חובה await. אם ה-URL שגוי או השרת לא עובד, יזרוק Error.",
+     warn:"אם שכחתם await — הקוד ימשיך לרוץ לפני שה-DB מחובר, ותקבלו שגיאות מוזרות!"},
+    {title:"insertOne — הוספת מסמך לCollection",
+     explain:"אחרי Schema + Model, נוסיף מסמך חדש ל-collection עם create (שמקביל ל-insertOne). המסמך מופיע מיד ב-collection.",
+     code:'const studentSchema = new mongoose.Schema({\n  name: { type: String, required: true },\n  grade: { type: Number, required: true },\n  city: String\n});\nconst Student = mongoose.model(\'Student\', studentSchema);\n\n<span class="highlight-line">// insertOne — הוספת תלמיד חדש</span>\n<span class="highlight-line">const newStudent = await Student.create({</span>\n<span class="highlight-line">  name: \'דניאל\',</span>\n<span class="highlight-line">  grade: 92,</span>\n<span class="highlight-line">  city: \'תל אביב\'</span>\n<span class="highlight-line">});</span>\nconsole.log(\'Added:\', newStudent);\n\n// 📦 Collection אחרי:\n// [{ _id: "abc1", name: "דניאל", grade: 92, city: "תל אביב" }]',
+     tip:"create = new Model(data) + save(). מחזיר את המסמך עם _id שנוצר אוטומטית.",
+     warn:"אם שדה required חסר — Mongoose יזרוק ValidationError ולא ישמור!"},
+    {title:"find — חיפוש מסמכים עם פילטר",
+     explain:"find מחזיר מערך של כל המסמכים שמתאימים לפילטר. findOne מחזיר רק את הראשון.",
+     code:'// נוסיף עוד תלמידים לדוגמה:\nawait Student.create({ name: \'שרה\', grade: 85, city: \'חיפה\' });\nawait Student.create({ name: \'יוסי\', grade: 92, city: \'תל אביב\' });\n\n<span class="highlight-line">// find עם פילטר — מי מתל אביב?</span>\n<span class="highlight-line">const fromTA = await Student.find({ city: \'תל אביב\' });</span>\n// ⮕ [{ name: "דניאל", grade: 92 }, { name: "יוסי", grade: 92 }]\n\n<span class="highlight-line">// find עם תנאי — ציון מעל 90</span>\n<span class="highlight-line">const topStudents = await Student.find({ grade: { $gte: 90 } });</span>\n// ⮕ [{ name: "דניאל", grade: 92 }, { name: "יוסי", grade: 92 }]\n\n// findOne — רק תוצאה ראשונה\nconst one = await Student.findOne({ name: \'שרה\' });\n// ⮕ { name: "שרה", grade: 85, city: "חיפה" }',
+     tip:"$gte = greater than or equal, $gt = greater than, $lte = less/equal, $lt = less. $ne = not equal.",
+     warn:"find({}) בלי פילטר = כל המסמכים. find מחזיר מערך, findOne מחזיר אובייקט או null!"},
+    {title:"updateOne — עדכון מסמך",
+     explain:"findByIdAndUpdate או updateOne — מעדכנים שדות במסמך קיים בלי למחוק את השאר.",
+     code:'<span class="highlight-line">// updateOne — עדכון ציון של שרה</span>\n<span class="highlight-line">const updated = await Student.findOneAndUpdate(</span>\n<span class="highlight-line">  { name: \'שרה\' },           // filter — מי לעדכן</span>\n<span class="highlight-line">  { grade: 95 },              // update — מה לשנות</span>\n<span class="highlight-line">  { new: true, runValidators: true }  // options</span>\n<span class="highlight-line">);</span>\nconsole.log(\'Updated:\', updated);\n// ⮕ { name: "שרה", grade: 95, city: "חיפה" }\n\n// 📦 Collection אחרי:\n// [{ name: "דניאל", grade: 92 },\n//  { name: "שרה", grade: 95 },    ← עודכן!\n//  { name: "יוסי", grade: 92 }]',
+     tip:"{new: true} = מחזיר את המסמך אחרי העדכון. בלי זה מחזיר את הגרסה הישנה!",
+     warn:"{runValidators: true} — בלי זה, ולידציות Schema לא רצות בupdate! באג נפוץ."},
+    {title:"deleteOne — מחיקת מסמך",
+     explain:"findByIdAndDelete או deleteOne — מסירים מסמך מה-collection לפי פילטר.",
+     code:'<span class="highlight-line">// deleteOne — מחיקת יוסי</span>\n<span class="highlight-line">const deleted = await Student.findOneAndDelete(</span>\n<span class="highlight-line">  { name: \'יוסי\' }</span>\n<span class="highlight-line">);</span>\nconsole.log(\'Deleted:\', deleted);\n// ⮕ { name: "יוסי", grade: 92, city: "תל אביב" }\n\n// 📦 Collection אחרי:\n// [{ name: "דניאל", grade: 92 },\n//  { name: "שרה", grade: 95 }]\n//  ❌ יוסי נמחק!\n\n<span class="highlight-line">// בדיקה שנמצא לפני מחיקה:</span>\nconst result = await Student.findByIdAndDelete(someId);\n<span class="highlight-line">if (!result) return res.status(404).json({error: \'Not found\'});</span>',
+     tip:"findOneAndDelete מחזיר את המסמך שנמחק (או null אם לא נמצא). תמיד בדקו!",
+     warn:"deleteMany({}) בלי פילטר — ימחק את כל ה-collection! תמיד שימו פילטר!"},
+    {title:"aggregate — קיבוץ וספירה",
+     explain:"aggregate מאפשר pipeline של שלבים: $match לסינון, $group לקיבוץ, $sort למיון.",
+     code:'<span class="highlight-line">// aggregate — כמה תלמידים בכל עיר?</span>\n<span class="highlight-line">const stats = await Student.aggregate([</span>\n<span class="highlight-line">  { $group: {</span>\n<span class="highlight-line">    _id: \'$city\',           // קיבוץ לפי עיר</span>\n<span class="highlight-line">    count: { $sum: 1 },      // ספירה</span>\n<span class="highlight-line">    avgGrade: { $avg: \'$grade\' }  // ממוצע</span>\n<span class="highlight-line">  }},</span>\n<span class="highlight-line">  { $sort: { count: -1 } }  // מיון יורד</span>\n<span class="highlight-line">]);</span>\n// ⮕ [{ _id: "תל אביב", count: 1, avgGrade: 92 },\n//    { _id: "חיפה", count: 1, avgGrade: 95 }]\n\n// עם $match — רק ציון מעל 90:\nconst filtered = await Student.aggregate([\n  { $match: { grade: { $gte: 90 } } },\n  { $group: { _id: \'$city\', count: { $sum: 1 } } }\n]);',
+     tip:"Pipeline = מערך של שלבים. כל שלב מעבד את הפלט של הקודם. סדר חשוב!",
+     warn:"$group חייב _id (השדה לקיבוץ). אם רוצים סטטיסטיקה על הכל: _id: null."}
+  ]
+},
+{
+  id:"nodejs-fs",title:"Node.js fs — פעולות קבצים",icon:"📁",
+  desc:"סימולציה אינטראקטיבית של מודול fs: readFile, writeFile, appendFile, readdir, path.join, וטיפול בשגיאות. עם עץ קבצים ויזואלי.",
+  difficulty:"medium",category:"express",
+  tags:[{label:"Node.js",cls:"express"},{label:"fs",cls:"js"},{label:"path",cls:"js"}],
+  steps:[
+    {title:"readFile — קריאת קובץ",
+     explain:"fs.readFile (או fs.promises.readFile) קורא תוכן קובץ. חובה לציין encoding כדי לקבל string ולא Buffer.",
+     code:'const fs = require(\'fs\').promises;\nconst path = require(\'path\');\n\n<span class="highlight-line">// קריאת קובץ טקסט</span>\n<span class="highlight-line">const content = await fs.readFile(\'data.txt\', \'utf-8\');</span>\nconsole.log(content);\n// ⮕ "שורה 1\\nשורה 2\\nשורה 3"\n\n// 📂 עץ קבצים:\n// project/\n//   ├── server.js\n//   ├── data.txt       ← קוראים מכאן\n//   └── logs/\n//       └── app.log\n\n// בלי utf-8 — מקבלים Buffer!\nconst buf = await fs.readFile(\'data.txt\');\nconsole.log(buf); // &lt;Buffer 73 68 6f 72 ...&gt;',
+     tip:"\'utf-8\' (או \'utf8\') כפרמטר שני = מחזיר string. בלי זה = Buffer שצריך toString().",
+     warn:"אם הקובץ לא קיים — יזרוק ENOENT error! תמיד עטפו ב-try/catch."},
+    {title:"writeFile — כתיבה/יצירת קובץ",
+     explain:"writeFile יוצר קובץ חדש או דורס קובץ קיים. הקובץ נוצר אם לא קיים, ונמחק התוכן הישן אם קיים.",
+     code:'<span class="highlight-line">// כתיבת קובץ חדש (או דריסת קיים)</span>\n<span class="highlight-line">await fs.writeFile(\'output.txt\', \'Hello World!\\n\');</span>\nconsole.log(\'✅ File written!\');\n\n// 📂 עץ קבצים אחרי:\n// project/\n//   ├── server.js\n//   ├── data.txt\n//   ├── output.txt     ← חדש!\n//   └── logs/\n//       └── app.log\n\n<span class="highlight-line">// כתיבת JSON לקובץ:</span>\n<span class="highlight-line">const data = [{ name: \'item1\' }, { name: \'item2\' }];</span>\n<span class="highlight-line">await fs.writeFile(</span>\n<span class="highlight-line">  \'data.json\',</span>\n<span class="highlight-line">  JSON.stringify(data, null, 2)  // pretty print</span>\n<span class="highlight-line">);</span>',
+     tip:"JSON.stringify(data, null, 2) — הפרמטר 2 = indentation. ככה JSON קריא בקובץ.",
+     warn:"writeFile דורס הכל! אם רוצים להוסיף בלי למחוק — השתמשו ב-appendFile!"},
+    {title:"appendFile — הוספה לקובץ קיים",
+     explain:"appendFile מוסיף תוכן לסוף הקובץ בלי למחוק מה שהיה. מושלם ללוגים.",
+     code:'<span class="highlight-line">// הוספת שורה לקובץ לוג</span>\n<span class="highlight-line">const timestamp = new Date().toISOString();</span>\n<span class="highlight-line">await fs.appendFile(</span>\n<span class="highlight-line">  \'logs/app.log\',</span>\n<span class="highlight-line">  `[${timestamp}] User logged in\\n`</span>\n<span class="highlight-line">);</span>\n\n// 📄 logs/app.log אחרי:\n// [2024-01-15T10:30:00] Server started\n// [2024-01-15T10:31:00] User logged in   ← חדש!\n\n// אם הקובץ לא קיים — appendFile יוצר אותו!\nawait fs.appendFile(\'new-log.txt\', \'First line\\n\');\n// ⮕ נוצר קובץ חדש עם השורה',
+     tip:"appendFile = writeFile עם flag \'a\' (append). לא דורס — מוסיף! מושלם ללוגים.",
+     warn:"אל תשכחו \\n בסוף! בלי זה כל ההוספות יהיו בשורה אחת ארוכה."},
+    {title:"readdir — קריאת תוכן תיקייה",
+     explain:"readdir מחזיר מערך של שמות קבצים ותיקיות בתיקייה נתונה.",
+     code:'<span class="highlight-line">// קריאת כל הקבצים בתיקייה</span>\n<span class="highlight-line">const files = await fs.readdir(\'.\');</span>\nconsole.log(files);\n// ⮕ [\'data.txt\', \'logs\', \'output.txt\', \'server.js\']\n\n<span class="highlight-line">// עם withFileTypes — לדעת מה תיקייה ומה קובץ</span>\n<span class="highlight-line">const entries = await fs.readdir(\'.\', { withFileTypes: true });</span>\nconst folders = entries.filter(e =&gt; e.isDirectory());\nconst onlyFiles = entries.filter(e =&gt; e.isFile());\n\nconsole.log(\'Folders:\', folders.map(f =&gt; f.name));\n// ⮕ [\'logs\']\nconsole.log(\'Files:\', onlyFiles.map(f =&gt; f.name));\n// ⮕ [\'data.txt\', \'output.txt\', \'server.js\']',
+     tip:"withFileTypes: true נותן אובייקטים עם isFile() ו-isDirectory() — ככה מסננים!"},
+    {title:"path.join — בניית נתיבים בטוחה",
+     explain:"path.join מחבר חלקי נתיב בצורה בטוחה — מתאים את ה-separator לOS ומנקה כפילויות.",
+     code:'const path = require(\'path\');\n\n<span class="highlight-line">// בניית נתיב בטוחה</span>\n<span class="highlight-line">const filePath = path.join(__dirname, \'data\', \'users.json\');</span>\n// ⮕ "/home/project/data/users.json"\n\n// למה לא string concatenation?\n<span class="highlight-line">// ❌ __dirname + \'/data/\' + \'users.json\'  // עלול ליצור //</span>\n// ✅ path.join(__dirname, \'data\', \'users.json\')\n\n// שימושים נפוצים:\nconst logFile = path.join(__dirname, \'logs\', \'app.log\');\nconst content = await fs.readFile(logFile, \'utf-8\');\n\n<span class="highlight-line">// path.resolve — נתיב מוחלט</span>\n<span class="highlight-line">const abs = path.resolve(\'data\', \'users.json\');</span>\n// ⮕ "/full/path/to/project/data/users.json"',
+     tip:"__dirname = הנתיב המלא לתיקייה של הקובץ הנוכחי. path.join מונע בעיות / ו-\\\\.",
+     warn:"לעולם לא לבנות paths עם + ידנית! ב-Windows זה \\\\ וב-Linux זה /. path.join מסדר."},
+    {title:"Error Handling — ENOENT וטיפול בשגיאות",
+     explain:"קובץ לא קיים? תיקייה חסרה? Node.js זורק errors עם קודים ספציפיים. חובה try/catch!",
+     code:'<span class="highlight-line">// טיפול בשגיאת ENOENT (File Not Found)</span>\n<span class="highlight-line">try {</span>\n<span class="highlight-line">  const data = await fs.readFile(\'missing.txt\', \'utf-8\');</span>\n<span class="highlight-line">} catch (err) {</span>\n<span class="highlight-line">  if (err.code === \'ENOENT\') {</span>\n<span class="highlight-line">    console.log(\'File not found! Creating...\');</span>\n<span class="highlight-line">    await fs.writeFile(\'missing.txt\', \'default content\');</span>\n<span class="highlight-line">  } else {</span>\n<span class="highlight-line">    throw err; // שגיאה אחרת — זרוק הלאה</span>\n<span class="highlight-line">  }</span>\n<span class="highlight-line">}</span>\n\n// בדיקה אם קובץ קיים:\ntry {\n  await fs.access(\'data.txt\');\n  console.log(\'File exists!\');\n} catch {\n  console.log(\'File does NOT exist\');\n}\n\n// קודי שגיאה נפוצים:\n// ENOENT — קובץ/תיקייה לא קיימים\n// EACCES — אין הרשאות\n// EISDIR — ניסיון לקרוא תיקייה כקובץ',
+     tip:"err.code === \'ENOENT\' — ככה מזהים file not found. Pattern נפוץ: אם לא קיים — צרו!",
+     warn:"לעולם אל תתעלמו מ-errors ב-fs! catch ריק = באגים שקשה למצוא."}
+  ]
+},
+{
+  id:"js-algorithm",title:"אלגוריתם JS צעד אחר צעד",icon:"🧮",
+  desc:"פתרון שאלת אלגוריתם: קלט → ולידציה → לולאה → חישוב → פלט. Pattern שחוזר בכל שאלה 2.",
+  difficulty:"medium",category:"js",
+  tags:[{label:"JavaScript",cls:"js"},{label:"Algorithm",cls:"js"},{label:"שאלה 2",cls:"express"}],
+  steps:[
+    {title:"הגדרת הפונקציה + קלט",
+     explain:"כל שאלה 2 מתחילה בפונקציה שמקבלת קלט (מערך, מספר, מחרוזת) ומחזירה תוצאה.",
+     code:'<span class="highlight-line">function sumByLength(numbers) {</span>\n  // קלט: מערך מספרים [12, 3, 456, 7, 89]\n  // פלט: אובייקט {אורך_מספר: סכום}\n  // דוגמה: {1: 10, 2: 101, 3: 456}\n}',
+     tip:"תמיד תקראו את השם בזהירות — הוא מתאר את מה שצריך להחזיר."},
+    {title:"ולידצית קלט",
+     explain:"בדיקה שהקלט תקין לפני שמתחילים לעבד. זורקים Error אם לא.",
+     code:'function sumByLength(numbers) {\n<span class="highlight-line">  if (!Array.isArray(numbers))</span>\n<span class="highlight-line">    throw new Error(\'Input must be an array\');</span>\n<span class="highlight-line">  if (numbers.some(n =&gt; typeof n !== \'number\'))</span>\n<span class="highlight-line">    throw new Error(\'All elements must be numbers\');</span>\n}',
+     tip:"Array.isArray() — הדרך הנכונה לבדוק מערך. typeof [] === 'object' (לא 'array'!).",
+     warn:"שכחתם ולידציה? הבודק מוריד נקודות גם אם השאר עובד!"},
+    {title:"הלולאה + חישוב מפתח",
+     explain:"עוברים על כל איבר, מחשבים את ה-key (כאן: אורך המספר), ומצברים.",
+     code:'function sumByLength(numbers) {\n  if (!Array.isArray(numbers))\n    throw new Error(\'Input must be an array\');\n\n<span class="highlight-line">  const result = {};</span>\n<span class="highlight-line">  for (const n of numbers) {</span>\n<span class="highlight-line">    const key = String(Math.abs(n)).length;</span>\n<span class="highlight-line">    result[key] = (result[key] || 0) + n;</span>\n<span class="highlight-line">  }</span>\n  return result;\n}',
+     tip:"Math.abs() למספרים שליליים — -42 אורכו 2, לא 3 (בלי המינוס).",
+     warn:"result[key] || 0 — חובה! בלי זה, undefined + n = NaN."},
+    {title:"פלט + דוגמאות",
+     explain:"תמיד בדקו עם דוגמאות — כולל edge cases: מערך ריק, מספרים שליליים, אפס.",
+     code:'// דוגמאות:\nconsole.log(sumByLength([12, 3, 456, 7, 89]));\n// ⮕ { 1: 10, 2: 101, 3: 456 }\n// כי: אורך 1 → 3+7=10, אורך 2 → 12+89=101, אורך 3 → 456\n\n<span class="highlight-line">console.log(sumByLength([]));</span>\n<span class="highlight-line">// ⮕ {} (מערך ריק = אובייקט ריק)</span>\n\nconsole.log(sumByLength([-42, 5, -3]));\n// ⮕ { 1: 2, 2: -42 }\n// Math.abs(-42)=42, length=2\n// Math.abs(-3)=3, length=1 → 5+(-3)=2',
+     tip:"Pattern קבוע: result[key] = (result[key] || 0) + value. עובד לכל accumulation."}
+  ]
+},
+{
+  id:"localStorage-pattern",title:"localStorage — שמירה וטעינה",icon:"💾",
+  desc:"Pattern מלא של עבודה עם localStorage ב-React: טעינה ב-useState, שמירה ב-useEffect, ומניעת באגים.",
+  difficulty:"easy",category:"react",
+  tags:[{label:"React",cls:"react"},{label:"localStorage",cls:"js"},{label:"Pattern",cls:"js"}],
+  steps:[
+    {title:"טעינה מ-localStorage ב-useState",
+     explain:"כשהאפליקציה נטענת, רוצים לשלוף את הנתונים מ-localStorage ולהכניס ל-state.",
+     code:'function App() {\n  // ❌ הדרך הלא נכונה:\n  const [items, setItems] = useState([]);\n  // items מתחיל ריק — מתעלמים מ-localStorage!\n\n<span class="highlight-line">  // ✅ הדרך הנכונה:</span>\n<span class="highlight-line">  const [items, setItems] = useState(</span>\n<span class="highlight-line">    JSON.parse(localStorage.getItem(\'items\')) || []</span>\n<span class="highlight-line">  );</span>\n}',
+     tip:"JSON.parse(null) === null, ולכן || [] מחזיר מערך ריק כברירת מחדל."},
+    {title:"שמירה ל-localStorage ב-useEffect",
+     explain:"כל פעם ש-state משתנה, שומרים את הערך החדש ב-localStorage.",
+     code:'function App() {\n  const [items, setItems] = useState(\n    JSON.parse(localStorage.getItem(\'items\')) || []\n  );\n\n<span class="highlight-line">  useEffect(() =&gt; {</span>\n<span class="highlight-line">    localStorage.setItem(\'items\', JSON.stringify(items));</span>\n<span class="highlight-line">  }, [items]); // רץ כל פעם ש-items משתנה</span>\n\n  // עכשיו כל שינוי ב-items נשמר אוטומטית!\n}',
+     warn:"לעולם לא localStorage.setItem בתוך handleClick! רק ב-useEffect. אחרת — race conditions."},
+    {title:"הוספה + מחיקה עם spread",
+     explain:"הוספה: spread + איבר חדש. מחיקה: filter. תמיד מערך חדש!",
+     code:'// הוספה\nfunction addItem(newItem) {\n<span class="highlight-line">  setItems(prev =&gt; [...prev, newItem]);</span>\n  // useEffect ישמור אוטומטית!\n}\n\n// מחיקה\nfunction deleteItem(id) {\n<span class="highlight-line">  setItems(prev =&gt; prev.filter(i =&gt; i.id !== id));</span>\n}\n\n// עדכון\nfunction updateItem(id, updates) {\n<span class="highlight-line">  setItems(prev =&gt; prev.map(i =&gt;</span>\n<span class="highlight-line">    i.id === id ? { ...i, ...updates } : i</span>\n<span class="highlight-line">  ));</span>\n}',
+     tip:"prev => [...prev, x] עדיף על [...items, x] — מונע stale state בclicks מהירים."},
+    {title:"סיכום — הPattern המלא",
+     explain:"ככה זה נראה ביחד — 3 שורות שנותנות persistence מלא:",
+     code:'function App() {\n  // 1️⃣ טעינה\n<span class="highlight-line">  const [items, setItems] = useState(</span>\n<span class="highlight-line">    JSON.parse(localStorage.getItem(\'items\')) || []</span>\n<span class="highlight-line">  );</span>\n\n  // 2️⃣ שמירה אוטומטית\n<span class="highlight-line">  useEffect(() =&gt; {</span>\n<span class="highlight-line">    localStorage.setItem(\'items\', JSON.stringify(items));</span>\n<span class="highlight-line">  }, [items]);</span>\n\n  // 3️⃣ שינויים רגילים — localStorage מתעדכן לבד\n  const add = (item) =&gt; setItems(p =&gt; [...p, item]);\n  const del = (id) =&gt; setItems(p =&gt; p.filter(i =&gt; i.id !== id));\n  const edit = (id, u) =&gt; setItems(p =&gt;\n    p.map(i =&gt; i.id === id ? {...i, ...u} : i)\n  );\n\n  return (\n    &lt;div&gt;\n      {items.map(item =&gt;\n        &lt;div key={item.id}&gt;{item.name}&lt;/div&gt;\n      )}\n    &lt;/div&gt;\n  );\n}',
+     tip:"Pattern זה חוזר בכל שאלה 1 במבחן. שננו אותו!"}
+  ]
+},
+{
+  id:"theory-essentials",title:"תאוריה — 15 שאלות חובה",icon:"📖",
+  desc:"סיכום 15 השאלות התיאורטיות הכי נפוצות: HTTP methods, React vs Vanilla, MongoDB vs SQL, middleware ועוד.",
+  difficulty:"easy",category:"js",
+  tags:[{label:"תאוריה",cls:"js"},{label:"HTTP",cls:"express"},{label:"React",cls:"react"}],
+  steps:[
+    {title:"HTTP Methods — GET, POST, PUT, DELETE",
+     explain:"4 ה-methods הבסיסיים של HTTP. כל אחד עם מטרה ברורה.",
+     code:'<span class="highlight-line">GET    — קריאת נתונים (לא משנה שום דבר)</span>\n<span class="highlight-line">POST   — יצירת נתון חדש (שולח body)</span>\n<span class="highlight-line">PUT    — עדכון נתון קיים (שולח body)</span>\n<span class="highlight-line">DELETE — מחיקת נתון</span>\n\nסטטוס קודים חשובים:\n<span class="highlight-line">200 — OK (הצלחה רגילה)</span>\n<span class="highlight-line">201 — Created (נוצר בהצלחה, אחרי POST)</span>\n<span class="highlight-line">404 — Not Found (לא נמצא)</span>\n<span class="highlight-line">400 — Bad Request (קלט שגוי)</span>\n<span class="highlight-line">500 — Internal Server Error (באג בשרת)</span>',
+     tip:"POST = יצירה → 201. GET = קריאה → 200. PUT = עדכון → 200. DELETE = מחיקה → 200."},
+    {title:"React vs Vanilla JavaScript",
+     explain:"מה ההבדלים בין React לJS רגיל? למה להשתמש ב-React?",
+     code:'<span class="highlight-line">Vanilla JS:</span>\n• מניפולציה ישירה של DOM (getElementById, innerHTML)\n• ניהול state ידני (משתנים גלובליים)\n• אין components — קוד חוזר\n• קשה לנהל UI מורכב\n\n<span class="highlight-line">React:</span>\n• Virtual DOM — מעדכן רק מה שהשתנה (יעיל)\n• State מנוהל (useState) — UI מתעדכן אוטומטית\n• Components — קוד מודולרי וניתן לשימוש חוזר\n• One-way data flow — קל לעקוב אחרי נתונים\n• JSX — HTML בתוך JavaScript',
+     tip:"במבחן: React = Virtual DOM + Components + one-way data flow. זה הליבה."},
+    {title:"MongoDB vs SQL",
+     explain:"הבדלים בין MongoDB (NoSQL) ל-SQL (MySQL/PostgreSQL).",
+     code:'<span class="highlight-line">MongoDB (NoSQL):</span>\n• Documents (JSON-like) — גמיש, בלי schema קבוע\n• Collections = טבלאות\n• .find(), .create(), .updateOne()\n• Mongoose = ODM (Object Document Mapper)\n• מתאים לנתונים שמשתנים הרבה\n\n<span class="highlight-line">SQL:</span>\n• Tables עם columns קבועים (schema מוגדר)\n• Rows = רשומות\n• SELECT, INSERT, UPDATE, DELETE\n• Relations בין טבלאות (JOIN)\n• מתאים לנתונים מובנים עם קשרים',
+     tip:"במבחן: MongoDB = documents, flexible schema, Mongoose. SQL = tables, rows, strict schema."},
+    {title:"Middleware ב-Express",
+     explain:"מה זה middleware? פונקציה שרצה בין הRequest ל-Response.",
+     code:'<span class="highlight-line">// middleware = פונקציה עם (req, res, next)</span>\nfunction logger(req, res, next) {\n  console.log(`${req.method} ${req.url}`);\n  next(); // חובה! אחרת הrequest נתקע\n}\n\n<span class="highlight-line">// Built-in middleware:</span>\napp.use(express.json());  // פורס JSON body\napp.use(cors());          // מאפשר cross-origin\n\n<span class="highlight-line">// Custom middleware:</span>\napp.use(logger);\n\n<span class="highlight-line">// Route-specific middleware:</span>\napp.get(\'/admin\', authCheck, (req, res) =&gt; {\n  res.json({message: \'Admin panel\'});\n});',
+     tip:"middleware רץ לפי סדר. express.json() חייב להיות לפני routes שקוראים req.body!",
+     warn:"שכחתם next()? הRequest נתקע ולעולם לא מגיע ל-route handler!"},
+    {title:"useEffect — מתי רץ?",
+     explain:"3 הצורות של useEffect ומתי כל אחת רצה.",
+     code:'<span class="highlight-line">// 1️⃣ בלי dependency array — כל render</span>\nuseEffect(() =&gt; {\n  console.log(\'runs every render\');\n});\n\n<span class="highlight-line">// 2️⃣ מערך ריק — רק פעם אחת (mount)</span>\nuseEffect(() =&gt; {\n  console.log(\'runs once on mount\');\n}, []);\n\n<span class="highlight-line">// 3️⃣ עם dependencies — כש-X משתנה</span>\nuseEffect(() =&gt; {\n  console.log(\'runs when count changes\');\n}, [count]);\n\n<span class="highlight-line">// 4️⃣ cleanup — כש-component נהרס</span>\nuseEffect(() =&gt; {\n  const id = setInterval(tick, 1000);\n  return () =&gt; clearInterval(id); // cleanup\n}, []);',
+     tip:"[] = mount, [dep] = when dep changes, no array = every render. Cleanup = return function."}
+  ]
+}
+];
+
+// ===== PROGRESS TRACKING =====
+function getProgress(){return JSON.parse(localStorage.getItem('sim-progress')||'{}');}
+function saveProgress(p){localStorage.setItem('sim-progress',JSON.stringify(p));}
+function markCompleted(id){const p=getProgress();p[id]='completed';saveProgress(p);}
+function isCompleted(id){return getProgress()[id]==='completed';}
+
+const DIFF_LABELS={easy:'קל',medium:'בינוני',hard:'קשה'};
+let _activeFilter='all';
+
+function renderCards(){
+  const cardsEl=document.getElementById('sim-cards');
+  const search=(document.getElementById('sim-search')||{}).value||'';
+  const q=search.trim().toLowerCase();
+  cardsEl.innerHTML='';
+  const progress=getProgress();
+  let shown=0;
+
+  SIMS.forEach(sim=>{
+    if(_activeFilter!=='all'&&sim.category!==_activeFilter) return;
+    if(q&&!sim.title.toLowerCase().includes(q)&&!sim.desc.toLowerCase().includes(q)&&!sim.tags.some(t=>t.label.toLowerCase().includes(q))) return;
+    shown++;
+    const done=progress[sim.id]==='completed';
+    const card=document.createElement('div');
+    card.className='sim-card';
+    card.innerHTML=`${done?'<span class="done-badge">✅ הושלם</span>':''}${sim.difficulty?`<span class="diff-tag ${sim.difficulty}">${DIFF_LABELS[sim.difficulty]}</span>`:''}
+      <div class="ico">${sim.icon}</div><h3>${sim.title}</h3><p>${sim.desc}</p>
+      <div class="step-info">📝 ${sim.steps.length} שלבים${sim.difficulty?' · '+DIFF_LABELS[sim.difficulty]:''}</div>
+      <div class="meta">${sim.tags.map(t=>`<span class="tag ${t.cls}">${t.label}</span>`).join('')}</div>`;
+    card.onclick=()=>startSim(sim.id);
+    cardsEl.appendChild(card);
+  });
+
+  if(!shown) cardsEl.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#64748b;font-weight:700;font-size:16px">🔍 לא נמצאו סימולציות</div>';
+  updateHeroProgress();
+}
+
+function updateHeroProgress(){
+  const p=getProgress();
+  const done=SIMS.filter(s=>p[s.id]==='completed').length;
+  const el=document.getElementById('hero-progress');
+  if(el) el.textContent=`${done}/${SIMS.length} סימולציות הושלמו`;
+}
+
+function setFilter(f){
+  _activeFilter=f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.toggle('active',c.dataset.filter===f));
+  renderCards();
+}
+
+function filterCards(){renderCards();}
+
+renderCards();
+
+let _activeSim=null;
+let _simStep=0;
+
+function startSim(id){
+  _activeSim=SIMS.find(s=>s.id===id);
+  _simStep=0;
+  document.getElementById('sim-cards').style.display='none';
+  document.getElementById('filter-bar').style.display='none';
+  const el=document.getElementById('sim-active');
+  el.classList.add('visible');
+  renderSimStep();
+}
+
+function exitSim(){
+  document.getElementById('sim-cards').style.display='';
+  document.getElementById('filter-bar').style.display='';
+  document.getElementById('sim-active').classList.remove('visible');
+  _activeSim=null;
+  renderCards();
+}
+
+function renderSimStep(){
+  if(!_activeSim) return;
+  const sim=_activeSim;
+  const step=sim.steps[_simStep];
+  const total=sim.steps.length;
+  const el=document.getElementById('sim-active');
+  const done=isCompleted(sim.id);
+
+  let html=`<button class="sim-back" onclick="exitSim()">← חזרה לכל הסימולציות</button>`;
+  html+=`<h2 style="font-size:20px;margin-bottom:12px">${sim.icon} ${sim.title}${done?' <span style="color:var(--green);font-size:14px">✅ הושלם</span>':''}</h2>`;
+
+  html+=`<div class="sim-progress">`;
+  for(let i=0;i<total;i++){
+    if(i>0) html+=`<div class="sim-dot-line${i<=_simStep?' done':''}"></div>`;
+    html+=`<div class="sim-dot${i<_simStep?' done':i===_simStep?' current':''}" onclick="_simStep=${i};renderSimStep()">${i+1}</div>`;
+  }
+  html+=`</div>`;
+
+  html+=`<div class="sim-step">
+    <div class="sim-step-head">
+      <span class="sim-step-num">${_simStep+1}</span>
+      <span class="sim-step-title">${step.title}</span>
+    </div>
+    <div class="sim-step-body">
+      <div class="sim-explain">${step.explain}</div>
+      <pre class="sim-code">${step.code}</pre>
+      ${step.tip?`<div class="sim-tip">${step.tip}</div>`:''}
+      ${step.warn?`<div class="sim-warn">${step.warn}</div>`:''}
+    </div>
+  </div>`;
+
+  const isLast=_simStep>=total-1;
+  html+=`<div class="sim-nav">
+    <button class="sim-nav-btn prev" onclick="prevSimStep()" ${_simStep===0?'disabled':''}>← הקודם</button>
+    ${isLast
+      ?`<button class="sim-nav-btn finish" onclick="completeSim()">✓ סיום${done?'':' ושמירה'}</button>`
+      :`<button class="sim-nav-btn next" onclick="nextSimStep()">הבא →</button>`
+    }
+  </div>`;
+
+  el.innerHTML=html;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextSimStep(){
+  if(_simStep<_activeSim.steps.length-1){_simStep++;renderSimStep();}
+}
+
+function prevSimStep(){
+  if(_simStep>0){_simStep--;renderSimStep();}
+}
+
+function completeSim(){
+  if(_activeSim){markCompleted(_activeSim.id);}
+  exitSim();
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown',function(e){
+  const tag=document.activeElement.tagName.toLowerCase();
+  if(tag==='input'||tag==='textarea'||document.activeElement.isContentEditable) return;
+  if(e.key==='ArrowRight'&&_activeSim){nextSimStep();e.preventDefault();return;}
+  if(e.key==='ArrowLeft'&&_activeSim){prevSimStep();e.preventDefault();return;}
+  if(e.key==='Escape'&&_activeSim){exitSim();e.preventDefault();return;}
+  if(e.key==='/'&&!_activeSim){e.preventDefault();document.getElementById('sim-search').focus();return;}
+});
+</script>
+<div style="position:fixed;bottom:12px;left:12px;background:#1e1b4b;color:#e2e8f0;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;opacity:.85;z-index:9999;direction:ltr;box-shadow:2px 2px 6px rgba(0,0,0,.3)">
+  <span style="color:#facc15">Shortcuts:</span> ← → prev/next step | ESC back to list | / search
+</div>
+<footer style="border-top:3px solid #000;padding:16px 24px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+<strong>🔗 כלים נוספים:</strong>
+<a href="flow-canvas.html" style="color:#7c3aed;font-weight:700">🗺 מפת זרימה</a>
+<a href="file-graph.html" style="color:#7c3aed;font-weight:700">📂 File Graph</a>
+<a href="sequence-diagrams.html" style="color:#7c3aed;font-weight:700">🔄 Sequence Diagrams</a>
+<a href="practice-bank.html" style="color:#7c3aed;font-weight:700">💪 בנק תרגול</a>
+<a href="course-map.html" style="color:#7c3aed;font-weight:700">🗂 Course Map</a>
+<a href="code-browser.html" style="color:#7c3aed;font-weight:700">💻 קוד מקור</a>
+<a href="progress-dashboard.html" style="color:#7c3aed;font-weight:700">📊 דשבורד</a>
+</footer>
+</body>
+</html>

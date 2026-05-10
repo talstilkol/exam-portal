@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📦 מעקב Data Flow — זרימת נתונים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --black: #1a1a1a;
+  --white: #ffffff;
+  --shadow: 4px 4px 0px #1a1a1a;
+  --shadow-lg: 6px 6px 0px #1a1a1a;
+  --shadow-sm: 2px 2px 0px #1a1a1a;
+  --border: 3px solid #1a1a1a;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+
+  /* Layer colors */
+  --user-bg: #fef3c7;
+  --user-border: #f59e0b;
+  --frontend-bg: #dbeafe;
+  --frontend-border: #3b82f6;
+  --backend-bg: #ede9fe;
+  --backend-border: #8b5cf6;
+  --database-bg: #dcfce7;
+  --database-border: #22c55e;
+
+  /* Hero gradient */
+  --hero-from: #1e1b4b;
+  --hero-to: #312e81;
+
+  --font: 'Heebo', sans-serif;
+  --mono: 'Courier New', Courier, monospace;
+}
+
+body {
+  font-family: var(--font);
+  background: #f8fafc;
+  color: var(--black);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════
+   HERO SECTION
+   ═══════════════════════════════════════ */
+.hero {
+  background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-to) 50%, #4338ca 100%);
+  padding: 60px 24px 50px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: var(--border);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 60%);
+  animation: heroGlow 8s ease-in-out infinite;
+}
+
+@keyframes heroGlow {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(5%, 5%); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  color: var(--white);
+  margin-bottom: 12px;
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+}
+
+.hero p {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 300;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  padding: 6px 18px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 16px;
+  backdrop-filter: blur(4px);
+}
+
+/* ═══════════════════════════════════════
+   SCENARIO TABS
+   ═══════════════════════════════════════ */
+.tabs-container {
+  max-width: 1200px;
+  margin: -28px auto 0;
+  padding: 0 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.tabs-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 8px 4px;
+  scrollbar-width: none;
+}
+
+.tabs-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #1a1a1a;
+}
+
+.tab-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #1a1a1a;
+}
+
+.tab-btn.active {
+  background: var(--hero-to);
+  color: var(--white);
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #1a1a1a;
+}
+
+.tab-btn .tab-icon {
+  font-size: 1.3rem;
+}
+
+.tab-btn .tab-viewed {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 1.5px solid var(--black);
+}
+
+/* ═══════════════════════════════════════
+   SCENARIO INFO BAR
+   ═══════════════════════════════════════ */
+.scenario-info {
+  max-width: 1200px;
+  margin: 24px auto 0;
+  padding: 0 20px;
+}
+
+.info-card {
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.info-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.info-left .info-icon {
+  font-size: 2rem;
+}
+
+.info-left .info-text h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.info-left .info-text p {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.info-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.step-counter {
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: #f1f5f9;
+  border: 2px solid var(--black);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  min-width: 90px;
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════
+   CONTROLS
+   ═══════════════════════════════════════ */
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.ctrl-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.15s ease;
+}
+
+.ctrl-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #1a1a1a;
+}
+
+.ctrl-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 0px 0px 0px #1a1a1a;
+}
+
+.ctrl-btn.playing {
+  background: #ef4444;
+  color: white;
+}
+
+.ctrl-btn.step-btn {
+  width: auto;
+  padding: 0 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font);
+}
+
+/* ═══════════════════════════════════════
+   FLOW STRIP — MAIN AREA
+   ═══════════════════════════════════════ */
+.flow-section {
+  max-width: 100%;
+  margin: 24px auto 40px;
+  padding: 0 20px;
+}
+
+.flow-strip-wrapper {
+  overflow-x: auto;
+  padding: 20px 0 30px;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 transparent;
+}
+
+.flow-strip-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.flow-strip-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.flow-strip-wrapper::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 4px;
+}
+
+.flow-strip {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 10px 20px;
+  min-width: max-content;
+}
+
+.flow-item {
+  display: flex;
+  align-items: center;
+}
+
+.flow-arrow {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #94a3b8;
+  padding: 0 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+/* ═══════════════════════════════════════
+   STEP CARDS
+   ═══════════════════════════════════════ */
+.step-card {
+  width: 260px;
+  min-width: 260px;
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.step-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.step-card[data-layer="user"] {
+  background: var(--user-bg);
+}
+.step-card[data-layer="user"]::before {
+  background: var(--user-border);
+}
+
+.step-card[data-layer="frontend"] {
+  background: var(--frontend-bg);
+}
+.step-card[data-layer="frontend"]::before {
+  background: var(--frontend-border);
+}
+
+.step-card[data-layer="backend"] {
+  background: var(--backend-bg);
+}
+.step-card[data-layer="backend"]::before {
+  background: var(--backend-border);
+}
+
+.step-card[data-layer="database"] {
+  background: var(--database-bg);
+}
+.step-card[data-layer="database"]::before {
+  background: var(--database-border);
+}
+
+.step-card.active {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 0 0 3px #6366f1, var(--shadow-lg);
+  z-index: 5;
+  animation: cardGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes cardGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 3px #6366f1, 0 0 15px rgba(99, 102, 241, 0.3), var(--shadow-lg);
+  }
+  50% {
+    box-shadow: 0 0 0 5px #6366f1, 0 0 25px rgba(99, 102, 241, 0.5), var(--shadow-lg);
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  background: var(--black);
+  color: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.card-titles {
+  flex: 1;
+}
+
+.card-titles .stage-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.card-titles .file-name {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.layer-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1.5px solid var(--black);
+}
+
+.layer-badge[data-layer="user"] {
+  background: #fde68a;
+}
+.layer-badge[data-layer="frontend"] {
+  background: #93c5fd;
+}
+.layer-badge[data-layer="backend"] {
+  background: #c4b5fd;
+}
+.layer-badge[data-layer="database"] {
+  background: #86efac;
+}
+
+.code-block {
+  background: rgba(0, 0, 0, 0.06);
+  border: 2px solid rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-all;
+  flex: 1;
+  direction: ltr;
+  text-align: left;
+  color: #1e293b;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+/* ═══════════════════════════════════════
+   LEGEND
+   ═══════════════════════════════════════ */
+.legend {
+  max-width: 1200px;
+  margin: 0 auto 30px;
+  padding: 0 20px;
+}
+
+.legend-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.legend-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 2px solid var(--black);
+}
+
+.legend-dot.user { background: var(--user-bg); }
+.legend-dot.frontend { background: var(--frontend-bg); }
+.legend-dot.backend { background: var(--backend-bg); }
+.legend-dot.database { background: var(--database-bg); }
+
+/* ═══════════════════════════════════════
+   PROGRESS SECTION
+   ═══════════════════════════════════════ */
+.progress-section {
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  padding: 0 20px;
+}
+
+.progress-card {
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 24px;
+  text-align: center;
+}
+
+.progress-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.progress-bar-container {
+  background: #e2e8f0;
+  border: 2px solid var(--black);
+  border-radius: 20px;
+  height: 24px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  border-radius: 20px;
+  transition: width 0.5s ease;
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════ */
+.footer {
+  background: var(--black);
+  color: var(--white);
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.footer-links a {
+  color: var(--white);
+  text-decoration: none;
+  padding: 8px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.footer-links a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  margin-top: 12px;
+}
+
+/* ═══════════════════════════════════════
+   MOBILE RESPONSIVE
+   ═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .hero {
+    padding: 40px 16px 36px;
+  }
+
+  .tabs-container {
+    margin-top: -20px;
+    padding: 0 12px;
+  }
+
+  .tab-btn {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .info-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 16px;
+  }
+
+  .info-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .flow-section {
+    padding: 0 12px;
+  }
+
+  .flow-strip {
+    flex-direction: column;
+    align-items: center;
+    min-width: unset;
+    padding: 10px 0;
+  }
+
+  .flow-item {
+    flex-direction: column;
+  }
+
+  .flow-arrow {
+    transform: rotate(90deg);
+    padding: 4px 0;
+  }
+
+  .step-card {
+    width: 100%;
+    min-width: unset;
+    max-width: 340px;
+  }
+
+  .step-card.active {
+    transform: scale(1.02);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero p {
+    font-size: 0.9rem;
+  }
+
+  .tab-btn .tab-name {
+    display: none;
+  }
+
+  .tab-btn {
+    padding: 10px 12px;
+  }
+
+  .tab-btn .tab-icon {
+    font-size: 1.5rem;
+  }
+}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════ */
+.fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+  animation: slideIn 0.4s ease forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Tooltip for viewed badge */
+.tab-btn {
+  position: relative;
+}
+
+/* Scroll hint */
+.scroll-hint {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .scroll-hint {
+    display: block;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>📦 מעקב Data Flow</h1>
+    <p>איך הנתונים משתנים בכל שלב — מהקלט למסד הנתונים וחזרה</p>
+    <span class="hero-badge">5 תרחישים · צעד אחר צעד · אנימציה אוטומטית</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SCENARIO TABS
+     ═══════════════════════════════════════ -->
+<nav class="tabs-container">
+  <div class="tabs-scroll" id="tabsScroll"></div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     SCENARIO INFO
+     ═══════════════════════════════════════ -->
+<section class="scenario-info">
+  <div class="info-card">
+    <div class="info-left">
+      <span class="info-icon" id="infoIcon">🔐</span>
+      <div class="info-text">
+        <h3 id="infoName">Login Flow</h3>
+        <p id="infoDesc">משתמש מתחבר → token חוזר</p>
+      </div>
+    </div>
+    <div class="info-right">
+      <div class="controls">
+        <button class="ctrl-btn step-btn" id="prevBtn" title="שלב קודם">◀</button>
+        <button class="ctrl-btn" id="playBtn" title="הפעלה אוטומטית">▶</button>
+        <button class="ctrl-btn step-btn" id="nextBtn" title="שלב הבא">▶</button>
+      </div>
+      <div class="step-counter" id="stepCounter">שלב 0/12</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     LEGEND
+     ═══════════════════════════════════════ -->
+<section class="legend">
+  <div class="legend-inner">
+    <div class="legend-item">
+      <span class="legend-dot user"></span>
+      <span>User / דפדפן</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot frontend"></span>
+      <span>Frontend</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot backend"></span>
+      <span>Backend</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot database"></span>
+      <span>Database</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FLOW STRIP
+     ═══════════════════════════════════════ -->
+<section class="flow-section">
+  <p class="scroll-hint">← גלול לצדדים לראות את כל השלבים →</p>
+  <div class="flow-strip-wrapper" id="flowWrapper">
+    <div class="flow-strip" id="flowStrip"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PROGRESS
+     ═══════════════════════════════════════ -->
+<section class="progress-section">
+  <div class="progress-card">
+    <h3>📊 התקדמות צפייה בתרחישים</h3>
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+    <p class="progress-text" id="progressText">0 מתוך 5 תרחישים נצפו</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-links">
+    <a href="sequence-diagrams.html">🔀 Sequence Diagrams</a>
+    <a href="file-tree-master.html">🌳 File Tree</a>
+    <a href="code-browser.html">🔍 Code Browser</a>
+    <a href="flow-canvas.html">🎨 Flow Canvas</a>
+    <a href="express-js-patterns.html">⚡ Express Patterns</a>
+    <a href="progress-dashboard.html">📊 Dashboard</a>
+  </div>
+  <p class="footer-copy">Data Flow Visualizer — כלי עזר ללמידת Full-Stack</p>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════ -->
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const DATA_FLOW = {
+  login: {
+    icon:'🔐', name:'Login Flow', desc:'משתמש מתחבר → token חוזר',
+    steps:[
+      {stage:'קלט המשתמש', file:'דפדפן', layer:'user', data:'email: alice@x.com\npassword: secret'},
+      {stage:'JS object', file:'LoginForm.jsx', layer:'frontend', data:'{ email, password }'},
+      {stage:'JSON string', file:'fetch', layer:'frontend', data:'JSON.stringify({\n  email: "alice@x.com",\n  password: "secret"\n})'},
+      {stage:'HTTP Request', file:'Browser → Server', layer:'frontend', data:'POST /api/login\nContent-Type: application/json\n\n{"email":"...","password":"..."}'},
+      {stage:'req.body', file:'server.js', layer:'backend', data:'{ email: "alice@x.com",\n  password: "secret" }'},
+      {stage:'DB Query', file:'handlers.js', layer:'backend', data:'User.findOne({\n  email: "alice@x.com"\n})'},
+      {stage:'DB Document', file:'MongoDB', layer:'database', data:'{ _id: ObjectId("..."),\n  email: "alice@x.com",\n  passwordHash: "$2b$10...",\n  createdAt: Date }'},
+      {stage:'bcrypt compare', file:'handlers.js', layer:'backend', data:'bcrypt.compare(\n  "secret",\n  user.passwordHash\n) → true ✓'},
+      {stage:'JWT sign', file:'jwt.js', layer:'backend', data:'jwt.sign(\n  { id: user._id },\n  SECRET,\n  { expiresIn: "15m" }\n)'},
+      {stage:'JWT string', file:'jwt.js', layer:'backend', data:'eyJhbGciOiJIUzI1NiJ9.\neyJpZCI6ImFiYyJ9.\nSIGNATURE\n\n// header.payload.sig'},
+      {stage:'HTTP Response', file:'server.js', layer:'backend', data:'200 OK\n\n{ token: "eyJhbGci..." }'},
+      {stage:'localStorage', file:'דפדפן', layer:'frontend', data:'localStorage.setItem(\n  "token",\n  "eyJhbGci..."\n)'}
+    ]
+  },
+  list: {
+    icon:'📋', name:'List Users', desc:'טעינת רשימת משתמשים עם token',
+    steps:[
+      {stage:'mount', file:'App.jsx', layer:'frontend', data:'useEffect(() => {\n  fetch("/api/users", {...})\n}, [])'},
+      {stage:'Auth header', file:'fetch options', layer:'frontend', data:'headers: {\n  Authorization:\n    "Bearer eyJhbGci..."\n}'},
+      {stage:'HTTP Request', file:'Browser → Server', layer:'frontend', data:'GET /api/users\nAuthorization: Bearer eyJ...'},
+      {stage:'Verify token', file:'authenticate.js', layer:'backend', data:'jwt.verify(\n  token,\n  SECRET\n) → { id: "abc123" }'},
+      {stage:'req.user', file:'middleware', layer:'backend', data:'req.user = {\n  id: "abc123"\n}\nnext() →'},
+      {stage:'DB Query', file:'handlers.js', layer:'backend', data:'User.find()'},
+      {stage:'Array of docs', file:'MongoDB', layer:'database', data:'[\n  {_id, name:"Alice", email},\n  {_id, name:"Bob", email},\n  ...\n]'},
+      {stage:'JSON Response', file:'server.js', layer:'backend', data:'res.json(users)\n\n200 OK\n[{...}, {...}]'},
+      {stage:'setUsers', file:'App.jsx', layer:'frontend', data:'setUsers(data)\n→ state update\n→ re-render'},
+      {stage:'UI render', file:'דפדפן', layer:'user', data:'<li>Alice</li>\n<li>Bob</li>\n...'}
+    ]
+  },
+  create: {
+    icon:'➕', name:'Create User', desc:'הוספת משתמש חדש + validation',
+    steps:[
+      {stage:'Form input', file:'Form.jsx', layer:'frontend', data:'name: "Carol"\nemail: "carol@x.com"'},
+      {stage:'JS object', file:'Form.jsx', layer:'frontend', data:'{ name: "Carol",\n  email: "carol@x.com" }'},
+      {stage:'fetch body', file:'fetch', layer:'frontend', data:'JSON.stringify({\n  name: "Carol",\n  email: "carol@x.com"\n})'},
+      {stage:'HTTP POST', file:'Browser → Server', layer:'frontend', data:'POST /api/users\nAuthorization: Bearer ...\n\n{name, email}'},
+      {stage:'req.body', file:'server.js', layer:'backend', data:'{ name: "Carol",\n  email: "carol@x.com" }'},
+      {stage:'Validate', file:'Mongoose Schema', layer:'backend', data:'name: required ✓\nemail: required ✓\nunique: checking...'},
+      {stage:'INSERT', file:'MongoDB', layer:'database', data:'{ _id: ObjectId("new"),\n  name: "Carol",\n  email: "carol@x.com",\n  createdAt: Date.now() }'},
+      {stage:'201 Created', file:'handlers.js', layer:'backend', data:'res.status(201).json(user)\n\n201 Created\n{_id, name, email}'},
+      {stage:'Response', file:'fetch', layer:'frontend', data:'res.status === 201\nconst newUser = await res.json()'},
+      {stage:'UI feedback', file:'Form.jsx', layer:'frontend', data:'setSuccess(true)\n→ "נוצר בהצלחה! ✓"'}
+    ]
+  },
+  error: {
+    icon:'❌', name:'Error Flow', desc:'מה קורה כשיש validation error',
+    steps:[
+      {stage:'Form (פגום!)', file:'Form.jsx', layer:'frontend', data:'email: "not-an-email"\nname: ""'},
+      {stage:'POST body', file:'fetch', layer:'frontend', data:'JSON.stringify({\n  email: "not-an-email",\n  name: ""\n})'},
+      {stage:'req.body', file:'server.js', layer:'backend', data:'{ email: "not-an-email",\n  name: "" }'},
+      {stage:'Validate ❌', file:'Mongoose', layer:'backend', data:'ValidationError: {\n  email: "invalid format",\n  name: "required"\n}'},
+      {stage:'next(err)', file:'handlers.js', layer:'backend', data:'catch (err) {\n  next(err);\n  // → error middleware\n}'},
+      {stage:'Error handler', file:'errorHandler.js', layer:'backend', data:'err.name === "ValidationError"\n→ status 400'},
+      {stage:'400 Response', file:'server.js', layer:'backend', data:'400 Bad Request\n\n{ error: "Validation failed",\n  details: {...} }'},
+      {stage:'!res.ok', file:'Form.jsx', layer:'frontend', data:'if (!res.ok) {\n  throw new Error(\n    "Validation failed"\n  );\n}'},
+      {stage:'catch → setError', file:'Form.jsx', layer:'frontend', data:'catch (err) {\n  setError(err.message);\n}'},
+      {stage:'UI shows error', file:'דפדפן', layer:'user', data:'<p class="error">\n  ❌ Validation failed\n</p>'}
+    ]
+  },
+  refresh: {
+    icon:'🔄', name:'Token Refresh', desc:'מה קורה כשה-token פג',
+    steps:[
+      {stage:'Token פג!', file:'App.jsx', layer:'frontend', data:'token = "eyJ..."\n// exp: past!'},
+      {stage:'GET /users', file:'fetch', layer:'frontend', data:'Authorization:\n  Bearer eyJ...(expired)'},
+      {stage:'verify ❌', file:'authenticate.js', layer:'backend', data:'jwt.verify() →\nTokenExpiredError'},
+      {stage:'401 Unauthorized', file:'server.js', layer:'backend', data:'res.status(401)\n  .json({error: "Token expired"})'},
+      {stage:'Interceptor', file:'apiFetch.js', layer:'frontend', data:'if (res.status === 401) {\n  → try refresh\n}'},
+      {stage:'POST /refresh', file:'fetch', layer:'frontend', data:'credentials: "include"\n→ sends httpOnly cookie'},
+      {stage:'Cookie', file:'Browser', layer:'frontend', data:'Cookie:\n  refresh_token=eyJ...\n  (httpOnly, secure)'},
+      {stage:'Verify refresh', file:'jwt.js', layer:'backend', data:'jwt.verify(\n  refreshToken,\n  REFRESH_SECRET\n) → ✓'},
+      {stage:'Sign new access', file:'jwt.js', layer:'backend', data:'jwt.sign(\n  {id: user._id},\n  SECRET,\n  {expiresIn: "15m"}\n)'},
+      {stage:'200 + new token', file:'server.js', layer:'backend', data:'200 OK\n\n{accessToken: "eyJ...new"}'},
+      {stage:'Retry original', file:'apiFetch.js', layer:'frontend', data:'// retry GET /users\n// with new token\nfetch("/api/users", {\n  headers: {Authorization: ...}\n})'}
+    ]
+  }
+};
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+const SCENARIO_KEYS = Object.keys(DATA_FLOW);
+let currentScenario = SCENARIO_KEYS[0];
+let currentStep = -1; // -1 = no step highlighted
+let isPlaying = false;
+let playInterval = null;
+
+// ═══════════════════════════════════════
+// LOCAL STORAGE
+// ═══════════════════════════════════════
+function getViewed() {
+  try {
+    const raw = localStorage.getItem('df-viewed');
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function markViewed(key) {
+  const viewed = getViewed();
+  if (!viewed.includes(key)) {
+    viewed.push(key);
+    localStorage.setItem('df-viewed', JSON.stringify(viewed));
+  }
+  updateProgress();
+  renderTabs();
+}
+
+function updateProgress() {
+  const viewed = getViewed();
+  const count = viewed.length;
+  const total = SCENARIO_KEYS.length;
+  const pct = Math.round((count / total) * 100);
+
+  const fill = document.getElementById('progressFill');
+  const text = document.getElementById('progressText');
+
+  if (fill) fill.style.width = pct + '%';
+  if (text) text.textContent = `${count} מתוך ${total} תרחישים נצפו`;
+}
+
+// ═══════════════════════════════════════
+// RENDER TABS
+// ═══════════════════════════════════════
+function renderTabs() {
+  const container = document.getElementById('tabsScroll');
+  const viewed = getViewed();
+
+  container.innerHTML = SCENARIO_KEYS.map(key => {
+    const scenario = DATA_FLOW[key];
+    const isActive = key === currentScenario;
+    const isViewed = viewed.includes(key);
+
+    return `
+      <button class="tab-btn ${isActive ? 'active' : ''}" data-key="${key}">
+        <span class="tab-icon">${scenario.icon}</span>
+        <span class="tab-name">${scenario.name}</span>
+        ${isViewed ? '<span class="tab-viewed" title="נצפה"></span>' : ''}
+      </button>
+    `;
+  }).join('');
+
+  // Attach event listeners
+  container.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.key;
+      selectScenario(key);
+    });
+  });
+}
+
+// ═══════════════════════════════════════
+// SELECT SCENARIO
+// ═══════════════════════════════════════
+function selectScenario(key) {
+  stopAutoPlay();
+  currentScenario = key;
+  currentStep = -1;
+
+  markViewed(key);
+  renderTabs();
+  renderInfo();
+  renderFlow();
+  updateStepCounter();
+}
+
+// ═══════════════════════════════════════
+// RENDER INFO
+// ═══════════════════════════════════════
+function renderInfo() {
+  const scenario = DATA_FLOW[currentScenario];
+  document.getElementById('infoIcon').textContent = scenario.icon;
+  document.getElementById('infoName').textContent = scenario.name;
+  document.getElementById('infoDesc').textContent = scenario.desc;
+}
+
+// ═══════════════════════════════════════
+// RENDER FLOW STRIP
+// ═══════════════════════════════════════
+function renderFlow() {
+  const scenario = DATA_FLOW[currentScenario];
+  const strip = document.getElementById('flowStrip');
+
+  let html = '';
+
+  scenario.steps.forEach((step, idx) => {
+    // Arrow before card (except first)
+    if (idx > 0) {
+      html += `<div class="flow-arrow">→</div>`;
+    }
+
+    html += `
+      <div class="flow-item">
+        <div class="step-card ${idx === currentStep ? 'active' : ''}"
+             data-layer="${step.layer}"
+             data-idx="${idx}"
+             id="card-${idx}">
+          <div class="card-header">
+            <span class="step-number">${idx + 1}</span>
+            <div class="card-titles">
+              <div class="stage-name">${escapeHtml(step.stage)}</div>
+              <div class="file-name">${escapeHtml(step.file)}</div>
+            </div>
+          </div>
+          <span class="layer-badge" data-layer="${step.layer}">${getLayerLabel(step.layer)}</span>
+          <div class="code-block">${escapeHtml(step.data)}</div>
+        </div>
+      </div>
+    `;
+  });
+
+  strip.innerHTML = html;
+
+  // Click on cards to select step
+  strip.querySelectorAll('.step-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const idx = parseInt(card.dataset.idx);
+      setActiveStep(idx);
+    });
+  });
+}
+
+function getLayerLabel(layer) {
+  switch(layer) {
+    case 'user': return 'User';
+    case 'frontend': return 'Frontend';
+    case 'backend': return 'Backend';
+    case 'database': return 'Database';
+    default: return layer;
+  }
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ═══════════════════════════════════════
+// STEP NAVIGATION
+// ═══════════════════════════════════════
+function setActiveStep(idx) {
+  const scenario = DATA_FLOW[currentScenario];
+  const total = scenario.steps.length;
+
+  if (idx < 0) idx = 0;
+  if (idx >= total) idx = total - 1;
+
+  currentStep = idx;
+
+  // Update card classes
+  document.querySelectorAll('.step-card').forEach(card => {
+    card.classList.remove('active');
+    if (parseInt(card.dataset.idx) === idx) {
+      card.classList.add('active');
+      // Scroll into view
+      scrollCardIntoView(card);
+    }
+  });
+
+  updateStepCounter();
+}
+
+function scrollCardIntoView(card) {
+  const wrapper = document.getElementById('flowWrapper');
+  const cardRect = card.getBoundingClientRect();
+  const wrapperRect = wrapper.getBoundingClientRect();
+
+  if (cardRect.left < wrapperRect.left || cardRect.right > wrapperRect.right) {
+    card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+}
+
+function updateStepCounter() {
+  const scenario = DATA_FLOW[currentScenario];
+  const total = scenario.steps.length;
+  const counter = document.getElementById('stepCounter');
+
+  if (currentStep < 0) {
+    counter.textContent = `שלב 0/${total}`;
+  } else {
+    counter.textContent = `שלב ${currentStep + 1}/${total}`;
+  }
+}
+
+function nextStep() {
+  const scenario = DATA_FLOW[currentScenario];
+  const total = scenario.steps.length;
+
+  if (currentStep < total - 1) {
+    setActiveStep(currentStep + 1);
+  } else {
+    // Loop back to start if playing
+    if (isPlaying) {
+      stopAutoPlay();
+    }
+  }
+}
+
+function prevStep() {
+  if (currentStep > 0) {
+    setActiveStep(currentStep - 1);
+  }
+}
+
+// ═══════════════════════════════════════
+// AUTO PLAY
+// ═══════════════════════════════════════
+function toggleAutoPlay() {
+  if (isPlaying) {
+    stopAutoPlay();
+  } else {
+    startAutoPlay();
+  }
+}
+
+function startAutoPlay() {
+  isPlaying = true;
+  const playBtn = document.getElementById('playBtn');
+  playBtn.textContent = '⏸';
+  playBtn.classList.add('playing');
+
+  // Start from beginning if at end or no step selected
+  const scenario = DATA_FLOW[currentScenario];
+  if (currentStep < 0 || currentStep >= scenario.steps.length - 1) {
+    setActiveStep(0);
+  } else {
+    nextStep();
+  }
+
+  playInterval = setInterval(() => {
+    const total = scenario.steps.length;
+    if (currentStep >= total - 1) {
+      stopAutoPlay();
+    } else {
+      nextStep();
+    }
+  }, 1500);
+}
+
+function stopAutoPlay() {
+  isPlaying = false;
+  const playBtn = document.getElementById('playBtn');
+  playBtn.textContent = '▶';
+  playBtn.classList.remove('playing');
+
+  if (playInterval) {
+    clearInterval(playInterval);
+    playInterval = null;
+  }
+}
+
+// ═══════════════════════════════════════
+// EVENT LISTENERS
+// ═══════════════════════════════════════
+document.getElementById('playBtn').addEventListener('click', toggleAutoPlay);
+document.getElementById('nextBtn').addEventListener('click', () => {
+  stopAutoPlay();
+  nextStep();
+});
+document.getElementById('prevBtn').addEventListener('click', () => {
+  stopAutoPlay();
+  prevStep();
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    e.preventDefault();
+    stopAutoPlay();
+    // RTL: left = next, right = prev
+    if (e.key === 'ArrowLeft') {
+      nextStep();
+    } else {
+      prevStep();
+    }
+  } else if (e.key === ' ') {
+    e.preventDefault();
+    toggleAutoPlay();
+  } else if (e.key >= '1' && e.key <= '5') {
+    const idx = parseInt(e.key) - 1;
+    if (idx < SCENARIO_KEYS.length) {
+      selectScenario(SCENARIO_KEYS[idx]);
+    }
+  }
+});
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+function init() {
+  renderTabs();
+  renderInfo();
+  renderFlow();
+  updateProgress();
+  updateStepCounter();
+  markViewed(currentScenario);
+}
+
+init();
+</script>
+</body>
+</html>

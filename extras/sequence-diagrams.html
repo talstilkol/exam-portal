@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🔄 Sequence Diagrams — תרחישי זרימה</title>
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--shadow:5px 5px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:28px 24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(24px,4vw,38px);margin:0}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:15px}
+.app{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 120px)}
+.sidebar{background:#fff;border-left:3px solid #000;padding:14px;overflow-y:auto;max-height:calc(100vh - 120px);position:sticky;top:0}
+.sb-title{font-weight:900;font-size:14px;padding:6px 8px;background:linear-gradient(135deg,#111827,#312e81);color:#fff;border-radius:10px;margin-bottom:8px}
+.sb-btn{display:flex;align-items:center;gap:8px;width:100%;border:2px solid transparent;border-radius:8px;padding:8px 10px;background:none;cursor:pointer;font:inherit;font-size:13px;font-weight:700;text-align:right;transition:.15s}
+.sb-btn:hover{background:#f1f5f9;border-color:#cbd5e1}
+.sb-btn.active{background:var(--gold);border-color:#000;box-shadow:2px 2px 0 #000}
+.sb-num{background:#111827;color:var(--gold);min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900}
+.main{padding:28px;overflow-y:auto;max-height:calc(100vh - 120px)}
+.placeholder{text-align:center;padding:80px 20px;color:#94a3b8}
+.placeholder .big{font-size:60px;display:block;margin-bottom:12px}
+
+/* Scenario header */
+.sc-header{margin-bottom:20px}
+.sc-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border:2px solid #000;border-radius:8px;font-weight:900;font-size:12px;box-shadow:2px 2px 0 #000;margin-left:10px}
+.sc-badge.react{background:#dbeafe;color:#1e40af}
+.sc-badge.express{background:#d1fae5;color:#065f46}
+.sc-badge.full{background:#ede9fe;color:#5b21b6}
+.sc-title{font-size:24px;font-weight:900;margin-top:8px}
+.sc-desc{color:#475569;font-size:14px;margin-top:4px}
+
+/* Controls */
+.controls{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap}
+.ctrl-btn{background:var(--brand);color:#fff;border:2px solid #000;border-radius:10px;padding:8px 16px;font-weight:900;font-size:13px;cursor:pointer;box-shadow:2px 2px 0 #000;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.ctrl-btn:hover{transform:translateY(-2px);box-shadow:3px 4px 0 #000}
+.ctrl-btn.playing{background:#dc2626}
+.ctrl-btn.secondary{background:#334155}
+.speed-label{font-size:13px;font-weight:700;display:flex;align-items:center;gap:4px;color:#475569}
+
+/* Sequence diagram */
+.seq-diagram{background:var(--card);border:3px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);position:relative}
+.seq-lifelines{display:flex;justify-content:space-around;padding:16px 20px 0;gap:10px;position:relative}
+.lifeline{text-align:center;flex:1;min-width:100px;position:relative}
+.ll-box{background:#1e1b4b;color:#fff;border:2px solid #000;border-radius:10px;padding:8px 12px;font-weight:900;font-size:13px;box-shadow:2px 2px 0 #000;position:relative;z-index:2}
+.ll-box .ll-ico{font-size:18px;display:block;margin-bottom:2px}
+.ll-line{width:3px;background:#cbd5e1;margin:0 auto;position:relative}
+.ll-line::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:8px;height:8px;background:#cbd5e1;border-radius:50%}
+
+/* Messages */
+.seq-messages{padding:0 20px 20px;position:relative}
+.msg{display:flex;align-items:center;margin:0;padding:4px 0;opacity:0.3;transition:all .4s ease;position:relative;min-height:44px}
+.msg.active{opacity:1;transform:scale(1.02)}
+.msg.done{opacity:0.7}
+.msg-arrow{flex:1;position:relative;height:36px;display:flex;align-items:center;justify-content:center}
+.msg-line{height:2px;width:100%;position:absolute;top:50%}
+.msg-line.req{background:var(--blue)}
+.msg-line.res{background:var(--green);border-style:dashed;height:0;border-top:2px dashed var(--green)}
+.msg-line.err{background:var(--red);border-style:dashed;height:0;border-top:2px dashed var(--red)}
+.msg-head{position:absolute;width:0;height:0;top:50%;transform:translateY(-50%)}
+.msg-head.right{right:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:10px solid var(--blue)}
+.msg-head.left{left:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:10px solid var(--green)}
+.msg-head.left.err{border-right-color:var(--red)}
+.msg-label{position:absolute;top:-2px;left:50%;transform:translateX(-50%);background:var(--card);padding:0 6px;font-size:11px;font-weight:800;white-space:nowrap;color:var(--ink);border-radius:4px}
+.msg-label.req-label{color:var(--blue)}
+.msg-label.res-label{color:var(--green)}
+.msg-label.err-label{color:var(--red)}
+.msg-spacer{min-width:80px;flex-shrink:0}
+
+/* Step detail */
+.step-detail{margin-top:16px;background:#f8fafc;border:3px solid var(--brand);border-radius:16px;overflow:hidden;box-shadow:4px 4px 0 var(--brand)}
+.step-detail-head{background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;padding:10px 14px;font-weight:900;font-size:14px;display:flex;align-items:center;gap:8px}
+.step-detail-body{padding:14px;font-size:13px;line-height:1.8}
+.step-detail-body code{background:#1e1b4b;color:#e2e8f0;padding:2px 6px;border-radius:4px;font-size:12px;font-family:Consolas,monospace}
+.step-code{direction:ltr;text-align:left;background:#0f172a;color:#e2e8f0;padding:12px;border-radius:10px;font-family:Consolas,'Courier New',monospace;font-size:12px;line-height:1.5;margin:8px 0;overflow-x:auto;border:2px solid #334155}
+.step-tip{background:#ecfdf5;border:2px solid #16a34a;border-radius:10px;padding:8px 10px;font-weight:700;font-size:12px;margin-top:8px}
+.step-tip::before{content:'💡 '}
+
+/* Progress */
+.progress-bar{height:4px;background:#e2e8f0;border-radius:2px;margin:12px 0;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--blue));border-radius:2px;transition:width .3s}
+
+/* Dark mode */
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155;--shadow:5px 5px 0 #000}
+  body{background:var(--bg)}
+  .sidebar{background:#1e293b;border-color:#334155}
+  .sb-btn:hover{background:#334155}
+  .sb-btn.active{color:#000}
+  .msg-label{background:var(--card)}
+  .step-detail{background:#1e293b;border-color:var(--brand)}
+  .step-detail-body{color:#e2e8f0}
+  .step-tip{background:#064e3b;border-color:#059669;color:#a7f3d0}
+  .ll-line{background:#475569}
+}
+@media(max-width:768px){
+  .app{grid-template-columns:1fr}
+  .sidebar{max-height:none;position:static;border-left:none;border-bottom:3px solid #000;display:flex;flex-wrap:wrap;gap:4px;padding:8px}
+  .main{max-height:none}
+  .lifeline{min-width:60px}
+  .ll-box{font-size:11px;padding:4px 6px}
+}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  .hero{padding:12px!important;background:#333!important;-webkit-print-color-adjust:exact}
+  .sidebar{display:none}
+  .canvas,.main{max-height:none!important;overflow:visible!important}
+  .app{grid-template-columns:1fr!important}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>🔄 Sequence Diagrams — תרחישי זרימה</h1>
+  <p>8 תרחישים אינטראקטיביים: איך request עובר בין שכבות, שלב אחר שלב, עם קוד ליד.</p>
+</header>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main" id="main">
+    <div class="placeholder"><span class="big">👈</span><h2>בחרו תרחיש מהתפריט</h2><p>לחצו על תרחיש כדי לראות את דיאגרמת הזרימה שלו</p></div>
+  </main>
+</div>
+<script>
+const SCENARIOS = [
+{
+  id:"login", title:"User Login Flow", type:"full", icon:"🔐",
+  desc:"המשתמש מזין שם וסיסמה → React שולח לExpress → Express בודק ב-DB → תשובה חוזרת → redirect",
+  lifelines:[
+    {id:"user",label:"User",icon:"👤"},
+    {id:"react",label:"React UI",icon:"⚛️"},
+    {id:"router",label:"Express Router",icon:"🛣"},
+    {id:"db",label:"MongoDB",icon:"🗄"}
+  ],
+  messages:[
+    {from:0,to:1,label:"הזנת username + password",type:"req",
+     detail:"המשתמש ממלא את הטופס ולוחץ Login.",
+     code:"<form onSubmit={handleLogin}>\n  <input value={username} onChange={e=>setUsername(e.target.value)} />\n  <input type='password' value={password} onChange={...} />\n  <button type='submit'>Login</button>\n</form>"},
+    {from:1,to:1,label:"ולידציה בצד לקוח",type:"req",
+     detail:"לפני שליחה — בודקים שהשדות לא ריקים. אם ריק → הצגת שגיאה, לא שולחים request.",
+     code:"if (!username || !password) {\n  setError('נא למלא את כל השדות');\n  return;\n}"},
+    {from:1,to:2,label:"POST /api/login {username, password}",type:"req",
+     detail:"React שולח POST request עם הנתונים. body נשלח כ-JSON.",
+     code:"const res = await fetch('/api/login', {\n  method: 'POST',\n  headers: {'Content-Type': 'application/json'},\n  body: JSON.stringify({username, password})\n});"},
+    {from:2,to:3,label:"User.findOne({username})",type:"req",
+     detail:"Express מקבל את הבקשה, פותח חיבור ל-MongoDB, ומחפש user עם ה-username שנשלח.",
+     code:"app.post('/api/login', async (req, res) => {\n  const user = await User.findOne({\n    username: req.body.username\n  });\n  // ...\n});"},
+    {from:3,to:2,label:"user document / null",type:"res",
+     detail:"MongoDB מחזיר את המסמך אם נמצא, או null אם לא. Express בודק את התוצאה.",
+     code:"if (!user || user.password !== req.body.password) {\n  return res.status(401).json({error: 'Invalid credentials'});\n}\nres.json({id: user._id, username: user.username});"},
+    {from:2,to:1,label:"200 {user} / 401 {error}",type:"res",
+     detail:"Express מחזיר JSON — או את פרטי המשתמש (200) או שגיאה (401).",
+     code:"// Success: {id: '...', username: 'tal'}\n// Failure: {error: 'Invalid credentials'}"},
+    {from:1,to:1,label:"setUser(data) + navigate",type:"req",
+     detail:"React שומר את המשתמש ב-state (ואולי localStorage) ומנווט לדף הבית.",
+     code:"const data = await res.json();\nif (res.ok) {\n  setUser(data);\n  localStorage.setItem('user', JSON.stringify(data));\n  navigate('/home');\n} else {\n  setError(data.error);\n}",
+     tip:"תמיד בדקו res.ok לפני שימוש ב-data — אם השרת חזר 401, ה-body הוא הודעת שגיאה"},
+  ]
+},
+{
+  id:"form-validation", title:"Form Submit + Validation", type:"react", icon:"📝",
+  desc:"המשתמש ממלא טופס הרשמה → ולידציה בצד לקוח → שליחה → שמירה ב-state + localStorage",
+  lifelines:[
+    {id:"user",label:"User",icon:"👤"},
+    {id:"form",label:"Form Component",icon:"📝"},
+    {id:"state",label:"App State",icon:"📦"},
+    {id:"ls",label:"localStorage",icon:"💾"}
+  ],
+  messages:[
+    {from:0,to:1,label:"מילוי שדות: name, email, password",type:"req",
+     detail:"המשתמש מקליד בשדות. כל שדה מעודכן ב-state מקומי של הטופס עם onChange.",
+     code:"const [form, setForm] = useState({name:'', email:'', password:''});\n\n<input value={form.name}\n  onChange={e => setForm({...form, name: e.target.value})} />"},
+    {from:1,to:1,label:"🛡 ולידציה: regex + length checks",type:"req",
+     detail:"בלחיצה על Submit, הטופס בודק כל שדה. שגיאות נשמרות ב-errors state.",
+     code:"const errors = {};\nif (form.name.length < 2) errors.name = 'שם קצר מדי';\nif (!/^[A-Za-z]+$/.test(form.name)) errors.name = 'אנגלית בלבד';\nif (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$/.test(form.password))\n  errors.password = 'חייב 8+, upper+lower+digit';\nif (Object.keys(errors).length) { setErrors(errors); return; }"},
+    {from:1,to:2,label:"addUser({name, email, password})",type:"req",
+     detail:"אחרי שהולידציה עוברת, הנתונים נשלחים ל-App State דרך props callback.",
+     code:"// In Form:\nonSubmit({...form, id: Date.now()});\n\n// In App:\nfunction handleRegister(newUser) {\n  setUsers(prev => [...prev, newUser]);\n}"},
+    {from:2,to:3,label:"setItem('users', JSON.stringify(users))",type:"req",
+     detail:"useEffect מאזין לשינויים ב-users state ושומר את הרשימה המעודכנת ב-localStorage.",
+     code:"useEffect(() => {\n  localStorage.setItem('users', JSON.stringify(users));\n}, [users]);",
+     tip:"שמרו ב-useEffect ולא ישירות בפונקציה — ככה כל שינוי ב-state באופן אוטומטי נשמר"},
+    {from:3,to:2,label:"✓ saved",type:"res",detail:"localStorage שומר את הנתונים. הם ישרדו רענון דף."},
+    {from:2,to:1,label:"navigate('/home')",type:"res",
+     detail:"App מנווט את המשתמש לדף הבית אחרי הרשמה מוצלחת.",
+     code:"navigate('/home');"},
+  ]
+},
+{
+  id:"crud-create", title:"CRUD — Create + Read", type:"express", icon:"📦",
+  desc:"יצירת פריט חדש בשרת Express + MongoDB: POST request → validate → create → response",
+  lifelines:[
+    {id:"client",label:"Client",icon:"🌐"},
+    {id:"mw",label:"Middleware",icon:"⚙️"},
+    {id:"route",label:"Route Handler",icon:"🛣"},
+    {id:"db",label:"MongoDB",icon:"🗄"}
+  ],
+  messages:[
+    {from:0,to:1,label:"POST /items {name, price}",type:"req",
+     detail:"הלקוח שולח POST request עם body שמכיל את הנתונים ליצירה.",
+     code:"fetch('/items', {\n  method: 'POST',\n  headers: {'Content-Type': 'application/json'},\n  body: JSON.stringify({name: 'Widget', price: 29.99})\n});"},
+    {from:1,to:2,label:"express.json() → req.body",type:"req",
+     detail:"middleware פורס את ה-JSON מה-body ושם אותו ב-req.body. בלי express.json() — req.body יהיה undefined!",
+     code:"app.use(express.json()); // חובה!\n// בלי זה: req.body === undefined",
+     tip:"שכחת express.json()? זו הטעות הכי נפוצה בשאלה 3 — תמיד שימו אותו"},
+    {from:2,to:3,label:"Model.create(req.body)",type:"req",
+     detail:"ה-route handler משתמש ב-Mongoose Model כדי ליצור מסמך חדש ב-DB.",
+     code:"app.post('/items', async (req, res) => {\n  try {\n    const item = await Item.create(req.body);\n    res.status(201).json(item);\n  } catch (e) {\n    res.status(400).json({error: e.message});\n  }\n});"},
+    {from:3,to:2,label:"created document + _id",type:"res",
+     detail:"MongoDB יוצר את המסמך, מוסיף _id אוטומטי, ומחזיר את המסמך המלא.",
+     code:"// MongoDB returns:\n{\n  _id: ObjectId('...'),\n  name: 'Widget',\n  price: 29.99,\n  __v: 0\n}"},
+    {from:2,to:0,label:"201 Created + JSON",type:"res",
+     detail:"Express מחזיר 201 (Created) עם המסמך שנוצר. 201 ולא 200!",
+     code:"res.status(201).json(item);\n// NOT res.json(item) — missing 201!",
+     tip:"POST שיוצר פריט חדש = status 201. זה מוריד נקודות במבחן אם שמים 200"},
+  ]
+},
+{
+  id:"protected-route", title:"Protected Route Check", type:"react", icon:"🔒",
+  desc:"ניווט לדף מוגן → בדיקה אם מחובר → redirect אם לא → הצגה אם כן",
+  lifelines:[
+    {id:"user",label:"User",icon:"👤"},
+    {id:"router",label:"React Router",icon:"🛣"},
+    {id:"comp",label:"Component",icon:"⚛️"},
+    {id:"state",label:"App State",icon:"📦"}
+  ],
+  messages:[
+    {from:0,to:1,label:"לחיצה על Link / navigate",type:"req",
+     detail:"המשתמש מנסה לגשת לדף מוגן (למשל /dashboard).",
+     code:"<Link to='/dashboard'>Dashboard</Link>"},
+    {from:1,to:3,label:"check: isLoggedIn?",type:"req",
+     detail:"React Router בודק אם המשתמש מחובר — דרך state, context, או localStorage.",
+     code:"// Option 1: Conditional in Route\n<Route path='/dashboard'\n  element={isAuth ? <Dashboard /> : <Navigate to='/' />} />\n\n// Option 2: Check in component\nuseEffect(() => {\n  if (!currentUser) navigate('/');\n}, []);"},
+    {from:3,to:1,label:"isLoggedIn = false → redirect",type:"err",
+     detail:"אם לא מחובר — redirect ל-login page. המשתמש לא רואה את הדף המוגן.",
+     code:"// Navigate component = redirect\n<Navigate to='/' replace />\n\n// Or: navigate('/', {replace: true})"},
+    {from:3,to:2,label:"isLoggedIn = true → render",type:"res",
+     detail:"אם מחובר — הקומפוננטה מתרנדרת ומציגה את התוכן.",
+     code:"// Component renders normally\nfunction Dashboard({user}) {\n  return <h1>Welcome {user.name}</h1>;\n}",
+     tip:"תמיד בדקו auth ב-useEffect עם [] — ולא בתוך ה-render, כדי למנוע flash של תוכן מוגן"},
+  ]
+},
+{
+  id:"localstorage-sync", title:"localStorage Sync Pattern", type:"react", icon:"💾",
+  desc:"טעינה מ-localStorage בהתחלה → שמירה אוטומטית בכל שינוי → שרידה ברענון",
+  lifelines:[
+    {id:"browser",label:"Browser",icon:"🌐"},
+    {id:"react",label:"React App",icon:"⚛️"},
+    {id:"state",label:"useState",icon:"📦"},
+    {id:"ls",label:"localStorage",icon:"💾"}
+  ],
+  messages:[
+    {from:0,to:1,label:"Page Load / Refresh",type:"req",
+     detail:"הדפדפן טוען את האפליקציה. React מתחיל לרנדר.",
+     code:"// App component mounts"},
+    {from:1,to:3,label:"getItem('data')",type:"req",
+     detail:"בטעינה ראשונית — useState מאותחל עם הערך מ-localStorage.",
+     code:"const [items, setItems] = useState(\n  JSON.parse(localStorage.getItem('items')) || []\n);",
+     tip:"תמיד || [] (או || {} או || '') כ-fallback — getItem מחזיר null אם אין נתונים"},
+    {from:3,to:2,label:"stored JSON / null",type:"res",
+     detail:"localStorage מחזיר את ה-string שנשמר, או null אם אין. JSON.parse הופך לאובייקט."},
+    {from:2,to:1,label:"initial state loaded",type:"res",
+     detail:"ה-state מאותחל עם הנתונים ששרדו. הדף מציג את הנתונים מיד."},
+    {from:0,to:2,label:"user action → setState",type:"req",
+     detail:"המשתמש מוסיף/מוחק/מעדכן פריט. ה-state משתנה.",
+     code:"setItems(prev => [...prev, newItem]);"},
+    {from:2,to:3,label:"useEffect → setItem('data', JSON.stringify)",type:"req",
+     detail:"useEffect עם dependency על items שומר אוטומטית כל פעם ש-state משתנה.",
+     code:"useEffect(() => {\n  localStorage.setItem('items',\n    JSON.stringify(items));\n}, [items]); // ← dependency!",
+     tip:"ה-dependency array חייב לכלול את ה-state variable. בלי זה — לא ישמור אחרי שינוי"},
+  ]
+},
+{
+  id:"filter-search", title:"Filter / Search Pipeline", type:"express", icon:"🔍",
+  desc:"POST /filter עם פרמטרים → Express בונה שרשרת filter → AND logic → תוצאות",
+  lifelines:[
+    {id:"client",label:"Client",icon:"🌐"},
+    {id:"express",label:"Express",icon:"🛣"},
+    {id:"filter",label:"Filter Chain",icon:"🔍"},
+    {id:"data",label:"Data Store",icon:"📦"}
+  ],
+  messages:[
+    {from:0,to:1,label:"POST /filter {yearMin, name, priceMax}",type:"req",
+     detail:"הלקוח שולח filter parameters. לא כולם חייבים להיות מלאים — רק מה שהמשתמש בחר.",
+     code:"fetch('/games/filter', {\n  method: 'POST',\n  headers: {'Content-Type': 'application/json'},\n  body: JSON.stringify({\n    yearMin: 2020,\n    name: 'Mario',\n    priceMax: 60\n  })\n});"},
+    {from:1,to:3,label:"let filtered = [...data]",type:"req",
+     detail:"Express מתחיל עם עותק של כל הנתונים. חשוב: spread (...) כדי לא לשנות את המקור.",
+     code:"let filtered = [...games]; // copy!"},
+    {from:3,to:2,label:"filter chain (AND logic)",type:"req",
+     detail:"כל פרמטר שנשלח מצמצם את התוצאה. זו לוגיקת AND — כל התנאים חייבים להתקיים.",
+     code:"if (req.body.yearMin)\n  filtered = filtered.filter(\n    g => g.releaseYear >= req.body.yearMin);\nif (req.body.name)\n  filtered = filtered.filter(\n    g => g.name.toLowerCase()\n      .includes(req.body.name.toLowerCase()));\nif (req.body.priceMax)\n  filtered = filtered.filter(\n    g => g.price <= req.body.priceMax);",
+     tip:"AND = שרשרת filter. כל filter מצמצם את התוצאה הקודמת. OR = filter אחד עם || בתוכו"},
+    {from:2,to:1,label:"filtered results[]",type:"res",
+     detail:"אחרי כל ה-filters — מה שנשאר הוא התוצאה."},
+    {from:1,to:0,label:"200 JSON [results]",type:"res",
+     detail:"Express מחזיר את המערך המסונן כ-JSON.",
+     code:"res.json(filtered);"},
+  ]
+},
+{
+  id:"error-propagation", title:"Error Propagation", type:"express", icon:"❌",
+  desc:"מה קורה כשמשהו נשבר: validation error → catch → status code → client error handling",
+  lifelines:[
+    {id:"client",label:"Client",icon:"🌐"},
+    {id:"route",label:"Route Handler",icon:"🛣"},
+    {id:"db",label:"MongoDB",icon:"🗄"},
+    {id:"response",label:"Response",icon:"📤"}
+  ],
+  messages:[
+    {from:0,to:1,label:"POST /items {invalid data}",type:"req",
+     detail:"הלקוח שולח נתונים לא תקינים — שדה חובה חסר, סוג לא נכון, וכו׳.",
+     code:"// Missing required 'name' field\nfetch('/items', {\n  method: 'POST',\n  body: JSON.stringify({price: 29.99}) // no name!\n});"},
+    {from:1,to:2,label:"Model.create({price: 29.99})",type:"req",
+     detail:"ה-route handler מנסה ליצור מסמך. Mongoose validator ייכשל כי name חובה.",
+     code:"try {\n  const item = await Item.create(req.body);\n  res.status(201).json(item);\n} catch (err) {\n  // Mongoose ValidationError!\n  res.status(400).json({error: err.message});\n}"},
+    {from:2,to:1,label:"❌ ValidationError: name required",type:"err",
+     detail:"MongoDB/Mongoose זורק ValidationError. בלי try/catch — השרת קורס! עם try/catch — נתפס ומטופל.",
+     code:"// Schema שמגדיר name חובה:\nconst schema = new Schema({\n  name: {type: String, required: true},\n  price: Number\n});"},
+    {from:1,to:3,label:"catch → res.status(400)",type:"req",
+     detail:"ה-catch block תופס את השגיאה ומחזיר response מתאים.",
+     code:"} catch (err) {\n  res.status(400).json({\n    error: err.message\n  });\n}",
+     tip:"400 = Bad Request (שגיאת client). 500 = Internal Error (שגיאת server). 404 = Not Found. תמיד status מדויק"},
+    {from:3,to:0,label:"400 {error: 'name required'}",type:"err",
+     detail:"הלקוח מקבל status 400 עם הודעת שגיאה. הוא יכול להציג אותה למשתמש.",
+     code:"const res = await fetch(...);\nif (!res.ok) {\n  const data = await res.json();\n  setError(data.error); // 'name required'\n}"},
+  ]
+},
+{
+  id:"pagination", title:"Pagination Pattern", type:"react", icon:"📄",
+  desc:"הצגת נתונים בדפים: חישוב slice, כפתורי prev/next, עדכון state",
+  lifelines:[
+    {id:"user",label:"User",icon:"👤"},
+    {id:"comp",label:"List Component",icon:"📋"},
+    {id:"state",label:"State",icon:"📦"},
+    {id:"render",label:"Render",icon:"🖥"}
+  ],
+  messages:[
+    {from:2,to:1,label:"items[] + currentPage=0 + pageSize=5",type:"res",
+     detail:"הstate מכיל את כל הנתונים + מספר הדף הנוכחי + גודל דף.",
+     code:"const [items] = useState([...]);\nconst [page, setPage] = useState(0);\nconst pageSize = 5;"},
+    {from:1,to:3,label:"slice(page*size, (page+1)*size)",type:"req",
+     detail:"ברנדור — חותכים את המערך לפי הדף הנוכחי. זה מה שמוצג על המסך.",
+     code:"const displayed = items.slice(\n  page * pageSize,\n  (page + 1) * pageSize\n);\n// page=0: items[0..4]\n// page=1: items[5..9]"},
+    {from:3,to:0,label:"5 items displayed + page buttons",type:"res",
+     detail:"המשתמש רואה 5 פריטים + כפתורי ניווט (Prev / Next / מספרי דפים).",
+     code:"const totalPages = Math.ceil(items.length / pageSize);\n\n{Array.from({length: totalPages}, (_, i) =>\n  <button key={i}\n    className={page===i ? 'active' : ''}\n    onClick={() => setPage(i)}>{i+1}</button>\n)}"},
+    {from:0,to:1,label:"click Next / page number",type:"req",
+     detail:"המשתמש לוחץ על כפתור דף → state מתעדכן → re-render עם slice חדש.",
+     code:"<button onClick={() => setPage(p => p+1)}\n  disabled={page >= totalPages-1}>\n  Next →\n</button>",
+     tip:"תמיד disabled על Prev בדף 0 ו-Next בדף אחרון. totalPages = Math.ceil(total / pageSize)"},
+    {from:1,to:3,label:"new slice rendered",type:"req",
+     detail:"React מרנדר מחדש עם ה-slice החדש. הנתונים לא נטענים מחדש — רק ה-view משתנה."},
+  ]
+},
+{
+  id:"mongodb-crud", title:"MongoDB CRUD Operations", type:"full", icon:"🍃",
+  desc:"יצירה, קריאה, עדכון ומחיקה של מסמך ב-MongoDB דרך Mongoose",
+  lifelines:[
+    {id:"client",label:"Client",icon:"🌐"},
+    {id:"express",label:"Express Route",icon:"🟢"},
+    {id:"mongoose",label:"Mongoose Model",icon:"🍃"},
+    {id:"db",label:"MongoDB",icon:"💽"}
+  ],
+  messages:[
+    {from:0,to:1,label:"POST /students {name, grade}",type:"req",
+     detail:"הלקוח שולח request ליצירת סטודנט חדש עם name ו-grade בbody.",
+     code:"// Client (fetch/axios)\nawait fetch('/students', {\n  method:'POST',\n  headers:{'Content-Type':'application/json'},\n  body: JSON.stringify({name:'Dan', grade:95})\n});"},
+    {from:1,to:2,label:"Student.create(req.body)",type:"req",
+     detail:"ה-route handler קורא ל-Model.create עם הנתונים מ-req.body.",
+     code:"app.post('/students', async(req,res)=>{\n  try {\n    const student = await Student.create(req.body);\n    res.status(201).json(student);\n  } catch(e) {\n    res.status(400).json({error:e.message});\n  }\n});"},
+    {from:2,to:3,label:"insertOne({name,grade})",type:"req",
+     detail:"Mongoose מתרגם את create ל-insertOne ומפעיל validators לפי ה-Schema.",
+     code:"// Schema validators run:\n// name: required ✓\n// grade: type Number ✓"},
+    {from:3,to:2,label:"{_id, name, grade, __v}",type:"res",
+     detail:"MongoDB מחזיר את המסמך עם _id שנוצר אוטומטית."},
+    {from:2,to:1,label:"document object",type:"res",
+     detail:"Mongoose מחזיר Mongoose Document שניתן להמרה ל-JSON."},
+    {from:1,to:0,label:"201 + JSON",type:"res",
+     detail:"Express שולח 201 Created עם המסמך שנוצר.",
+     tip:"תמיד 201 ליצירה, 200 לקריאה/עדכון, 204 למחיקה, 404 ללא נמצא"},
+  ]
+},
+{
+  id:"file-operations", title:"Node.js File Operations", type:"full", icon:"📁",
+  desc:"קריאה, כתיבה והוספה לקובץ עם fs — סינכרוני ואסינכרוני",
+  lifelines:[
+    {id:"client",label:"Client",icon:"🌐"},
+    {id:"route",label:"Express Route",icon:"🟢"},
+    {id:"fs",label:"fs Module",icon:"📁"},
+    {id:"file",label:"File System",icon:"💾"}
+  ],
+  messages:[
+    {from:0,to:1,label:"POST /save {text}",type:"req",
+     detail:"הלקוח שולח טקסט שצריך להישמר לקובץ.",
+     code:"// body: { text: 'new line to save' }"},
+    {from:1,to:2,label:"fs.appendFile(path, text)",type:"req",
+     detail:"appendFile מוסיף לסוף הקובץ בלי למחוק תוכן קיים. זה ההבדל מ-writeFile!",
+     code:"const fs = require('fs');\n\napp.post('/save', (req,res) => {\n  fs.appendFile('data.txt',\n    req.body.text + '\\n',\n    (err) => {\n      if(err) return res.status(500).json({error:err.message});\n      res.json({success:true});\n    });\n});",
+     tip:"writeFile = מוחק הכל וכותב מחדש! appendFile = מוסיף בסוף"},
+    {from:2,to:3,label:"append bytes to file",type:"req",
+     detail:"Node.js פותח את הקובץ במצב append, כותב את הבייטים, וסוגר."},
+    {from:3,to:2,label:"success / error",type:"res",
+     detail:"מערכת הקבצים מאשרת כתיבה או מחזירה שגיאה (permissions, disk full)."},
+    {from:1,to:2,label:"fs.readFile(path, 'utf8')",type:"req",
+     detail:"לקריאה: readFile עם encoding 'utf8' מחזירה string. בלי encoding — Buffer.",
+     code:"app.get('/read', (req,res) => {\n  fs.readFile('data.txt', 'utf8', (err,data) => {\n    if(err) return res.status(500).json({error:err.message});\n    res.json({content: data});\n  });\n});"},
+    {from:2,to:1,label:"file content string",type:"res",
+     detail:"התוכן חוזר כ-string. ניתן לפצל לשורות עם split('\\n')."},
+  ]
+},
+{
+  id:"form-submit", title:"Form Submit + Validation", type:"react", icon:"📝",
+  desc:"הגשת טופס: ולידציה בצד לקוח → שליחה לשרת → תגובת שגיאה/הצלחה",
+  lifelines:[
+    {id:"user",label:"User",icon:"👤"},
+    {id:"form",label:"Form Component",icon:"📝"},
+    {id:"state",label:"State + Validate",icon:"🛡"},
+    {id:"api",label:"Server API",icon:"🟢"}
+  ],
+  messages:[
+    {from:0,to:1,label:"fills form fields + clicks Submit",type:"req",
+     detail:"המשתמש ממלא שדות (name, email, password) ולוחץ שלח.",
+     code:"<form onSubmit={handleSubmit}>\n  <input value={name}\n    onChange={e=>setName(e.target.value)}/>\n  <button type='submit'>שלח</button>\n</form>"},
+    {from:1,to:2,label:"handleSubmit → validate()",type:"req",
+     detail:"onSubmit קורא ל-handleSubmit. הדבר הראשון: e.preventDefault() + ולידציה.",
+     code:"function handleSubmit(e) {\n  e.preventDefault();\n  const errs = validate({name,email,password});\n  if(Object.keys(errs).length > 0) {\n    setErrors(errs); return;\n  }\n  // send to server...\n}",
+     tip:"תמיד e.preventDefault() — אחרת הדף מתרענן!"},
+    {from:2,to:1,label:"errors {} or empty",type:"res",
+     detail:"אם יש שגיאות — מציגים inline. אם ריק — ממשיכים לשליחה.",
+     code:"// validation function\nfunction validate({name,email,password}) {\n  const e = {};\n  if(name.length<2) e.name='שם קצר מדי';\n  if(!email.includes('@')) e.email='אימייל לא תקין';\n  if(password.length<8) e.password='8+ תווים';\n  return e;\n}"},
+    {from:1,to:3,label:"POST /register {name,email,password}",type:"req",
+     detail:"אם אין שגיאות — שולחים fetch לשרת עם הנתונים.",
+     code:"const res = await fetch('/register', {\n  method:'POST',\n  headers:{'Content-Type':'application/json'},\n  body: JSON.stringify({name,email,password})\n});"},
+    {from:3,to:1,label:"201 {user} or 400 {error}",type:"res",
+     detail:"השרת מחזיר 201 + user object להצלחה, או 400 + error message לכשלון.",
+     code:"if(res.ok) {\n  navigate('/home');\n} else {\n  const data = await res.json();\n  setErrors({server: data.error});\n}",
+     tip:"תמיד בדקו res.ok לפני קריאה ל-json(). שגיאת שרת צריכה להופיע ב-UI!"},
+  ]
+},
+{
+  id:"useeffect-lifecycle", title:"useEffect Lifecycle", type:"react", icon:"🔄",
+  desc:"מחזור חיי useEffect: mount → update → cleanup → unmount",
+  lifelines:[
+    {id:"react",label:"React Engine",icon:"⚛️"},
+    {id:"comp",label:"Component",icon:"📦"},
+    {id:"effect",label:"useEffect",icon:"🔄"},
+    {id:"cleanup",label:"Cleanup",icon:"🧹"}
+  ],
+  messages:[
+    {from:0,to:1,label:"Mount — first render",type:"req",
+     detail:"React מרנדר את הcomponent בפעם הראשונה. ה-DOM מתעדכן.",
+     code:"function Timer() {\n  const [count, setCount] = useState(0);\n  // component renders → DOM updates → effects run\n}"},
+    {from:1,to:2,label:"run effect callback",type:"req",
+     detail:"אחרי ש-DOM מוכן — React מפעיל את ה-effect. זה המקום ל-fetch, interval, listener.",
+     code:"useEffect(() => {\n  const id = setInterval(() => {\n    setCount(c => c + 1);\n  }, 1000);\n  return () => clearInterval(id); // cleanup!\n}, []); // [] = only on mount"},
+    {from:2,to:0,label:"effect running (interval active)",type:"res",
+     detail:"ה-effect רץ — interval פועל, state מתעדכן כל שנייה, component מתרנדר.",
+     tip:"dependency array [] = רץ פעם אחת. [x] = רץ כשx משתנה. בלי [] = כל render!"},
+    {from:0,to:1,label:"Re-render (state changed)",type:"req",
+     detail:"state השתנה → React מרנדר שוב. אם deps השתנו — cleanup ואז effect חדש."},
+    {from:1,to:3,label:"cleanup previous effect",type:"req",
+     detail:"לפני שeffect חדש רץ (או ב-unmount) — React קורא ל-return function.",
+     code:"// Cleanup runs:\n// 1. Before re-running effect (if deps changed)\n// 2. On component unmount\nreturn () => {\n  clearInterval(id);\n  // remove listeners, cancel fetches, etc.\n};"},
+    {from:0,to:3,label:"Unmount — cleanup final",type:"req",
+     detail:"כשcomponent מוסר מה-DOM — cleanup אחרון רץ. בלי זה — memory leak!",
+     tip:"כל setInterval, addEventListener, subscription חייב cleanup. בלי זה = memory leak."},
+  ]
+}
+];
+
+// Build sidebar
+const sb = document.getElementById('sidebar');
+sb.innerHTML = '<div class="sb-title">🔄 תרחישים</div>';
+SCENARIOS.forEach((sc, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'sb-btn';
+  btn.dataset.sid = sc.id;
+  btn.innerHTML = `<span class="sb-num">${i+1}</span>${sc.icon} ${sc.title}`;
+  btn.onclick = () => selectScenario(sc.id);
+  sb.appendChild(btn);
+});
+
+let _activeSc = null;
+let _playTimer = null;
+let _currentStep = -1;
+let _speed = 1500;
+
+function selectScenario(id) {
+  _activeSc = SCENARIOS.find(s => s.id === id);
+  if (!_activeSc) return;
+  stopPlay();
+  _currentStep = -1;
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.toggle('active', b.dataset.sid === id));
+  const viewed=JSON.parse(localStorage.getItem('sd-viewed')||'[]');
+  if(!viewed.includes(id)){viewed.push(id);localStorage.setItem('sd-viewed',JSON.stringify(viewed));}
+  renderScenario(_activeSc);
+}
+
+function renderScenario(sc) {
+  const main = document.getElementById('main');
+  const badgeClass = sc.type === 'react' ? 'react' : sc.type === 'express' ? 'express' : 'full';
+  const totalSteps = sc.messages.length;
+
+  let html = `<div class="sc-header">
+    <span class="sc-badge ${badgeClass}">${sc.type === 'react' ? '⚛️ React' : sc.type === 'express' ? '🟢 Express' : '🔗 Full-Stack'}</span>
+    <div class="sc-title">${sc.icon} ${sc.title}</div>
+    <div class="sc-desc">${sc.desc}</div>
+  </div>`;
+
+  html += `<div class="controls">
+    <button class="ctrl-btn" id="play-btn" onclick="togglePlay()">▶ הפעל</button>
+    <button class="ctrl-btn secondary" onclick="stepForward()">⏭ שלב הבא</button>
+    <button class="ctrl-btn secondary" onclick="resetPlay()">↺ אפס</button>
+    <span class="speed-label">מהירות:
+      <button class="ctrl-btn secondary" style="padding:4px 8px;font-size:11px" onclick="changeSpeed(-500)">מהיר</button>
+      <button class="ctrl-btn secondary" style="padding:4px 8px;font-size:11px" onclick="changeSpeed(500)">איטי</button>
+    </span>
+  </div>`;
+
+  html += `<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>`;
+
+  // Diagram
+  html += `<div class="seq-diagram" id="seq-diagram">`;
+
+  // Lifelines header
+  html += `<div class="seq-lifelines">`;
+  sc.lifelines.forEach(ll => {
+    html += `<div class="lifeline"><div class="ll-box"><span class="ll-ico">${ll.icon}</span>${ll.label}</div></div>`;
+  });
+  html += `</div>`;
+
+  // Messages
+  html += `<div class="seq-messages" id="seq-messages">`;
+  sc.messages.forEach((msg, i) => {
+    html += renderMessage(msg, i, sc.lifelines.length);
+  });
+  html += `</div></div>`;
+
+  // Step detail panel
+  html += `<div class="step-detail" id="step-detail" style="display:none">
+    <div class="step-detail-head" id="sd-head">—</div>
+    <div class="step-detail-body" id="sd-body"></div>
+  </div>`;
+
+  main.innerHTML = html;
+}
+
+function renderMessage(msg, idx, numLifelines) {
+  const from = msg.from;
+  const to = msg.to;
+  const leftIdx = Math.min(from, to);
+  const rightIdx = Math.max(from, to);
+  const goingRight = to > from;
+  const isSelf = from === to;
+  const typeClass = msg.type === 'err' ? 'err' : msg.type;
+
+  let html = `<div class="msg" data-step="${idx}" onclick="jumpToStep(${idx})">`;
+
+  if (isSelf) {
+    for (let i = 0; i < numLifelines; i++) {
+      if (i === from) {
+        html += `<div class="msg-arrow" style="flex:1;position:relative">
+          <div style="border:2px solid var(--orange);border-radius:0 8px 8px 0;height:28px;width:60%;margin-right:auto;position:relative">
+            <span class="msg-label" style="right:-10px;left:auto;transform:none;top:-14px;color:var(--orange)">${msg.label}</span>
+          </div>
+        </div>`;
+      } else {
+        html += `<div class="msg-spacer" style="flex:1"></div>`;
+      }
+    }
+  } else {
+    for (let i = 0; i < numLifelines; i++) {
+      if (i === leftIdx) {
+        const span = rightIdx - leftIdx;
+        html += `<div class="msg-arrow" style="flex:${span}">
+          <div class="msg-line ${typeClass}" style="width:100%"></div>
+          <div class="msg-head ${goingRight ? 'right' : 'left'} ${typeClass}"></div>
+          <span class="msg-label ${typeClass}-label">${msg.label}</span>
+        </div>`;
+        i = rightIdx - 1;
+      } else {
+        html += `<div class="msg-spacer" style="flex:1"></div>`;
+      }
+    }
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+function togglePlay() {
+  if (_playTimer) { stopPlay(); return; }
+  const btn = document.getElementById('play-btn');
+  btn.textContent = '⏸ עצור';
+  btn.classList.add('playing');
+  if (_currentStep >= _activeSc.messages.length - 1) _currentStep = -1;
+  advanceStep();
+}
+
+function stopPlay() {
+  clearTimeout(_playTimer);
+  _playTimer = null;
+  const btn = document.getElementById('play-btn');
+  if (btn) { btn.textContent = '▶ המשך'; btn.classList.remove('playing'); }
+}
+
+function resetPlay() {
+  stopPlay();
+  _currentStep = -1;
+  const btn = document.getElementById('play-btn');
+  if (btn) btn.textContent = '▶ הפעל';
+  document.querySelectorAll('.msg').forEach(m => { m.classList.remove('active', 'done'); });
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('step-detail').style.display = 'none';
+}
+
+function advanceStep() {
+  _currentStep++;
+  if (_currentStep >= _activeSc.messages.length) {
+    stopPlay();
+    const btn = document.getElementById('play-btn');
+    if (btn) btn.textContent = '✓ סיום';
+    return;
+  }
+  updateStepDisplay();
+  _playTimer = setTimeout(advanceStep, _speed);
+}
+
+function stepForward() {
+  stopPlay();
+  _currentStep = Math.min(_currentStep + 1, _activeSc.messages.length - 1);
+  updateStepDisplay();
+}
+
+function jumpToStep(idx) {
+  stopPlay();
+  _currentStep = idx;
+  updateStepDisplay();
+}
+
+function updateStepDisplay() {
+  const msgs = document.querySelectorAll('.msg');
+  msgs.forEach((m, i) => {
+    m.classList.remove('active', 'done');
+    if (i < _currentStep) m.classList.add('done');
+    else if (i === _currentStep) m.classList.add('active');
+  });
+
+  const total = _activeSc.messages.length;
+  document.getElementById('progress-fill').style.width = ((_currentStep + 1) / total * 100) + '%';
+
+  const msg = _activeSc.messages[_currentStep];
+  if (!msg) return;
+  const panel = document.getElementById('step-detail');
+  const head = document.getElementById('sd-head');
+  const body = document.getElementById('sd-body');
+  head.innerHTML = `${msg.type === 'req' ? '→' : msg.type === 'err' ? '❌' : '←'} שלב ${_currentStep + 1}/${total}: ${msg.label}`;
+
+  let content = `<p>${msg.detail || ''}</p>`;
+  if (msg.code) content += `<pre class="step-code">${escHtml(msg.code)}</pre>`;
+  if (msg.tip) content += `<div class="step-tip">${msg.tip}</div>`;
+  body.innerHTML = content;
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function changeSpeed(delta) {
+  _speed = Math.max(500, Math.min(4000, _speed + delta));
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+<footer style="border-top:3px solid #000;padding:16px 24px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+<strong>🔗 כלים נוספים:</strong>
+<a href="flow-canvas.html" style="color:#7c3aed;font-weight:700">🗺 מפת זרימה</a>
+<a href="file-graph.html" style="color:#7c3aed;font-weight:700">📂 File Graph</a>
+<a href="practice-bank.html" style="color:#7c3aed;font-weight:700">💪 בנק תרגול</a>
+<a href="simulations.html" style="color:#7c3aed;font-weight:700">🎮 סימולציות</a>
+<a href="course-map.html" style="color:#7c3aed;font-weight:700">🗂 Course Map</a>
+</footer>
+</body>
+</html>

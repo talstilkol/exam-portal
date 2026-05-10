@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🏋️ Practice Bank — תרגול אינטראקטיבי</title>
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--shadow:5px 5px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:28px 24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(24px,4vw,38px);margin:0}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:15px}
+.hero .stats{display:flex;gap:12px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.hero .stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:4px 12px;font-size:13px;font-weight:700}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 140px)}
+.sidebar{background:#fff;border-left:3px solid #000;padding:12px;overflow-y:auto;max-height:calc(100vh - 140px);position:sticky;top:0}
+.sb-group{margin-bottom:10px}
+.sb-title{font-weight:900;font-size:13px;padding:5px 8px;border-radius:8px;margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.sb-title.react{background:#dbeafe;color:#1e40af}
+.sb-title.js{background:#fef9c3;color:#854d0e}
+.sb-title.express{background:#d1fae5;color:#065f46}
+.sb-btn{display:flex;align-items:center;gap:6px;width:100%;border:2px solid transparent;border-radius:8px;padding:6px 10px;background:none;cursor:pointer;font:inherit;font-size:12px;font-weight:700;text-align:right;transition:.15s}
+.sb-btn:hover{background:#f1f5f9;border-color:#cbd5e1}
+.sb-btn.active{background:var(--gold);border-color:#000;box-shadow:2px 2px 0 #000}
+.sb-btn .check{margin-right:auto;font-size:14px}
+.sb-btn .diff-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sb-btn .diff-dot.easy{background:var(--green)}
+.sb-btn .diff-dot.medium{background:var(--orange)}
+.sb-btn .diff-dot.hard{background:var(--red)}
+.filter-bar{display:flex;gap:6px;padding:8px;flex-wrap:wrap;border-bottom:2px solid #e2e8f0;margin-bottom:8px}
+.filter-chip{border:2px solid #cbd5e1;border-radius:8px;padding:3px 10px;font-size:11px;font-weight:800;cursor:pointer;transition:.15s;background:#f8fafc}
+.filter-chip:hover{border-color:#000;background:#f1f5f9}
+.filter-chip.active{background:var(--gold);border-color:#000;box-shadow:2px 2px 0 #000}
+.sb-btn.hidden{display:none}
+.main{padding:24px;overflow-y:auto;max-height:calc(100vh - 140px)}
+.placeholder{text-align:center;padding:80px 20px;color:#94a3b8}
+.placeholder .big{font-size:60px;display:block;margin-bottom:12px}
+
+/* Exercise */
+.ex-header{margin-bottom:16px}
+.ex-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border:2px solid #000;border-radius:8px;font-weight:900;font-size:12px;box-shadow:2px 2px 0 #000}
+.ex-badge.easy{background:#d1fae5;color:#065f46}
+.ex-badge.medium{background:#fef9c3;color:#854d0e}
+.ex-badge.hard{background:#fee2e2;color:#991b1b}
+.ex-title{font-size:22px;font-weight:900;margin-top:8px}
+.ex-desc{color:#475569;font-size:14px;margin-top:4px;line-height:1.7}
+
+/* Code editor */
+.editor-wrap{background:#0f172a;border:3px solid #000;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin:16px 0}
+.editor-bar{display:flex;align-items:center;padding:8px 12px;background:#1e293b;border-bottom:2px solid #334155;gap:8px}
+.editor-bar .dot{width:10px;height:10px;border-radius:50%;border:1px solid #475569}
+.dot-r{background:#ef4444}.dot-y{background:#facc15}.dot-g{background:#22c55e}
+.editor-bar .fname{color:#94a3b8;font-size:12px;font-weight:700;margin-right:auto}
+.editor-area{min-height:200px;padding:14px;font-family:Consolas,'Courier New',monospace;font-size:14px;color:#e2e8f0;line-height:1.6;direction:ltr;text-align:left;outline:none;white-space:pre-wrap;tab-size:2;background:#0f172a}
+.editor-area:focus{box-shadow:inset 0 0 0 2px var(--brand)}
+
+/* Controls */
+.ex-controls{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+.ex-btn{border:2px solid #000;border-radius:10px;padding:8px 16px;font-weight:900;font-size:13px;cursor:pointer;box-shadow:2px 2px 0 #000;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.ex-btn:hover{transform:translateY(-2px);box-shadow:3px 4px 0 #000}
+.ex-btn.run{background:var(--green);color:#fff}
+.ex-btn.hint{background:var(--orange);color:#fff}
+.ex-btn.solution{background:var(--brand);color:#fff}
+.ex-btn.reset{background:#334155;color:#e2e8f0}
+
+/* Output */
+.output-wrap{background:var(--card);border:3px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin:14px 0}
+.output-head{padding:8px 12px;font-weight:900;font-size:13px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:6px}
+.output-head.pass{background:#d1fae5;color:#065f46}
+.output-head.fail{background:#fee2e2;color:#991b1b}
+.output-head.neutral{background:#f1f5f9;color:#475569}
+.output-body{padding:12px;font-family:Consolas,monospace;font-size:13px;direction:ltr;text-align:left;max-height:300px;overflow-y:auto;white-space:pre-wrap}
+.test-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #e2e8f0;font-size:13px}
+.test-row:last-child{border:none}
+.test-pass{color:var(--green);font-weight:900}
+.test-fail{color:var(--red);font-weight:900}
+
+/* Hint */
+.hint-box{background:#fffbeb;border:2px solid var(--orange);border-radius:12px;padding:12px;margin:10px 0;font-size:13px;font-weight:600;display:none}
+.hint-box.visible{display:block}
+.hint-box::before{content:'💡 רמז: '}
+
+/* Solution */
+.solution-box{background:#f0fdf4;border:2px solid var(--green);border-radius:12px;margin:10px 0;display:none;overflow:hidden}
+.solution-box.visible{display:block}
+.solution-head{background:var(--green);color:#fff;padding:8px 12px;font-weight:900;font-size:13px}
+.solution-code{direction:ltr;text-align:left;background:#0f172a;color:#e2e8f0;padding:12px;font-family:Consolas,monospace;font-size:13px;line-height:1.5}
+.solution-explain{padding:10px 12px;font-size:13px;font-weight:600;line-height:1.7}
+
+/* Dark mode */
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155;--shadow:5px 5px 0 #000}
+  body{background:var(--bg)}
+  .sidebar{background:#1e293b;border-color:#334155}
+  .sb-btn:hover{background:#334155}
+  .output-body{color:#e2e8f0}
+  .hint-box{background:#422006;border-color:var(--orange);color:#fde68a}
+  .solution-box{background:#1e293b;border-color:var(--green)}
+  .solution-explain{color:#e2e8f0}
+  .test-row{border-color:#334155}
+}
+@media(max-width:768px){
+  .app{grid-template-columns:1fr}
+  .sidebar{max-height:none;position:static;border-left:none;border-bottom:3px solid #000;display:flex;flex-wrap:wrap;gap:4px;padding:8px}
+  .main{max-height:none}
+}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  .hero{padding:12px!important;background:#333!important;-webkit-print-color-adjust:exact}
+  .sidebar,.pb-sidebar{display:none}
+  .app,.pb-layout{grid-template-columns:1fr!important}
+  .pb-main{max-height:none!important;overflow:visible!important}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 38 תרגילים בדרגות קושי משתנות.</p>
+  <div class="stats">
+    <span class="stat" id="stat-solved">✅ נפתרו: 0/12</span>
+    <span class="stat" id="stat-streak">🔥 רצף: 0</span>
+  </div>
+</header>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main" id="main">
+    <div class="placeholder"><span class="big">👈</span><h2>בחרו תרגיל מהתפריט</h2><p>כתבו את הפתרון, הריצו ובדקו.</p></div>
+  </main>
+</div>
+<script>
+const EXERCISES = [
+{
+  id:"sum-digits",cat:"js",diff:"easy",title:"סכום ספרות",
+  desc:"כתבו פונקציה <code>sumDigits(n)</code> שמקבלת מספר שלם ומחזירה את סכום הספרות שלו.\nטפלו במספרים שליליים (התעלמו מהסימן).",
+  starter:"function sumDigits(n) {\n  // הקוד שלכם כאן\n  \n}",
+  tests:[
+    {input:[123],expected:6,label:"sumDigits(123) → 6"},
+    {input:[0],expected:0,label:"sumDigits(0) → 0"},
+    {input:[-456],expected:15,label:"sumDigits(-456) → 15"},
+    {input:[9],expected:9,label:"sumDigits(9) → 9"},
+    {input:[1000],expected:1,label:"sumDigits(1000) → 1"}
+  ],
+  hint:"השתמשו ב-Math.abs כדי להתעלם מסימן שלילי, ואז String().split('') כדי לפרק לספרות.",
+  solution:"function sumDigits(n) {\n  return String(Math.abs(n))\n    .split('')\n    .reduce((sum, d) => sum + Number(d), 0);\n}",
+  explain:"ממירים למחרוזת (בלי סימן), מפרקים לתווים, ממירים כל אחד למספר וסוכמים עם reduce."
+},
+{
+  id:"unique-chars",cat:"js",diff:"easy",title:"תווים ייחודיים",
+  desc:"כתבו פונקציה <code>uniqueChars(str)</code> שמחזירה מחרוזת עם תווים ייחודיים בלבד (ללא כפולים), לפי סדר הופעה.",
+  starter:"function uniqueChars(str) {\n  // הקוד שלכם כאן\n  \n}",
+  tests:[
+    {input:["hello"],expected:"helo",label:'uniqueChars("hello") → "helo"'},
+    {input:["aabbcc"],expected:"abc",label:'uniqueChars("aabbcc") → "abc"'},
+    {input:[""],expected:"",label:'uniqueChars("") → ""'},
+    {input:["abcabc"],expected:"abc",label:'uniqueChars("abcabc") → "abc"'}
+  ],
+  hint:"השתמשו ב-Set כדי לעקוב אחרי תווים שכבר ראיתם, או [...new Set(str)].join('').",
+  solution:"function uniqueChars(str) {\n  return [...new Set(str)].join('');\n}",
+  explain:"Set שומר רק ערכים ייחודיים. פריסה למערך עם spread ואז join חזרה למחרוזת."
+},
+{
+  id:"flatten-array",cat:"js",diff:"medium",title:"שטיחת מערך",
+  desc:"כתבו פונקציה <code>flatten(arr)</code> שמקבלת מערך מקונן (מערכים בתוך מערכים) ומחזירה מערך שטוח.\nלא להשתמש ב-flat()!",
+  starter:"function flatten(arr) {\n  // הקוד שלכם כאן\n  // אל תשתמשו ב-.flat()\n  \n}",
+  tests:[
+    {input:[[[1,2,[3,4]]]],expected:[1,2,3,4],label:"flatten([1,2,[3,4]]) → [1,2,3,4]"},
+    {input:[[[1,[2,[3]]]]],expected:[1,2,3],label:"flatten([1,[2,[3]]]) → [1,2,3]"},
+    {input:[[]],expected:[],label:"flatten([]) → []"},
+    {input:[[1,2,3]],expected:[1,2,3],label:"flatten([1,2,3]) → [1,2,3]"}
+  ],
+  hint:"רקורסיה: אם האיבר הוא מערך — קראו ל-flatten עליו. אם לא — דחפו לתוצאה.",
+  solution:"function flatten(arr) {\n  const result = [];\n  for (const item of arr) {\n    if (Array.isArray(item)) {\n      result.push(...flatten(item));\n    } else {\n      result.push(item);\n    }\n  }\n  return result;\n}",
+  explain:"רקורסיה: עוברים על כל איבר. אם הוא מערך — קוראים ל-flatten ופורסים את התוצאה. אם לא — פשוט מוסיפים."
+},
+{
+  id:"count-words",cat:"js",diff:"easy",title:"ספירת מילים",
+  desc:"כתבו פונקציה <code>countWords(str)</code> שמחזירה אובייקט שסופר כמה פעמים כל מילה מופיעה (case insensitive).",
+  starter:"function countWords(str) {\n  // הקוד שלכם כאן\n  \n}",
+  tests:[
+    {input:["hello world hello"],expected:{hello:2,world:1},label:'countWords("hello world hello")'},
+    {input:["A a A"],expected:{a:3},label:'countWords("A a A") → {a:3}'},
+    {input:[""],expected:{},label:'countWords("") → {}'},
+    {input:["one"],expected:{one:1},label:'countWords("one") → {one:1}'}
+  ],
+  hint:"פצלו עם split(' '), המירו ל-lowercase, ובנו אובייקט: obj[word] = (obj[word]||0) + 1.",
+  solution:"function countWords(str) {\n  if (!str.trim()) return {};\n  const result = {};\n  for (const word of str.toLowerCase().split(/\\s+/)) {\n    result[word] = (result[word] || 0) + 1;\n  }\n  return result;\n}",
+  explain:"toLowerCase להשוואה case-insensitive, split(/\\s+/) לפיצול לפי רווחים (כולל מרובים), ואז צבירה באובייקט."
+},
+{
+  id:"validate-email",cat:"react",diff:"medium",title:"ולידציית אימייל",
+  desc:"כתבו פונקציה <code>validateForm(form)</code> שמקבלת אובייקט {name, email, password} ומחזירה אובייקט שגיאות.\nname: 2+ תווים. email: מכיל @ ונקודה אחריו. password: 8+ תווים, לפחות אות גדולה ומספר.",
+  starter:"function validateForm(form) {\n  const errors = {};\n  // הקוד שלכם כאן\n  \n  return errors;\n}",
+  tests:[
+    {input:[{name:"",email:"bad",password:"123"}],expected:{name:"שם חייב להיות 2+ תווים",email:"אימייל לא תקין",password:"סיסמה: 8+ תווים, אות גדולה ומספר"},label:"all invalid"},
+    {input:[{name:"Tal",email:"tal@test.com",password:"Abc12345"}],expected:{},label:"all valid → {}"},
+    {input:[{name:"T",email:"a@b.c",password:"Abc12345"}],expected:{name:"שם חייב להיות 2+ תווים"},label:"only name invalid"},
+    {input:[{name:"Tal",email:"nope",password:"abcdefgh"}],expected:{email:"אימייל לא תקין",password:"סיסמה: 8+ תווים, אות גדולה ומספר"},label:"email+password invalid"}
+  ],
+  hint:"לאימייל: בדקו str.includes('@') && str.indexOf('.', str.indexOf('@')) > -1. לסיסמה: /[A-Z]/ && /\\d/ && length >= 8.",
+  solution:"function validateForm(form) {\n  const errors = {};\n  if (form.name.length < 2)\n    errors.name = 'שם חייב להיות 2+ תווים';\n  if (!form.email.includes('@') ||\n      form.email.indexOf('.', form.email.indexOf('@')) === -1)\n    errors.email = 'אימייל לא תקין';\n  if (form.password.length < 8 ||\n      !/[A-Z]/.test(form.password) ||\n      !/\\d/.test(form.password))\n    errors.password = 'סיסמה: 8+ תווים, אות גדולה ומספר';\n  return errors;\n}",
+  explain:"כל ולידציה — if שבודק תנאי ומוסיף שגיאה לאובייקט. אם אין שגיאות — מוחזר אובייקט ריק {}."
+},
+{
+  id:"group-by",cat:"js",diff:"medium",title:"קיבוץ לפי מפתח",
+  desc:"כתבו פונקציה <code>groupBy(arr, key)</code> שמקבצת מערך אובייקטים לפי ערך של שדה מסוים.\nדוגמה: groupBy([{type:'a',v:1},{type:'b',v:2},{type:'a',v:3}], 'type') → {a:[...], b:[...]}",
+  starter:"function groupBy(arr, key) {\n  // הקוד שלכם כאן\n  \n}",
+  tests:[
+    {input:[[{type:"a",v:1},{type:"b",v:2},{type:"a",v:3}],"type"],expected:{a:[{type:"a",v:1},{type:"a",v:3}],b:[{type:"b",v:2}]},label:"group by type"},
+    {input:[[{age:20,n:"A"},{age:30,n:"B"},{age:20,n:"C"}],"age"],expected:{"20":[{age:20,n:"A"},{age:20,n:"C"}],"30":[{age:30,n:"B"}]},label:"group by age"},
+    {input:[[],"x"],expected:{},label:"empty array → {}"}
+  ],
+  hint:"עברו על כל איבר, שלפו את הערך של ה-key, ואם אין מערך לערך הזה — צרו אחד ריק, ואז push.",
+  solution:"function groupBy(arr, key) {\n  const result = {};\n  for (const item of arr) {\n    const k = item[key];\n    if (!result[k]) result[k] = [];\n    result[k].push(item);\n  }\n  return result;\n}",
+  explain:"לכל איבר — מפתח = item[key]. אם לא קיים באובייקט התוצאה — יוצרים מערך ריק. push לתוכו."
+},
+{
+  id:"debounce",cat:"react",diff:"hard",title:"Debounce פונקציה",
+  desc:"כתבו פונקציה <code>debounce(fn, delay)</code> שמחזירה פונקציה חדשה.\nהפונקציה החדשה מפעילה את fn רק אחרי שעבר delay מילישניות ללא קריאה נוספת.",
+  starter:"function debounce(fn, delay) {\n  // הקוד שלכם כאן\n  \n}",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"debounce returns a function"},
+    {input:["__custom__"],expected:"__custom__",label:"uses clearTimeout + setTimeout"},
+    {input:["__custom__"],expected:"__custom__",label:"returned function forwards arguments"},
+    {input:["__custom__"],expected:"__custom__",label:"uses closure for timer variable"}
+  ],
+  customTest(code) {
+    const results = [];
+    // Test 1: returns a function
+    try {
+      const fn = new Function(code + "\nreturn debounce;")();
+      const debounced = fn(() => {}, 100);
+      const pass = typeof debounced === 'function';
+      results.push({pass, message: pass ? 'debounce returns a function' : 'debounce should return a function, got: ' + typeof debounced});
+    } catch(e) { results.push({pass:false, message:'Error: ' + e.message}); }
+    // Test 2: uses clearTimeout + setTimeout
+    try {
+      const usesClear = /clearTimeout/.test(code);
+      const usesSet = /setTimeout/.test(code);
+      const pass = usesClear && usesSet;
+      results.push({pass, message: pass ? 'uses clearTimeout + setTimeout' : 'must use both clearTimeout and setTimeout'});
+    } catch(e) { results.push({pass:false, message:'Error: ' + e.message}); }
+    // Test 3: returned function forwards arguments
+    try {
+      const pass = /\.\.\.args|\.\.\.a|\.\.\.arg|arguments/.test(code) || /apply\s*\(|call\s*\(/.test(code);
+      results.push({pass, message: pass ? 'returned function forwards arguments' : 'returned function should forward arguments using ...args or apply/call'});
+    } catch(e) { results.push({pass:false, message:'Error: ' + e.message}); }
+    // Test 4: uses closure for timer variable
+    try {
+      const usesLet = /let\s+\w+/.test(code.split('return')[0] || code);
+      const usesVar = /var\s+\w+/.test(code.split('return')[0] || code);
+      const pass = usesLet || usesVar;
+      results.push({pass, message: pass ? 'uses closure for timer variable' : 'should declare a timer variable (let/var) in the closure scope'});
+    } catch(e) { results.push({pass:false, message:'Error: ' + e.message}); }
+    return results;
+  },
+  hint:"שמרו timerId במשתנה חיצוני. בכל קריאה — clearTimeout ואז setTimeout חדש.",
+  solution:"function debounce(fn, delay) {\n  let timerId;\n  return function(...args) {\n    clearTimeout(timerId);\n    timerId = setTimeout(() => fn(...args), delay);\n  };\n}",
+  explain:"closure שומר את timerId. כל קריאה מבטלת את הtimeout הקודם ומתחילה חדש. רק הקריאה האחרונה מתבצעת."
+},
+{
+  id:"express-route",cat:"express",diff:"easy",title:"Express Route — GET all",
+  desc:'השלימו את ה-route handler כך ש-<code>GET /items</code> יחזיר את כל הפריטים כ-JSON.',
+  starter:"// items is an array defined above\n\napp.get('/items', (req, res) => {\n  // השלימו את הקוד\n  \n});",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"uses app.get with '/items' route"},
+    {input:["__custom__"],expected:"__custom__",label:"calls res.json(items)"},
+    {input:["__custom__"],expected:"__custom__",label:"has (req, res) parameters"}
+  ],
+  customTest(code) {
+    const results = [];
+    // Test 1: uses app.get with '/items'
+    const hasGet = /app\.get\s*\(\s*['"`]\/items['"`]/.test(code);
+    results.push({pass: hasGet, message: hasGet ? "uses app.get with '/items' route" : "should use app.get('/items', ...)"});
+    // Test 2: calls res.json(items)
+    const hasResJson = /res\.json\s*\(\s*items\s*\)/.test(code);
+    results.push({pass: hasResJson, message: hasResJson ? "calls res.json(items)" : "should call res.json(items) to return the items array"});
+    // Test 3: has (req, res) parameters
+    const hasParams = /\(\s*(req|request)\s*,\s*(res|response)\s*\)/.test(code);
+    results.push({pass: hasParams, message: hasParams ? "has (req, res) parameters" : "route handler should have (req, res) parameters"});
+    return results;
+  },
+  hint:"השתמשו ב-res.json(items) כדי לשלוח את המערך כ-JSON.",
+  solution:"app.get('/items', (req, res) => {\n  res.json(items);\n});",
+  explain:"res.json() שולח את הנתונים כ-JSON עם Content-Type: application/json. status 200 הוא ברירת מחדל."
+},
+{
+  id:"express-post",cat:"express",diff:"medium",title:"Express Route — POST + 201",
+  desc:'השלימו את ה-route handler כך ש-<code>POST /items</code> יוסיף פריט חדש ויחזיר 201.',
+  starter:"app.post('/items', (req, res) => {\n  // 1. קחו name ו-price מ-req.body\n  // 2. צרו אובייקט עם id ייחודי\n  // 3. דחפו למערך items\n  // 4. החזירו 201 עם הפריט\n  \n});",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"uses app.post with '/items' route"},
+    {input:["__custom__"],expected:"__custom__",label:"reads from req.body"},
+    {input:["__custom__"],expected:"__custom__",label:"pushes new item to items array"},
+    {input:["__custom__"],expected:"__custom__",label:"returns status 201 with JSON"}
+  ],
+  customTest(code) {
+    const results = [];
+    // Test 1: uses app.post with '/items'
+    const hasPost = /app\.post\s*\(\s*['"`]\/items['"`]/.test(code);
+    results.push({pass: hasPost, message: hasPost ? "uses app.post with '/items' route" : "should use app.post('/items', ...)"});
+    // Test 2: reads from req.body
+    const hasReqBody = /req\.body/.test(code);
+    results.push({pass: hasReqBody, message: hasReqBody ? "reads from req.body" : "should read data from req.body (e.g., req.body.name, req.body.price)"});
+    // Test 3: pushes to items array
+    const hasPush = /items\.push\s*\(/.test(code) || /\.push\s*\(\s*(new)?.*item/i.test(code);
+    results.push({pass: hasPush, message: hasPush ? "pushes new item to items array" : "should push the new item to the items array using items.push(...)"});
+    // Test 4: returns status 201 with json
+    const hasStatus201 = /\.status\s*\(\s*201\s*\)/.test(code);
+    const hasJson = /\.json\s*\(/.test(code);
+    const pass = hasStatus201 && hasJson;
+    results.push({pass, message: pass ? "returns status 201 with JSON" : "should use res.status(201).json(...) to return the created item"});
+    return results;
+  },
+  hint:"const item = {id: Date.now(), ...req.body}; items.push(item); res.status(201).json(item);",
+  solution:"app.post('/items', (req, res) => {\n  const item = {\n    id: Date.now(),\n    name: req.body.name,\n    price: req.body.price\n  };\n  items.push(item);\n  res.status(201).json(item);\n});",
+  explain:"req.body מכיל את הנתונים (דורש express.json() middleware!). status(201) = Created. json() שולח את התוצאה."
+},
+{
+  id:"mongoose-filter",cat:"express",diff:"medium",title:"Mongoose Filter — AND logic",
+  desc:'השלימו את ה-route handler כך ש-<code>POST /filter</code> יסנן לפי כל הפרמטרים שנשלחו (AND logic).',
+  starter:"app.post('/filter', async (req, res) => {\n  let filtered = [...games];\n  // סננו לפי: req.body.yearMin, req.body.name, req.body.priceMax\n  // AND logic = כל filter מצמצם את התוצאה\n  \n  res.json(filtered);\n});",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"filters by yearMin using >= comparison"},
+    {input:["__custom__"],expected:"__custom__",label:"filters by name (case-insensitive)"},
+    {input:["__custom__"],expected:"__custom__",label:"filters by priceMax using <= comparison"},
+    {input:["__custom__"],expected:"__custom__",label:"uses conditional checks (if) before each filter"},
+    {input:["__custom__"],expected:"__custom__",label:"sends result with res.json"}
+  ],
+  customTest(code) {
+    const results = [];
+    // Test 1: filters by yearMin
+    const hasYearMin = /req\.body\.yearMin/.test(code) && /\.filter\s*\(/.test(code) && /year\s*>=/.test(code);
+    results.push({pass: hasYearMin, message: hasYearMin ? "filters by yearMin using >= comparison" : "should filter by req.body.yearMin with g.year >= req.body.yearMin"});
+    // Test 2: filters by name (case-insensitive)
+    const hasName = /req\.body\.name/.test(code) && (/toLowerCase|toLocaleLowerCase/.test(code) || /includes/.test(code));
+    results.push({pass: hasName, message: hasName ? "filters by name (case-insensitive)" : "should filter by req.body.name using toLowerCase() and includes()"});
+    // Test 3: filters by priceMax
+    const hasPriceMax = /req\.body\.priceMax/.test(code) && /price\s*<=/.test(code);
+    results.push({pass: hasPriceMax, message: hasPriceMax ? "filters by priceMax using <= comparison" : "should filter by req.body.priceMax with g.price <= req.body.priceMax"});
+    // Test 4: uses conditional checks
+    const ifCount = (code.match(/if\s*\(\s*req\.body\./g) || []).length;
+    const pass4 = ifCount >= 2;
+    results.push({pass: pass4, message: pass4 ? "uses conditional checks (if) before each filter" : "should use if(req.body.xxx) before each .filter() to skip unused params"});
+    // Test 5: sends result with res.json
+    const hasResJson = /res\.json\s*\(\s*(filtered|results?|data|games)/.test(code);
+    results.push({pass: hasResJson, message: hasResJson ? "sends result with res.json" : "should send the filtered result with res.json(filtered)"});
+    return results;
+  },
+  hint:"if (req.body.yearMin) filtered = filtered.filter(g => g.year >= req.body.yearMin); חזרו על זה לכל פרמטר.",
+  solution:"app.post('/filter', async (req, res) => {\n  let filtered = [...games];\n  if (req.body.yearMin)\n    filtered = filtered.filter(g => g.year >= req.body.yearMin);\n  if (req.body.name)\n    filtered = filtered.filter(g =>\n      g.name.toLowerCase().includes(\n        req.body.name.toLowerCase()));\n  if (req.body.priceMax)\n    filtered = filtered.filter(g => g.price <= req.body.priceMax);\n  res.json(filtered);\n});",
+  explain:"AND logic = שרשרת filter. כל filter מצמצם את filtered הקודם. אם פרמטר לא נשלח — מדלגים עליו."
+},
+{
+  id:"react-useeffect",cat:"react",diff:"medium",title:"useEffect — localStorage sync",
+  desc:'השלימו את הקוד כך ש-items ייטענו מ-localStorage בהתחלה, וישמרו אוטומטית בכל שינוי.',
+  starter:"// השלימו את שני ה-useState וה-useEffect\n\nconst [items, setItems] = useState(\n  // מה שמים כאן?\n);\n\nuseEffect(() => {\n  // מה שמים כאן?\n}, [/* מה ה-dependency? */]);",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"useState initializes from localStorage"},
+    {input:["__custom__"],expected:"__custom__",label:"uses JSON.parse for reading"},
+    {input:["__custom__"],expected:"__custom__",label:"useEffect calls localStorage.setItem"},
+    {input:["__custom__"],expected:"__custom__",label:"uses JSON.stringify for writing"},
+    {input:["__custom__"],expected:"__custom__",label:"dependency array includes [items]"}
+  ],
+  customTest(code) {
+    const results = [];
+    // Test 1: useState initializes from localStorage
+    const hasGetItem = /localStorage\.getItem/.test(code) && /useState\s*\(/.test(code);
+    results.push({pass: hasGetItem, message: hasGetItem ? "useState initializes from localStorage" : "useState should be initialized with a value from localStorage.getItem(...)"});
+    // Test 2: uses JSON.parse for reading
+    const hasParse = /JSON\.parse\s*\(\s*localStorage\.getItem/.test(code);
+    results.push({pass: hasParse, message: hasParse ? "uses JSON.parse for reading" : "should use JSON.parse(localStorage.getItem('items')) to read stored data"});
+    // Test 3: useEffect calls localStorage.setItem
+    const hasSetItem = /useEffect\s*\(/.test(code) && /localStorage\.setItem/.test(code);
+    results.push({pass: hasSetItem, message: hasSetItem ? "useEffect calls localStorage.setItem" : "useEffect should call localStorage.setItem to save items on change"});
+    // Test 4: uses JSON.stringify for writing
+    const hasStringify = /JSON\.stringify\s*\(\s*items\s*\)/.test(code);
+    results.push({pass: hasStringify, message: hasStringify ? "uses JSON.stringify for writing" : "should use JSON.stringify(items) when saving to localStorage"});
+    // Test 5: dependency array includes [items]
+    const hasDep = /\}\s*,\s*\[\s*items\s*\]\s*\)/.test(code);
+    results.push({pass: hasDep, message: hasDep ? "dependency array includes [items]" : "useEffect dependency array should be [items] so it runs on every change"});
+    return results;
+  },
+  hint:"useState: JSON.parse(localStorage.getItem('items')) || []. useEffect: localStorage.setItem('items', JSON.stringify(items)), dependency: [items].",
+  solution:"const [items, setItems] = useState(\n  JSON.parse(localStorage.getItem('items')) || []\n);\n\nuseEffect(() => {\n  localStorage.setItem('items', JSON.stringify(items));\n}, [items]);",
+  explain:"useState מאותחל עם הערך מ-localStorage (|| [] כ-fallback). useEffect עם [items] שומר בכל שינוי."
+},
+{
+  id:"bubble-sort",cat:"js",diff:"hard",title:"Bubble Sort ידני",
+  desc:"כתבו פונקציה <code>bubbleSort(arr)</code> שממיינת מערך מספרים בסדר עולה.\nלא להשתמש ב-.sort()! השתמשו באלגוריתם Bubble Sort.",
+  starter:"function bubbleSort(arr) {\n  // הקוד שלכם כאן\n  // אל תשתמשו ב-.sort()\n  \n}",
+  tests:[
+    {input:[[5,3,8,1,2]],expected:[1,2,3,5,8],label:"bubbleSort([5,3,8,1,2])"},
+    {input:[[1,2,3]],expected:[1,2,3],label:"already sorted"},
+    {input:[[3,2,1]],expected:[1,2,3],label:"reverse order"},
+    {input:[[42]],expected:[42],label:"single element"},
+    {input:[[]],expected:[],label:"empty array"}
+  ],
+  hint:"שתי לולאות מקוננות. אם arr[j] > arr[j+1] — החלפה: [arr[j], arr[j+1]] = [arr[j+1], arr[j]].",
+  solution:"function bubbleSort(arr) {\n  const a = [...arr]; // don't mutate original\n  for (let i = 0; i < a.length; i++) {\n    for (let j = 0; j < a.length - 1 - i; j++) {\n      if (a[j] > a[j+1]) {\n        [a[j], a[j+1]] = [a[j+1], a[j]];\n      }\n    }\n  }\n  return a;\n}",
+  explain:"לולאה חיצונית — מספר passes. פנימית — השוואת שכנים והחלפה. -1-i כי הסוף כבר ממוין."
+},
+{
+  id:"is-subsequence",cat:"js",diff:"medium",title:"בדיקת תת-רצף",
+  desc:"כתבו פונקציה <code>isSubsequence(arr, sub)</code> שבודקת האם <code>sub</code> מופיע כתת-רצף (לפי הסדר, לא רציף) בתוך <code>arr</code>.",
+  starter:"function isSubsequence(arr, sub) {\n  // הקוד שלכם כאן\n  \n}",
+  tests:[
+    {input:[[1,2,3,4,5],[1,3,5]],expected:true,label:"isSubsequence([1,2,3,4,5],[1,3,5]) → true"},
+    {input:[[1,2,3,4,5],[5,3,1]],expected:false,label:"isSubsequence([1,2,3,4,5],[5,3,1]) → false"},
+    {input:[[1,2,3],[1,2,3]],expected:true,label:"equal arrays → true"},
+    {input:[[1,2,3],[]],expected:true,label:"empty sub → true"},
+    {input:[[],[1]],expected:false,label:"empty arr, non-empty sub → false"}
+  ],
+  hint:"שני מצביעים: i על arr, j על sub. אם arr[i]===sub[j] — קדמו את j. בסוף בדקו j===sub.length.",
+  solution:"function isSubsequence(arr, sub) {\n  let j = 0;\n  for (let i = 0; i < arr.length && j < sub.length; i++) {\n    if (arr[i] === sub[j]) j++;\n  }\n  return j === sub.length;\n}",
+  explain:"two pointers: i רץ על arr, j רץ על sub. כל התאמה מקדמת j. אם j הגיע לסוף — sub מוכל."
+},
+{
+  id:"sum-by-digit-len",cat:"js",diff:"medium",title:"סכום לפי אורך מספר",
+  desc:"כתבו פונקציה <code>sumByDigitLength(arr)</code> שמקבלת מערך מספרים ומחזירה אובייקט שמקבץ את הסכום לפי אורך הספרות.\nטפלו במספרים שליליים!",
+  starter:"function sumByDigitLength(arr) {\n  // הקוד שלכם כאן\n  \n}",
+  tests:[
+    {input:[[1,22,333,44,5]],expected:{"1":6,"2":66,"3":333},label:"basic grouping"},
+    {input:[[-12,34,5]],expected:{"2":22,"1":5},label:"negative numbers (Math.abs)"},
+    {input:[[]],expected:{},label:"empty array → {}"},
+    {input:[[0]],expected:{"1":0},label:"zero → length 1"}
+  ],
+  hint:"Math.abs(n) לפני String().length. צברו: result[len] = (result[len]||0) + n.",
+  solution:"function sumByDigitLength(arr) {\n  const result = {};\n  for (const n of arr) {\n    const len = String(Math.abs(n)).length;\n    result[len] = (result[len] || 0) + n;\n  }\n  return result;\n}",
+  explain:"Math.abs מטפל בשליליים. String().length נותן אורך ספרות. צבירה באובייקט לפי מפתח."
+},
+{
+  id:"deep-equal",cat:"js",diff:"hard",title:"השוואה עמוקה",
+  desc:"כתבו פונקציה <code>deepEqual(a, b)</code> שבודקת שוויון עמוק בין שני ערכים (primitives, arrays, objects).\nלא להשתמש ב-JSON.stringify!",
+  starter:"function deepEqual(a, b) {\n  // הקוד שלכם כאן\n  \n}",
+  tests:[
+    {input:[{x:1,y:{z:2}},{x:1,y:{z:2}}],expected:true,label:"nested objects → true"},
+    {input:[{x:1},{x:2}],expected:false,label:"different values → false"},
+    {input:[[1,[2,3]],[1,[2,3]]],expected:true,label:"nested arrays → true"},
+    {input:[1,1],expected:true,label:"primitives → true"},
+    {input:[null,undefined],expected:false,label:"null !== undefined"}
+  ],
+  hint:"רקורסיה: אם שניהם primitives — ===. אם שניהם objects — בדקו אותם keys ואז deepEqual על כל ערך.",
+  solution:"function deepEqual(a, b) {\n  if (a === b) return true;\n  if (a == null || b == null) return false;\n  if (typeof a !== 'object' || typeof b !== 'object') return false;\n  const keysA = Object.keys(a);\n  const keysB = Object.keys(b);\n  if (keysA.length !== keysB.length) return false;\n  return keysA.every(k => deepEqual(a[k], b[k]));\n}",
+  explain:"בסיס: === לprimitive/null. רקורסיה: Object.keys + every כדי להשוות כל value בעומק."
+},
+{
+  id:"react-conditional",cat:"react",diff:"easy",title:"Conditional Rendering",
+  desc:"כתבו component <code>StatusBadge({status})</code> שמחזיר badge שונה לפי סטטוס:\n'active' → ירוק, 'pending' → כתום, 'inactive' → אדום.",
+  starter:"function StatusBadge({ status }) {\n  // החזירו JSX עם className מתאים\n  \n}",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"returns JSX element"},
+    {input:["__custom__"],expected:"__custom__",label:"uses conditional logic (ternary or if/switch)"},
+    {input:["__custom__"],expected:"__custom__",label:"renders status text"},
+    {input:["__custom__"],expected:"__custom__",label:"uses className for styling"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasReturn = /return\s*[(<]/.test(code);
+    results.push({pass:hasReturn, message: hasReturn?'returns JSX element':'should return JSX with <div> or <span>'});
+    const hasCond = /\?.*:|\bif\b|\bswitch\b/.test(code);
+    results.push({pass:hasCond, message: hasCond?'uses conditional logic (ternary or if/switch)':'should use conditional rendering based on status prop'});
+    const hasStatus = /status/.test(code);
+    results.push({pass:hasStatus, message: hasStatus?'renders status text':'should display the status value'});
+    const hasClass = /className/.test(code);
+    results.push({pass:hasClass, message: hasClass?'uses className for styling':'should use className to apply different styles per status'});
+    return results;
+  },
+  hint:"השתמשו ב-ternary או switch: className={status === 'active' ? 'green' : status === 'pending' ? 'orange' : 'red'}",
+  solution:"function StatusBadge({ status }) {\n  const colors = {\n    active: 'green',\n    pending: 'orange',\n    inactive: 'red'\n  };\n  return (\n    <span className={`badge ${colors[status] || 'gray'}`}>\n      {status}\n    </span>\n  );\n}",
+  explain:"אובייקט mapping פשוט וקריא. className דינאמי לפי ה-status. fallback ל-gray אם status לא מוכר."
+},
+{
+  id:"express-middleware",cat:"express",diff:"hard",title:"Custom Middleware — Logger",
+  desc:"כתבו middleware function שמדפיסה לconsole את: method, url, timestamp.\nהmiddleware צריך לקרוא ל-next() כדי להעביר לroute הבא.",
+  starter:"// כתבו middleware function\nconst logger = (req, res, next) => {\n  // הקוד שלכם כאן\n  \n};\n\n// שימוש: app.use(logger);",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"logs req.method"},
+    {input:["__custom__"],expected:"__custom__",label:"logs req.url"},
+    {input:["__custom__"],expected:"__custom__",label:"calls next()"},
+    {input:["__custom__"],expected:"__custom__",label:"has (req, res, next) parameters"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasMethod = /req\.method/.test(code);
+    results.push({pass:hasMethod, message: hasMethod?'logs req.method':'should log req.method (GET, POST, etc.)'});
+    const hasUrl = /req\.url|req\.path|req\.originalUrl/.test(code);
+    results.push({pass:hasUrl, message: hasUrl?'logs req.url':'should log req.url or req.path'});
+    const hasNext = /next\s*\(\s*\)/.test(code);
+    results.push({pass:hasNext, message: hasNext?'calls next()':'must call next() to pass control to the next middleware/route'});
+    const hasParams = /\(\s*req\s*,\s*res\s*,\s*next\s*\)/.test(code);
+    results.push({pass:hasParams, message: hasParams?'has (req, res, next) parameters':'middleware must have (req, res, next) signature'});
+    return results;
+  },
+  hint:"console.log(`${req.method} ${req.url} ${new Date().toISOString()}`); ואז next();",
+  solution:"const logger = (req, res, next) => {\n  console.log(\n    `${req.method} ${req.url} ${new Date().toISOString()}`\n  );\n  next();\n};",
+  explain:"middleware חייב 3 פרמטרים: req,res,next. next() מעביר לhandler הבא. בלי next — הrequest תקוע."
+},
+{
+  id:"array-intersection",cat:"js",diff:"easy",title:"חיתוך מערכים",
+  desc:"כתבו פונקציה <code>intersection(a, b)</code> שמחזירה מערך של איברים שנמצאים בשני המערכים (ללא כפילויות).",
+  starter:"function intersection(a, b) {\n  // הקוד שלכם כאן\n  \n}",
+  tests:[
+    {input:[[1,2,3,4],[3,4,5,6]],expected:[3,4],label:"intersection([1,2,3,4],[3,4,5,6]) → [3,4]"},
+    {input:[[1,2],[3,4]],expected:[],label:"no common → []"},
+    {input:[[1,1,2],[1,2,2]],expected:[1,2],label:"duplicates → unique intersection"},
+    {input:[[],[]],expected:[],label:"empty arrays → []"}
+  ],
+  hint:"השתמשו ב-Set על מערך אחד, ואז filter על השני: [...new Set(a)].filter(x => setB.has(x)).",
+  solution:"function intersection(a, b) {\n  const setB = new Set(b);\n  return [...new Set(a)].filter(x => setB.has(x));\n}",
+  explain:"Set מסיר כפילויות. filter עם has בודק אם האיבר קיים בset השני. O(n+m) ולא O(n*m)."
+},
+{
+  id:"mongoose-schema",cat:"express",diff:"medium",title:"Mongoose Schema + Model",
+  desc:"השלימו את הגדרת ה-Schema כך שיכלול: name (חובה, מחרוזת), email (חובה, ייחודי), age (מספר, מינימום 0).",
+  starter:"const mongoose = require('mongoose');\n\nconst userSchema = new mongoose.Schema({\n  // השלימו את השדות\n  \n});\n\nconst User = mongoose.model('User', userSchema);",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"defines name field with required"},
+    {input:["__custom__"],expected:"__custom__",label:"defines email with unique: true"},
+    {input:["__custom__"],expected:"__custom__",label:"defines age with min: 0"},
+    {input:["__custom__"],expected:"__custom__",label:"creates model with mongoose.model"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasName = /name\s*:\s*\{[^}]*required\s*:\s*true/s.test(code) || /name\s*:\s*\{[^}]*type\s*:\s*String[^}]*required/s.test(code);
+    results.push({pass:hasName, message: hasName?'defines name field with required':'name should be { type: String, required: true }'});
+    const hasEmail = /email\s*:\s*\{[^}]*unique\s*:\s*true/s.test(code);
+    results.push({pass:hasEmail, message: hasEmail?'defines email with unique: true':'email should include unique: true'});
+    const hasAge = /age\s*:\s*\{[^}]*min\s*:\s*0/s.test(code) || /age\s*:\s*\{[^}]*Number/s.test(code);
+    results.push({pass:hasAge, message: hasAge?'defines age with Number type':'age should be { type: Number, min: 0 }'});
+    const hasModel = /mongoose\.model\s*\(\s*['"]User['"]/.test(code);
+    results.push({pass:hasModel, message: hasModel?'creates model with mongoose.model':'should use mongoose.model(\'User\', userSchema)'});
+    return results;
+  },
+  hint:"name: { type: String, required: true }, email: { type: String, required: true, unique: true }, age: { type: Number, min: 0 }",
+  solution:"const mongoose = require('mongoose');\n\nconst userSchema = new mongoose.Schema({\n  name: { type: String, required: true },\n  email: { type: String, required: true, unique: true },\n  age: { type: Number, min: 0 }\n});\n\nconst User = mongoose.model('User', userSchema);",
+  explain:"Schema מגדיר מבנה + ולידציות. required = שדה חובה. unique = אינדקס ייחודי. min = ערך מינימלי."
+},
+{
+  id:"promise-chain",cat:"js",diff:"hard",title:"Promise — async/await",
+  desc:"כתבו פונקציה <code>fetchUserPosts(userId)</code> שמדמה שליפת משתמש ואז הפוסטים שלו.\nהשתמשו ב-async/await. הפונקציות getUser ו-getPosts כבר מוגדרות.",
+  starter:"// פונקציות שכבר מוגדרות:\n// getUser(id) → Promise<{id, name}>\n// getPosts(userId) → Promise<[{title}]>\n\nasync function fetchUserPosts(userId) {\n  // הקוד שלכם כאן\n  \n}",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"uses async keyword"},
+    {input:["__custom__"],expected:"__custom__",label:"uses await for getUser"},
+    {input:["__custom__"],expected:"__custom__",label:"uses await for getPosts"},
+    {input:["__custom__"],expected:"__custom__",label:"returns combined result"},
+    {input:["__custom__"],expected:"__custom__",label:"has try/catch for error handling"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasAsync = /async\s+function/.test(code);
+    results.push({pass:hasAsync, message: hasAsync?'uses async keyword':'function should be declared with async'});
+    const awaitUser = /await\s+getUser/.test(code);
+    results.push({pass:awaitUser, message: awaitUser?'uses await for getUser':'should await getUser(userId)'});
+    const awaitPosts = /await\s+getPosts/.test(code);
+    results.push({pass:awaitPosts, message: awaitPosts?'uses await for getPosts':'should await getPosts(user.id or userId)'});
+    const hasReturn = /return\s*\{/.test(code) || /return\s*\[/.test(code) || /return.*user|return.*posts/.test(code);
+    results.push({pass:hasReturn, message: hasReturn?'returns combined result':'should return an object combining user and posts data'});
+    const hasTryCatch = /try\s*\{/.test(code) && /catch/.test(code);
+    results.push({pass:hasTryCatch, message: hasTryCatch?'has try/catch for error handling':'should wrap in try/catch to handle Promise rejections'});
+    return results;
+  },
+  hint:"const user = await getUser(userId); const posts = await getPosts(user.id); return { user, posts };",
+  solution:"async function fetchUserPosts(userId) {\n  try {\n    const user = await getUser(userId);\n    const posts = await getPosts(user.id);\n    return { user, posts };\n  } catch (error) {\n    console.error('Error:', error.message);\n    throw error;\n  }\n}",
+  explain:"async/await הופך Promise chain לקוד סינכרוני קריא. try/catch תופס reject. throw error מעביר את השגיאה הלאה."
+},
+{
+  id:"react-router-nav",cat:"react",diff:"medium",title:"React Router — ניווט מותנה",
+  desc:"השלימו את הפונקציה <code>handleLogin</code> כך שאם הולידציה עוברת, תנווט ל-<code>/home</code>.\nהשתמשו ב-useNavigate. אם הולידציה נכשלת — שמרו שגיאה ב-state.",
+  starter:"import { useNavigate } from 'react-router-dom';\nimport { useState } from 'react';\n\nfunction LoginForm() {\n  const [error, setError] = useState('');\n  // הוסיפו navigate\n\n  function handleLogin(username, password) {\n    // הקוד שלכם כאן\n    // אם username ריק או password < 6 → setError\n    // אחרת → navigate to '/home'\n  }\n\n  return (\n    <form onSubmit={(e) => { e.preventDefault(); handleLogin(e.target.user.value, e.target.pass.value); }}>\n      <input name=\"user\" />\n      <input name=\"pass\" type=\"password\" />\n      {error && <p className=\"error\">{error}</p>}\n      <button>Login</button>\n    </form>\n  );\n}",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"uses useNavigate()"},
+    {input:["__custom__"],expected:"__custom__",label:"validates username not empty"},
+    {input:["__custom__"],expected:"__custom__",label:"validates password >= 6"},
+    {input:["__custom__"],expected:"__custom__",label:"calls navigate('/home') on success"},
+    {input:["__custom__"],expected:"__custom__",label:"calls setError on failure"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasNav = /useNavigate\(\)/.test(code);
+    results.push({pass:hasNav, message: hasNav?'uses useNavigate()':'should call useNavigate() and store in variable'});
+    const checkUser = /username|user/.test(code) && (/!.*username|===\s*''|\.length/.test(code)||/!user/.test(code));
+    results.push({pass:checkUser, message: checkUser?'validates username not empty':'should check if username is empty'});
+    const checkPass = /password|pass/.test(code) && /\.length\s*<\s*6|<\s*6/.test(code);
+    results.push({pass:checkPass, message: checkPass?'validates password >= 6':'should check password.length >= 6'});
+    const navHome = /navigate\s*\(\s*['"]\/home['"]/.test(code);
+    results.push({pass:navHome, message: navHome?'calls navigate(\'/home\') on success':'should navigate to /home when valid'});
+    const setErr = /setError\s*\(/.test(code);
+    results.push({pass:setErr, message: setErr?'calls setError on failure':'should call setError with message when invalid'});
+    return results;
+  },
+  hint:"const navigate = useNavigate();\nif (!username || password.length < 6) { setError('...'); return; }\nnavigate('/home');",
+  solution:"import { useNavigate } from 'react-router-dom';\nimport { useState } from 'react';\n\nfunction LoginForm() {\n  const [error, setError] = useState('');\n  const navigate = useNavigate();\n\n  function handleLogin(username, password) {\n    if (!username) { setError('Username is required'); return; }\n    if (password.length < 6) { setError('Password must be 6+ characters'); return; }\n    setError('');\n    navigate('/home');\n  }\n\n  return (\n    <form onSubmit={(e) => { e.preventDefault(); handleLogin(e.target.user.value, e.target.pass.value); }}>\n      <input name=\"user\" />\n      <input name=\"pass\" type=\"password\" />\n      {error && <p className=\"error\">{error}</p>}\n      <button>Login</button>\n    </form>\n  );\n}",
+  explain:"useNavigate מחזיר פונקציה שמנווטת programmatically. תמיד validate לפני navigate — אם לא תקין, return מוקדם עם setError."
+},
+{
+  id:"react-map-filter",cat:"react",diff:"easy",title:"map + filter — רינדור רשימה מסוננת",
+  desc:"השלימו את הקומפוננטה כך שתציג רק משתמשים פעילים (isActive === true).\nלכל משתמש הציגו <code>&lt;li&gt;</code> עם שמו ו-key=id.",
+  starter:"function ActiveUsers({ users }) {\n  // users = [{id:1, name:'Tal', isActive:true}, {id:2, name:'Dan', isActive:false}, ...]\n  \n  return (\n    <ul>\n      {/* סננו רק active ואז map ל-<li> */}\n    </ul>\n  );\n}",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"uses .filter()"},
+    {input:["__custom__"],expected:"__custom__",label:"filters by isActive"},
+    {input:["__custom__"],expected:"__custom__",label:"uses .map()"},
+    {input:["__custom__"],expected:"__custom__",label:"has key={u.id}"},
+    {input:["__custom__"],expected:"__custom__",label:"renders user name"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasFilter = /\.filter\(/.test(code);
+    results.push({pass:hasFilter, message: hasFilter?'uses .filter()':'should use .filter() to get active users'});
+    const filterActive = /isActive|is_active/.test(code);
+    results.push({pass:filterActive, message: filterActive?'filters by isActive':'filter condition should check isActive'});
+    const hasMap = /\.map\(/.test(code);
+    results.push({pass:hasMap, message: hasMap?'uses .map()':'should use .map() to render each user'});
+    const hasKey = /key\s*=\s*\{.*?\.id\}|key\s*=\s*\{.*?id/.test(code);
+    results.push({pass:hasKey, message: hasKey?'has key={u.id}':'each <li> needs key={user.id}'});
+    const hasName = /\.name|{.*name.*}/.test(code);
+    results.push({pass:hasName, message: hasName?'renders user name':'should display user.name inside the <li>'});
+    return results;
+  },
+  hint:"users.filter(u => u.isActive).map(u => <li key={u.id}>{u.name}</li>)",
+  solution:"function ActiveUsers({ users }) {\n  return (\n    <ul>\n      {users.filter(u => u.isActive).map(u => (\n        <li key={u.id}>{u.name}</li>\n      ))}\n    </ul>\n  );\n}",
+  explain:"filter מחזיר מערך חדש עם רק הפריטים שעוברים את התנאי. map הופך כל פריט ל-JSX. key ייחודי מאפשר ל-React לעקוב."
+},
+{
+  id:"react-controlled-form",cat:"react",diff:"medium",title:"Controlled Form — קלט מנוהל",
+  desc:"השלימו את הקומפוננטה כך שכל שדה (name, email) מנוהל ע\"י state.\nבsubmit — אם name ריק או email לא מכיל @ — הציגו שגיאה.",
+  starter:"import { useState } from 'react';\n\nfunction ContactForm() {\n  // הגדירו state לname, email, errors\n\n  function handleSubmit(e) {\n    e.preventDefault();\n    // ולידציה + הצגת שגיאות\n  }\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <input placeholder=\"Name\" />\n      <input placeholder=\"Email\" />\n      {/* הצגת שגיאות */}\n      <button>Send</button>\n    </form>\n  );\n}",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"uses useState for name"},
+    {input:["__custom__"],expected:"__custom__",label:"uses useState for email"},
+    {input:["__custom__"],expected:"__custom__",label:"inputs have value + onChange"},
+    {input:["__custom__"],expected:"__custom__",label:"validates name not empty"},
+    {input:["__custom__"],expected:"__custom__",label:"validates email contains @"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasNameState = /useState.*name|name.*useState/.test(code) || /\[name,\s*setName\]/.test(code);
+    results.push({pass:hasNameState, message: hasNameState?'uses useState for name':'should have const [name, setName] = useState(\'\')'});
+    const hasEmailState = /useState.*email|email.*useState/.test(code) || /\[email,\s*setEmail\]/.test(code);
+    results.push({pass:hasEmailState, message: hasEmailState?'uses useState for email':'should have const [email, setEmail] = useState(\'\')'});
+    const hasControlled = /value\s*=\s*\{/.test(code) && /onChange/.test(code);
+    results.push({pass:hasControlled, message: hasControlled?'inputs have value + onChange':'inputs need value={state} and onChange={e => setState(e.target.value)}'});
+    const valName = /!name|name\s*===?\s*''|name\.length\s*[<=]/.test(code);
+    results.push({pass:valName, message: valName?'validates name not empty':'should check if name is empty'});
+    const valEmail = /email.*@|@.*email|includes.*@|indexOf.*@/.test(code);
+    results.push({pass:valEmail, message: valEmail?'validates email contains @':'should check email.includes(\'@\')'});
+    return results;
+  },
+  hint:"const [name, setName] = useState('');\n<input value={name} onChange={e => setName(e.target.value)} />\nif (!name) errors.name = 'Required';",
+  solution:"import { useState } from 'react';\n\nfunction ContactForm() {\n  const [name, setName] = useState('');\n  const [email, setEmail] = useState('');\n  const [errors, setErrors] = useState({});\n\n  function handleSubmit(e) {\n    e.preventDefault();\n    const errs = {};\n    if (!name) errs.name = 'Name is required';\n    if (!email.includes('@')) errs.email = 'Email must contain @';\n    setErrors(errs);\n    if (Object.keys(errs).length === 0) {\n      alert('Success!');\n    }\n  }\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <input value={name} onChange={e => setName(e.target.value)} placeholder=\"Name\" />\n      {errors.name && <span className=\"error\">{errors.name}</span>}\n      <input value={email} onChange={e => setEmail(e.target.value)} placeholder=\"Email\" />\n      {errors.email && <span className=\"error\">{errors.email}</span>}\n      <button>Send</button>\n    </form>\n  );\n}",
+  explain:"Controlled inputs: value מוגדר ע\"י state, onChange מעדכן state. ולידציה ב-submit — איסוף שגיאות לאובייקט, הצגה מותנית ב-JSX."
+},
+{
+  id:"react-props-callback",cat:"react",diff:"medium",title:"Props + Callback — העברת פעולה מהורה לילד",
+  desc:"השלימו את הקומפוננטה <code>TodoItem</code> שמקבלת props: todo (אובייקט עם id, text, done) ו-onToggle (callback).\nבלחיצה על הצ'קבוקס — קראו ל-onToggle עם ה-id.",
+  starter:"function TodoItem({ todo, onToggle }) {\n  // todo = { id: 1, text: 'Learn React', done: false }\n  // onToggle = function(id) { ... } — defined in parent\n  \n  return (\n    // render: checkbox + text\n    // checkbox checked = todo.done\n    // onChange → call onToggle(todo.id)\n  );\n}",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"renders checkbox input"},
+    {input:["__custom__"],expected:"__custom__",label:"sets checked={todo.done}"},
+    {input:["__custom__"],expected:"__custom__",label:"has onChange handler"},
+    {input:["__custom__"],expected:"__custom__",label:"calls onToggle(todo.id)"},
+    {input:["__custom__"],expected:"__custom__",label:"displays todo.text"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasCheckbox = /type\s*=\s*["']checkbox["']|<input.*checkbox/.test(code);
+    results.push({pass:hasCheckbox, message: hasCheckbox?'renders checkbox input':'should have <input type=\"checkbox\" />'});
+    const hasChecked = /checked\s*=\s*\{.*todo\.done|checked\s*=\s*\{.*done/.test(code);
+    results.push({pass:hasChecked, message: hasChecked?'sets checked={todo.done}':'checkbox needs checked={todo.done}'});
+    const hasOnChange = /onChange/.test(code);
+    results.push({pass:hasOnChange, message: hasOnChange?'has onChange handler':'checkbox needs onChange event handler'});
+    const callsToggle = /onToggle\s*\(\s*todo\.id\s*\)/.test(code);
+    results.push({pass:callsToggle, message: callsToggle?'calls onToggle(todo.id)':'onChange should call onToggle(todo.id)'});
+    const showsText = /todo\.text|\{.*text.*\}/.test(code);
+    results.push({pass:showsText, message: showsText?'displays todo.text':'should render {todo.text} somewhere'});
+    return results;
+  },
+  hint:"<input type=\"checkbox\" checked={todo.done} onChange={() => onToggle(todo.id)} />\n<span>{todo.text}</span>",
+  solution:"function TodoItem({ todo, onToggle }) {\n  return (\n    <li>\n      <input\n        type=\"checkbox\"\n        checked={todo.done}\n        onChange={() => onToggle(todo.id)}\n      />\n      <span style={{ textDecoration: todo.done ? 'line-through' : 'none' }}>\n        {todo.text}\n      </span>\n    </li>\n  );\n}",
+  explain:"ילד מקבל callback דרך props. בevent (כמו onChange) — הילד קורא לcallback עם הdata הרלוונטי. ההורה מעדכן state."
+},
+{
+  id:"react-localstorage-init",cat:"react",diff:"medium",title:"localStorage — טעינה ראשונית + שמירה",
+  desc:"השלימו את הקומפוננטה כך ש-items נטענים מ-localStorage בהתחלה (אם קיים).\nכל שינוי ב-items ישמר אוטומטית ל-localStorage.",
+  starter:"import { useState, useEffect } from 'react';\n\nfunction ItemList() {\n  const [items, setItems] = useState(/* טעינה מ-localStorage */);\n\n  // useEffect לשמירה אוטומטית\n\n  function addItem(text) {\n    setItems([...items, { id: Date.now(), text }]);\n  }\n\n  return (\n    <div>\n      <button onClick={() => addItem('New Item')}>Add</button>\n      <ul>{items.map(i => <li key={i.id}>{i.text}</li>)}</ul>\n    </div>\n  );\n}",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"loads from localStorage on init"},
+    {input:["__custom__"],expected:"__custom__",label:"uses JSON.parse"},
+    {input:["__custom__"],expected:"__custom__",label:"has useEffect for saving"},
+    {input:["__custom__"],expected:"__custom__",label:"uses JSON.stringify to save"},
+    {input:["__custom__"],expected:"__custom__",label:"dependency array includes items"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasLoad = /localStorage\.getItem/.test(code);
+    results.push({pass:hasLoad, message: hasLoad?'loads from localStorage on init':'useState should initialize from localStorage.getItem()'});
+    const hasParse = /JSON\.parse/.test(code);
+    results.push({pass:hasParse, message: hasParse?'uses JSON.parse':'must JSON.parse the string from localStorage'});
+    const hasEffect = /useEffect\s*\(/.test(code);
+    results.push({pass:hasEffect, message: hasEffect?'has useEffect for saving':'need useEffect to auto-save when items change'});
+    const hasStringify = /JSON\.stringify/.test(code);
+    results.push({pass:hasStringify, message: hasStringify?'uses JSON.stringify to save':'must JSON.stringify before localStorage.setItem()'});
+    const hasDep = /\[\s*items\s*\]/.test(code);
+    results.push({pass:hasDep, message: hasDep?'dependency array includes items':'useEffect needs [items] in dependency array'});
+    return results;
+  },
+  hint:"useState(() => JSON.parse(localStorage.getItem('items') || '[]'));\nuseEffect(() => { localStorage.setItem('items', JSON.stringify(items)); }, [items]);",
+  solution:"import { useState, useEffect } from 'react';\n\nfunction ItemList() {\n  const [items, setItems] = useState(() => {\n    const saved = localStorage.getItem('items');\n    return saved ? JSON.parse(saved) : [];\n  });\n\n  useEffect(() => {\n    localStorage.setItem('items', JSON.stringify(items));\n  }, [items]);\n\n  function addItem(text) {\n    setItems([...items, { id: Date.now(), text }]);\n  }\n\n  return (\n    <div>\n      <button onClick={() => addItem('New Item')}>Add</button>\n      <ul>{items.map(i => <li key={i.id}>{i.text}</li>)}</ul>\n    </div>\n  );\n}",
+  explain:"Lazy initializer ב-useState (פונקציה) רץ רק פעם אחת. useEffect עם [items] רץ בכל שינוי. JSON.parse/stringify הכרחיים כי localStorage שומר רק strings."
+},
+{
+  id:"express-put-delete",cat:"express",diff:"medium",title:"Express — PUT + DELETE עם 404",
+  desc:"השלימו את ה-route handlers כך ש:\n<code>PUT /items/:id</code> — מעדכן name ו-price לפי id, מחזיר 404 אם לא נמצא.\n<code>DELETE /items/:id</code> — מוחק לפי id, מחזיר 404 אם לא נמצא.",
+  starter:"const items = [\n  { id: 1, name: 'Laptop', price: 999 },\n  { id: 2, name: 'Mouse', price: 25 }\n];\n\n// PUT /items/:id\napp.put('/items/:id', (req, res) => {\n  // הקוד שלכם כאן\n});\n\n// DELETE /items/:id\napp.delete('/items/:id', (req, res) => {\n  // הקוד שלכם כאן\n});",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"PUT finds item by id"},
+    {input:["__custom__"],expected:"__custom__",label:"PUT returns 404 if not found"},
+    {input:["__custom__"],expected:"__custom__",label:"PUT updates fields from req.body"},
+    {input:["__custom__"],expected:"__custom__",label:"DELETE finds index and splices"},
+    {input:["__custom__"],expected:"__custom__",label:"DELETE returns 404 if not found"}
+  ],
+  customTest(code) {
+    const results = [];
+    const findById = /\.find\(.*id.*===.*params\.id|\.find\(.*params\.id/.test(code);
+    results.push({pass:findById, message: findById?'PUT finds item by id':'use items.find(i => i.id === Number(req.params.id))'});
+    const has404 = (code.match(/404/g)||[]).length >= 2;
+    results.push({pass:has404, message: has404?'returns 404 if not found':'both PUT and DELETE need res.status(404) when item missing'});
+    const updatesBody = /req\.body\.name|req\.body\.price|\.\.\.req\.body|Object\.assign/.test(code);
+    results.push({pass:updatesBody, message: updatesBody?'PUT updates fields from req.body':'update item fields from req.body (name, price)'});
+    const hasSplice = /\.splice\(|\.filter\(/.test(code);
+    results.push({pass:hasSplice, message: hasSplice?'DELETE removes item from array':'use splice(index, 1) or filter to remove'});
+    const hasNumber = /Number\(.*params|parseInt\(.*params|\+req\.params/.test(code);
+    results.push({pass:hasNumber, message: hasNumber?'converts params.id to number':'req.params.id is a string — convert with Number()'});
+    return results;
+  },
+  hint:"const item = items.find(i => i.id === Number(req.params.id));\nif (!item) return res.status(404).json({error:'Not found'});\nitem.name = req.body.name; item.price = req.body.price;\nres.json(item);",
+  solution:"app.put('/items/:id', (req, res) => {\n  const item = items.find(i => i.id === Number(req.params.id));\n  if (!item) return res.status(404).json({ error: 'Not found' });\n  item.name = req.body.name || item.name;\n  item.price = req.body.price ?? item.price;\n  res.json(item);\n});\n\napp.delete('/items/:id', (req, res) => {\n  const index = items.findIndex(i => i.id === Number(req.params.id));\n  if (index === -1) return res.status(404).json({ error: 'Not found' });\n  items.splice(index, 1);\n  res.json({ message: 'Deleted' });\n});",
+  explain:"req.params.id הוא string — תמיד Number()! PUT: מצא ועדכן. DELETE: מצא index ו-splice. שניהם צריכים 404 אם לא קיים."
+},
+{
+  id:"express-query-filter",cat:"express",diff:"medium",title:"Express — סינון עם req.query",
+  desc:"השלימו route handler ל-<code>GET /items?minPrice=X&name=Y</code>.\nסננו את המערך לפי כל query param שנשלח (AND logic). אם לא נשלח פרמטר — אל תסננו לפיו.",
+  starter:"const items = [\n  { id: 1, name: 'Laptop', price: 999 },\n  { id: 2, name: 'Mouse', price: 25 },\n  { id: 3, name: 'Keyboard', price: 75 },\n  { id: 4, name: 'Laptop Stand', price: 45 }\n];\n\n// GET /items?minPrice=50&name=lap\napp.get('/items', (req, res) => {\n  // הקוד שלכם כאן\n  // סננו לפי minPrice (>=) ו/או name (substring, case insensitive)\n  // AND logic: כל הפילטרים חייבים להתקיים\n});",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"reads req.query params"},
+    {input:["__custom__"],expected:"__custom__",label:"filters by minPrice (>=)"},
+    {input:["__custom__"],expected:"__custom__",label:"filters by name (substring)"},
+    {input:["__custom__"],expected:"__custom__",label:"uses AND logic (both filters)"},
+    {input:["__custom__"],expected:"__custom__",label:"converts minPrice to Number"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasQuery = /req\.query/.test(code);
+    results.push({pass:hasQuery, message: hasQuery?'reads req.query params':'use req.query.minPrice and req.query.name'});
+    const hasPrice = /minPrice|price\s*>=|price\s*</.test(code) && /filter/.test(code);
+    results.push({pass:hasPrice, message: hasPrice?'filters by minPrice (>=)':'filter items where price >= minPrice'});
+    const hasName = /name.*toLowerCase|toLowerCase.*name|includes/.test(code);
+    results.push({pass:hasName, message: hasName?'filters by name (substring, case insensitive)':'use .toLowerCase().includes() for name filter'});
+    const hasAnd = /\.filter\(/.test(code) && !/\|\|/.test(code);
+    results.push({pass:hasAnd, message: hasAnd?'uses AND logic':'all conditions in one filter = AND logic (no ||)'});
+    const hasNumber = /Number\(.*minPrice|parseFloat|parseInt/.test(code);
+    results.push({pass:hasNumber, message: hasNumber?'converts minPrice to Number':'req.query values are strings — Number() before comparison'});
+    return results;
+  },
+  hint:"let result = [...items];\nif (req.query.minPrice) result = result.filter(i => i.price >= Number(req.query.minPrice));\nif (req.query.name) result = result.filter(i => i.name.toLowerCase().includes(req.query.name.toLowerCase()));",
+  solution:"app.get('/items', (req, res) => {\n  let result = [...items];\n  if (req.query.minPrice) {\n    result = result.filter(i => i.price >= Number(req.query.minPrice));\n  }\n  if (req.query.name) {\n    result = result.filter(i =>\n      i.name.toLowerCase().includes(req.query.name.toLowerCase())\n    );\n  }\n  res.json(result);\n});",
+  explain:"req.query מכיל את ה-query string כאובייקט. ערכים תמיד strings — Number() לפני השוואה מספרית. AND logic = סינונים ברצף."
+},
+{
+  id:"react-useparams",cat:"react",diff:"medium",title:"useParams — חילוץ פרמטרים מ-URL",
+  desc:"השלימו את הקומפוננטה <code>PlayerPage</code> שמציגה שחקן לפי team ו-id מה-URL.\nה-Route: <code>/team/:teamName/player/:playerId</code>.\nהשתמשו ב-useParams לחלץ את הפרמטרים ולחפש את השחקן במערך.",
+  starter:"import { useParams } from 'react-router-dom';\n\n// teams = { 'Maccabi': [{id:1, name:'Tal'}, {id:2, name:'Dan'}], 'Hapoel': [...] }\n\nfunction PlayerPage({ teams }) {\n  // חלצו teamName ו-playerId מה-URL\n  // מצאו את השחקן במערך teams[teamName]\n  // הציגו את שמו, או 'Not found'\n\n  return (\n    <div>\n      {/* הציגו: שם הקבוצה + שם השחקן */}\n    </div>\n  );\n}",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"calls useParams()"},
+    {input:["__custom__"],expected:"__custom__",label:"extracts teamName"},
+    {input:["__custom__"],expected:"__custom__",label:"extracts playerId"},
+    {input:["__custom__"],expected:"__custom__",label:"finds player with .find()"},
+    {input:["__custom__"],expected:"__custom__",label:"handles not found case"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasUseParams = /useParams\(\)/.test(code);
+    results.push({pass:hasUseParams, message: hasUseParams?'calls useParams()':'must call useParams() to get URL params'});
+    const hasTeam = /teamName/.test(code);
+    results.push({pass:hasTeam, message: hasTeam?'extracts teamName':'destructure { teamName } from useParams()'});
+    const hasId = /playerId/.test(code);
+    results.push({pass:hasId, message: hasId?'extracts playerId':'destructure { playerId } from useParams()'});
+    const hasFind = /\.find\(/.test(code);
+    results.push({pass:hasFind, message: hasFind?'finds player with .find()':'use teams[teamName].find(p => p.id === Number(playerId))'});
+    const hasNotFound = /not found|Not Found|לא נמצא|\?|&&/.test(code);
+    results.push({pass:hasNotFound, message: hasNotFound?'handles not found case':'show fallback message if player not found'});
+    return results;
+  },
+  hint:"const { teamName, playerId } = useParams();\nconst players = teams[teamName] || [];\nconst player = players.find(p => p.id === Number(playerId));",
+  solution:"import { useParams } from 'react-router-dom';\n\nfunction PlayerPage({ teams }) {\n  const { teamName, playerId } = useParams();\n  const players = teams[teamName] || [];\n  const player = players.find(p => p.id === Number(playerId));\n\n  if (!player) {\n    return <h2>Player not found</h2>;\n  }\n\n  return (\n    <div>\n      <h2>{teamName}</h2>\n      <h3>{player.name}</h3>\n    </div>\n  );\n}",
+  explain:"useParams() מחזיר אובייקט עם כל ה-:params מה-Route path. playerId הוא string — Number() לפני השוואה. תמיד טפלו במקרה שהשחקן לא נמצא."
+},
+{
+  id:"react-delete-item",cat:"react",diff:"easy",title:"מחיקה מרשימה — filter pattern",
+  desc:"השלימו את הפונקציה <code>handleDelete(id)</code> שמוחקת פריט מהstate.\nהשתמשו ב-filter (לא splice!) כדי ליצור מערך חדש בלי הפריט.",
+  starter:"import { useState } from 'react';\n\nfunction TodoList() {\n  const [todos, setTodos] = useState([\n    { id: 1, text: 'Learn React' },\n    { id: 2, text: 'Build Project' },\n    { id: 3, text: 'Pass Exam' }\n  ]);\n\n  function handleDelete(id) {\n    // הקוד שלכם כאן — מחקו את הפריט עם ה-id הזה\n  }\n\n  return (\n    <ul>\n      {todos.map(t => (\n        <li key={t.id}>\n          {t.text}\n          <button onClick={() => handleDelete(t.id)}>X</button>\n        </li>\n      ))}\n    </ul>\n  );\n}",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"uses setTodos"},
+    {input:["__custom__"],expected:"__custom__",label:"uses .filter()"},
+    {input:["__custom__"],expected:"__custom__",label:"filters by id"},
+    {input:["__custom__"],expected:"__custom__",label:"does NOT use splice"}
+  ],
+  customTest(code) {
+    const results = [];
+    const hasSet = /setTodos\s*\(/.test(code);
+    results.push({pass:hasSet, message: hasSet?'uses setTodos':'must call setTodos() to update state'});
+    const hasFilter = /\.filter\(/.test(code);
+    results.push({pass:hasFilter, message: hasFilter?'uses .filter()':'use .filter() to create new array without the deleted item'});
+    const filterById = /\.filter\(.*id\s*!==|\.filter\(.*!==.*id/.test(code);
+    results.push({pass:filterById, message: filterById?'filters by id (t.id !== id)':'filter condition: t => t.id !== id'});
+    const noSplice = !/\.splice\(/.test(code);
+    results.push({pass:noSplice, message: noSplice?'does NOT use splice (correct!)':'never use splice on React state — use filter instead'});
+    return results;
+  },
+  hint:"setTodos(todos.filter(t => t.id !== id));",
+  solution:"function handleDelete(id) {\n  setTodos(todos.filter(t => t.id !== id));\n}",
+  explain:"filter יוצר מערך חדש בלי הפריט — React מזהה reference חדש ועושה re-render. splice משנה in-place ולא יגרום re-render!"
+},
+{
+  id:"js-palindrome",cat:"js",diff:"easy",title:"בדיקת פלינדרום",
+  desc:"כתבו פונקציה <code>isPalindrome(str)</code> שבודקת האם מחרוזת היא פלינדרום (נקראת אותו דבר מימין ומשמאל).\nהתעלמו מרישיות (case insensitive). התעלמו מרווחים.",
+  starter:"function isPalindrome(str) {\n  // הקוד שלכם כאן\n  // היפכו את המחרוזת והשוו\n  // התעלמו מרווחים וcase\n}",
+  tests:[
+    {input:["racecar"],expected:true,label:'isPalindrome("racecar") → true'},
+    {input:["hello"],expected:false,label:'isPalindrome("hello") → false'},
+    {input:["Race Car"],expected:true,label:'isPalindrome("Race Car") → true (ignore spaces+case)'},
+    {input:["a"],expected:true,label:'isPalindrome("a") → true'},
+    {input:["Ab Ba"],expected:true,label:'isPalindrome("Ab Ba") → true'}
+  ],
+  hint:"const clean = str.toLowerCase().replace(/\\s/g, '');\nreturn clean === clean.split('').reverse().join('');",
+  solution:"function isPalindrome(str) {\n  const clean = str.toLowerCase().replace(/\\s/g, '');\n  return clean === clean.split('').reverse().join('');\n}",
+  explain:"שלב 1: נקו — toLowerCase() + replace(/\\s/g,'') מסיר רווחים. שלב 2: היפוך — split→reverse→join. שלב 3: השוו."
+},
+{
+  id:"react-darkmode",cat:"react",diff:"easy",title:"Dark Mode Toggle — localStorage",
+  desc:"בנו רכיב React בשם <code>DarkModeToggle</code> עם כפתור. בלחיצה — toggle class <code>dark</code> על <code>document.body</code>.\nשמרו את הבחירה ב-localStorage כך שאחרי רענון המצב יישמר.",
+  starter:"function DarkModeToggle() {\n  // useState למצב dark/light\n  // useEffect לסנכרון עם localStorage\n  // onClick — toggle\n}",
+  tests:[],
+  customTest(code){
+    const r=[];
+    r.push({pass:/useState/.test(code),message:/useState/.test(code)?'uses useState':'must use useState'});
+    r.push({pass:/useEffect/.test(code),message:/useEffect/.test(code)?'uses useEffect':'must use useEffect for sync'});
+    r.push({pass:/localStorage/.test(code),message:/localStorage/.test(code)?'uses localStorage':'must persist to localStorage'});
+    r.push({pass:/classList/.test(code)||/className/.test(code),message:/classList/.test(code)||/className/.test(code)?'toggles class':'must toggle class on body/element'});
+    r.push({pass:/onClick|onclick/.test(code),message:/onClick|onclick/.test(code)?'has click handler':'must have onClick handler'});
+    return r;
+  },
+  hint:"useState(() => localStorage.getItem('dark') === 'true');\nuseEffect: document.body.classList.toggle('dark', dark); + localStorage.setItem('dark', dark);",
+  solution:"function DarkModeToggle() {\n  const [dark, setDark] = useState(\n    () => localStorage.getItem('dark') === 'true'\n  );\n\n  useEffect(() => {\n    document.body.classList.toggle('dark', dark);\n    localStorage.setItem('dark', dark);\n  }, [dark]);\n\n  return (\n    <button onClick={() => setDark(d => !d)}>\n      {dark ? '☀️ מצב יום' : '🌙 מצב לילה'}\n    </button>\n  );\n}",
+  explain:"useState עם lazy init קורא מ-localStorage. useEffect מסנכרן class + storage בכל שינוי. functional update (d => !d) מונע stale state."
+},
+{
+  id:"react-usefetch",cat:"react",diff:"hard",title:"Custom Hook — useFetch",
+  desc:"בנו custom hook בשם <code>useFetch(url)</code> שמחזיר <code>{ data, loading, error }</code>.\nההוק צריך לבטל בקשה ישנה אם ה-URL משתנה (AbortController).",
+  starter:"function useFetch(url) {\n  // 3 states: data, loading, error\n  // useEffect with fetch + AbortController\n  // return { data, loading, error }\n}",
+  tests:[],
+  customTest(code){
+    const r=[];
+    r.push({pass:/useState/.test(code),message:/useState/.test(code)?'uses useState':'must use useState for data/loading/error'});
+    r.push({pass:/useEffect/.test(code),message:/useEffect/.test(code)?'uses useEffect':'must use useEffect for fetching'});
+    r.push({pass:/AbortController/.test(code),message:/AbortController/.test(code)?'uses AbortController':'must use AbortController for cleanup'});
+    r.push({pass:/signal/.test(code),message:/signal/.test(code)?'passes signal to fetch':'must pass controller.signal to fetch'});
+    r.push({pass:/return.*\{/.test(code)&&/data/.test(code)&&/loading/.test(code),message:/data/.test(code)&&/loading/.test(code)?'returns {data, loading, error}':'must return object with data, loading, error'});
+    r.push({pass:/\.abort\(\)/.test(code),message:/\.abort\(\)/.test(code)?'calls abort() in cleanup':'must call controller.abort() in useEffect cleanup'});
+    return r;
+  },
+  hint:"const controller = new AbortController();\nfetch(url, {signal: controller.signal})\nreturn () => controller.abort(); // cleanup",
+  solution:"function useFetch(url) {\n  const [data, setData] = useState(null);\n  const [loading, setLoading] = useState(true);\n  const [error, setError] = useState(null);\n\n  useEffect(() => {\n    const controller = new AbortController();\n    setLoading(true);\n    setError(null);\n\n    fetch(url, { signal: controller.signal })\n      .then(r => {\n        if (!r.ok) throw new Error('Failed');\n        return r.json();\n      })\n      .then(setData)\n      .catch(err => {\n        if (err.name !== 'AbortError') setError(err);\n      })\n      .finally(() => setLoading(false));\n\n    return () => controller.abort();\n  }, [url]);\n\n  return { data, loading, error };\n}",
+  explain:"AbortController מבטל בקשות ישנות. cleanup function רצה לפני כל re-run ו-unmount. err.name !== 'AbortError' מבדיל בין ביטול לשגיאה אמיתית."
+},
+{
+  id:"react-useeffect-fix",cat:"react",diff:"medium",title:"תיקון Infinite Loop ב-useEffect",
+  desc:"הקוד הבא יוצר infinite loop. תקנו אותו:\n<pre>function UserList() {\n  const [users, setUsers] = useState([]);\n  useEffect(() => {\n    fetch('/api/users').then(r => r.json()).then(setUsers);\n  });\n  return users.map(u => &lt;p&gt;{u.name}&lt;/p&gt;);\n}</pre>",
+  starter:"function UserList() {\n  const [users, setUsers] = useState([]);\n  useEffect(() => {\n    fetch('/api/users').then(r => r.json()).then(setUsers);\n  }); // <-- FIX THIS\n  return users.map(u => <p>{u.name}</p>);\n}",
+  tests:[],
+  customTest(code){
+    const r=[];
+    r.push({pass:/useEffect\([^)]*,\s*\[\s*\]/.test(code),message:/\[\s*\]/.test(code)?'has empty dependency array []':'must add [] as second argument to useEffect'});
+    r.push({pass:/key[=:{]/.test(code),message:/key[=:{]/.test(code)?'has key prop in map':'should add key prop to mapped elements'});
+    return r;
+  },
+  hint:"הוסיפו [] כארגומנט שני ל-useEffect.\nבלי [] = רץ בכל render → setUsers → render → useEffect → ...",
+  solution:"function UserList() {\n  const [users, setUsers] = useState([]);\n  useEffect(() => {\n    fetch('/api/users').then(r => r.json()).then(setUsers);\n  }, []); // ← מערך ריק = רץ פעם אחת!\n  return users.map(u => <p key={u.id}>{u.name}</p>);\n}",
+  explain:"בלי [] — useEffect רץ בכל render. setUsers גורם re-render → useEffect רץ שוב → infinite loop. הוספת [] = פעם אחת בלבד."
+},
+{
+  id:"react-memory-leak",cat:"react",diff:"medium",title:"תיקון Memory Leak — cleanup",
+  desc:"הקוד דולף זיכרון! אם הרכיב מוסר — ה-interval ממשיך. תקנו:\n<pre>useEffect(() => {\n  setInterval(() => {\n    console.log('tick');\n  }, 1000);\n}, []);</pre>",
+  starter:"function Timer() {\n  const [count, setCount] = useState(0);\n  useEffect(() => {\n    setInterval(() => {\n      setCount(c => c + 1);\n    }, 1000);\n  }, []);\n  return <p>{count}</p>;\n}",
+  tests:[],
+  customTest(code){
+    const r=[];
+    r.push({pass:/clearInterval/.test(code),message:/clearInterval/.test(code)?'uses clearInterval in cleanup':'must clearInterval in cleanup function'});
+    r.push({pass:/return\s*\(\s*\)\s*=>|return\s*function/.test(code),message:/return\s*\(/.test(code)||/return\s*function/.test(code)?'has cleanup return':'must return cleanup function from useEffect'});
+    const hasId=/const\s+\w+\s*=\s*setInterval|let\s+\w+\s*=\s*setInterval/.test(code);
+    r.push({pass:hasId,message:hasId?'saves interval ID':'must save setInterval return value to clear it later'});
+    return r;
+  },
+  hint:"שמרו את הערך שsetInterval מחזיר. ב-return של useEffect — clearInterval(id).",
+  solution:"function Timer() {\n  const [count, setCount] = useState(0);\n  useEffect(() => {\n    const id = setInterval(() => {\n      setCount(c => c + 1);\n    }, 1000);\n    return () => clearInterval(id);\n  }, []);\n  return <p>{count}</p>;\n}",
+  explain:"useEffect return = cleanup. רצה ב-unmount ולפני re-run. בלי clearInterval — interval ממשיך לרוץ על רכיב שלא קיים = memory leak + warnings."
+},
+{
+  id:"express-logger-mw",cat:"express",diff:"easy",title:"Logger Middleware",
+  desc:"כתבו middleware ל-Express בשם <code>logger</code> שמדפיס: method, URL, status code, ו-duration במילישניות.\nהשתמשו ב-<code>res.on('finish')</code> כדי לדעת כשהתשובה נשלחה.",
+  starter:"function logger(req, res, next) {\n  // שמרו זמן התחלה\n  // האזינו ל-res.on('finish')\n  // הדפיסו method + URL + status + duration\n  // אל תשכחו next()!\n}",
+  tests:[],
+  customTest(code){
+    const r=[];
+    r.push({pass:/Date\.now\(\)|performance\.now\(\)/.test(code),message:/Date\.now|performance/.test(code)?'measures time':'must save start time with Date.now()'});
+    r.push({pass:/res\.on\s*\(\s*['"]finish['"]/.test(code),message:/res\.on.*finish/.test(code)?'listens to res finish event':'must use res.on("finish", ...) to get status code'});
+    r.push({pass:/req\.method/.test(code),message:/req\.method/.test(code)?'logs method':'must log req.method'});
+    r.push({pass:/res\.statusCode/.test(code),message:/res\.statusCode/.test(code)?'logs status code':'must log res.statusCode'});
+    r.push({pass:/next\s*\(/.test(code),message:/next\s*\(/.test(code)?'calls next()':'must call next() to continue'});
+    return r;
+  },
+  hint:"const start = Date.now();\nres.on('finish', () => { console.log(`${req.method} ${req.originalUrl} ${res.statusCode} ${Date.now()-start}ms`); });\nnext();",
+  solution:"function logger(req, res, next) {\n  const start = Date.now();\n  res.on('finish', () => {\n    const duration = Date.now() - start;\n    console.log(\n      `${req.method} ${req.originalUrl} -> ${res.statusCode} (${duration}ms)`\n    );\n  });\n  next();\n}",
+  explain:"res.on('finish') רץ אחרי שהתשובה נשלחה — רק אז יש statusCode. next() חובה — בלעדיו הבקשה תיתקע. Date.now() מודד duration."
+},
+{
+  id:"express-rate-limit",cat:"express",diff:"hard",title:"Rate Limiter — 100 req/min",
+  desc:"בנו middleware שמגביל כל IP ל-100 בקשות בדקה.\nאם עברו מגבלה — החזירו <code>429 Too Many Requests</code>.\nהשתמשו ב-Map פנימי.",
+  starter:"const limits = new Map();\n\nfunction rateLimit(req, res, next) {\n  // בדקו req.ip\n  // אם עברו 100 בקשות בדקה → 429\n  // אחרת → next()\n}",
+  tests:[],
+  customTest(code){
+    const r=[];
+    r.push({pass:/new Map|Map\(\)/.test(code),message:/Map/.test(code)?'uses Map for storage':'must use Map to track requests per IP'});
+    r.push({pass:/req\.ip/.test(code),message:/req\.ip/.test(code)?'uses req.ip':'must identify client by req.ip'});
+    r.push({pass:/429/.test(code),message:/429/.test(code)?'returns 429 status':'must return 429 when limit exceeded'});
+    r.push({pass:/next\s*\(/.test(code),message:/next\s*\(/.test(code)?'calls next()':'must call next() when under limit'});
+    r.push({pass:/Date\.now|timestamp|resetAt/.test(code),message:/Date\.now|timestamp|reset/.test(code)?'tracks time window':'must track time window for rate limiting'});
+    return r;
+  },
+  hint:"Map<ip, {count, resetAt}>.\nif (Date.now() > entry.resetAt) → reset.\nif (entry.count >= 100) → 429.\nelse → count++ + next()",
+  solution:"const limits = new Map();\nconst WINDOW = 60 * 1000;\nconst MAX = 100;\n\nfunction rateLimit(req, res, next) {\n  const ip = req.ip;\n  const now = Date.now();\n  const entry = limits.get(ip);\n\n  if (!entry || now > entry.resetAt) {\n    limits.set(ip, { count: 1, resetAt: now + WINDOW });\n    return next();\n  }\n\n  if (entry.count >= MAX) {\n    return res.status(429).json({\n      error: 'Too many requests',\n      retryAfter: Math.ceil((entry.resetAt - now) / 1000)\n    });\n  }\n\n  entry.count++;\n  next();\n}",
+  explain:"Map שומר count + resetAt לכל IP. אם הזמן עבר — reset. אם count >= 100 → 429. retryAfter מציין כמה לחכות."
+},
+{
+  id:"js-sql-injection",cat:"js",diff:"hard",title:"תיקון SQL Injection",
+  desc:"הקוד פגיע ל-SQL Injection! תקנו:\n<pre>app.get('/users', async (req, res) => {\n  const name = req.query.name;\n  const sql = `SELECT * FROM users WHERE name = '${name}'`;\n  const users = await db.query(sql);\n  res.json(users);\n});</pre>\nתוקף יכול לשלוח: <code>?name=' OR 1=1 --</code>",
+  starter:"app.get('/users', async (req, res) => {\n  const name = req.query.name;\n  // FIX: use parameterized query!\n  const sql = `SELECT * FROM users WHERE name = '${name}'`;\n  const users = await db.query(sql);\n  res.json(users);\n});",
+  tests:[],
+  customTest(code){
+    const r=[];
+    const hasParam=/\$1|\$2|\?|:\w+/.test(code)&&!/\$\{/.test(code.replace(/\$\{\d+\}/g,''));
+    const noInterp=!/`[^`]*\$\{[^}]*name[^}]*\}[^`]*`/.test(code);
+    r.push({pass:noInterp,message:noInterp?'no string interpolation in SQL':'must NOT interpolate user input into SQL string!'});
+    r.push({pass:hasParam||/\.find\(/.test(code),message:hasParam||/\.find\(/.test(code)?'uses parameterized query or ORM':'must use parameterized query ($1) or ORM (User.find)'});
+    r.push({pass:/\[.*name.*\]/.test(code)||/\.find\(\{/.test(code),message:'passes values as separate array parameter or uses ORM filter'});
+    return r;
+  },
+  hint:"במקום template literal:\ndb.query('SELECT * FROM users WHERE name = $1', [name])\nאו עם Mongoose: User.find({ name })",
+  solution:"app.get('/users', async (req, res) => {\n  const name = req.query.name;\n  const users = await db.query(\n    'SELECT * FROM users WHERE name = $1',\n    [name]\n  );\n  res.json(users);\n});\n\n// חלופה עם Mongoose (בטוח אוטומטית):\n// const users = await User.find({ name });",
+  explain:"String interpolation מאפשר הזרקת SQL. parameterized query ($1 + מערך ערכים) — ה-DB מבדיל בין קוד לערכים. Mongoose/ORMs בטוחים כברירת מחדל."
+},
+{
+  id:"js-fibonacci-position",cat:"js",diff:"medium",title:"מיקום בסדרת פיבונאצ'י",
+  desc:"כתבו פונקציה <code>fibPosition(n)</code> שמקבלת מספר ומחזירה את המיקום שלו בסדרת פיבונאצ'י.\nאם המספר לא בסדרה — החזירו <code>-1</code>.\nהסדרה: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34...",
+  starter:"function fibPosition(n) {\n  // חשבו את מספרי פיבונאצ'י עד שמגיעים ל-n\n  // החזירו את המיקום (0-based)\n  // אם n לא בסדרה → -1\n}",
+  tests:[
+    {input:[0],expected:0,label:'fibPosition(0) → 0'},
+    {input:[1],expected:1,label:'fibPosition(1) → 1'},
+    {input:[5],expected:5,label:'fibPosition(5) → 5'},
+    {input:[13],expected:7,label:'fibPosition(13) → 7'},
+    {input:[4],expected:-1,label:'fibPosition(4) → -1 (not in series)'},
+    {input:[21],expected:8,label:'fibPosition(21) → 8'}
+  ],
+  hint:"while (b < n) { [a, b] = [b, a+b]; pos++; }\nif (b === n) return pos; else return -1;",
+  solution:"function fibPosition(n) {\n  if (n === 0) return 0;\n  let a = 0, b = 1, pos = 1;\n  while (b < n) {\n    [a, b] = [b, a + b];\n    pos++;\n  }\n  return b === n ? pos : -1;\n}",
+  explain:"מתקדמים בסדרה עד שb >= n. אם b === n — מצאנו! אם b > n — המספר לא בסדרה. destructuring assignment מעדכן שני ערכים בשורה אחת."
+}
+];
+
+// Track solved
+let solved = JSON.parse(localStorage.getItem('pb-solved') || '{}');
+let streak = 0;
+
+function updateStats() {
+  const count = Object.keys(solved).length;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/38`;
+  document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
+}
+
+// Build sidebar with filter bar
+const sb = document.getElementById('sidebar');
+let _diffFilter = 'all';
+
+const filterBar = document.createElement('div');
+filterBar.className = 'filter-bar';
+filterBar.innerHTML = `<span class="filter-chip active" data-diff="all">הכל</span><span class="filter-chip" data-diff="easy">🟢 קל</span><span class="filter-chip" data-diff="medium">🟠 בינוני</span><span class="filter-chip" data-diff="hard">🔴 מתקדם</span>`;
+sb.appendChild(filterBar);
+filterBar.querySelectorAll('.filter-chip').forEach(chip=>{
+  chip.onclick=()=>{
+    filterBar.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    _diffFilter=chip.dataset.diff;
+    applyFilter();
+  };
+});
+
+function applyFilter(){
+  document.querySelectorAll('.sb-btn').forEach(btn=>{
+    const ex=EXERCISES.find(e=>e.id===btn.dataset.eid);
+    if(!ex)return;
+    btn.classList.toggle('hidden',_diffFilter!=='all'&&ex.diff!==_diffFilter);
+  });
+}
+
+const cats = {js:'🟨 JavaScript', react:'⚛️ React Patterns', express:'🟢 Express'};
+Object.entries(cats).forEach(([cat, label]) => {
+  const group = document.createElement('div');
+  group.className = 'sb-group';
+  group.innerHTML = `<div class="sb-title ${cat}">${label}</div>`;
+  EXERCISES.filter(e => e.cat === cat).forEach(ex => {
+    const btn = document.createElement('button');
+    btn.className = 'sb-btn';
+    btn.dataset.eid = ex.id;
+    btn.innerHTML = `<span class="diff-dot ${ex.diff}"></span>${ex.title}<span class="check">${solved[ex.id] ? '✅' : '○'}</span>`;
+    btn.onclick = () => selectExercise(ex.id);
+    group.appendChild(btn);
+  });
+  sb.appendChild(group);
+});
+
+let _activeEx = null;
+
+function selectExercise(id) {
+  _activeEx = EXERCISES.find(e => e.id === id);
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.toggle('active', b.dataset.eid === id));
+  renderExercise(_activeEx);
+}
+
+function renderExercise(ex) {
+  const main = document.getElementById('main');
+  const diffLabel = ex.diff === 'easy' ? 'קל' : ex.diff === 'medium' ? 'בינוני' : 'מתקדם';
+
+  let html = `<div class="ex-header">
+    <span class="ex-badge ${ex.diff}">${diffLabel}</span>
+    <div class="ex-title">${ex.title}</div>
+    <div class="ex-desc">${ex.desc.replace(/\n/g,'<br>')}</div>
+  </div>`;
+
+  html += `<div class="editor-wrap">
+    <div class="editor-bar">
+      <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+      <span class="fname">solution.js</span>
+    </div>
+    <div class="editor-area" id="editor" contenteditable="true" spellcheck="false">${escHtml(ex.starter)}</div>
+  </div>`;
+
+  html += `<div class="ex-controls">
+    ${ex.manualTest ? '' : '<button class="ex-btn run" onclick="runTests()">▶ הרץ בדיקות</button>'}
+    <button class="ex-btn hint" onclick="showHint()">💡 רמז</button>
+    <button class="ex-btn solution" onclick="showSolution()">👁 פתרון</button>
+    <button class="ex-btn reset" onclick="resetEditor()">↺ אפס</button>
+  </div>`;
+
+  html += `<div class="hint-box" id="hint-box">${ex.hint}</div>`;
+
+  if (!ex.manualTest) {
+    html += `<div class="output-wrap" id="output-wrap" style="display:none">
+      <div class="output-head neutral" id="output-head">📋 תוצאות</div>
+      <div class="output-body" id="output-body"></div>
+    </div>`;
+  } else {
+    html += `<div class="output-wrap">
+      <div class="output-head neutral">📋 תרגיל עיוני</div>
+      <div class="output-body" style="padding:14px;font-size:13px;font-weight:600">תרגיל זה הוא עיוני — כתבו את הקוד ובדקו אותו מול הפתרון. לחצו על "👁 פתרון" לבדיקה עצמית.</div>
+    </div>`;
+  }
+
+  html += `<div class="solution-box" id="solution-box">
+    <div class="solution-head">✅ פתרון</div>
+    <pre class="solution-code">${escHtml(ex.solution)}</pre>
+    <div class="solution-explain">${ex.explain}</div>
+  </div>`;
+
+  main.innerHTML = html;
+}
+
+function getEditorCode() {
+  return document.getElementById('editor').innerText;
+}
+
+function runTests() {
+  if (!_activeEx || _activeEx.manualTest) return;
+  const code = getEditorCode();
+  const wrap = document.getElementById('output-wrap');
+  const head = document.getElementById('output-head');
+  const body = document.getElementById('output-body');
+  wrap.style.display = 'block';
+
+  let allPass = true;
+  let html = '';
+
+  if (_activeEx.customTest) {
+    // Custom test path for exercises that need pattern matching / special logic
+    try {
+      const results = _activeEx.customTest(code);
+      for (let i = 0; i < results.length; i++) {
+        const r = results[i];
+        if (!r.pass) allPass = false;
+        html += `<div class="test-row">
+          <span class="${r.pass ? 'test-pass' : 'test-fail'}">${r.pass ? '✅' : '❌'}</span>
+          <span>${r.message}</span>
+        </div>`;
+      }
+    } catch (e) {
+      allPass = false;
+      html += `<div class="test-row"><span class="test-fail">💥</span><span>Test error</span><span style="color:var(--red);margin-right:auto">${e.message}</span></div>`;
+    }
+  } else {
+    // Standard test path: invoke function by name with test inputs
+    for (const test of _activeEx.tests) {
+      try {
+        const fn = new Function(code + `\nreturn ${_activeEx.id.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}(...arguments);`);
+        const result = fn(...test.input);
+        const expected = test.expected;
+        const pass = JSON.stringify(result) === JSON.stringify(expected);
+        if (!pass) allPass = false;
+        html += `<div class="test-row">
+          <span class="${pass ? 'test-pass' : 'test-fail'}">${pass ? '✅' : '❌'}</span>
+          <span>${test.label}</span>
+          ${!pass ? `<span style="color:var(--red);margin-right:auto">got: ${JSON.stringify(result)}</span>` : ''}
+        </div>`;
+      } catch (e) {
+        allPass = false;
+        html += `<div class="test-row"><span class="test-fail">💥</span><span>${test.label}</span><span style="color:var(--red);margin-right:auto">${e.message}</span></div>`;
+      }
+    }
+  }
+
+  head.className = 'output-head ' + (allPass ? 'pass' : 'fail');
+  head.textContent = allPass ? '🎉 כל הבדיקות עברו!' : '❌ יש בדיקות שנכשלו';
+  body.innerHTML = html;
+
+  if (allPass && !solved[_activeEx.id]) {
+    solved[_activeEx.id] = true;
+    streak++;
+    localStorage.setItem('pb-solved', JSON.stringify(solved));
+    updateStats();
+    document.querySelectorAll('.sb-btn').forEach(b => {
+      if (b.dataset.eid === _activeEx.id) b.querySelector('.check').textContent = '✅';
+    });
+  } else if (!allPass) {
+    streak = 0;
+    updateStats();
+  }
+}
+
+function showHint() {
+  document.getElementById('hint-box').classList.toggle('visible');
+}
+
+function showSolution() {
+  document.getElementById('solution-box').classList.toggle('visible');
+}
+
+function resetEditor() {
+  if (!_activeEx) return;
+  document.getElementById('editor').innerText = _activeEx.starter;
+  const wrap = document.getElementById('output-wrap');
+  if (wrap) wrap.style.display = 'none';
+  document.getElementById('hint-box').classList.remove('visible');
+  document.getElementById('solution-box').classList.remove('visible');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+updateStats();
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e){
+  const tag = document.activeElement.tagName.toLowerCase();
+  if(tag==='input'||tag==='textarea'||document.activeElement.isContentEditable) return;
+
+  // Arrow keys: prev/next exercise
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+    if(!EXERCISES.length) return;
+    const idx = _activeEx ? EXERCISES.findIndex(ex=>ex.id===_activeEx.id) : -1;
+    let next;
+    if(e.key==='ArrowRight') next = idx < EXERCISES.length-1 ? idx+1 : 0;
+    else next = idx > 0 ? idx-1 : EXERCISES.length-1;
+    selectExercise(EXERCISES[next].id);
+    e.preventDefault();
+    return;
+  }
+
+  // ESC: close hint and solution panels
+  if(e.key==='Escape'){
+    const hint = document.getElementById('hint-box');
+    const sol = document.getElementById('solution-box');
+    let closed = false;
+    if(hint && hint.classList.contains('visible')){hint.classList.remove('visible');closed=true;}
+    if(sol && sol.classList.contains('visible')){sol.classList.remove('visible');closed=true;}
+    if(closed) e.preventDefault();
+    return;
+  }
+});
+</script>
+<div style="position:fixed;bottom:12px;left:12px;background:#1e1b4b;color:#e2e8f0;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;opacity:.85;z-index:9999;direction:ltr;box-shadow:2px 2px 6px rgba(0,0,0,.3)">
+  <span style="color:#facc15">Shortcuts:</span> ← → prev/next exercise | ESC close panels
+</div>
+<footer style="border-top:3px solid #000;padding:16px 24px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+<strong>🔗 כלים נוספים:</strong>
+<a href="flow-canvas.html" style="color:#7c3aed;font-weight:700">🗺 מפת זרימה</a>
+<a href="file-graph.html" style="color:#7c3aed;font-weight:700">📂 File Graph</a>
+<a href="sequence-diagrams.html" style="color:#7c3aed;font-weight:700">🔄 Sequence Diagrams</a>
+<a href="simulations.html" style="color:#7c3aed;font-weight:700">��� סימולציות</a>
+<a href="course-map.html" style="color:#7c3aed;font-weight:700">🗂 Course Map</a>
+</footer>
+</body>
+</html>

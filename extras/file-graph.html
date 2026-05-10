@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📂 File Dependency Graph — תלות בין קבצים</title>
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--shadow:4px 4px 0 #000}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh}
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:28px 24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(22px,3.5vw,36px);margin:0}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:14px}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 110px)}
+.sidebar{background:#fff;border-left:3px solid #000;padding:14px;overflow-y:auto;max-height:calc(100vh - 110px);position:sticky;top:0}
+.sb-title{font-weight:900;font-size:13px;padding:5px 8px;background:linear-gradient(135deg,#111827,#312e81);color:#fff;border-radius:8px;margin-bottom:6px}
+.sb-btn{display:flex;align-items:center;gap:6px;width:100%;border:2px solid transparent;border-radius:8px;padding:7px 10px;background:none;cursor:pointer;font:inherit;font-size:13px;font-weight:700;text-align:right;transition:.15s}
+.sb-btn:hover{background:#f1f5f9;border-color:#cbd5e1}
+.sb-btn.active{background:var(--gold);border-color:#000;box-shadow:2px 2px 0 #000}
+.main{padding:24px;overflow-y:auto}
+.graph-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.graph-header h2{font-size:20px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700}
+.legend-dot{width:14px;height:14px;border-radius:4px;border:2px solid #000}
+.graph-container{position:relative;background:#fff;border:3px solid #000;border-radius:14px;box-shadow:var(--shadow);min-height:500px;overflow:hidden}
+.graph-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.graph-nodes{position:relative;z-index:2;padding:30px}
+.file-node{position:absolute;border:2px solid #000;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;min-width:120px;text-align:center;box-shadow:3px 3px 0 #000}
+.file-node:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000}
+.file-node.active{box-shadow:0 0 0 3px var(--brand),4px 4px 0 #000;transform:scale(1.05)}
+.file-node .fn-icon{font-size:18px;display:block;margin-bottom:4px}
+.file-node .fn-name{font-size:13px;font-weight:900}
+.file-node .fn-sub{font-size:10px;color:#64748b;margin-top:2px}
+.n-entry{background:#ede9fe}.n-comp{background:#dbeafe}.n-page{background:#dcfce7}.n-util{background:#fef9c3}.n-style{background:#fce7f3}.n-route{background:#e0f2fe}.n-config{background:#f1f5f9}
+.detail-panel{margin-top:20px;border:3px solid #000;border-radius:12px;background:#fff;box-shadow:var(--shadow);overflow:hidden;display:none}
+.detail-panel.show{display:block}
+.detail-title{background:#1e1b4b;color:#fff;padding:10px 16px;font-weight:900;font-size:14px}
+.detail-body{padding:16px}
+.detail-body h4{margin:8px 0 4px;font-size:13px;color:var(--brand)}
+.detail-body ul{padding-right:18px;font-size:12px}
+.detail-body li{margin-bottom:3px}
+.detail-body code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:11px;border:1px solid #e2e8f0}
+.imports-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.imp-chip{padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;border:1.5px solid #000;background:#ede9fe}
+.exp-chip{padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;border:1.5px solid #000;background:#dcfce7}
+.arrow-label{font-size:10px;fill:#64748b;font-weight:700}
+.cross-link-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:var(--brand);color:#fff;border:2px solid #000;border-radius:8px;font-size:12px;font-weight:800;text-decoration:none;box-shadow:2px 2px 0 #000;transition:.15s;cursor:pointer}
+.cross-link-btn:hover{transform:translateY(-2px);box-shadow:3px 3px 0 #000;background:#6d28d9}
+@media(prefers-color-scheme:dark){
+:root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155}
+body{background:var(--bg);color:var(--ink)}
+.sidebar{background:#1e293b;border-left-color:#475569}
+.graph-container{background:#1e293b;border-color:#475569;box-shadow:4px 4px 0 #000}
+.file-node{border-color:#475569;box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+.n-entry{background:#312e81}.n-comp{background:#1e3a5f}.n-page{background:#14532d}.n-util{background:#422006}.n-style{background:#4a1942}.n-route{background:#0c4a6e}.n-config{background:#1e293b}
+.file-node .fn-sub{color:#94a3b8}
+.detail-panel{background:#1e293b;border-color:#475569}
+.detail-body code{background:#334155;border-color:#475569;color:#e2e8f0}
+}
+@media(max-width:768px){
+.app{grid-template-columns:1fr}
+.sidebar{max-height:unset;position:static;border-left:none;border-bottom:3px solid #000;display:flex;flex-wrap:wrap;gap:4px;padding:10px}
+.sb-title{display:none}
+.file-node{position:static!important;margin:6px;display:inline-block}
+.graph-svg{display:none}
+.graph-nodes{padding:16px;display:flex;flex-wrap:wrap;justify-content:center}
+}
+@media print{
+body{background:#fff}
+.sidebar{display:none}
+.app{grid-template-columns:1fr}
+.graph-container{box-shadow:none;border:1px solid #ccc}
+.file-node{box-shadow:none;border:1px solid #333}
+footer{display:none}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+<h1>📂 File Dependency Graph</h1>
+<p>תלות בין קבצים בכל פרויקט React — imports, props, data flow</p>
+</header>
+<div class="app">
+<aside class="sidebar" id="sidebar"></aside>
+<main class="main">
+<div class="graph-header"><h2 id="graph-title">בחר פרויקט מהתפריט</h2></div>
+<div class="legend">
+<div class="legend-item"><div class="legend-dot" style="background:#ede9fe"></div>Entry Point</div>
+<div class="legend-item"><div class="legend-dot" style="background:#dbeafe"></div>Component</div>
+<div class="legend-item"><div class="legend-dot" style="background:#dcfce7"></div>Page/View</div>
+<div class="legend-item"><div class="legend-dot" style="background:#fef9c3"></div>Utility/Logic</div>
+<div class="legend-item"><div class="legend-dot" style="background:#e0f2fe"></div>Router/Config</div>
+</div>
+<div class="graph-container" id="graph-container">
+<svg class="graph-svg" id="graph-svg"></svg>
+<div class="graph-nodes" id="graph-nodes"></div>
+</div>
+<div class="detail-panel" id="detail-panel">
+<div class="detail-title" id="detail-title"></div>
+<div class="detail-body" id="detail-body"></div>
+</div>
+</main>
+</div>
+<script>
+const PROJECTS = {
+"football": {
+  title: "⚽ Football Club — ניהול קבוצות",
+  files: [
+    {id:"app",name:"App.jsx",type:"entry",icon:"⚛",x:350,y:30,desc:"Root component — Router + global state",imports:["react-router-dom"],exports:["App"],props_down:["users","currentUser","teams","setCurrentUser","addUser","updatePlayer"]},
+    {id:"login",name:"LoginForm.jsx",type:"comp",icon:"🔐",x:120,y:160,desc:"טופס כניסה — username + password",imports:["App (props)"],exports:["LoginForm"],props_down:[],receives:["users","setCurrentUser"],sends_up:["onLogin → setCurrentUser"]},
+    {id:"register",name:"RegisterForm.jsx",type:"comp",icon:"📝",x:350,y:160,desc:"טופס הרשמה — 4 שדות + ולידציה",imports:["App (props)"],exports:["RegisterForm"],receives:["users","addUser"],sends_up:["onRegister → addUser"],validations:["teamName: English + capitalize","password: 8-20 + mixed","confirmPassword: must match"]},
+    {id:"team",name:"TeamPage.jsx",type:"page",icon:"⚽",x:580,y:160,desc:"דף קבוצה — רשימת שחקנים + חיפוש + מחיקה",imports:["App (props)","react-router-dom"],exports:["TeamPage"],receives:["teams","currentUser"],sends_up:["deletePlayer","navigate to edit"]},
+    {id:"edit",name:"EditPlayer.jsx",type:"comp",icon:"✏️",x:580,y:310,desc:"עריכת שחקן — ערכים מראש מ-URL params",imports:["App (props)","react-router-dom"],exports:["EditPlayer"],receives:["teams","updatePlayer"],sends_up:["onSave → updatePlayer"]},
+    {id:"nav",name:"NavBar.jsx",type:"comp",icon:"🧭",x:120,y:310,desc:"ניווט — קישורים לדפים + Logout",imports:["react-router-dom"],exports:["NavBar"],receives:["currentUser","setCurrentUser"]},
+    {id:"ls",name:"localStorage",type:"util",icon:"💾",x:350,y:400,desc:"שמירת users[] ו-teams{} בין רענונים",imports:[],exports:["getItem","setItem"],props_down:[]}
+  ],
+  edges: [
+    {from:"app",to:"login",label:"props: users, setCurrentUser",type:"props"},
+    {from:"app",to:"register",label:"props: users, addUser",type:"props"},
+    {from:"app",to:"team",label:"props: teams, currentUser",type:"props"},
+    {from:"app",to:"edit",label:"props: teams, updatePlayer",type:"props"},
+    {from:"app",to:"nav",label:"props: currentUser",type:"props"},
+    {from:"login",to:"app",label:"setCurrentUser(user)",type:"callback"},
+    {from:"register",to:"app",label:"addUser(newUser)",type:"callback"},
+    {from:"edit",to:"app",label:"updatePlayer(id, data)",type:"callback"},
+    {from:"app",to:"ls",label:"useEffect → save",type:"data"},
+    {from:"ls",to:"app",label:"useState init",type:"data"}
+  ]
+},
+"parking": {
+  title: "🅿️ Parking — חניון חכם",
+  files: [
+    {id:"app",name:"App.jsx",type:"entry",icon:"⚛",x:350,y:30,desc:"Root — Router + users/parkings state",imports:["react-router-dom"],exports:["App"],props_down:["users","currentUser","cities","parkings"]},
+    {id:"login",name:"Login.jsx",type:"comp",icon:"🔐",x:100,y:160,desc:"כניסה — שם + סיסמה",imports:["App (props)"],exports:["Login"],receives:["users","setCurrentUser"]},
+    {id:"signup",name:"Signup.jsx",type:"comp",icon:"📝",x:300,y:160,desc:"הרשמה — carNumber(7 ספרות), password(6+)",imports:["App (props)"],exports:["Signup"],receives:["users","addUser"],validations:["carNumber: exactly 7 digits","password: min 6 chars"]},
+    {id:"choose",name:"ChooseParking.jsx",type:"page",icon:"🏙",x:500,y:160,desc:"בחירת עיר + חניון — dropdown מ-cities[]",imports:["App (props)"],exports:["ChooseParking"],receives:["cities","startParking"]},
+    {id:"active",name:"ActiveParking.jsx",type:"page",icon:"⏱",x:150,y:310,desc:"חניה פעילה — timer + end button",imports:["App (props)"],exports:["ActiveParking"],receives:["currentParking","endParking"]},
+    {id:"history",name:"ParkingHistory.jsx",type:"page",icon:"📋",x:500,y:310,desc:"היסטוריית חניות — filter by date/city",imports:["App (props)"],exports:["ParkingHistory"],receives:["parkings","currentUser"]},
+    {id:"ls",name:"localStorage",type:"util",icon:"💾",x:350,y:420,desc:"persist users + parkings",imports:[],exports:[]}
+  ],
+  edges: [
+    {from:"app",to:"login",label:"users, setCurrentUser",type:"props"},
+    {from:"app",to:"signup",label:"users, addUser",type:"props"},
+    {from:"app",to:"choose",label:"cities, startParking",type:"props"},
+    {from:"app",to:"active",label:"currentParking, endParking",type:"props"},
+    {from:"app",to:"history",label:"parkings, currentUser",type:"props"},
+    {from:"login",to:"app",label:"setCurrentUser",type:"callback"},
+    {from:"signup",to:"app",label:"addUser",type:"callback"},
+    {from:"choose",to:"app",label:"startParking",type:"callback"},
+    {from:"app",to:"ls",label:"save state",type:"data"}
+  ]
+},
+"flights": {
+  title: "✈️ Flights — טיסות",
+  files: [
+    {id:"app",name:"App.jsx",type:"entry",icon:"⚛",x:350,y:30,desc:"Root — password gate + flights state",imports:["react-router-dom"],exports:["App"],props_down:["flights","isAuth"]},
+    {id:"login",name:"LoginPage.jsx",type:"comp",icon:"🔐",x:120,y:160,desc:"סיסמה קבועה: 12345",imports:["App (props)"],exports:["LoginPage"],receives:["setIsAuth"],validations:["password === '12345'"]},
+    {id:"panel",name:"ControlPanel.jsx",type:"page",icon:"🎛",x:350,y:160,desc:"לוח בקרה — הוספה מהירה + navigate",imports:["App (props)","react-router-dom"],exports:["ControlPanel"],receives:["addFlight"]},
+    {id:"all",name:"AllFlights.jsx",type:"page",icon:"📋",x:580,y:160,desc:"כל הטיסות — מיון + מחיקה",imports:["App (props)"],exports:["AllFlights"],receives:["flights","deleteFlight","sortOrder"]},
+    {id:"add",name:"AddFlight.jsx",type:"comp",icon:"➕",x:200,y:310,desc:"טופס הוספת טיסה — dest, date, passengers",imports:["App (props)"],exports:["AddFlight"],receives:["addFlight"],sends_up:["addFlight(newFlight)"]},
+    {id:"card",name:"FlightCard.jsx",type:"comp",icon:"🎫",x:500,y:310,desc:"כרטיס טיסה — delete button",imports:["AllFlights (props)"],exports:["FlightCard"],receives:["flight","onDelete"]}
+  ],
+  edges: [
+    {from:"app",to:"login",label:"setIsAuth",type:"props"},
+    {from:"app",to:"panel",label:"addFlight",type:"props"},
+    {from:"app",to:"all",label:"flights, deleteFlight",type:"props"},
+    {from:"app",to:"add",label:"addFlight",type:"props"},
+    {from:"all",to:"card",label:"flight, onDelete",type:"props"},
+    {from:"login",to:"app",label:"setIsAuth(true)",type:"callback"},
+    {from:"add",to:"app",label:"addFlight(data)",type:"callback"},
+    {from:"card",to:"all",label:"onDelete(id)",type:"callback"}
+  ]
+},
+"helpme": {
+  title: "🆘 HelpMe — מרכזי סיוע",
+  files: [
+    {id:"app",name:"App.jsx",type:"entry",icon:"⚛",x:350,y:30,desc:"Root — user state + centers data",imports:["react-router-dom"],exports:["App"],props_down:["user","centers","isActive"]},
+    {id:"register",name:"Register.jsx",type:"comp",icon:"📝",x:120,y:160,desc:"הרשמה — name(2+), phone(10), password(6+)",imports:["App (props)"],exports:["Register"],receives:["setUser"],validations:["name: min 2 chars","phone: exactly 10 digits","password: min 6 chars"]},
+    {id:"home",name:"Home.jsx",type:"page",icon:"🏠",x:350,y:160,desc:"דף בית — toggle active + show centers",imports:["App (props)"],exports:["Home"],receives:["user","isActive","setIsActive"]},
+    {id:"centers",name:"Centers.jsx",type:"page",icon:"🏥",x:580,y:160,desc:"רשימת מרכזים — filter + select",imports:["App (props)"],exports:["Centers"],receives:["centers","selectedCenter","setSelectedCenter"]},
+    {id:"detail",name:"CenterDetail.jsx",type:"comp",icon:"📍",x:580,y:310,desc:"פרטי מרכז — address, phone, hours",imports:["Centers (props)"],exports:["CenterDetail"],receives:["center"]}
+  ],
+  edges: [
+    {from:"app",to:"register",label:"setUser",type:"props"},
+    {from:"app",to:"home",label:"user, isActive",type:"props"},
+    {from:"app",to:"centers",label:"centers, selectedCenter",type:"props"},
+    {from:"centers",to:"detail",label:"center",type:"props"},
+    {from:"register",to:"app",label:"setUser(data)",type:"callback"},
+    {from:"home",to:"app",label:"setIsActive",type:"callback"}
+  ]
+},
+"bank": {
+  title: "🏦 Bank — מערכת בנק",
+  files: [
+    {id:"app",name:"App.jsx",type:"entry",icon:"⚛",x:350,y:30,desc:"Root — users, accounts, currentUser",imports:["react-router-dom"],exports:["App"],props_down:["users","accounts","currentUser"]},
+    {id:"login",name:"Login.jsx",type:"comp",icon:"🔐",x:100,y:160,desc:"כניסה — username + password check",imports:["App (props)"],exports:["Login"],receives:["users","setCurrentUser"]},
+    {id:"register",name:"Register.jsx",type:"comp",icon:"📝",x:300,y:160,desc:"הרשמה — unique username check",imports:["App (props)"],exports:["Register"],receives:["users","addUser"],validations:["username: must be unique","password: required"]},
+    {id:"client",name:"ClientPage.jsx",type:"page",icon:"👤",x:550,y:160,desc:"דף לקוח — יתרה + הפקדה/משיכה",imports:["App (props)","react-router-dom"],exports:["ClientPage"],receives:["accounts","deposit","withdraw"]},
+    {id:"manager",name:"ManagerPage.jsx",type:"page",icon:"👔",x:300,y:310,desc:"דף מנהל — כל הלקוחות + פעולות",imports:["App (props)"],exports:["ManagerPage"],receives:["users","accounts","transfer"],validations:["admin password required","amount > 0"]},
+    {id:"ls",name:"localStorage",type:"util",icon:"💾",x:550,y:310,desc:"persist users + accounts",imports:[],exports:[]}
+  ],
+  edges: [
+    {from:"app",to:"login",label:"users, setCurrentUser",type:"props"},
+    {from:"app",to:"register",label:"users, addUser",type:"props"},
+    {from:"app",to:"client",label:"accounts, deposit, withdraw",type:"props"},
+    {from:"app",to:"manager",label:"users, accounts, transfer",type:"props"},
+    {from:"client",to:"app",label:"deposit/withdraw",type:"callback"},
+    {from:"manager",to:"app",label:"transfer",type:"callback"},
+    {from:"app",to:"ls",label:"save",type:"data"}
+  ]
+},
+"logistics": {
+  title: "🚚 Logistics — ניהול מוצרים",
+  files: [
+    {id:"app",name:"App.jsx",type:"entry",icon:"⚛",x:350,y:30,desc:"Root — workers, products, currentWorker",imports:["react-router-dom"],exports:["App"],props_down:["workers","products","currentWorker"]},
+    {id:"auth",name:"Auth.jsx",type:"comp",icon:"🔐",x:120,y:160,desc:"כניסה — workerId(5 ספרות) + fullName(4+)",imports:["App (props)"],exports:["Auth"],receives:["workers","setCurrentWorker"],validations:["workerId: exactly 5 digits","fullName: min 4 chars","license check"]},
+    {id:"welcome",name:"Welcome.jsx",type:"page",icon:"👋",x:350,y:160,desc:"ברוך הבא — פרטי עובד + navigate",imports:["App (props)","react-router-dom"],exports:["Welcome"],receives:["currentWorker"]},
+    {id:"products",name:"Products.jsx",type:"page",icon:"📦",x:580,y:160,desc:"רשימת מוצרים — הוספה + עריכה + מחיקה",imports:["App (props)"],exports:["Products"],receives:["products","addProduct","editProduct","deleteProduct"]},
+    {id:"prodcard",name:"ProductCard.jsx",type:"comp",icon:"🏷",x:580,y:310,desc:"כרטיס מוצר — edit/delete buttons",imports:["Products (props)"],exports:["ProductCard"],receives:["product","onEdit","onDelete"]}
+  ],
+  edges: [
+    {from:"app",to:"auth",label:"workers, setCurrentWorker",type:"props"},
+    {from:"app",to:"welcome",label:"currentWorker",type:"props"},
+    {from:"app",to:"products",label:"products, CRUD funcs",type:"props"},
+    {from:"products",to:"prodcard",label:"product, onEdit, onDelete",type:"props"},
+    {from:"auth",to:"app",label:"setCurrentWorker",type:"callback"},
+    {from:"prodcard",to:"products",label:"onEdit/onDelete",type:"callback"}
+  ]
+},
+"currency": {
+  title: "💱 Currency — המרת מטבעות",
+  files: [
+    {id:"app",name:"App.jsx",type:"entry",icon:"⚛",x:350,y:30,desc:"Root — currencies[], exchanges[]",imports:["react-router-dom"],exports:["App"],props_down:["currencies","exchanges"]},
+    {id:"calc",name:"Calculator.jsx",type:"page",icon:"🧮",x:120,y:160,desc:"מחשבון המרה — select currency + amount",imports:["App (props)"],exports:["Calculator"],receives:["currencies","addExchange"]},
+    {id:"list",name:"ExchangeList.jsx",type:"page",icon:"📋",x:350,y:160,desc:"היסטוריית המרות — table + delete",imports:["App (props)"],exports:["ExchangeList"],receives:["exchanges","deleteExchange"]},
+    {id:"update",name:"UpdateCurrency.jsx",type:"page",icon:"✏️",x:580,y:160,desc:"עדכון/הוספת מטבע — type + value",imports:["App (props)"],exports:["UpdateCurrency"],receives:["currencies","addCurrency","updateCurrency"],validations:["type: English only","value: must be number","all fields required"]},
+    {id:"ls",name:"localStorage",type:"util",icon:"💾",x:350,y:310,desc:"persist currencies + exchanges",imports:[],exports:[]}
+  ],
+  edges: [
+    {from:"app",to:"calc",label:"currencies, addExchange",type:"props"},
+    {from:"app",to:"list",label:"exchanges, deleteExchange",type:"props"},
+    {from:"app",to:"update",label:"currencies, add/update",type:"props"},
+    {from:"calc",to:"app",label:"addExchange",type:"callback"},
+    {from:"list",to:"app",label:"deleteExchange",type:"callback"},
+    {from:"update",to:"app",label:"addCurrency/updateCurrency",type:"callback"},
+    {from:"app",to:"ls",label:"useEffect sync",type:"data"}
+  ]
+},
+"willing": {
+  title: "🤝 Willing — התנדבויות",
+  files: [
+    {id:"app",name:"App.jsx",type:"entry",icon:"⚛",x:350,y:30,desc:"Root — volunteerings[], selectedCity",imports:["react-router-dom"],exports:["App"],props_down:["volunteerings","selectedCity"]},
+    {id:"home",name:"Home.jsx",type:"page",icon:"🏠",x:120,y:160,desc:"דף בית — select city → navigate",imports:["App (props)","react-router-dom"],exports:["Home"],receives:["cities","setSelectedCity"]},
+    {id:"add",name:"AddVolunteering.jsx",type:"page",icon:"➕",x:350,y:160,desc:"הוספת התנדבות — city, desc, date",imports:["App (props)"],exports:["AddVolunteering"],receives:["addVolunteering"]},
+    {id:"find",name:"FindVolunteering.jsx",type:"page",icon:"🔍",x:580,y:160,desc:"חיפוש — filter by city + toggle signup",imports:["App (props)"],exports:["FindVolunteering"],receives:["volunteerings","selectedCity","toggleSignup"]},
+    {id:"all",name:"AllVolunteerings.jsx",type:"page",icon:"📋",x:350,y:310,desc:"כל ההתנדבויות — list + confirm delete",imports:["App (props)"],exports:["AllVolunteerings"],receives:["volunteerings","deleteVolunteering"]}
+  ],
+  edges: [
+    {from:"app",to:"home",label:"cities, setSelectedCity",type:"props"},
+    {from:"app",to:"add",label:"addVolunteering",type:"props"},
+    {from:"app",to:"find",label:"volunteerings, toggleSignup",type:"props"},
+    {from:"app",to:"all",label:"volunteerings, delete",type:"props"},
+    {from:"home",to:"app",label:"setSelectedCity",type:"callback"},
+    {from:"add",to:"app",label:"addVolunteering",type:"callback"},
+    {from:"find",to:"app",label:"toggleSignup",type:"callback"},
+    {from:"all",to:"app",label:"deleteVolunteering",type:"callback"}
+  ]
+},
+"travel": {
+  title: "🌍 Travel — יעדי טיול",
+  files: [
+    {id:"app",name:"App.jsx",type:"entry",icon:"⚛",x:350,y:30,desc:"Root — user auth + travels[]",imports:["react-router-dom"],exports:["App"],props_down:["travels","user","navDisabled"]},
+    {id:"signin",name:"SignIn.jsx",type:"comp",icon:"🔐",x:120,y:160,desc:"כניסה — svcollege/abcde fixed creds",imports:["App (props)"],exports:["SignIn"],receives:["setUser","setNavDisabled"],validations:["username: 'svcollege'","password: 'abcde'"]},
+    {id:"home",name:"Home.jsx",type:"page",icon:"🏠",x:350,y:160,desc:"דף בית — welcome + travel count",imports:["App (props)"],exports:["Home"],receives:["user","travels"]},
+    {id:"add",name:"AddTravel.jsx",type:"page",icon:"➕",x:580,y:160,desc:"הוספת יעד — dest, date, rating",imports:["App (props)"],exports:["AddTravel"],receives:["addTravel"]},
+    {id:"update",name:"UpdateTravel.jsx",type:"page",icon:"✏️",x:350,y:310,desc:"עדכון יעד — edit existing travel",imports:["App (props)"],exports:["UpdateTravel"],receives:["travels","updateTravel"]},
+    {id:"navbar",name:"NavBar.jsx",type:"comp",icon:"🧭",x:120,y:310,desc:"ניווט — disabled until login",imports:["App (props)","react-router-dom"],exports:["NavBar"],receives:["navDisabled","user"]}
+  ],
+  edges: [
+    {from:"app",to:"signin",label:"setUser, setNavDisabled",type:"props"},
+    {from:"app",to:"home",label:"user, travels",type:"props"},
+    {from:"app",to:"add",label:"addTravel",type:"props"},
+    {from:"app",to:"update",label:"travels, updateTravel",type:"props"},
+    {from:"app",to:"navbar",label:"navDisabled, user",type:"props"},
+    {from:"signin",to:"app",label:"setUser + setNavDisabled(false)",type:"callback"},
+    {from:"add",to:"app",label:"addTravel(data)",type:"callback"},
+    {from:"update",to:"app",label:"updateTravel(id, data)",type:"callback"}
+  ]
+}
+};
+
+let activeProject = null;
+let activeNode = null;
+
+function initSidebar(){
+  const sb = document.getElementById('sidebar');
+  const items = Object.entries(PROJECTS);
+  let html = '<div class="sb-title">🗂 פרויקטי React</div>';
+  items.forEach(([key, proj]) => {
+    html += `<button class="sb-btn" data-key="${key}">${proj.title}</button>`;
+  });
+  sb.innerHTML = html;
+  sb.querySelectorAll('.sb-btn').forEach(btn => {
+    btn.onclick = () => selectProject(btn.dataset.key);
+  });
+  selectProject('football');
+}
+
+function selectProject(key){
+  activeProject = key;
+  activeNode = null;
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.toggle('active', b.dataset.key === key));
+  const visited=JSON.parse(localStorage.getItem('fg-visited')||'[]');
+  if(!visited.includes(key)){visited.push(key);localStorage.setItem('fg-visited',JSON.stringify(visited));}
+  renderGraph(PROJECTS[key]);
+  document.getElementById('detail-panel').classList.remove('show');
+}
+
+function renderGraph(proj){
+  document.getElementById('graph-title').textContent = proj.title;
+  // Cross-link to flow-canvas
+  let crossEl = document.getElementById('cross-link-flow');
+  if(!crossEl){
+    crossEl = document.createElement('a');
+    crossEl.id = 'cross-link-flow';
+    crossEl.className = 'cross-link-btn';
+    document.querySelector('.graph-header').appendChild(crossEl);
+  }
+  crossEl.href = `flow-canvas.html#${activeProject}-q1`;
+  crossEl.textContent = '\u{1F5FA} פתח ב-Flow Canvas';
+  const container = document.getElementById('graph-container');
+  const nodesEl = document.getElementById('graph-nodes');
+  const svgEl = document.getElementById('graph-svg');
+
+  const maxX = Math.max(...proj.files.map(f => f.x)) + 180;
+  const maxY = Math.max(...proj.files.map(f => f.y)) + 100;
+  container.style.height = Math.max(500, maxY + 60) + 'px';
+
+  let nodesHtml = '';
+  proj.files.forEach(f => {
+    const typeClass = {entry:'n-entry',comp:'n-comp',page:'n-page',util:'n-util',style:'n-style',route:'n-route',config:'n-config'}[f.type] || 'n-comp';
+    nodesHtml += `<div class="file-node ${typeClass}" style="left:${f.x}px;top:${f.y}px" data-id="${f.id}" onclick="selectNode('${f.id}')">
+      <span class="fn-icon">${f.icon}</span>
+      <div class="fn-name">${f.name}</div>
+      <div class="fn-sub">${f.type}</div>
+    </div>`;
+  });
+  nodesEl.innerHTML = nodesHtml;
+
+  renderEdges(proj);
+}
+
+function renderEdges(proj){
+  const svgEl = document.getElementById('graph-svg');
+  const fileMap = {};
+  proj.files.forEach(f => { fileMap[f.id] = f; });
+
+  let svgContent = '';
+  const colors = {props:'#2563eb',callback:'#16a34a',data:'#f97316'};
+  const dashes = {props:'',callback:'6,3',data:'4,4'};
+
+  proj.edges.forEach((e, i) => {
+    const from = fileMap[e.from];
+    const to = fileMap[e.to];
+    if(!from || !to) return;
+
+    const x1 = from.x + 60;
+    const y1 = from.y + 45;
+    const x2 = to.x + 60;
+    const y2 = to.y + 10;
+
+    const midX = (x1 + x2) / 2;
+    const midY = (y1 + y2) / 2;
+    const color = colors[e.type] || '#64748b';
+    const dash = dashes[e.type] || '';
+    const markerId = `arrow-${e.type}-${i}`;
+
+    svgContent += `<defs><marker id="${markerId}" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="${color}"/></marker></defs>`;
+    svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2" stroke-dasharray="${dash}" marker-end="url(#${markerId})" opacity="0.7"/>`;
+
+    if(e.label){
+      const lx = midX;
+      const ly = midY - 6;
+      svgContent += `<text x="${lx}" y="${ly}" class="arrow-label" text-anchor="middle" font-size="9" fill="#64748b">${e.label.length > 25 ? e.label.slice(0,22)+'…' : e.label}</text>`;
+    }
+  });
+
+  svgEl.innerHTML = svgContent;
+}
+
+function selectNode(id){
+  const proj = PROJECTS[activeProject];
+  const file = proj.files.find(f => f.id === id);
+  if(!file) return;
+
+  activeNode = id;
+  document.querySelectorAll('.file-node').forEach(n => n.classList.toggle('active', n.dataset.id === id));
+
+  const panel = document.getElementById('detail-panel');
+  const title = document.getElementById('detail-title');
+  const body = document.getElementById('detail-body');
+
+  title.textContent = `${file.icon} ${file.name} — ${file.desc}`;
+
+  let html = '';
+
+  if(file.imports && file.imports.length){
+    html += `<h4>📥 Imports</h4><div class="imports-list">${file.imports.map(i=>`<span class="imp-chip">${i}</span>`).join('')}</div>`;
+  }
+  if(file.exports && file.exports.length){
+    html += `<h4>📤 Exports</h4><div class="imports-list">${file.exports.map(e=>`<span class="exp-chip">${e}</span>`).join('')}</div>`;
+  }
+  if(file.receives && file.receives.length){
+    html += `<h4>⬇️ Props Received</h4><ul>${file.receives.map(r=>`<li><code>${r}</code></li>`).join('')}</ul>`;
+  }
+  if(file.sends_up && file.sends_up.length){
+    html += `<h4>⬆️ Callbacks Up</h4><ul>${file.sends_up.map(s=>`<li><code>${s}</code></li>`).join('')}</ul>`;
+  }
+  if(file.validations && file.validations.length){
+    html += `<h4>🛡 Validations</h4><ul>${file.validations.map(v=>`<li>${v}</li>`).join('')}</ul>`;
+  }
+  if(file.props_down && file.props_down.length){
+    html += `<h4>⬇️ Props Sent Down</h4><div class="imports-list">${file.props_down.map(p=>`<span class="imp-chip">${p}</span>`).join('')}</div>`;
+  }
+
+  const relatedEdges = proj.edges.filter(e => e.from === id || e.to === id);
+  if(relatedEdges.length){
+    html += `<h4>🔗 Connections (${relatedEdges.length})</h4><ul>`;
+    relatedEdges.forEach(e => {
+      const dir = e.from === id ? '→' : '←';
+      const other = e.from === id ? e.to : e.from;
+      const otherFile = proj.files.find(f => f.id === other);
+      html += `<li>${dir} <code>${otherFile ? otherFile.name : other}</code> — ${e.label} <em>(${e.type})</em></li>`;
+    });
+    html += '</ul>';
+  }
+
+  body.innerHTML = html;
+  panel.classList.add('show');
+}
+
+initSidebar();
+
+// Deep-link via hash: e.g. #football
+(function(){
+  const hash = location.hash.replace('#','');
+  if(hash && PROJECTS[hash]){
+    selectProject(hash);
+  }
+  window.addEventListener('hashchange', function(){
+    const h = location.hash.replace('#','');
+    if(h && PROJECTS[h]) selectProject(h);
+  });
+})();
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e){
+  const tag = document.activeElement.tagName.toLowerCase();
+  if(tag==='input'||tag==='textarea'||document.activeElement.isContentEditable) return;
+
+  // Arrow keys: navigate between projects
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+    const keys = Object.keys(PROJECTS);
+    if(!keys.length) return;
+    const idx = keys.indexOf(activeProject);
+    let next;
+    if(e.key==='ArrowRight') next = idx < keys.length-1 ? idx+1 : 0;
+    else next = idx > 0 ? idx-1 : keys.length-1;
+    selectProject(keys[next]);
+    e.preventDefault();
+    return;
+  }
+
+  // ESC: close detail panel
+  if(e.key==='Escape'){
+    const panel = document.getElementById('detail-panel');
+    if(panel.classList.contains('show')){
+      panel.classList.remove('show');
+      activeNode = null;
+      document.querySelectorAll('.file-node').forEach(n => n.classList.remove('active'));
+      e.preventDefault();
+    }
+    return;
+  }
+});
+</script>
+<div style="position:fixed;bottom:12px;left:12px;background:#1e1b4b;color:#e2e8f0;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;opacity:.85;z-index:9999;direction:ltr;box-shadow:2px 2px 6px rgba(0,0,0,.3)">
+  <span style="color:#facc15">Shortcuts:</span> ← → nav projects | ESC close panel
+</div>
+<footer style="border-top:3px solid #000;padding:16px 24px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+<strong>🔗 כלים נוספים:</strong>
+<a href="flow-canvas.html" style="color:#7c3aed;font-weight:700">🗺 מפת זרימה</a>
+<a href="sequence-diagrams.html" style="color:#7c3aed;font-weight:700">🔄 Sequence Diagrams</a>
+<a href="practice-bank.html" style="color:#7c3aed;font-weight:700">💪 בנק תרגול</a>
+<a href="simulations.html" style="color:#7c3aed;font-weight:700">🎮 סימולציות</a>
+<a href="course-map.html" style="color:#7c3aed;font-weight:700">🗂 Course Map</a>
+</footer>
+</body>
+</html>

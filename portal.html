@@ -344,6 +344,10 @@
   .extras-hero{margin-bottom:18px}
   .extras-hero h2{margin:0 0 8px; font-size:26px}
   .extras-hero p{margin:0; color:#475569; line-height:1.7}
+  .extras-search-wrap{margin-top:12px}
+  .extras-search{width:100%;max-width:400px;padding:10px 16px;border:2.5px solid #000;border-radius:10px;font:inherit;font-size:15px;box-shadow:3px 3px 0 #000;outline:none;transition:.15s}
+  .extras-search:focus{border-color:var(--brand);box-shadow:3px 3px 0 var(--brand)}
+  .ex-card.hidden-search{display:none}
   .extras-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; margin-bottom:18px}
   .ex-card{display:block; padding:16px; border:2.5px solid #000; border-radius:14px; background:#fff;
     box-shadow:var(--shadow); cursor:pointer; transition:.16s; text-decoration:none; color:inherit}
@@ -461,6 +465,9 @@
         <div class="extras-hero">
           <h2>📚 חומרים נוספים</h2>
           <p>כל החומרים המשלימים שאספת — מאוחדים כאן. לחיצה על כרטיס פותחת את התוכן בצד וטוענת את המקור המלא.</p>
+          <div class="extras-search-wrap">
+            <input type="search" id="extras-search" class="extras-search" placeholder="🔍 חפש חומר..." autocomplete="off">
+          </div>
         </div>
         <div class="extras-grid">
           <a class="ex-card ex-100" data-extra="solutions100/index.html">
@@ -567,15 +574,33 @@
           </a>
           <a class="ex-card ex-100" data-extra="flow-canvas.html">
             <div class="ex-ico">🗺</div>
-            <h3>מפת זרימה — כל 25 השאלות</h3>
-            <p>לכל שאלה: איך הנתונים זורמים בין Components, State, Routes, API ו-DB. לחיצה על node → קוד + באגים.</p>
-            <span class="ex-meta">25 שאלות · אינטראקטיבי</span>
+            <h3>מפת זרימה — כל 27 השאלות</h3>
+            <p>16 תצוגות · Quiz/Bug/Order/Fill-Blanks/What-If/Exam Day · Patterns/Wrong vs Right · Glossary · Cheat Sheet · Dark mode</p>
+            <span class="ex-meta">27 שאלות · 16 views · 8 practice modes</span>
           </a>
           <a class="ex-card ex-dash" data-extra="homework-index.html">
             <div class="ex-ico">📘</div>
             <h3>שיעורי בית — 11 מטלות + 14 שיעורים</h3>
             <p>צ'ק-ליסט חומרים: סמנו מה חזרתם — מערכים, DOM, Node, React, Hooks, Router, TS, Tailwind.</p>
             <span class="ex-meta">11 HW + 14 Lessons · checklist</span>
+          </a>
+          <a class="ex-card ex-100" data-extra="simulations.html">
+            <div class="ex-ico">🎮</div>
+            <h3>סימולציות — בנה צעד אחר צעד</h3>
+            <p>9 סימולציות: React app, REST API, Debug, Validation, MongoDB CRUD, Node.js fs, JS Algorithm, localStorage, תאוריה — עם חיפוש, סינון, ומעקב התקדמות.</p>
+            <span class="ex-meta">9 סימולציות · search/filter · progress</span>
+          </a>
+          <a class="ex-card ex-100" data-extra="practice-bank.html">
+            <div class="ex-ico">🏋️</div>
+            <h3>Practice Bank — 12 תרגילים אינטראקטיביים</h3>
+            <p>כתבו קוד, הריצו בדיקות אוטומטיות, קבלו פידבק מיידי. JS algorithms, React patterns, Express routes.</p>
+            <span class="ex-meta">12 תרגילים · editor · auto-check</span>
+          </a>
+          <a class="ex-card ex-100" data-extra="sequence-diagrams.html">
+            <div class="ex-ico">🔄</div>
+            <h3>Sequence Diagrams — 8 תרחישי זרימה</h3>
+            <p>תרחישים אינטראקטיביים: Login, Form Submit, CRUD, Protected Route, localStorage, Filter, Error Handling, Pagination — שלב אחר שלב עם קוד.</p>
+            <span class="ex-meta">8 תרחישים · אנימציה · קוד</span>
           </a>
           <a class="ex-card ex-100" data-extra="master-plan.html">
             <div class="ex-ico">📋</div>
@@ -618,6 +643,53 @@
             <h3>נקודות חולשה — הסבר אסוציאטיבי</h3>
             <p><strong>חדש:</strong> React, Hooks, Routing, Forms, State, Lifecycle — הכל בהסברים ברמה שגם סבתא תבין. מטאפורות, טבלאות השוואה, קוד + טיפים.</p>
             <span class="ex-meta">חולשות · 5 טאבים · אסוציאטיבי</span>
+          </a>
+          <a class="ex-card ex-100" data-extra="course-map.html">
+            <div class="ex-ico">🗂</div>
+            <h3>Course Map — מפת 16 נושאים + טבלאות השוואה</h3>
+            <p>כל נושאי הסילבוס עם אחוז משקל במבחן, key concepts, וטבלאות השוואה: React vs Vanilla, MongoDB vs SQL, Express vs Node, Function vs Arrow.</p>
+            <span class="ex-meta">16 נושאים · progress · comparison</span>
+          </a>
+          <a class="ex-card ex-100" data-extra="file-graph.html">
+            <div class="ex-ico">📂</div>
+            <h3>File Dependency Graph — תלות בין קבצים</h3>
+            <p>לכל פרויקט React: מפת קבצים אינטראקטיבית עם חיצי imports, props down ו-callbacks up. לחיצה על קובץ → פירוט מלא.</p>
+            <span class="ex-meta">9 פרויקטים · SVG · interactive</span>
+          </a>
+
+          <a class="ex-card ex-100" data-extra="code-browser.html">
+            <div class="ex-ico">💻</div>
+            <h3>דפדפן קוד מקור — כל 25 השאלות</h3>
+            <p>צפייה בכל קבצי הפתרון המלאים עם הדגשת תחביר, ניווט בין קבצים, והעתקה מהירה. 64 קבצים ב-9 מערכות.</p>
+            <span class="ex-meta">64 קבצים · syntax highlighting · copy</span>
+          </a>
+
+          <a class="ex-card ex-100" data-extra="exam-knowledge.html">
+            <div class="ex-ico">📚</div>
+            <h3>מרכז ידע למבחן — כל הנושאים</h3>
+            <p>לכל נושא: מה חובה לדעת, מה מותר, מה אסור, שאלות נפוצות, וחלופות קוד. 10 נושאים מ-HTML עד Kubernetes.</p>
+            <span class="ex-meta">10 נושאים · mustKnow/forbidden · Q&A</span>
+          </a>
+
+          <a class="ex-card ex-100" data-extra="debug-walkthrough.html">
+            <div class="ex-ico">🔍</div>
+            <h3>פתרון Debug — צעד אחר צעד</h3>
+            <p>בנייה מלאה של שאלות מבחן: LoginForm, useEffect, Express CRUD, JWT, Dockerfile. כל צעד עם קוד, וידוא, וטעויות נפוצות.</p>
+            <span class="ex-meta">5 שאלות · step-by-step · mistakes</span>
+          </a>
+
+          <a class="ex-card ex-100" data-extra="data-flow.html">
+            <div class="ex-ico">📦</div>
+            <h3>מעקב Data Flow — זרימת נתונים</h3>
+            <p>איך הנתונים משתנים בכל שלב: מהקלט דרך fetch, שרת, DB ובחזרה. 5 תרחישים אנימטיביים עם Auto-Play.</p>
+            <span class="ex-meta">5 תרחישים · אנימציה · stage-by-stage</span>
+          </a>
+
+          <a class="ex-card ex-100" data-extra="progress-dashboard.html">
+            <div class="ex-ico">📊</div>
+            <h3>דשבורד התקדמות — מעקב cross-tool</h3>
+            <p>מעקב מאוחד אחרי ההתקדמות שלך בכל הכלים: מפת קורס, בנק תרגול, סימולציות, מפת זרימה, קוד מקור ו-File Graph.</p>
+            <span class="ex-meta">11 כלים · progress rings · localStorage</span>
           </a>
         </div>
         <div class="extras-foot">
@@ -1333,6 +1405,19 @@
   });
 
   if (exBack) exBack.addEventListener('click', backToHub);
+
+  // Extras search filter
+  const extrasSearchInput = document.getElementById('extras-search');
+  if(extrasSearchInput){
+    const allCards = document.querySelectorAll('.ex-card[data-extra]');
+    extrasSearchInput.addEventListener('input', () => {
+      const q = extrasSearchInput.value.trim().toLowerCase();
+      allCards.forEach(card => {
+        const text = (card.textContent || '').toLowerCase();
+        card.classList.toggle('hidden-search', q.length > 0 && !text.includes(q));
+      });
+    });
+  }
 
   // toggle .hidden helper for extras
   const styleAdd = document.createElement('style');

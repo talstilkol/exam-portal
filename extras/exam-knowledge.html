@@ -1,0 +1,2973 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📚 מרכז ידע למבחן</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   CSS VARIABLES
+   ========================================================================== */
+:root {
+  --bg: #f4f7fb;
+  --bg-alt: #eef2f7;
+  --ink: #0f172a;
+  --ink-muted: #64748b;
+  --ink-light: #94a3b8;
+  --card: #fff;
+  --card-hover: #fafbfc;
+  --border: #0f172a;
+  --border-light: #e2e8f0;
+  --border-muted: #cbd5e1;
+
+  --brand: #7c3aed;
+  --brand-dark: #5b21b6;
+  --brand-light: #ede9fe;
+  --brand-lighter: #f5f3ff;
+
+  --green: #16a34a;
+  --green-dark: #166534;
+  --green-light: #dcfce7;
+  --green-lighter: #f0fdf4;
+  --green-border: #166534;
+
+  --red: #dc2626;
+  --red-dark: #991b1b;
+  --red-light: #fef2f2;
+  --red-lighter: #fff5f5;
+  --red-border: #991b1b;
+
+  --blue: #2563eb;
+  --blue-dark: #1e40af;
+  --blue-light: #dbeafe;
+  --blue-lighter: #eff6ff;
+  --blue-border: #1e40af;
+
+  --orange: #f97316;
+  --orange-light: #fff7ed;
+  --gold: #facc15;
+  --gold-light: #fefce8;
+
+  --purple: #7c3aed;
+  --purple-light: #f5f3ff;
+  --purple-border: #5b21b6;
+
+  --shadow: 4px 4px 0 #000;
+  --shadow-sm: 2px 2px 0 #000;
+  --shadow-lg: 6px 6px 0 #000;
+  --shadow-hover: 5px 5px 0 #000;
+
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+  --radius-round: 50px;
+
+  --sidebar-width: 280px;
+  --transition: all 0.2s ease;
+  --transition-fast: all 0.15s ease;
+}
+
+/* ==========================================================================
+   RESET & BASE
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Heebo', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selection */
+::selection {
+  background: var(--brand-light);
+  color: var(--brand-dark);
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-muted);
+}
+
+/* ==========================================================================
+   HERO SECTION
+   ========================================================================== */
+.hero {
+  background: linear-gradient(135deg, #020617 0%, #1e1b4b 35%, #7c3aed 70%, #a855f7 100%);
+  color: #fff;
+  padding: 48px 30px 44px;
+  border-bottom: 3px solid #000;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  right: -15%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 900;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  letter-spacing: -0.5px;
+}
+
+.hero p {
+  font-size: clamp(14px, 2.5vw, 18px);
+  color: #c4b5fd;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.hero-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-round);
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
+}
+
+.hero-stat .stat-icon {
+  font-size: 16px;
+}
+
+.progress-track {
+  width: 100px;
+  height: 8px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), #fbbf24);
+  border-radius: 4px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Search in Hero */
+.hero-search {
+  margin-top: 20px;
+  position: relative;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-search input {
+  width: 100%;
+  padding: 12px 20px;
+  padding-right: 44px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-round);
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  backdrop-filter: blur(8px);
+  outline: none;
+  transition: var(--transition);
+}
+
+.hero-search input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+.hero-search input:focus {
+  border-color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.3);
+}
+
+.hero-search .search-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Search results dropdown */
+.search-results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border: 3px solid #000;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 100;
+  display: none;
+}
+
+.search-results.visible {
+  display: block;
+  animation: slideDown 0.2s ease;
+}
+
+.search-result-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border-light);
+  transition: var(--transition-fast);
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background: var(--brand-light);
+  color: var(--brand);
+}
+
+.search-result-item .result-cat {
+  font-size: 11px;
+  color: var(--ink-muted);
+  font-weight: 500;
+  margin-right: auto;
+}
+
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+.app-layout {
+  display: flex;
+  min-height: calc(100vh - 250px);
+}
+
+/* ==========================================================================
+   SIDEBAR
+   ========================================================================== */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--card);
+  border-left: 3px solid #000;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.sidebar-header {
+  padding: 0 20px 16px;
+  border-bottom: 2px solid var(--border-light);
+  margin-bottom: 16px;
+}
+
+.sidebar-header h3 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sidebar-header .total-badge {
+  background: var(--brand-light);
+  color: var(--brand);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: var(--radius-round);
+  font-weight: 800;
+}
+
+.sidebar-group {
+  margin-bottom: 20px;
+}
+
+.sidebar-group-title {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--ink-muted);
+  padding: 0 20px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sidebar-group-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-light);
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: var(--transition-fast);
+  border-right: 4px solid transparent;
+  position: relative;
+  user-select: none;
+}
+
+.sidebar-item:hover {
+  background: var(--brand-lighter);
+  color: var(--brand);
+}
+
+.sidebar-item.active {
+  background: var(--brand-light);
+  border-right-color: var(--brand);
+  color: var(--brand);
+  font-weight: 800;
+}
+
+.sidebar-item .icon {
+  font-size: 20px;
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.sidebar-item .name {
+  flex: 1;
+}
+
+.sidebar-item .viewed-badge {
+  width: 8px;
+  height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  border: 2px solid var(--card);
+  box-shadow: 0 0 0 1px var(--green);
+  flex-shrink: 0;
+}
+
+.sidebar-item .count-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--ink-muted);
+  background: var(--bg);
+  padding: 1px 6px;
+  border-radius: var(--radius-round);
+  border: 1.5px solid var(--border-light);
+}
+
+/* ==========================================================================
+   MAIN CONTENT AREA
+   ========================================================================== */
+.main-content {
+  flex: 1;
+  padding: 32px;
+  max-width: 920px;
+  min-width: 0;
+}
+
+/* Topic Header */
+.topic-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border-light);
+}
+
+.topic-header .topic-icon {
+  font-size: 44px;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: 3px solid #000;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.topic-header .topic-info h2 {
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.topic-header .topic-cat {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.topic-header .topic-meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.topic-header .meta-item {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-round);
+  border: 1.5px solid;
+}
+
+.meta-item.must-know-count {
+  background: var(--green-light);
+  border-color: var(--green);
+  color: var(--green-dark);
+}
+
+.meta-item.qa-count {
+  background: var(--purple-light);
+  border-color: var(--brand);
+  color: var(--brand-dark);
+}
+
+.meta-item.alt-count {
+  background: var(--orange-light);
+  border-color: var(--orange);
+  color: #9a3412;
+}
+
+/* ==========================================================================
+   SECTION STYLES
+   ========================================================================== */
+.section {
+  margin-bottom: 28px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  border: 3px solid #000;
+  border-bottom: none;
+  position: relative;
+}
+
+.section-title .section-count {
+  margin-right: auto;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(0,0,0,0.1);
+  padding: 2px 10px;
+  border-radius: var(--radius-round);
+}
+
+.section-title.must-know {
+  background: linear-gradient(135deg, var(--green-light), #bbf7d0);
+  color: var(--green-dark);
+}
+
+.section-title.allowed {
+  background: linear-gradient(135deg, var(--blue-light), #bfdbfe);
+  color: var(--blue-dark);
+}
+
+.section-title.forbidden {
+  background: linear-gradient(135deg, var(--red-light), #fecaca);
+  color: var(--red-dark);
+}
+
+.section-title.questions {
+  background: linear-gradient(135deg, var(--purple-light), #e9d5ff);
+  color: var(--purple-border);
+}
+
+.section-title.alternatives {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+}
+
+.section-body {
+  background: var(--card);
+  border: 3px solid #000;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   MUST KNOW CARDS
+   ========================================================================== */
+.must-know-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.must-know-item {
+  padding: 14px 18px;
+  border-bottom: 2px solid var(--border-light);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  transition: var(--transition-fast);
+}
+
+.must-know-item:last-child {
+  border-bottom: none;
+}
+
+.must-know-item:hover {
+  background: var(--green-lighter);
+  padding-right: 22px;
+}
+
+.must-know-item .num {
+  min-width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, var(--green), #22c55e);
+  color: #fff;
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 12px;
+  flex-shrink: 0;
+  border: 2px solid var(--green-dark);
+  box-shadow: 1px 1px 0 var(--green-dark);
+}
+
+.must-know-item .text {
+  flex: 1;
+}
+
+.must-know-item .text code,
+.must-know-item code {
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 12px;
+  font-family: 'Courier New', Consolas, monospace;
+  direction: ltr;
+  display: inline;
+  unicode-bidi: isolate;
+}
+
+/* ==========================================================================
+   ALLOWED LIST
+   ========================================================================== */
+.allowed-list {
+  list-style: none;
+  padding: 0;
+}
+
+.allowed-list li {
+  padding: 12px 18px;
+  border-bottom: 1.5px solid var(--border-light);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: var(--transition-fast);
+}
+
+.allowed-list li:last-child {
+  border-bottom: none;
+}
+
+.allowed-list li:hover {
+  background: var(--blue-lighter);
+  padding-right: 22px;
+}
+
+.allowed-list li .check-icon {
+  width: 24px;
+  height: 24px;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  flex-shrink: 0;
+  border: 1.5px solid var(--blue-dark);
+}
+
+/* ==========================================================================
+   FORBIDDEN LIST
+   ========================================================================== */
+.forbidden-list {
+  list-style: none;
+  padding: 0;
+}
+
+.forbidden-list li {
+  padding: 12px 18px;
+  border-bottom: 1.5px solid var(--border-light);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: var(--transition-fast);
+  position: relative;
+}
+
+.forbidden-list li:last-child {
+  border-bottom: none;
+}
+
+.forbidden-list li:hover {
+  background: var(--red-lighter);
+  padding-right: 22px;
+}
+
+.forbidden-list li .x-icon {
+  width: 24px;
+  height: 24px;
+  background: var(--red);
+  color: #fff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+  flex-shrink: 0;
+  border: 1.5px solid var(--red-dark);
+}
+
+.forbidden-list li .forbidden-text {
+  text-decoration: line-through;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px;
+  color: var(--ink-muted);
+}
+
+/* ==========================================================================
+   ACCORDION Q&A
+   ========================================================================== */
+.accordion-item {
+  border-bottom: 2px solid var(--border-light);
+  transition: var(--transition-fast);
+}
+
+.accordion-item:last-child {
+  border-bottom: none;
+}
+
+.accordion-item:hover {
+  background: var(--purple-light);
+}
+
+.accordion-q {
+  padding: 14px 18px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: var(--transition-fast);
+  user-select: none;
+}
+
+.accordion-q .q-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--brand);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  flex-shrink: 0;
+  border: 2px solid var(--brand-dark);
+}
+
+.accordion-q .q-text {
+  flex: 1;
+}
+
+.accordion-q .q-arrow {
+  font-size: 14px;
+  color: var(--ink-light);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.accordion-item.open .accordion-q .q-arrow {
+  transform: rotate(90deg);
+  color: var(--brand);
+}
+
+.accordion-a {
+  display: none;
+  padding: 0 18px 16px;
+  padding-right: 56px;
+  font-size: 14px;
+  color: var(--ink-muted);
+  line-height: 1.9;
+  background: rgba(124, 58, 237, 0.03);
+  border-top: 1.5px dashed #c4b5fd;
+  animation: slideDown 0.25s ease;
+}
+
+.accordion-item.open .accordion-a {
+  display: block;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.accordion-a code {
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 12px;
+  font-family: 'Courier New', Consolas, monospace;
+  direction: ltr;
+  display: inline;
+  unicode-bidi: isolate;
+}
+
+/* ==========================================================================
+   COMPARISON TABLES
+   ========================================================================== */
+.alt-table-wrap {
+  padding: 18px;
+}
+
+.alt-table-title {
+  font-weight: 800;
+  font-size: 15px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #92400e;
+}
+
+.alt-table-title .alt-icon {
+  width: 26px;
+  height: 26px;
+  background: #fbbf24;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border: 1.5px solid #92400e;
+}
+
+.alt-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 2.5px solid #000;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.alt-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.alt-table th {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: #fff;
+  padding: 11px 14px;
+  text-align: right;
+  font-weight: 700;
+  font-size: 12px;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.alt-table th:first-child {
+  text-align: left;
+}
+
+.alt-table td {
+  padding: 11px 14px;
+  border-top: 1.5px solid var(--border-light);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.alt-table tr.recommended {
+  background: var(--green-lighter);
+}
+
+.alt-table tr.recommended td {
+  font-weight: 600;
+}
+
+.alt-table tr.recommended td:first-child {
+  position: relative;
+}
+
+.recommended-star {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 14px;
+}
+
+.alt-table tr:not(.recommended):hover td {
+  background: var(--card-hover);
+}
+
+.alt-table td:first-child {
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 11.5px;
+  direction: ltr;
+  text-align: left;
+  max-width: 300px;
+  word-break: break-word;
+  unicode-bidi: isolate;
+}
+
+.alt-table .pros {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.alt-table .cons {
+  color: var(--red);
+  font-weight: 700;
+}
+
+.alt-separator {
+  border: none;
+  border-top: 2px dashed var(--border-muted);
+  margin: 20px 16px;
+}
+
+/* ==========================================================================
+   EMPTY STATE
+   ========================================================================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 450px;
+  text-align: center;
+  padding: 50px 30px;
+}
+
+.empty-state .empty-icon {
+  font-size: 72px;
+  margin-bottom: 20px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.empty-state h3 {
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 10px;
+  color: var(--ink);
+}
+
+.empty-state p {
+  color: var(--ink-muted);
+  font-size: 15px;
+  max-width: 320px;
+  line-height: 1.7;
+}
+
+.empty-state .keyboard-hint {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--ink-light);
+  background: var(--bg);
+  padding: 8px 16px;
+  border-radius: var(--radius-xs);
+  border: 1.5px solid var(--border-light);
+}
+
+.empty-state .keyboard-hint kbd {
+  background: var(--card);
+  border: 1.5px solid var(--border-muted);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 700;
+  box-shadow: 0 1px 0 var(--border-muted);
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATION
+   ========================================================================== */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #1e293b;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: var(--radius-round);
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  border: 2px solid #475569;
+  z-index: 1000;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast .toast-icon {
+  font-size: 18px;
+}
+
+/* ==========================================================================
+   BACK TO TOP BUTTON
+   ========================================================================== */
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 44px;
+  height: 44px;
+  background: var(--brand);
+  color: #fff;
+  border: 3px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: var(--transition);
+  z-index: 50;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.back-to-top:hover {
+  background: var(--brand-dark);
+  box-shadow: var(--shadow);
+  transform: scale(1.1);
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.footer {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-top: 3px solid #000;
+  padding: 30px;
+  text-align: center;
+}
+
+.footer-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.footer-links a {
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 16px;
+  border: 2px solid #475569;
+  border-radius: var(--radius-xs);
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-links a:hover {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.footer-copy {
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 12px;
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVE
+   ========================================================================== */
+@media (max-width: 900px) {
+  .main-content {
+    padding: 24px 20px;
+  }
+
+  .alt-table td:first-child {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-left: none;
+    border-bottom: 3px solid #000;
+    padding: 14px 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .sidebar-header {
+    display: none;
+  }
+
+  .sidebar-group {
+    margin-bottom: 10px;
+  }
+
+  .sidebar-group-title {
+    padding: 0 14px;
+    margin-bottom: 6px;
+    font-size: 10px;
+  }
+
+  .sidebar-group-title::after {
+    display: none;
+  }
+
+  .sidebar-items-row {
+    display: flex;
+    gap: 6px;
+    padding: 0 14px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .sidebar-items-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-item {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border-radius: var(--radius-xs);
+    border-right: none;
+    border: 2px solid var(--border-light);
+    font-size: 13px;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .sidebar-item.active {
+    border-color: var(--brand);
+    background: var(--brand-light);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .sidebar-item .viewed-badge {
+    position: static;
+  }
+
+  .sidebar-item .count-badge {
+    display: none;
+  }
+
+  .main-content {
+    padding: 20px 16px;
+  }
+
+  .topic-header {
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+  }
+
+  .topic-header .topic-icon {
+    font-size: 34px;
+    width: 56px;
+    height: 56px;
+  }
+
+  .topic-header .topic-info h2 {
+    font-size: 22px;
+  }
+
+  .topic-header .topic-meta {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .section-title {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  .must-know-item {
+    padding: 12px 14px;
+  }
+
+  .allowed-list li,
+  .forbidden-list li {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .accordion-q {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .accordion-a {
+    padding: 0 14px 14px;
+    padding-right: 46px;
+    font-size: 13px;
+  }
+
+  .alt-table-wrap {
+    padding: 12px;
+    overflow-x: auto;
+  }
+
+  .alt-table {
+    font-size: 11px;
+    min-width: 500px;
+  }
+
+  .alt-table th,
+  .alt-table td {
+    padding: 8px 10px;
+  }
+
+  .alt-table td:first-child {
+    max-width: 180px;
+    font-size: 10px;
+  }
+
+  .hero {
+    padding: 30px 16px 26px;
+  }
+
+  .hero-stats {
+    gap: 8px;
+  }
+
+  .hero-stat {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .hero-search {
+    margin-top: 16px;
+  }
+
+  .empty-state {
+    min-height: 300px;
+    padding: 30px 20px;
+  }
+
+  .empty-state .empty-icon {
+    font-size: 56px;
+  }
+
+  .empty-state h3 {
+    font-size: 20px;
+  }
+
+  .footer-links {
+    gap: 8px;
+  }
+
+  .footer-links a {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 24px;
+  }
+
+  .hero p {
+    font-size: 13px;
+  }
+
+  .topic-header .topic-info h2 {
+    font-size: 20px;
+  }
+
+  .section-title {
+    font-size: 13px;
+  }
+
+  .must-know-item .num {
+    min-width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+}
+
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
+@media print {
+  .hero {
+    background: #7c3aed !important;
+    padding: 20px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .app-layout {
+    display: block;
+  }
+
+  .main-content {
+    padding: 0;
+    max-width: none;
+  }
+
+  .section-body {
+    box-shadow: none;
+    border: 2px solid #000;
+  }
+
+  .section-title {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .footer {
+    display: none;
+  }
+
+  .back-to-top {
+    display: none;
+  }
+
+  .toast {
+    display: none;
+  }
+
+  .accordion-a {
+    display: block !important;
+  }
+
+  .hero-search {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   DARK MODE
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f172a;
+    --bg-alt: #1e293b;
+    --ink: #e2e8f0;
+    --ink-muted: #94a3b8;
+    --ink-light: #64748b;
+    --card: #1e293b;
+    --card-hover: #334155;
+    --border: #475569;
+    --border-light: #334155;
+    --border-muted: #475569;
+    --shadow: 4px 4px 0 rgba(0,0,0,0.5);
+    --shadow-sm: 2px 2px 0 rgba(0,0,0,0.5);
+    --shadow-lg: 6px 6px 0 rgba(0,0,0,0.5);
+    --brand-light: #2e1065;
+    --brand-lighter: #1e0a4a;
+    --green-light: #064e3b;
+    --green-lighter: #022c22;
+    --red-light: #450a0a;
+    --red-lighter: #2a0606;
+    --blue-light: #1e3a5f;
+    --blue-lighter: #0c1e3a;
+    --purple-light: #2e1065;
+    --orange-light: #431407;
+  }
+
+  .sidebar {
+    background: var(--card);
+    border-left-color: #475569;
+  }
+
+  .sidebar-item:hover {
+    background: var(--brand-lighter);
+  }
+
+  .sidebar-item.active {
+    background: var(--brand-light);
+  }
+
+  .sidebar-item .count-badge {
+    background: #334155;
+    border-color: #475569;
+    color: #94a3b8;
+  }
+
+  .section-title {
+    border-color: #475569;
+  }
+
+  .section-title.must-know {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    color: #6ee7b7;
+  }
+
+  .section-title.allowed {
+    background: linear-gradient(135deg, #1e3a5f, #1e40af);
+    color: #93c5fd;
+  }
+
+  .section-title.forbidden {
+    background: linear-gradient(135deg, #450a0a, #7f1d1d);
+    color: #fca5a5;
+  }
+
+  .section-title.questions {
+    background: linear-gradient(135deg, #2e1065, #4c1d95);
+    color: #c4b5fd;
+  }
+
+  .section-title.alternatives {
+    background: linear-gradient(135deg, #431407, #78350f);
+    color: #fcd34d;
+  }
+
+  .section-body {
+    border-color: #475569;
+  }
+
+  .must-know-item {
+    border-bottom-color: #334155;
+  }
+
+  .must-know-item:hover {
+    background: #022c22;
+  }
+
+  .must-know-item code,
+  .must-know-item .text code,
+  .accordion-a code {
+    background: #334155;
+    border-color: #475569;
+    color: #e2e8f0;
+  }
+
+  .allowed-list li {
+    border-bottom-color: #334155;
+  }
+
+  .allowed-list li:hover {
+    background: #0c1e3a;
+  }
+
+  .forbidden-list li {
+    border-bottom-color: #334155;
+    color: #94a3b8;
+  }
+
+  .forbidden-list li:hover {
+    background: #2a0606;
+  }
+
+  .forbidden-list li .forbidden-text {
+    color: #94a3b8;
+  }
+
+  .accordion-item {
+    border-bottom-color: #334155;
+  }
+
+  .accordion-item:hover {
+    background: #2e1065;
+  }
+
+  .accordion-a {
+    background: rgba(124, 58, 237, 0.05);
+    border-top-color: #5b21b6;
+    color: #cbd5e1;
+  }
+
+  .alt-table {
+    border-color: #475569;
+  }
+
+  .alt-table th {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+  }
+
+  .alt-table td {
+    border-top-color: #334155;
+  }
+
+  .alt-table tr.recommended {
+    background: #022c22;
+  }
+
+  .alt-table tr:not(.recommended):hover td {
+    background: #334155;
+  }
+
+  .alt-table-title {
+    color: #fcd34d;
+  }
+
+  .topic-header .topic-icon {
+    border-color: #475569;
+    background: var(--card);
+  }
+
+  .topic-header {
+    border-bottom-color: #334155;
+  }
+
+  .footer {
+    background: linear-gradient(135deg, #020617, #0f172a);
+    border-top-color: #475569;
+  }
+
+  .search-results {
+    background: #1e293b;
+    border-color: #475569;
+  }
+
+  .search-result-item {
+    color: #e2e8f0;
+    border-bottom-color: #334155;
+  }
+
+  .search-result-item:hover {
+    background: #2e1065;
+    color: #c4b5fd;
+  }
+
+  .toast {
+    background: #334155;
+    border-color: #64748b;
+  }
+
+  .sidebar-header {
+    border-bottom-color: #334155;
+  }
+
+  .empty-state .keyboard-hint {
+    background: #334155;
+    border-color: #475569;
+    color: #94a3b8;
+  }
+
+  .empty-state .keyboard-hint kbd {
+    background: #475569;
+    border-color: #64748b;
+    color: #e2e8f0;
+  }
+
+  .meta-item.must-know-count {
+    background: #064e3b;
+    border-color: #16a34a;
+    color: #6ee7b7;
+  }
+
+  .meta-item.qa-count {
+    background: #2e1065;
+    border-color: #7c3aed;
+    color: #c4b5fd;
+  }
+
+  .meta-item.alt-count {
+    background: #431407;
+    border-color: #f97316;
+    color: #fdba74;
+  }
+}
+
+/* ==========================================================================
+   UTILITY ANIMATIONS
+   ========================================================================== */
+.fade-in {
+  animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<div class="hero">
+  <div class="hero-content">
+    <h1>📚 מרכז ידע למבחן</h1>
+    <p>כל מה שחייבים לדעת — מאורגן לפי נושא</p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-icon">📊</span>
+        <span id="progress-text">0/10 נושאים</span>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-icon">📝</span>
+        <span>80 פריטי חובה</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-icon">❓</span>
+        <span>40 שאלות + תשובות</span>
+      </div>
+    </div>
+
+    <div class="hero-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="חפשו נושא, מושג או שאלה..." autocomplete="off">
+      <div class="search-results" id="search-results"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     APP LAYOUT
+     ============================================================ -->
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Populated by JavaScript -->
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="main-content">
+    <div class="empty-state">
+      <div class="empty-icon">👈</div>
+      <h3>בחרו נושא מהתפריט</h3>
+      <p>לחצו על נושא בצד ימין כדי לראות את כל מה שצריך לדעת עליו</p>
+      <div class="keyboard-hint">
+        💡 טיפ: השתמשו ב-<kbd>↑</kbd> <kbd>↓</kbd> לניווט בין נושאים, <kbd>/</kbd> לחיפוש
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- BACK TO TOP -->
+<button class="back-to-top" id="back-to-top" onclick="scrollToTop()" title="חזרה למעלה">↑</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon"></span>
+  <span class="toast-text"></span>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<div class="footer">
+  <div class="footer-title">כלים נוספים לפורטל</div>
+  <div class="footer-links">
+    <a href="exam-strategy.html">🎯 אסטרטגיית מבחן</a>
+    <a href="practice-bank.html">📝 בנק תרגול</a>
+    <a href="exam-master-v3.html">🏆 Exam Master</a>
+    <a href="simulations.html">🎮 סימולציות</a>
+    <a href="progress-dashboard.html">📊 דשבורד התקדמות</a>
+    <a href="react-patterns.html">⚛ React Patterns</a>
+    <a href="express-js-patterns.html">🟢 Express Patterns</a>
+    <a href="mongo-cheatsheet.html">🍃 Mongo Cheatsheet</a>
+    <a href="ts-cheatsheet.html">📘 TypeScript</a>
+    <a href="sequence-diagrams.html">📐 Sequence Diagrams</a>
+  </div>
+  <div class="footer-copy">📚 מרכז ידע למבחן — נבנה עבור תלמידי הקורס &copy; 2025</div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT APPLICATION
+     ============================================================ -->
+<script>
+/* ==========================================================================
+   TOPICS DATA — Embedded Knowledge Base
+   ========================================================================== */
+const TOPICS = {
+  'html': {
+    cat: 'frontend',
+    icon: '🏗️',
+    name: 'HTML',
+    mustKnow: [
+      'DOCTYPE html — הצהרה שזה HTML5',
+      'head vs body: head = meta + links, body = תוכן',
+      'Semantic tags: header, main, footer, section, article, nav',
+      'form + input: type, name, value, required',
+      'a href — ניווט. target="_blank" — חלון חדש',
+      'img src alt — alt חובה לנגישות',
+      'link rel="stylesheet" — טעינת CSS חיצוני',
+      'script src defer — טעינת JS בלי חסימה'
+    ],
+    allowed: [
+      'שימוש ב-semantic tags',
+      'defer לסקריפטים',
+      'alt לתמונות',
+      'type מתאים ל-input',
+      'UTF-8 charset'
+    ],
+    forbidden: [
+      'inline styles (style="...")',
+      'table ל-layout',
+      'br ל-ריווח (השתמש ב-CSS)',
+      'font tag (CSS!)',
+      'שכחת DOCTYPE'
+    ],
+    questions: [
+      {
+        q: 'מה ההבדל בין id ל-class?',
+        a: 'id ייחודי (פעם אחת בדף). class יכול לחזור. id = # ב-CSS, class = . ב-CSS'
+      },
+      {
+        q: 'מה זה defer ב-script?',
+        a: 'defer = טוען JS במקביל ומריץ אחרי שה-DOM מוכן. async = טוען במקביל ומריץ מיד (לא בסדר)'
+      },
+      {
+        q: 'מה ההבדל בין div ל-section?',
+        a: 'div = container גנרי ללא משמעות. section = חלק תוכני עם כותרת. section = סמנטי, div = לא'
+      },
+      {
+        q: 'למה צריך alt בתמונות?',
+        a: 'נגישות: קוראי מסך קוראים את alt. SEO: מנועי חיפוש לא רואים תמונות. fallback אם התמונה לא נטענת'
+      }
+    ],
+    lineAlternatives: [
+      {
+        title: 'טעינת CSS',
+        rows: [
+          { opt: '<link rel="stylesheet" href="style.css">', when: 'external file', pros: 'caching, DRY', cons: '—', recommended: true },
+          { opt: '<style>...</style>', when: 'inline בעמוד', pros: 'מהיר לדף יחיד', cons: 'אין caching' },
+          { opt: 'style="..."', when: 'inline על element', pros: 'specificity גבוה', cons: 'לא DRY, קשה לעדכן' }
+        ]
+      },
+      {
+        title: 'טעינת JS',
+        rows: [
+          { opt: '\x3Cscript src="..." defer>\x3C/script>', when: 'בתוך head', pros: 'טעינה מקבילית, ריצה אחרי DOM', cons: '—', recommended: true },
+          { opt: '\x3Cscript src="..." async>\x3C/script>', when: 'JS עצמאי', pros: 'הכי מהיר', cons: 'לא בסדר טעינה' },
+          { opt: '\x3Cscript src="...">\x3C/script>', when: 'בסוף body', pros: 'DOM כבר טעון', cons: 'חוסם טעינה' }
+        ]
+      }
+    ]
+  },
+
+  'css': {
+    cat: 'frontend',
+    icon: '🎨',
+    name: 'CSS',
+    mustKnow: [
+      'Specificity: inline(1000) > id(100) > class(10) > element(1)',
+      'Box model: content → padding → border → margin',
+      'display: block(שורה), inline(בתוך שורה), flex, grid',
+      'position: static, relative, absolute, fixed, sticky',
+      'יחידות: px(מוחלט), em(יחסי לאב), rem(יחסי ל-root), vw/vh',
+      'Pseudo-classes: :hover, :focus, :nth-child()',
+      'Pseudo-elements: ::before, ::after — שתי נקודותיים!',
+      'Cascade: האחרון מנצח (אם specificity שווה)'
+    ],
+    allowed: [
+      'rem לגדלי גופנים',
+      'flexbox/grid לפריסה',
+      'CSS variables: --color: blue',
+      'media queries',
+      'shorthand: padding: 10px 20px'
+    ],
+    forbidden: [
+      '!important — בעיית ארכיטקטורה',
+      'px לגודל גופן — לא נגיש',
+      'inline styles — לא DRY',
+      'בוררים ארוכים מדי',
+      'float לפריסה (מ-2010!)'
+    ],
+    questions: [
+      {
+        q: 'מה ההבדל בין em ל-rem?',
+        a: 'em יחסי לאב (parent). rem יחסי ל-root (html). rem צפוי יותר'
+      },
+      {
+        q: 'display:none vs visibility:hidden?',
+        a: 'display:none — מסיר לגמרי, לא תופס מקום. visibility:hidden — מסתיר אבל תופס מקום'
+      },
+      {
+        q: 'איך עובד flexbox?',
+        a: 'display:flex על האב. justify-content = ציר ראשי, align-items = ציר משני'
+      },
+      {
+        q: 'מה זה specificity?',
+        a: 'מערכת ניקוד: inline > id > class > element. הגבוה זוכה. שווים? האחרון זוכה'
+      }
+    ],
+    lineAlternatives: [
+      {
+        title: 'מרכוז אלמנט',
+        rows: [
+          { opt: 'display:flex; justify-content:center; align-items:center;', when: 'הכי נפוץ', pros: 'גם אנכי וגם אופקי', cons: '—', recommended: true },
+          { opt: 'display:grid; place-items:center;', when: 'שורה אחת', pros: 'קצר', cons: 'overkill' },
+          { opt: 'position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);', when: 'legacy', pros: 'עובד בכל דפדפן', cons: 'שובר flow' },
+          { opt: 'margin: 0 auto;', when: 'אופקי בלבד', pros: 'פשוט', cons: 'רק אופקי, דורש width' }
+        ]
+      }
+    ]
+  },
+
+  'js': {
+    cat: 'frontend',
+    icon: '🟨',
+    name: 'JavaScript',
+    mustKnow: [
+      'var(function-scope, hoisting) vs let(block) vs const(קבוע)',
+      '=== תמיד! == מבצע type coercion (0=="0" → true!)',
+      'Hoisting: var ו-function עולות. let/const — לא',
+      'Arrow functions: אין this משלהן (lexical). אין arguments',
+      'async/await = syntactic sugar ל-Promises',
+      'Event loop: JS חד-תהליכי. async = callback queue + event loop',
+      'DOM: querySelector (אחד) vs querySelectorAll (NodeList)',
+      'Closure: פונקציה שזוכרת את ה-scope שבו נוצרה'
+    ],
+    allowed: [
+      'const כברירת מחדל, let אם משתנה',
+      '=== תמיד',
+      'arrow functions ל-callbacks',
+      'async/await במקום .then() chains',
+      'destructuring: const {a,b} = obj'
+    ],
+    forbidden: [
+      'var בקוד מודרני',
+      '== במקום ===',
+      'eval() — סיכון אבטחה',
+      'callback hell — async/await',
+      'הקצאה מחדש ל-const'
+    ],
+    questions: [
+      {
+        q: 'let vs const?',
+        a: 'const = לא ניתן להקצאה מחדש. אבל objects/arrays עדיין mutable! const arr=[]; arr.push(1) תקין. arr=[1] שגיאה'
+      },
+      {
+        q: 'this ב-arrow function?',
+        a: 'this ב-arrow = של ה-scope המקיף (lexical). בפונקציה רגילה — תלוי איך נקראת'
+      },
+      {
+        q: 'Promise vs async/await?',
+        a: 'זהים פנימית. async/await = syntactic sugar שעושה קוד יותר קריא'
+      },
+      {
+        q: 'מה זה closure?',
+        a: 'פונקציה שזוכרת את ה-scope שבו נוצרה, גם אחרי שיצא. function outer(){let x=1; return ()=>x++}'
+      }
+    ],
+    lineAlternatives: [
+      {
+        title: 'איתור אלמנט',
+        rows: [
+          { opt: 'document.querySelector("#btn")', when: 'גמיש', pros: 'תומך בכל בורר CSS', cons: 'איטי במעט', recommended: true },
+          { opt: 'document.getElementById("btn")', when: 'id ספציפי', pros: 'הכי מהיר', cons: 'רק id' },
+          { opt: 'document.querySelectorAll(".btn")', when: 'מספר', pros: 'NodeList סטטי', cons: 'איטי' }
+        ]
+      },
+      {
+        title: 'בקשת HTTP',
+        rows: [
+          { opt: 'await fetch(url)', when: 'מודרני', pros: 'native, פשוט', cons: 'אין reject על 4xx', recommended: true },
+          { opt: 'await axios.get(url)', when: 'axios', pros: 'auto-JSON, interceptors', cons: 'תלות חיצונית' },
+          { opt: 'fetch(url).then(...)', when: 'Promise chain', pros: 'אין async', cons: 'פחות קריא' }
+        ]
+      }
+    ]
+  },
+
+  'react': {
+    cat: 'frontend',
+    icon: '⚛️',
+    name: 'React',
+    mustKnow: [
+      'useState: אסור לשנות state ישירות! setUsers([...users, x])',
+      'useEffect: [] = פעם אחת. בלי = כל render. [x] = כש-x משתנה',
+      'Keys ברשימות חובה! {items.map(x => <li key={x.id}>)}',
+      'שמות רכיבים באות גדולה! <App/> כן, <app/> = HTML',
+      'One-way data flow: props יורדים, events עולים',
+      'JSX ≠ HTML: className במקום class, htmlFor במקום for',
+      'Hooks rules: רק ב-top level, לא בלולאות/תנאים',
+      'Render trigger: רק שינוי state/props גורם ל-render'
+    ],
+    allowed: [
+      'functional update: setCount(c => c+1)',
+      'cleanup ב-useEffect: return () => clearInterval()',
+      'conditional: {isLoggedIn && <Dashboard/>}',
+      'fragments: <>...</>',
+      'props destructuring'
+    ],
+    forbidden: [
+      'שינוי state ישיר: state.x = 1',
+      'hook בתנאי: if(x) useState()',
+      'index כ-key במערך משתנה',
+      'mutation של props',
+      'document.getElementById — useRef!'
+    ],
+    questions: [
+      {
+        q: 'שכחת key ברשימה?',
+        a: 'React לא מזהה שינויים. ימחק ויבנה הכל מחדש (איטי) ויאבד state פנימי'
+      },
+      {
+        q: 'useEffect עם [] רץ פעם?',
+        a: 'מערך תלויות ריק = אף משתנה לא משתנה = רץ פעם אחת בלבד'
+      },
+      {
+        q: 'controlled vs uncontrolled?',
+        a: 'Controlled: value מ-state + onChange. Uncontrolled: useRef לקריאת ערך'
+      },
+      {
+        q: 'useState vs useReducer?',
+        a: 'useState ל-state פשוט. useReducer ל-state מורכב עם הרבה מעברים'
+      }
+    ],
+    lineAlternatives: [
+      {
+        title: 'ניהול state',
+        rows: [
+          { opt: 'const [x, setX] = useState(init)', when: 'פשוט', pros: 'קל, לוקאלי', cons: '—', recommended: true },
+          { opt: 'const [state, dispatch] = useReducer(reducer, init)', when: 'מורכב', pros: 'פעולות מובנות', cons: 'overkill לפשוט' },
+          { opt: 'useContext + Provider', when: 'גלובלי', pros: 'בלי props drilling', cons: 're-render רחב' }
+        ]
+      },
+      {
+        title: 'רנדור רשימה',
+        rows: [
+          { opt: 'items.map(x => <li key={x.id}>...</li>)', when: 'מערך עם id', pros: 'מומלץ', cons: '—', recommended: true },
+          { opt: 'items.map((x,i) => <li key={i}>)', when: 'אין id', pros: 'תמיד עובד', cons: 'באגים בעדכונים' },
+          { opt: 'for loop', when: 'אסור!', pros: '—', cons: 'JSX לא תומך' }
+        ]
+      }
+    ]
+  },
+
+  'express': {
+    cat: 'backend',
+    icon: '🟢',
+    name: 'Express',
+    mustKnow: [
+      'Router = mini-app מארגן נתיבים מודולרית',
+      'HTTP: GET(קריאה), POST(יצירה), PUT(החלפה), DELETE(מחיקה)',
+      'Route params: /users/:id → req.params.id',
+      'Query params: /users?sort=name → req.query.sort',
+      'Body: req.body (דורש express.json()!)',
+      'Status: 200 OK, 201 Created, 204 No Content, 400 Bad, 401 Unauth, 404 Not Found',
+      'Middleware order חשוב! JSON parser → auth → routes → error handler',
+      'Error middleware: 4 ארגומנטים (err, req, res, next) — אחרון!'
+    ],
+    allowed: [
+      'route ספציפי לפני כללי',
+      'middleware ספציפי לראוטר',
+      'validation ב-middleware',
+      'response עקבי: {success, data}'
+    ],
+    forbidden: [
+      'POST לקריאה — לא RESTful',
+      'res.send() וגם res.json() — שגיאה',
+      'logic בתוך הראוטר',
+      'שכחת express.json() — body undefined',
+      'middleware ללא next() — תיתקע'
+    ],
+    questions: [
+      {
+        q: 'PUT vs PATCH?',
+        a: 'PUT = החלפה מלאה. PATCH = עדכון חלקי. PUT מחליף, PATCH מתקן'
+      },
+      {
+        q: 'מה זה idempotent?',
+        a: 'פעולה שפעם או 100 פעמים — תוצאה זהה. GET/PUT/DELETE כן. POST לא'
+      },
+      {
+        q: '401 vs 403?',
+        a: '401 = לא מחובר (no auth). 403 = מחובר אבל אין הרשאה (forbidden)'
+      },
+      {
+        q: 'שכחת next() ב-middleware?',
+        a: 'הבקשה תיתקע. ה-middleware הבא לא ירוץ, הלקוח יחכה עד timeout'
+      }
+    ],
+    lineAlternatives: [
+      {
+        title: 'קבלת נתונים',
+        rows: [
+          { opt: 'req.body (POST)', when: 'נתונים מורכבים', pros: 'אבטחה, לא ב-URL', cons: 'דורש express.json()', recommended: true },
+          { opt: 'req.query (GET ?key=val)', when: 'חיפוש/סינון', pros: 'cacheable, sharable', cons: 'רק string' },
+          { opt: 'req.params (/:id)', when: 'מזהה במשאב', pros: 'RESTful, נקי', cons: 'ערך יחיד' }
+        ]
+      }
+    ]
+  },
+
+  'jwt': {
+    cat: 'backend',
+    icon: '🔑',
+    name: 'JWT',
+    mustKnow: [
+      'JWT = חתום, לא מוצפן! payload גלוי לכל!',
+      '3 חלקים: Header.Payload.Signature (Base64)',
+      'Stateless: השרת לא שומר session — הכל בטוקן',
+      'expiresIn חובה! טוקן ללא תוקף = פגיעות אבטחה',
+      'HTTPS חובה! בלעדיו הטוקן נחשף',
+      'Refresh token(ארוך, cookie) vs Access token(קצר, header)',
+      'אסור: סיסמה/כרטיס אשראי ב-payload!',
+      'jwt.verify ≠ jwt.decode! decode לא בודק חתימה!'
+    ],
+    allowed: [
+      'httpOnly cookie לאחסון',
+      'user.id + role ב-payload',
+      'expiresIn קצר (15m)',
+      'process.env.JWT_SECRET',
+      'verify ב-middleware'
+    ],
+    forbidden: [
+      'סיסמאות ב-payload — כולם רואים!',
+      'סוד קצר/חלש',
+      'סוד בקוד — env!',
+      'localStorage — פגיע XSS',
+      'טוקן ללא expiry',
+      'jwt.decode במקום verify'
+    ],
+    questions: [
+      {
+        q: 'JWT מוצפן?',
+        a: 'חתום בלבד! payload גלוי ב-Base64. החתימה מוודאת שלא שינו, לא שלא קראו'
+      },
+      {
+        q: 'איפה לשמור token?',
+        a: 'httpOnly cookie = הכי בטוח. localStorage = נוח אבל פגיע XSS'
+      },
+      {
+        q: 'איך מבטלים JWT?',
+        a: 'JWT stateless — אי אפשר. פתרונות: blacklist ב-DB או טוקנים קצרים + refresh'
+      },
+      {
+        q: 'שכחת jwt.verify?',
+        a: 'תוקף שולח payload מזויף, השרת מאמין! חור אבטחה קריטי'
+      }
+    ],
+    lineAlternatives: [
+      {
+        title: 'חתימת טוקן',
+        rows: [
+          { opt: 'jwt.sign({id, role}, SECRET, {expiresIn:"15m"})', when: 'access token', pros: 'קצר, מאובטח', cons: '—', recommended: true },
+          { opt: 'jwt.sign({id}, SECRET, {expiresIn:"24h"})', when: 'simple', pros: 'נוח', cons: '24h סכנה אם נחשף' },
+          { opt: 'jwt.sign(payload, SECRET)', when: 'אסור!', pros: '—', cons: 'ללא expiry!' }
+        ]
+      }
+    ]
+  },
+
+  'npm': {
+    cat: 'devops',
+    icon: '📦',
+    name: 'npm',
+    mustKnow: [
+      'semver: major.minor.patch — 1.2.3',
+      '^4.18.0 = מתיר 4.x.x. ~4.18.0 = רק 4.18.x. מדויק = רק זה',
+      'dependencies = production. devDependencies = פיתוח בלבד',
+      'npm ci = clean install מדויק לפי lock. npm install = מעדכן lock',
+      'package-lock.json = snapshot מדויק. תמיד ב-git!',
+      'scripts: npm run X. start ו-test — בלי run',
+      'npx = מריץ בלי התקנה גלובלית',
+      'node_modules אף פעם ב-git! → .gitignore'
+    ],
+    allowed: [
+      'commit package-lock.json',
+      'npm ci בדוקר',
+      'npm audit לאבטחה',
+      'engines: "node": "20.x"'
+    ],
+    forbidden: [
+      'node_modules ב-git',
+      'מחיקת lock בפרודקשן',
+      'npm install בפרודקשן (ci!)',
+      'devDeps ב-dependencies',
+      '.env ב-git'
+    ],
+    questions: [
+      {
+        q: '^ vs ~ vs מדויק?',
+        a: '^ = minor+patch. ~ = patch בלבד. מדויק = רק זה. ^ גמיש, מדויק בטוח'
+      },
+      {
+        q: 'npm install vs npm ci?',
+        a: 'install = מעדכן lock. ci = clean, מדויק, מהיר. בפרודקשן/Docker תמיד ci'
+      },
+      {
+        q: 'איפה eslint/jest?',
+        a: 'devDependencies! נחוצים לפיתוח, לא לריצה. npm install --save-dev'
+      },
+      {
+        q: 'מה npx?',
+        a: 'מריץ חבילה בלי להתקין גלובלית. npx create-react-app my-app'
+      }
+    ],
+    lineAlternatives: []
+  },
+
+  'docker': {
+    cat: 'devops',
+    icon: '🐳',
+    name: 'Docker',
+    mustKnow: [
+      'FROM node:20-alpine — image קל. אסור latest!',
+      'Cache: COPY package.json → RUN npm ci → COPY . .',
+      'Multi-stage: FROM...AS builder → FROM... COPY --from=builder',
+      'CMD ["node","server.js"] — exec form, ללא shell',
+      'EXPOSE = תיעוד בלבד! docker run -p חושף בפועל',
+      'USER node — לא לרוץ כ-root!',
+      '.dockerignore — למנוע העתקת node_modules',
+      'npm ci --only=production — ללא devDeps'
+    ],
+    allowed: [
+      'tag ספציפי',
+      'multi-stage',
+      '.dockerignore',
+      'HEALTHCHECK',
+      'USER non-root'
+    ],
+    forbidden: [
+      'FROM node:latest — לא reproducible',
+      'COPY . . לפני npm install',
+      'הרצה כ-root',
+      'סודות ב-ENV',
+      'npm install במקום ci'
+    ],
+    questions: [
+      {
+        q: 'למה COPY package.json לפני COPY . .?',
+        a: 'Cache layers! אם רק קוד השתנה — npm ci לא ירוץ מחדש'
+      },
+      {
+        q: 'CMD vs ENTRYPOINT?',
+        a: 'CMD = ברירת מחדל, ניתן להחלפה. ENTRYPOINT = קבוע, args מתווספים אליו'
+      },
+      {
+        q: 'איך מקטינים image?',
+        a: 'Alpine, multi-stage, --only=production, .dockerignore, merge RUN'
+      },
+      {
+        q: 'EXPOSE חושף פורט?',
+        a: 'לא! תיעוד בלבד. docker run -p חושף בפועל'
+      }
+    ],
+    lineAlternatives: [
+      {
+        title: 'base image',
+        rows: [
+          { opt: 'FROM node:20-alpine', when: 'production', pros: 'קל (5MB), מהיר', cons: '—', recommended: true },
+          { opt: 'FROM node:20-slim', when: 'תאימות', pros: 'Debian, רחב', cons: 'גדול יותר' },
+          { opt: 'FROM node:latest', when: 'אסור!', pros: '—', cons: 'לא reproducible' }
+        ]
+      }
+    ]
+  },
+
+  'k8s': {
+    cat: 'devops',
+    icon: '☸️',
+    name: 'Kubernetes',
+    mustKnow: [
+      'Pod = יחידת הרצה קטנה ביותר. IP אחד',
+      'Deployment = מנהל Pods זהים. שומר replicas',
+      'Service = endpoint רשתי: ClusterIP, NodePort, LoadBalancer',
+      'Self-healing: Pod נופל → K8s יוצר חדש אוטומטית',
+      'Rolling updates: החלפה הדרגתית, אפס downtime',
+      'Resource limits חובה — Pod יכול לשבור node',
+      'Liveness = בריא? (restart). Readiness = מוכן? (traffic)',
+      'Labels & Selectors: Deployment מוצא Pods שלו'
+    ],
+    allowed: [
+      'image ספציפי (לא latest)',
+      'resource limits+requests',
+      'liveness+readiness probes',
+      'replicas>1',
+      'Secrets לסודות'
+    ],
+    forbidden: [
+      'image:latest — לא reproducible',
+      'ללא resource limits',
+      'replicas:1 בפרודקשן',
+      'סודות ב-env',
+      'root בקונטיינר'
+    ],
+    questions: [
+      {
+        q: 'Deployment vs StatefulSet?',
+        a: 'Deployment = Pods חליפים (web). StatefulSet = זהות קבועה + storage (DB)'
+      },
+      {
+        q: 'ClusterIP vs NodePort vs LB?',
+        a: 'ClusterIP = פנימי. NodePort = פורט בכל node. LB = חיצוני ענן'
+      },
+      {
+        q: 'Rolling update?',
+        a: 'K8s יוצר Pods חדשים, מחכה readiness, מוריד ישנים בהדרגה. אפס downtime'
+      },
+      {
+        q: 'טיפול בסודות?',
+        a: 'Secrets (Base64, לא מוצפן!). לפרודקשן: Sealed Secrets, Vault, cloud secret manager'
+      }
+    ],
+    lineAlternatives: []
+  },
+
+  'handlers': {
+    cat: 'backend',
+    icon: '🔧',
+    name: 'Handlers (CRUD)',
+    mustKnow: [
+      'async/await + try/catch חובה! בלי — שגיאות קורסות שרת',
+      'next(err) מעביר ל-error middleware. אסור throw ב-async בלי next',
+      'Status: 200(GET), 201(POST), 204(DELETE), 404(לא נמצא)',
+      'req.params = URL params. req.body = JSON. req.query = ?key=val',
+      'findByIdAndUpdate עם {new:true} — בלי זה מחזיר ישן',
+      'res.json() מסיים. אסור לקרוא פעמיים!',
+      'חובה לבדוק !user אחרי findById — null → 404',
+      'Separation of concerns: handler=logic, router=routing, model=DB'
+    ],
+    allowed: [
+      'async + try/catch',
+      'next(err)',
+      'destructuring req.body',
+      'validation לפני DB',
+      'separation לקבצים'
+    ],
+    forbidden: [
+      'handler ללא try/catch',
+      'שכחת await — Promise במקום data',
+      'res.send() + res.json()',
+      'חשיפת passwordHash',
+      'שכחת !user check'
+    ],
+    questions: [
+      {
+        q: 'שכחת await ב-User.find()?',
+        a: 'מחזיר Promise! הקליינט מקבל JSON של Promise, לא data'
+      },
+      {
+        q: 'למה {new:true}?',
+        a: 'ברירת מחדל מחזירה גרסה ישנה. {new:true} = הגרסה אחרי העדכון'
+      },
+      {
+        q: '200 vs 201 vs 204?',
+        a: '200=GET/PUT. 201=POST חדש. 204=DELETE ללא תוכן'
+      },
+      {
+        q: 'throw vs next(err)?',
+        a: 'ב-sync — throw נתפס. ב-async חובה next(err)! אחרת שגיאה אובדת'
+      }
+    ],
+    lineAlternatives: []
+  }
+};
+
+/* ==========================================================================
+   CATEGORIES METADATA
+   ========================================================================== */
+const CATEGORIES = {
+  frontend: { name: 'Frontend', icon: '🌐', color: '#2563eb' },
+  backend: { name: 'Backend', icon: '⚙️', color: '#16a34a' },
+  devops: { name: 'DevOps', icon: '🚀', color: '#f97316' }
+};
+
+/* ==========================================================================
+   APPLICATION STATE
+   ========================================================================== */
+let currentTopic = null;
+let viewedTopics = [];
+
+// Load viewed topics from localStorage
+try {
+  const stored = localStorage.getItem('ek-viewed');
+  if (stored) {
+    viewedTopics = JSON.parse(stored);
+    if (!Array.isArray(viewedTopics)) viewedTopics = [];
+  }
+} catch (e) {
+  viewedTopics = [];
+}
+
+/* ==========================================================================
+   SIDEBAR RENDERING
+   ========================================================================== */
+function renderSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const grouped = {};
+
+  // Group topics by category
+  Object.entries(TOPICS).forEach(([id, topic]) => {
+    if (!grouped[topic.cat]) grouped[topic.cat] = [];
+    grouped[topic.cat].push({ id, ...topic });
+  });
+
+  let html = '';
+
+  // Sidebar header
+  html += `
+    <div class="sidebar-header">
+      <h3>
+        📑 נושאים
+        <span class="total-badge">${Object.keys(TOPICS).length}</span>
+      </h3>
+    </div>
+  `;
+
+  // Render each category group
+  Object.entries(CATEGORIES).forEach(([catId, catInfo]) => {
+    if (!grouped[catId]) return;
+
+    html += `
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">
+          ${catInfo.icon} ${catInfo.name}
+        </div>
+        <div class="sidebar-items-row">
+    `;
+
+    grouped[catId].forEach(topic => {
+      const isActive = currentTopic === topic.id;
+      const isViewed = viewedTopics.includes(topic.id);
+      const totalItems = topic.mustKnow.length;
+
+      html += `
+        <div class="sidebar-item ${isActive ? 'active' : ''}"
+             onclick="selectTopic('${topic.id}')"
+             data-topic="${topic.id}"
+             role="button"
+             tabindex="0"
+             aria-label="${topic.name}">
+          <span class="icon">${topic.icon}</span>
+          <span class="name">${topic.name}</span>
+          <span class="count-badge">${totalItems}</span>
+          ${isViewed ? '<span class="viewed-badge" title="נצפה"></span>' : ''}
+        </div>
+      `;
+    });
+
+    html += `</div></div>`;
+  });
+
+  sidebar.innerHTML = html;
+
+  // Add keyboard navigation to sidebar items
+  sidebar.querySelectorAll('.sidebar-item').forEach(item => {
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        item.click();
+      }
+    });
+  });
+}
+
+/* ==========================================================================
+   TOPIC CONTENT RENDERING
+   ========================================================================== */
+function renderTopic(topicId) {
+  const topic = TOPICS[topicId];
+  if (!topic) return;
+
+  const main = document.getElementById('main-content');
+  let html = `<div class="fade-in">`;
+
+  // ---- Topic Header ----
+  html += `
+    <div class="topic-header">
+      <div class="topic-icon">${topic.icon}</div>
+      <div class="topic-info">
+        <h2>${topic.name}</h2>
+        <div class="topic-cat">${CATEGORIES[topic.cat].icon} ${CATEGORIES[topic.cat].name}</div>
+        <div class="topic-meta">
+          <span class="meta-item must-know-count">${topic.mustKnow.length} חובה לדעת</span>
+          <span class="meta-item qa-count">${topic.questions.length} שאלות</span>
+          ${topic.lineAlternatives.length > 0 ? `<span class="meta-item alt-count">${topic.lineAlternatives.length} טבלאות</span>` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // ---- Must Know Section ----
+  html += `
+    <div class="section">
+      <div class="section-title must-know">
+        📌 חובה לדעת
+        <span class="section-count">${topic.mustKnow.length} פריטים</span>
+      </div>
+      <div class="section-body">
+        <div class="must-know-grid">
+  `;
+
+  topic.mustKnow.forEach((item, i) => {
+    html += `
+      <div class="must-know-item">
+        <span class="num">${i + 1}</span>
+        <span class="text">${formatText(item)}</span>
+      </div>
+    `;
+  });
+
+  html += `</div></div></div>`;
+
+  // ---- Allowed Section ----
+  html += `
+    <div class="section">
+      <div class="section-title allowed">
+        ✅ מותר
+        <span class="section-count">${topic.allowed.length} פריטים</span>
+      </div>
+      <div class="section-body">
+        <ul class="allowed-list">
+  `;
+
+  topic.allowed.forEach(item => {
+    html += `
+      <li>
+        <span class="check-icon">✓</span>
+        <span>${formatText(item)}</span>
+      </li>
+    `;
+  });
+
+  html += `</ul></div></div>`;
+
+  // ---- Forbidden Section ----
+  html += `
+    <div class="section">
+      <div class="section-title forbidden">
+        🚫 אסור
+        <span class="section-count">${topic.forbidden.length} פריטים</span>
+      </div>
+      <div class="section-body">
+        <ul class="forbidden-list">
+  `;
+
+  topic.forbidden.forEach(item => {
+    html += `
+      <li>
+        <span class="x-icon">✘</span>
+        <span class="forbidden-text">${formatText(item)}</span>
+      </li>
+    `;
+  });
+
+  html += `</ul></div></div>`;
+
+  // ---- Questions Section ----
+  html += `
+    <div class="section">
+      <div class="section-title questions">
+        ❓ שאלות נפוצות
+        <span class="section-count">${topic.questions.length} שאלות</span>
+      </div>
+      <div class="section-body">
+  `;
+
+  topic.questions.forEach((qa, i) => {
+    html += `
+      <div class="accordion-item" data-index="${i}">
+        <div class="accordion-q" onclick="toggleAccordion(this.parentElement)">
+          <span class="q-icon">?</span>
+          <span class="q-text">${escapeHtml(qa.q)}</span>
+          <span class="q-arrow">▸</span>
+        </div>
+        <div class="accordion-a">${formatText(qa.a)}</div>
+      </div>
+    `;
+  });
+
+  html += `</div></div>`;
+
+  // ---- Line Alternatives Section ----
+  if (topic.lineAlternatives && topic.lineAlternatives.length > 0) {
+    html += `
+      <div class="section">
+        <div class="section-title alternatives">
+          🔄 חלופות קוד
+          <span class="section-count">${topic.lineAlternatives.length} טבלאות</span>
+        </div>
+        <div class="section-body">
+    `;
+
+    topic.lineAlternatives.forEach((alt, idx) => {
+      if (idx > 0) html += '<hr class="alt-separator">';
+
+      html += `
+        <div class="alt-table-wrap">
+          <div class="alt-table-title">
+            <span class="alt-icon">🔄</span>
+            ${escapeHtml(alt.title)}
+          </div>
+          <table class="alt-table">
+            <thead>
+              <tr>
+                <th>קוד / אפשרות</th>
+                <th>מתי</th>
+                <th>יתרונות</th>
+                <th>חסרונות</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      alt.rows.forEach(row => {
+        html += `
+          <tr class="${row.recommended ? 'recommended' : ''}">
+            <td>${escapeHtml(row.opt)}${row.recommended ? '<span class="recommended-star"> ⭐</span>' : ''}</td>
+            <td>${escapeHtml(row.when)}</td>
+            <td class="pros">${escapeHtml(row.pros)}</td>
+            <td class="cons">${escapeHtml(row.cons)}</td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table></div>`;
+    });
+
+    html += `</div></div>`;
+  }
+
+  html += `</div>`; // Close fade-in wrapper
+  main.innerHTML = html;
+
+  // Scroll main to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ==========================================================================
+   TOPIC SELECTION
+   ========================================================================== */
+function selectTopic(topicId) {
+  if (!TOPICS[topicId]) return;
+
+  currentTopic = topicId;
+
+  // Mark as viewed and persist
+  if (!viewedTopics.includes(topicId)) {
+    viewedTopics.push(topicId);
+    localStorage.setItem('ek-viewed', JSON.stringify(viewedTopics));
+    showToast('✅', `${TOPICS[topicId].name} סומן כנצפה`);
+  }
+
+  // Update URL hash
+  history.replaceState(null, '', '#' + topicId);
+
+  // Render
+  renderSidebar();
+  renderTopic(topicId);
+  updateProgress();
+
+  // On mobile scroll to content
+  if (window.innerWidth <= 768) {
+    setTimeout(() => {
+      document.getElementById('main-content').scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }
+}
+
+/* ==========================================================================
+   ACCORDION TOGGLE
+   ========================================================================== */
+function toggleAccordion(el) {
+  // Close other open items in same section
+  const parent = el.parentElement;
+  const siblings = parent.querySelectorAll('.accordion-item.open');
+  siblings.forEach(sib => {
+    if (sib !== el) sib.classList.remove('open');
+  });
+
+  el.classList.toggle('open');
+}
+
+/* ==========================================================================
+   PROGRESS TRACKING
+   ========================================================================== */
+function updateProgress() {
+  const total = Object.keys(TOPICS).length;
+  const viewed = viewedTopics.length;
+  const pct = Math.round((viewed / total) * 100);
+
+  const progressText = document.getElementById('progress-text');
+  const progressFill = document.getElementById('progress-fill');
+
+  if (progressText) {
+    progressText.textContent = `${viewed}/${total} נושאים`;
+  }
+  if (progressFill) {
+    progressFill.style.width = pct + '%';
+  }
+}
+
+/* ==========================================================================
+   SEARCH FUNCTIONALITY
+   ========================================================================== */
+function initSearch() {
+  const input = document.getElementById('search-input');
+  const results = document.getElementById('search-results');
+
+  if (!input || !results) return;
+
+  let debounceTimer = null;
+
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      const query = input.value.trim().toLowerCase();
+
+      if (query.length < 2) {
+        results.classList.remove('visible');
+        return;
+      }
+
+      const matches = searchTopics(query);
+
+      if (matches.length === 0) {
+        results.innerHTML = '<div class="search-result-item" style="color:var(--ink-muted);cursor:default;justify-content:center;">לא נמצאו תוצאות</div>';
+        results.classList.add('visible');
+        return;
+      }
+
+      let html = '';
+      matches.slice(0, 8).forEach(match => {
+        html += `
+          <div class="search-result-item" onclick="selectTopic('${match.topicId}'); clearSearch();">
+            <span>${TOPICS[match.topicId].icon}</span>
+            <span>${escapeHtml(match.text)}</span>
+            <span class="result-cat">${TOPICS[match.topicId].name}</span>
+          </div>
+        `;
+      });
+
+      results.innerHTML = html;
+      results.classList.add('visible');
+    }, 150);
+  });
+
+  // Close on click outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.hero-search')) {
+      results.classList.remove('visible');
+    }
+  });
+
+  // Handle Escape key
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      clearSearch();
+      input.blur();
+    }
+    if (e.key === 'Enter') {
+      const firstResult = results.querySelector('.search-result-item');
+      if (firstResult) firstResult.click();
+    }
+  });
+
+  // Keyboard shortcut: / to focus search
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && !e.target.closest('input, textarea')) {
+      e.preventDefault();
+      input.focus();
+    }
+  });
+}
+
+function searchTopics(query) {
+  const results = [];
+
+  Object.entries(TOPICS).forEach(([id, topic]) => {
+    // Search in topic name
+    if (topic.name.toLowerCase().includes(query)) {
+      results.push({ topicId: id, text: topic.name, score: 10 });
+    }
+
+    // Search in mustKnow
+    topic.mustKnow.forEach(item => {
+      if (item.toLowerCase().includes(query)) {
+        results.push({ topicId: id, text: truncate(item, 60), score: 5 });
+      }
+    });
+
+    // Search in questions
+    topic.questions.forEach(qa => {
+      if (qa.q.toLowerCase().includes(query)) {
+        results.push({ topicId: id, text: qa.q, score: 7 });
+      }
+      if (qa.a.toLowerCase().includes(query)) {
+        results.push({ topicId: id, text: truncate(qa.a, 60), score: 3 });
+      }
+    });
+
+    // Search in allowed/forbidden
+    topic.allowed.forEach(item => {
+      if (item.toLowerCase().includes(query)) {
+        results.push({ topicId: id, text: item, score: 4 });
+      }
+    });
+
+    topic.forbidden.forEach(item => {
+      if (item.toLowerCase().includes(query)) {
+        results.push({ topicId: id, text: item, score: 4 });
+      }
+    });
+  });
+
+  // Sort by score descending
+  results.sort((a, b) => b.score - a.score);
+
+  // Remove duplicates
+  const seen = new Set();
+  return results.filter(r => {
+    const key = r.topicId + ':' + r.text;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function clearSearch() {
+  const input = document.getElementById('search-input');
+  const results = document.getElementById('search-results');
+  if (input) input.value = '';
+  if (results) results.classList.remove('visible');
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATIONS
+   ========================================================================== */
+let toastTimeout = null;
+
+function showToast(icon, message) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+
+  const toastIcon = toast.querySelector('.toast-icon');
+  const toastText = toast.querySelector('.toast-text');
+
+  if (toastIcon) toastIcon.textContent = icon;
+  if (toastText) toastText.textContent = message;
+
+  toast.classList.add('visible');
+
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove('visible');
+  }, 2500);
+}
+
+/* ==========================================================================
+   BACK TO TOP BUTTON
+   ========================================================================== */
+function initBackToTop() {
+  const btn = document.getElementById('back-to-top');
+  if (!btn) return;
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  }, { passive: true });
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ==========================================================================
+   KEYBOARD NAVIGATION
+   ========================================================================== */
+function initKeyboardNav() {
+  const topicIds = Object.keys(TOPICS);
+
+  document.addEventListener('keydown', (e) => {
+    // Skip if user is in an input
+    if (e.target.closest('input, textarea')) return;
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+
+      const currentIndex = currentTopic ? topicIds.indexOf(currentTopic) : -1;
+      let nextIndex;
+
+      if (e.key === 'ArrowDown') {
+        nextIndex = currentIndex < topicIds.length - 1 ? currentIndex + 1 : 0;
+      } else {
+        nextIndex = currentIndex > 0 ? currentIndex - 1 : topicIds.length - 1;
+      }
+
+      selectTopic(topicIds[nextIndex]);
+    }
+
+    // Expand/collapse all Q&A with 'e'
+    if (e.key === 'e' && currentTopic) {
+      const items = document.querySelectorAll('.accordion-item');
+      if (items.length === 0) return;
+      const allOpen = [...items].every(i => i.classList.contains('open'));
+      items.forEach(item => {
+        if (allOpen) {
+          item.classList.remove('open');
+        } else {
+          item.classList.add('open');
+        }
+      });
+    }
+  });
+}
+
+/* ==========================================================================
+   TEXT FORMATTING HELPERS
+   ========================================================================== */
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function formatText(text) {
+  // Escape HTML first
+  let escaped = escapeHtml(text);
+  // No additional formatting needed for this dataset
+  return escaped;
+}
+
+function truncate(text, maxLen) {
+  if (text.length <= maxLen) return text;
+  return text.substring(0, maxLen) + '...';
+}
+
+/* ==========================================================================
+   INITIALIZATION
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  // Render sidebar
+  renderSidebar();
+
+  // Update progress bar
+  updateProgress();
+
+  // Initialize search
+  initSearch();
+
+  // Initialize back to top button
+  initBackToTop();
+
+  // Initialize keyboard navigation
+  initKeyboardNav();
+
+  // Check URL hash for initial topic
+  const hash = window.location.hash.replace('#', '');
+  if (hash && TOPICS[hash]) {
+    selectTopic(hash);
+  }
+
+  // Listen for hash changes (browser back/forward)
+  window.addEventListener('hashchange', () => {
+    const newHash = window.location.hash.replace('#', '');
+    if (newHash && TOPICS[newHash] && newHash !== currentTopic) {
+      selectTopic(newHash);
+    }
+  });
+});
+</script>
+</body>
+</html>

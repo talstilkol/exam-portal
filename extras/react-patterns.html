@@ -1465,10 +1465,59 @@
 <span class="cm">// list rendering</span>
 {<span class="pr">items</span>.<span class="fn">map</span>(<span class="pr">item</span> =&gt; <span class="op">&lt;Card</span> <span class="pr">key</span>={<span class="pr">item</span>.id} {...<span class="pr">item</span>} <span class="op">/&gt;</span>)}</pre>
 
+    <h3 id="context-api">Context API — שיתוף state בלי prop drilling</h3>
+    <p>כשצריך להעביר נתונים לcomponents עמוקים בעץ, Context חוסך העברת props דרך כל שכבה:</p>
+<pre><span class="cm">// 1. יצירת Context</span>
+<span class="kw">import</span> { <span class="hk">createContext</span>, <span class="hk">useContext</span>, <span class="hk">useState</span> } <span class="kw">from</span> <span class="st">'react'</span>;
+
+<span class="kw">const</span> AuthContext = <span class="fn">createContext</span>(<span class="num">null</span>);
+
+<span class="cm">// 2. Provider component</span>
+<span class="kw">function</span> <span class="fn">AuthProvider</span>({ <span class="pr">children</span> }) {
+  <span class="kw">const</span> [<span class="pr">user</span>, <span class="fn">setUser</span>] = <span class="hk">useState</span>(<span class="num">null</span>);
+
+  <span class="kw">const</span> <span class="fn">login</span> = (<span class="pr">userData</span>) =&gt; <span class="fn">setUser</span>(<span class="pr">userData</span>);
+  <span class="kw">const</span> <span class="fn">logout</span> = () =&gt; <span class="fn">setUser</span>(<span class="num">null</span>);
+
+  <span class="kw">return</span> (
+    <span class="op">&lt;AuthContext.Provider</span> <span class="pr">value</span>={{ <span class="pr">user</span>, <span class="fn">login</span>, <span class="fn">logout</span> }}<span class="op">&gt;</span>
+      {<span class="pr">children</span>}
+    <span class="op">&lt;/AuthContext.Provider&gt;</span>
+  );
+}
+
+<span class="cm">// 3. Custom hook לשימוש נוח</span>
+<span class="kw">function</span> <span class="fn">useAuth</span>() {
+  <span class="kw">return</span> <span class="hk">useContext</span>(AuthContext);
+}
+
+<span class="cm">// 4. שימוש ב-App</span>
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    <span class="op">&lt;AuthProvider&gt;</span>
+      <span class="op">&lt;Header /&gt;</span>
+      <span class="op">&lt;Routes&gt;</span>...<span class="op">&lt;/Routes&gt;</span>
+    <span class="op">&lt;/AuthProvider&gt;</span>
+  );
+}
+
+<span class="cm">// 5. שימוש ב-component עמוק</span>
+<span class="kw">function</span> <span class="fn">Header</span>() {
+  <span class="kw">const</span> { <span class="pr">user</span>, <span class="fn">logout</span> } = <span class="fn">useAuth</span>();
+  <span class="kw">return</span> <span class="op">&lt;div&gt;</span>{<span class="pr">user</span> ? <span class="pr">user</span>.name : <span class="st">'Guest'</span>}<span class="op">&lt;/div&gt;</span>;
+}</pre>
+
+    <div class="tip-box">
+      <strong>מתי Context ומתי Props?</strong><br>
+      Props — נתון שעובר 1-2 רמות, או נתון ייחודי לcomponent.<br>
+      Context — נתון גלובלי (user, theme, language) שהרבה components צריכים.
+    </div>
+
     <h3>Imports Checklist</h3>
 <pre><span class="cm">// React hooks</span>
 <span class="kw">import</span> { <span class="hk">useState</span>, <span class="hk">useEffect</span>, <span class="hk">useRef</span>,
-  <span class="hk">useMemo</span>, <span class="hk">useCallback</span> } <span class="kw">from</span> <span class="st">'react'</span>;
+  <span class="hk">useMemo</span>, <span class="hk">useCallback</span>,
+  <span class="hk">createContext</span>, <span class="hk">useContext</span> } <span class="kw">from</span> <span class="st">'react'</span>;
 
 <span class="cm">// React Router</span>
 <span class="kw">import</span> { <span class="fn">BrowserRouter</span>, <span class="fn">Routes</span>, <span class="fn">Route</span>,
@@ -1487,5 +1536,13 @@ function toggle(header) {
   header.classList.toggle('collapsed');
 }
 </script>
+<footer style="border-top:3px solid #000;padding:16px 24px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:20px">
+<strong>🔗 כלים נוספים:</strong>
+<a href="flow-canvas.html" style="color:#7c3aed;font-weight:700">🗺 Flow Canvas</a>
+<a href="practice-bank.html" style="color:#7c3aed;font-weight:700">💪 בנק תרגול</a>
+<a href="simulations.html" style="color:#7c3aed;font-weight:700">🎮 סימולציות</a>
+<a href="code-browser.html" style="color:#7c3aed;font-weight:700">💻 קוד מקור</a>
+<a href="progress-dashboard.html" style="color:#7c3aed;font-weight:700">📊 דשבורד</a>
+</footer>
 </body>
 </html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🗂 Course Map — מפת הקורס</title>
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--shadow:3px 3px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:28px 24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(24px,4vw,38px);margin:0}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:15px}
+.hero .progress-bar{max-width:400px;margin:14px auto 0;height:10px;background:rgba(255,255,255,.15);border-radius:5px;overflow:hidden}
+.hero .progress-fill{height:100%;background:var(--gold);border-radius:5px;transition:width .5s}
+.hero .progress-label{font-size:12px;color:var(--gold);font-weight:900;margin-top:4px}
+
+.container{max-width:1100px;margin:0 auto;padding:24px}
+
+/* Topic grid */
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:30px}
+.topic{background:var(--card);border:3px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);transition:.15s}
+.topic:hover{transform:translateY(-3px);box-shadow:4px 6px 0 #000}
+.topic-head{padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.topic-ico{font-size:24px}
+.topic-info{flex:1}
+.topic-name{font-weight:900;font-size:15px}
+.topic-sub{font-size:11px;color:#64748b;font-weight:600}
+.topic-weight{background:#111827;color:var(--gold);padding:3px 9px;border-radius:6px;font-weight:900;font-size:11px;white-space:nowrap}
+.topic-check{width:22px;height:22px;border:2px solid #cbd5e1;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:.15s;flex-shrink:0}
+.topic-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.topic-body{padding:0 14px 14px;display:none;border-top:2px solid #e2e8f0}
+.topic.open .topic-body{display:block;padding-top:12px}
+.topic-concepts{list-style:none;padding:0;margin:0}
+.topic-concepts li{padding:4px 0;font-size:13px;font-weight:600;border-bottom:1px solid #f1f5f9}
+.topic-concepts li:last-child{border:none}
+.topic-concepts li::before{content:'▸ ';color:var(--brand)}
+.topic-exam{margin-top:8px;font-size:12px;color:#475569;font-weight:700}
+.topic-exam strong{color:var(--ink)}
+.topic-links{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.topic-qlink{padding:4px 10px;background:var(--brand);color:#fff;border:2px solid #000;border-radius:7px;font-size:11px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:3px;transition:.15s}
+.topic-qlink:hover{transform:translateY(-1px);box-shadow:2px 2px 0 #000;background:#6d28d9}
+
+/* Comparison tables */
+.compare-section{margin-top:30px}
+.compare-section h2{font-size:20px;font-weight:900;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.compare-table{width:100%;border-collapse:collapse;border:3px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px;background:var(--card)}
+.compare-table th{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;padding:10px 14px;font-weight:900;font-size:13px;text-align:right}
+.compare-table td{padding:8px 14px;font-size:13px;border-bottom:1px solid #e2e8f0;font-weight:600}
+.compare-table tr:last-child td{border:none}
+.compare-table tr:nth-child(even){background:#f8fafc}
+
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155;--shadow:3px 3px 0 #000}
+  body{background:var(--bg)}
+  .topic-body{border-color:#334155}
+  .topic-concepts li{border-color:#334155}
+  .topic-sub,.topic-exam{color:#94a3b8}
+  .compare-table tr:nth-child(even){background:#0f172a}
+  .compare-table td{border-color:#334155}
+}
+@media(max-width:768px){.topics{grid-template-columns:1fr}}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  .hero{padding:12px!important;background:#333!important;-webkit-print-color-adjust:exact}
+  .sidebar,.cm-sidebar{display:none}
+  .app,.cm-layout{grid-template-columns:1fr!important}
+  .cm-main{max-height:none!important;overflow:visible!important}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>🗂 Course Map — מפת הקורס</h1>
+  <p>16 נושאים בסילבוס Full-Stack. סמנו מה חזרתם. טבלאות השוואה בתחתית.</p>
+  <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="progress-label" id="prog-label">0/16 נושאים</div>
+</header>
+
+<div class="container">
+  <div class="topics" id="topics"></div>
+
+  <div class="compare-section">
+    <h2>⚔️ טבלאות השוואה</h2>
+
+    <table class="compare-table">
+      <tr><th></th><th>React</th><th>Vanilla JS</th></tr>
+      <tr><td>DOM</td><td>Virtual DOM — React מעדכן בצורה יעילה</td><td>Direct DOM — document.getElementById</td></tr>
+      <tr><td>State</td><td>useState / useReducer</td><td>משתנים רגילים + ידני DOM update</td></tr>
+      <tr><td>Components</td><td>פונקציות שמחזירות JSX</td><td>פונקציות + innerHTML / createElement</td></tr>
+      <tr><td>Routing</td><td>react-router-dom (SPA)</td><td>multi-page / hash routing</td></tr>
+      <tr><td>Reactivity</td><td>setState → auto re-render</td><td>צריך ידנית לעדכן DOM</td></tr>
+      <tr><td>Event Handling</td><td>onClick, onChange (synthetic)</td><td>addEventListener</td></tr>
+    </table>
+
+    <table class="compare-table">
+      <tr><th></th><th>MongoDB (NoSQL)</th><th>SQL (MySQL/PostgreSQL)</th></tr>
+      <tr><td>מבנה</td><td>Documents (JSON-like)</td><td>Tables + Rows</td></tr>
+      <tr><td>Schema</td><td>Flexible (Mongoose adds schema)</td><td>Fixed schema (CREATE TABLE)</td></tr>
+      <tr><td>Query</td><td>db.find({name: "Tal"})</td><td>SELECT * WHERE name = 'Tal'</td></tr>
+      <tr><td>Relations</td><td>Embedded docs / populate (ref)</td><td>JOIN between tables</td></tr>
+      <tr><td>Scaling</td><td>Horizontal (more servers)</td><td>Vertical (bigger server)</td></tr>
+      <tr><td>שימוש במבחן</td><td>Mongoose: Schema → Model → CRUD</td><td>לא בסילבוס</td></tr>
+    </table>
+
+    <table class="compare-table">
+      <tr><th></th><th>Express (Node.js)</th><th>Raw Node.js</th></tr>
+      <tr><td>Routing</td><td>app.get('/path', handler)</td><td>if (req.url === '/path')</td></tr>
+      <tr><td>Middleware</td><td>app.use(express.json())</td><td>manual parsing</td></tr>
+      <tr><td>Response</td><td>res.json(), res.status()</td><td>res.writeHead() + res.end()</td></tr>
+      <tr><td>Params</td><td>req.params, req.body, req.query</td><td>manual URL parsing</td></tr>
+      <tr><td>File Serving</td><td>express.static('public')</td><td>fs.readFile + Content-Type</td></tr>
+    </table>
+
+    <table class="compare-table">
+      <tr><th></th><th>function declaration</th><th>Arrow function</th></tr>
+      <tr><td>Syntax</td><td>function name() {}</td><td>const name = () => {}</td></tr>
+      <tr><td>this</td><td>Dynamic — depends on caller</td><td>Lexical — from enclosing scope</td></tr>
+      <tr><td>Hoisting</td><td>Yes — can call before declaration</td><td>No — must declare first</td></tr>
+      <tr><td>arguments</td><td>Has arguments object</td><td>No arguments — use ...rest</td></tr>
+      <tr><td>Constructor</td><td>Can use with new</td><td>Cannot use with new</td></tr>
+      <tr><td>במבחן</td><td>Component functions, handlers</td><td>Callbacks, map/filter, event handlers</td></tr>
+    </table>
+  </div>
+</div>
+
+<script>
+const TOPICS = [
+  {id:"js-basics",name:"JavaScript Basics",icon:"🟨",sub:"variables, types, operators, control flow",weight:5,
+   concepts:["let / const / var","primitive types: string, number, boolean, null, undefined","operators: ===, !==, &&, ||, ??","if/else, switch, ternary","for, while, for...of, for...in"],
+   exams:"כל המבחנים — בסיס לכל שאלה",
+   qids:["football-q2","parking-q2","flights-q2","helpme-q2","bank-q2","logistics-q2","currency-q2","willing-q2","travel-q2"]},
+  {id:"js-functions",name:"Functions & Scope",icon:"🔧",sub:"declarations, arrow, closures, callbacks",weight:8,
+   concepts:["function declaration vs expression vs arrow","parameters, defaults, rest (...args)","return values","scope: global, function, block","closures — function remembers its scope","callbacks — passing functions as arguments"],
+   exams:"שאלה 2 (JS): כל הפונקציות האלגוריתמיות",
+   qids:["football-q2","parking-q2","flights-q2","helpme-q2","bank-q2","logistics-q2","currency-q2","willing-q2","travel-q2"]},
+  {id:"js-arrays",name:"Arrays & Objects",icon:"📦",sub:"methods, destructuring, spread",weight:10,
+   concepts:["map, filter, reduce, find, every, some, includes","push, pop, shift, unshift, splice, slice","sort (+ [...arr].sort() for immutability)","Object.keys(), Object.values(), Object.entries()","spread: [...arr], {...obj}","destructuring: const {a, b} = obj; const [x, y] = arr"],
+   exams:"שאלה 2 (JS) + כל מקום שעובדים עם state",
+   qids:["football-q2","parking-q2","helpme-q2","bank-q2","willing-q2","football-q1","parking-q1"]},
+  {id:"js-async",name:"Async JavaScript",icon:"⏳",sub:"promises, async/await, fetch",weight:6,
+   concepts:["Promise: resolve, reject, then, catch","async / await — syntactic sugar for Promises","try/catch with async/await","fetch() — HTTP requests from browser","setTimeout, setInterval + cleanup"],
+   exams:"שאלה 3: Express routes עם async/await + Mongoose",
+   qids:["parking-q3","flights-q3","willing-q3","football-q3"]},
+  {id:"dom",name:"DOM Manipulation",icon:"🌐",sub:"selectors, events, createElement",weight:3,
+   concepts:["document.getElementById, querySelector","addEventListener, event object","innerHTML, textContent, classList","createElement, appendChild","event delegation"],
+   exams:"רקע — React מחליף DOM ישיר",qids:[]},
+  {id:"react-basics",name:"React Basics",icon:"⚛️",sub:"JSX, components, props",weight:12,
+   concepts:["JSX — HTML inside JavaScript","Components — functions that return JSX","Props — passing data to children","Lists with .map() + key prop","Conditional rendering: &&, ternary, early return","import/export syntax"],
+   exams:"שאלה 1 (React): כל 9 המבחנים",
+   qids:["football-q1","parking-q1","flights-q1","helpme-q1","bank-q1","logistics-q1","currency-q1","willing-q1","travel-q1"]},
+  {id:"react-state",name:"React State & Hooks",icon:"🎣",sub:"useState, useEffect, useRef",weight:15,
+   concepts:["useState — declaring and updating state","useEffect — side effects, cleanup, dependencies","useRef — DOM references, mutable values","Rules of Hooks (top level, inside components)","Lifting state up","Controlled components (forms)"],
+   exams:"שאלה 1: state management, forms, localStorage",
+   qids:["football-q1","parking-q1","flights-q1","helpme-q1","bank-q1","logistics-q1","currency-q1","willing-q1","travel-q1"]},
+  {id:"react-router",name:"React Router",icon:"🛣",sub:"Routes, params, navigate",weight:10,
+   concepts:["BrowserRouter, Routes, Route","Link, NavLink","useNavigate — programmatic navigation","useParams — reading URL parameters","useLocation — current path info","Protected routes with conditional rendering"],
+   exams:"שאלה 1: routing בכל מבחן",
+   qids:["football-q1","parking-q1","flights-q1","helpme-q1","bank-q1","logistics-q1","currency-q1","willing-q1","travel-q1"]},
+  {id:"forms-validation",name:"Forms & Validation",icon:"🛡",sub:"controlled inputs, regex, error handling",weight:12,
+   concepts:["Controlled inputs: value + onChange","Regex patterns: email, password, phone, name","Error state object: {field: 'message'}","Real-time validation on change","Submit validation: Object.keys(errors).length","Password matching: password === confirm"],
+   exams:"שאלה 1: RegisterForm בכל מבחן",
+   qids:["football-q1","parking-q1","helpme-q1","bank-q1","logistics-q1","currency-q1"]},
+  {id:"localstorage",name:"localStorage",icon:"💾",sub:"JSON.parse/stringify, sync pattern",weight:8,
+   concepts:["localStorage.getItem() / setItem()","JSON.parse() + JSON.stringify()","useState initialization: JSON.parse(ls) || []","useEffect sync: setItem on state change","Error handling: try/catch for JSON.parse"],
+   exams:"שאלה 1: שמירת state בכל מבחן",
+   qids:["football-q1","parking-q1","flights-q1","helpme-q1","bank-q1","logistics-q1","currency-q1","willing-q1","travel-q1"]},
+  {id:"node-basics",name:"Node.js Basics",icon:"🟩",sub:"require, modules, fs, path",weight:4,
+   concepts:["require() / module.exports","fs: readFile, writeFile, appendFile","fs.promises for async","path module: join, resolve","process.env, command line args"],
+   exams:"שאלה 3: fs operations (bank-q3, travel-q3)",
+   qids:["bank-q3","travel-q3"]},
+  {id:"express",name:"Express.js",icon:"🚂",sub:"routes, middleware, REST API",weight:12,
+   concepts:["app.get/post/put/delete","req.params, req.body, req.query","res.json(), res.status(), res.send()","Middleware: app.use(), express.json(), cors()","Error handling: try/catch + status codes","REST conventions: 200/201/204/400/404/500"],
+   exams:"שאלה 3: כל המבחנים",
+   qids:["football-q3","parking-q3","flights-q3","bank-q3","willing-q3","travel-q3"]},
+  {id:"mongoose",name:"MongoDB & Mongoose",icon:"🗄",sub:"Schema, Model, CRUD, aggregation",weight:10,
+   concepts:["mongoose.connect(url)","Schema definition: types, required, validators","Model creation: mongoose.model('Name', schema)","CRUD: find, findById, create, findByIdAndUpdate, findByIdAndDelete","{new: true, runValidators: true} options","Aggregation pipeline: $match, $group, $sort"],
+   exams:"שאלה 3: parking-q3, flights-q3, willing-q3",
+   qids:["parking-q3","flights-q3","willing-q3"]},
+  {id:"typescript",name:"TypeScript Basics",icon:"🟦",sub:"types, interfaces, generics",weight:5,
+   concepts:["Type annotations: string, number, boolean","Interfaces: define object shapes","Generics: <T> for reusable types","Union types: string | number","Optional properties: name?: string","Type narrowing: typeof, instanceof"],
+   exams:"חומר נוסף — לא תמיד בהכרח במבחן",qids:[]},
+  {id:"css",name:"CSS & Styling",icon:"🎨",sub:"flexbox, grid, responsive",weight:3,
+   concepts:["Flexbox: display:flex, justify-content, align-items","CSS Grid: grid-template-columns","Responsive: media queries, clamp()","CSS variables: --name: value","className in React vs class in HTML"],
+   exams:"עיצוב ב-App.css — לא נבדק ישירות",qids:[]},
+  {id:"git",name:"Git & Tooling",icon:"🔧",sub:"init, commit, push, npm",weight:2,
+   concepts:["git init, add, commit, push","npm init, install, scripts","package.json: dependencies, scripts","nodemon for auto-restart","Vite for React dev server"],
+   exams:"הכנת סביבת עבודה",qids:[]}
+];
+
+const checked = JSON.parse(localStorage.getItem('cm-checked') || '{}');
+
+function updateProgress() {
+  const count = Object.keys(checked).length;
+  document.getElementById('prog-fill').style.width = (count / TOPICS.length * 100) + '%';
+  document.getElementById('prog-label').textContent = `${count}/${TOPICS.length} נושאים`;
+}
+
+function toggleCheck(id) {
+  if (checked[id]) delete checked[id]; else checked[id] = true;
+  localStorage.setItem('cm-checked', JSON.stringify(checked));
+  updateProgress();
+  const el = document.querySelector(`[data-tid="${id}"] .topic-check`);
+  if (el) { el.classList.toggle('checked'); el.textContent = checked[id] ? '✓' : ''; }
+}
+
+function toggleTopic(el) {
+  el.closest('.topic').classList.toggle('open');
+}
+
+const topicsEl = document.getElementById('topics');
+TOPICS.forEach(t => {
+  const div = document.createElement('div');
+  div.className = 'topic';
+  div.dataset.tid = t.id;
+  div.innerHTML = `
+    <div class="topic-head" onclick="toggleTopic(this)">
+      <span class="topic-ico">${t.icon}</span>
+      <div class="topic-info"><div class="topic-name">${t.name}</div><div class="topic-sub">${t.sub}</div></div>
+      <span class="topic-weight">${t.weight}%</span>
+      <div class="topic-check ${checked[t.id] ? 'checked' : ''}" onclick="event.stopPropagation();toggleCheck('${t.id}')">${checked[t.id] ? '✓' : ''}</div>
+    </div>
+    <div class="topic-body">
+      <ul class="topic-concepts">${t.concepts.map(c => `<li>${c}</li>`).join('')}</ul>
+      <div class="topic-exam">📝 רלוונטי ל: <strong>${t.exams}</strong></div>
+      ${t.qids&&t.qids.length?`<div class="topic-links">${t.qids.map(q=>{const sys=q.split('-')[0];const num=q.split('-')[1];const icons={react:'⚛️',js:'🟨',express:'🟢',theory:'📖'};const tp=num==='q1'?'react':num==='q2'?'js':num==='q3'?'express':'theory';return`<a class="topic-qlink" href="flow-canvas.html#${q}" target="_blank">${icons[tp]||''} ${sys} ${num}</a>`}).join('')}</div>`:''}
+    </div>`;
+  topicsEl.appendChild(div);
+});
+
+updateProgress();
+</script>
+<footer style="border-top:3px solid #000;padding:16px 24px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+<strong>🔗 כלים נוספים:</strong>
+<a href="flow-canvas.html" style="color:#7c3aed;font-weight:700">�� מפת זרימה</a>
+<a href="file-graph.html" style="color:#7c3aed;font-weight:700">📂 File Graph</a>
+<a href="sequence-diagrams.html" style="color:#7c3aed;font-weight:700">🔄 Sequence Diagrams</a>
+<a href="practice-bank.html" style="color:#7c3aed;font-weight:700">💪 בנק תרגול</a>
+<a href="simulations.html" style="color:#7c3aed;font-weight:700">🎮 סימולציות</a>
+</footer>
+</body>
+</html>

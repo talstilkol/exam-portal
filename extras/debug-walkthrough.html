@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>פתרון Debug — צעד אחר צעד</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: #f5f0e8;
+  color: #1a1a2e;
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #e8e0d4;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border: 2px solid #e8e0d4;
+  border-radius: 0;
+}
+
+/* ===== NEO-BRUTALISM UTILITIES ===== */
+.neo-border {
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 #000;
+}
+
+.neo-border-sm {
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0 #000;
+}
+
+.neo-btn {
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 #000;
+  cursor: pointer;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 600;
+  transition: all 0.1s ease;
+  background: #fff;
+}
+
+.neo-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.neo-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 #000;
+}
+
+/* ===== HERO SECTION ===== */
+.hero {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 60%, #1a1a2e 100%);
+  padding: 50px 40px;
+  text-align: center;
+  border-bottom: 4px solid #000;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(255,215,0,0.05) 0%, transparent 50%),
+              radial-gradient(circle at 70% 50%, rgba(0,200,255,0.05) 0%, transparent 50%);
+  animation: heroGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes heroGlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(3deg); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #FFD700;
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.hero .subtitle {
+  font-size: 1.15rem;
+  color: #e0e0e0;
+  font-weight: 400;
+  max-width: 750px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 25px;
+}
+
+.hero-stat {
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,215,0,0.3);
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: #fff;
+}
+
+.hero-stat .stat-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #FFD700;
+}
+
+.hero-stat .stat-label {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+/* ===== LAYOUT ===== */
+.app-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  min-height: calc(100vh - 220px);
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  background: #fff;
+  border-left: 3px solid #000;
+  padding: 0;
+  overflow-y: auto;
+  max-height: calc(100vh - 220px);
+  position: sticky;
+  top: 0;
+}
+
+.sidebar-header {
+  padding: 20px;
+  background: #fef3c7;
+  border-bottom: 3px solid #000;
+}
+
+.sidebar-header h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.sidebar-header .progress-text {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 12px;
+  background: #e5e5e5;
+  border: 2px solid #000;
+  margin-top: 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  transition: width 0.4s ease;
+}
+
+/* Topic Tabs */
+.topic-tabs {
+  display: flex;
+  border-bottom: 3px solid #000;
+}
+
+.topic-tab {
+  flex: 1;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: none;
+  background: #f8f8f8;
+  transition: all 0.15s;
+  border-left: 1px solid #ddd;
+  font-family: 'Heebo', sans-serif;
+}
+
+.topic-tab:first-child {
+  border-left: none;
+}
+
+.topic-tab:hover {
+  background: #e8e0d4;
+}
+
+.topic-tab.active {
+  background: #FFD700;
+  font-weight: 700;
+}
+
+.topic-tab .tab-icon {
+  display: block;
+  font-size: 1.3rem;
+  margin-bottom: 2px;
+}
+
+/* Question List */
+.question-list {
+  padding: 10px;
+}
+
+.question-item {
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  background: #fff;
+  transition: all 0.15s;
+  border-radius: 2px;
+}
+
+.question-item:hover {
+  background: #fef9c3;
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.question-item.active {
+  background: #dbeafe;
+  border-color: #2563eb;
+  box-shadow: 3px 3px 0 #2563eb;
+}
+
+.question-item.completed {
+  border-color: #10b981;
+  box-shadow: 3px 3px 0 #10b981;
+}
+
+.question-item.completed::after {
+  content: '✓';
+  float: left;
+  color: #10b981;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.question-item .q-number {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.question-item .q-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.question-item .q-desc {
+  font-size: 0.8rem;
+  color: #555;
+  margin-top: 4px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  padding: 30px 40px;
+  overflow-y: auto;
+  max-height: calc(100vh - 220px);
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+  color: #666;
+}
+
+.empty-state .empty-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.empty-state h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  max-width: 400px;
+}
+
+/* Question Header */
+.question-header {
+  margin-bottom: 30px;
+}
+
+.question-header .q-badge {
+  display: inline-block;
+  background: #FFD700;
+  color: #000;
+  font-weight: 700;
+  padding: 4px 12px;
+  border: 2px solid #000;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.question-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.question-header .q-description {
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.7;
+  padding: 14px 18px;
+  background: #fff;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0 #000;
+}
+
+.question-header .complete-btn {
+  margin-top: 15px;
+  padding: 10px 24px;
+  font-size: 0.95rem;
+  background: #10b981;
+  color: #fff;
+}
+
+.question-header .complete-btn.is-completed {
+  background: #6ee7b7;
+  color: #000;
+}
+
+/* ===== SECTION ===== */
+.section-block {
+  margin-bottom: 40px;
+  padding: 25px;
+  background: #fff;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 #000;
+}
+
+.section-block .section-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.section-block .section-num {
+  background: #1a1a2e;
+  color: #FFD700;
+  font-weight: 800;
+  padding: 6px 14px;
+  font-size: 1rem;
+  border: 2px solid #000;
+}
+
+.section-block .section-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+/* Info Cards */
+.info-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.info-card {
+  padding: 14px 18px;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  border-radius: 2px;
+}
+
+.info-card.what-to-do {
+  background: #dbeafe;
+  border-color: #2563eb;
+  box-shadow: 3px 3px 0 #2563eb;
+}
+
+.info-card.why-card {
+  background: #ede9fe;
+  border-color: #7c3aed;
+  box-shadow: 3px 3px 0 #7c3aed;
+}
+
+.info-card .card-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.info-card.what-to-do .card-label {
+  color: #2563eb;
+}
+
+.info-card.why-card .card-label {
+  color: #7c3aed;
+}
+
+.info-card .card-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ===== STEPS ===== */
+.steps-container {
+  margin-bottom: 25px;
+}
+
+.steps-container .steps-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-item {
+  margin-bottom: 18px;
+  padding: 16px 20px;
+  background: #fafaf9;
+  border: 2px solid #d4d4d4;
+  border-right: 5px solid #3b82f6;
+  transition: all 0.2s;
+}
+
+.step-item:hover {
+  border-color: #000;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.step-num {
+  width: 32px;
+  height: 32px;
+  background: #1a1a2e;
+  color: #FFD700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.step-topic {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.step-body {
+  padding-right: 44px;
+}
+
+.step-action {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.step-action .action-icon {
+  color: #3b82f6;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.step-verify {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: #16a34a;
+}
+
+.step-verify .verify-icon {
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.step-code {
+  background: #1e1b4b;
+  color: #FFD700;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.85rem;
+  padding: 12px 16px;
+  border: 2px solid #000;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.6;
+  direction: ltr;
+  text-align: left;
+}
+
+/* ===== MISTAKES ===== */
+.mistakes-container {
+  margin-top: 20px;
+}
+
+.mistakes-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mistakes-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mistake-chip {
+  background: #fef2f2;
+  border: 2px solid #dc2626;
+  box-shadow: 2px 2px 0 #dc2626;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+
+.mistake-chip:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #dc2626;
+}
+
+.mistake-chip .mistake-icon {
+  font-size: 0.9rem;
+}
+
+/* ===== FOOTER ===== */
+.app-footer {
+  background: #1a1a2e;
+  border-top: 4px solid #000;
+  padding: 30px 40px;
+  text-align: center;
+}
+
+.footer-title {
+  color: #FFD700;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.footer-link {
+  background: rgba(255,255,255,0.08);
+  color: #e0e0e0;
+  text-decoration: none;
+  padding: 8px 16px;
+  border: 2px solid rgba(255,215,0,0.3);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.footer-link:hover {
+  background: rgba(255,215,0,0.15);
+  border-color: #FFD700;
+  color: #FFD700;
+}
+
+.footer-copy {
+  color: #888;
+  font-size: 0.8rem;
+  margin-top: 15px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    border-left: none;
+    border-bottom: 3px solid #000;
+    max-height: none;
+    position: static;
+  }
+  .main-content {
+    padding: 20px;
+    max-height: none;
+  }
+  .hero h1 {
+    font-size: 2rem;
+  }
+  .info-cards {
+    grid-template-columns: 1fr;
+  }
+  .hero-stats {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero {
+    padding: 30px 20px;
+  }
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+  .section-block {
+    padding: 15px;
+  }
+  .step-body {
+    padding-right: 0;
+  }
+  .mistakes-grid {
+    flex-direction: column;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-block {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.section-block:nth-child(2) { animation-delay: 0.1s; }
+.section-block:nth-child(3) { animation-delay: 0.2s; }
+.section-block:nth-child(4) { animation-delay: 0.3s; }
+
+/* ===== PRINT ===== */
+@media print {
+  .sidebar { display: none; }
+  .hero { padding: 20px; }
+  .app-layout { grid-template-columns: 1fr; }
+  .section-block { box-shadow: none; break-inside: avoid; }
+  .step-code { border: 1px solid #999; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="hero-content">
+    <h1>&#x1F50D; פתרון Debug — צעד אחר צעד</h1>
+    <p class="subtitle">בנייה מלאה של שאלות מבחן עם הסבר על כל שורה, טעויות נפוצות, ומה לבדוק</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="stat-num" id="stat-total">5</div>
+        <div class="stat-label">שאלות</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num" id="stat-completed">0</div>
+        <div class="stat-label">הושלמו</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num" id="stat-sections">14</div>
+        <div class="stat-label">סעיפים</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num" id="stat-steps">56</div>
+        <div class="stat-label">צעדים</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== APP LAYOUT ===== -->
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>&#x1F4CB; התקדמות כללית</h2>
+      <p class="progress-text"><span id="progress-count">0</span> / <span id="progress-total">5</span> שאלות הושלמו</p>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progress-bar" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div class="topic-tabs" id="topic-tabs">
+      <!-- Generated by JS -->
+    </div>
+
+    <div class="question-list" id="question-list">
+      <!-- Generated by JS -->
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="main-content">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">&#x1F50D;</div>
+      <h2>בחרו שאלה מהרשימה</h2>
+      <p>לחצו על אחת השאלות בצד ימין כדי לראות את הפתרון המלא צעד אחר צעד</p>
+    </div>
+    <div id="question-content" style="display:none;"></div>
+  </main>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="app-footer">
+  <div class="footer-title">&#x1F6E0;&#xFE0F; כלים נוספים בפורטל</div>
+  <div class="footer-links">
+    <a href="practice-bank.html" class="footer-link">&#x1F4DD; בנק תרגול</a>
+    <a href="simulations.html" class="footer-link">&#x1F3AE; סימולציות</a>
+    <a href="exam-strategy.html" class="footer-link">&#x1F3AF; אסטרטגיית מבחן</a>
+    <a href="course-map.html" class="footer-link">&#x1F5FA;&#xFE0F; מפת קורס</a>
+    <a href="progress-dashboard.html" class="footer-link">&#x1F4CA; דשבורד התקדמות</a>
+    <a href="code-browser.html" class="footer-link">&#x1F4BB; דפדפן קוד</a>
+    <a href="react-patterns.html" class="footer-link">&#x269B;&#xFE0F; React Patterns</a>
+    <a href="express-js-patterns.html" class="footer-link">&#x1F5A5;&#xFE0F; Express Patterns</a>
+  </div>
+  <p class="footer-copy">פורטל למידה — Debug Walkthrough Tool &copy; 2025</p>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const QUESTIONS = {
+  topics: [
+    {id:'frontend', label:'Frontend', icon:'\u{1F4F1}', questions:[
+      {id:'fe-q1', number:1, title:'רכיב טופס התחברות (LoginForm)',
+       desc:'בנו רכיב React: טופס email + password, שולח POST ל-/api/login, שומר token. Loading + error handling.',
+       sections:[
+        {id:'1a', num:'1.א', title:'הגדרת state',
+         whatToDo:'הצהירו על 4 state: email, password, error, loading',
+         why:'כל ערך שמשתנה בזמן ריצה חייב state. אחרת React לא ירנדר מחדש.',
+         steps:[
+          {num:1, topic:'ייבוא useState', action:'import { useState } from "react";', verify:'שורה ראשונה בקובץ', code:'import { useState } from "react";'},
+          {num:2, topic:'state לאימייל', action:'const [email, setEmail] = useState("");', verify:'destructuring נכון? שני ערכים?', code:'const [email, setEmail] = useState("");'},
+          {num:3, topic:'state לסיסמה', action:'const [password, setPassword] = useState("");', verify:'מחרוזת ריקה התחלתית', code:'const [password, setPassword] = useState("");'},
+          {num:4, topic:'state לשגיאה', action:'const [error, setError] = useState(null);', verify:'null כשאין שגיאה', code:'const [error, setError] = useState(null);'},
+          {num:5, topic:'state לטעינה', action:'const [loading, setLoading] = useState(false);', verify:'false בהתחלה', code:'const [loading, setLoading] = useState(false);'}
+         ],
+         mistakes:['שכחת לייבא useState → "not defined"', 'useState מחוץ לרכיב — אסור!', 'שינוי ישיר: email = "x" — חייב setter', 'useState() ללא ערך → undefined.length שגיאה']
+        },
+        {id:'1b', num:'1.ב', title:'Controlled inputs',
+         whatToDo:'שני input — email + password. כל אחד controlled: value מ-state, onChange מעדכן.',
+         why:'controlled = React שולט. בלי onChange+value לא נקרא ערכים ב-submit.',
+         steps:[
+          {num:1, topic:'input email', action:'type="email" ל-validation מובנה', verify:'מקלדת email בנייד', code:'<input type="email" />'},
+          {num:2, topic:'חיבור value', action:'value={email}', verify:'email="abc" → "abc" בשדה', code:'<input type="email" value={email} />'},
+          {num:3, topic:'חיבור onChange', action:'onChange={e => setEmail(e.target.value)}', verify:'הקלדה משנה state', code:'<input type="email" value={email}\n  onChange={e => setEmail(e.target.value)} />'},
+          {num:4, topic:'password input', action:'type="password" + value + onChange', verify:'נקודות שחורות', code:'<input type="password" value={password}\n  onChange={e => setPassword(e.target.value)} required />'}
+         ],
+         mistakes:['value בלי onChange — readonly!', 'onChange בלי value — uncontrolled', 'setEmail(e) — שומר Event, לא ערך!', 'שכחת type="password" — נראה בקריא']
+        },
+        {id:'1c', num:'1.ג', title:'Async submit עם fetch',
+         whatToDo:'handleSubmit אסינכרוני: preventDefault, loading, POST, טיפול בתשובה ושגיאות.',
+         why:'async = חכה לשרת. preventDefault = מונע רענון. try/catch = תופס שגיאות.',
+         steps:[
+          {num:1, topic:'הגדרת פונקציה', action:'async function handleSubmit(e) {...}', verify:'async מאפשר await', code:'async function handleSubmit(e) {\n  // ...\n}'},
+          {num:2, topic:'preventDefault', action:'e.preventDefault(); — שורה ראשונה!', verify:'בלעדיו הדף יתרענן', code:'e.preventDefault();'},
+          {num:3, topic:'loading + ניקוי', action:'setLoading(true); setError(null);', verify:'ספינר + שגיאות קודמות נעלמות', code:'setLoading(true);\nsetError(null);'},
+          {num:4, topic:'fetch POST', action:'fetch + method + headers + body', verify:'method, headers, body נכונים', code:'const res = await fetch("/api/login", {\n  method: "POST",\n  headers: {"Content-Type": "application/json"},\n  body: JSON.stringify({ email, password })\n});'},
+          {num:5, topic:'בדיקת res.ok', action:'if (!res.ok) throw — fetch לא זורק על 4xx!', verify:'401 → catch', code:'if (!res.ok) throw new Error("Login failed");'},
+          {num:6, topic:'שמירת token', action:'res.json() + localStorage', verify:'DevTools → Application → token', code:'const data = await res.json();\nlocalStorage.setItem("token", data.token);'},
+          {num:7, topic:'finally', action:'finally { setLoading(false); }', verify:'ספינר נעלם תמיד', code:'} finally {\n  setLoading(false);\n}'}
+         ],
+         mistakes:['שכחת preventDefault — דף מתרענן!', 'שכחת await — Promise במקום response', 'שכחת JSON.stringify — [object Object]', 'שכחת Content-Type — שרת לא מפענח', 'שכחת res.ok — 401 נחשב הצלחה', 'setLoading(false) רק ב-try — ספינר נתקע']
+        },
+        {id:'1d', num:'1.ד', title:'תצוגת שגיאות וטעינה',
+         whatToDo:'הודעת שגיאה + disabled button בזמן loading.',
+         why:'UX: משתמש לא ילחץ פעמיים (race condition). שגיאות ויזואליות.',
+         steps:[
+          {num:1, topic:'כפתור disabled', action:'disabled={loading}', verify:'אפור בזמן בקשה', code:'<button type="submit" disabled={loading}>'},
+          {num:2, topic:'טקסט דינמי', action:'{loading ? "מתחבר..." : "התחבר"}', verify:'משתנה עם loading', code:'{loading ? "מתחבר..." : "התחבר"}'},
+          {num:3, topic:'תנאי שגיאה', action:'{error && <p className="error">{error}</p>}', verify:'truthy → מציג', code:'{error && <p className="error">{error}</p>}'}
+         ],
+         mistakes:['בלי disabled — 5 בקשות מקביליות', '{error} בלי תנאי — מציג null', 'className לא class — JSX!']
+        }
+       ]
+      },
+      {id:'fe-q2', number:2, title:'useEffect לטעינת נתונים',
+       desc:'רכיב שמציג רשימת משתמשים. GET /api/users, ספינר, שגיאה, ביטול בקשה.',
+       sections:[
+        {id:'2a', num:'2.א', title:'state ל-data, loading, error',
+         whatToDo:'3 state: users([]), loading(true!), error(null).',
+         why:'users=[] מאפשר .map() בלי שגיאה. loading=true = ספינר מיד.',
+         steps:[
+          {num:1, topic:'state למשתמשים', action:'useState([]) — מערך ריק!', verify:'users.length === 0', code:'const [users, setUsers] = useState([]);'},
+          {num:2, topic:'loading', action:'useState(true) — TRUE כי כבר טוענים', verify:'ספינר מיד', code:'const [loading, setLoading] = useState(true);'},
+          {num:3, topic:'error', action:'useState(null)', verify:'אין שגיאה בהתחלה', code:'const [error, setError] = useState(null);'}
+         ],
+         mistakes:['useState(null) ל-users → .map() שגיאה!', 'loading=false בהתחלה — מסך ריק בלי ספינר']
+        },
+        {id:'2b', num:'2.ב', title:'useEffect + fetch',
+         whatToDo:'useEffect עם [] + fetch + עדכון state.',
+         why:'בלי [] — infinite loop! setUsers → re-render → useEffect → fetch → setUsers...',
+         steps:[
+          {num:1, topic:'useEffect', action:'useEffect(() => {...}, []) — [] חובה!', verify:'בלי [] = לולאה', code:'useEffect(() => {\n  // fetch here\n}, []);'},
+          {num:2, topic:'fetch', action:'fetch → .then(r.json()) → setUsers', verify:'users מתעדכן', code:'fetch("/api/users")\n  .then(r => r.json())\n  .then(data => {\n    setUsers(data);\n    setLoading(false);\n  });'},
+          {num:3, topic:'שגיאה', action:'.catch(err => setError(err.message))', verify:'שרת לא זמין → error', code:'.catch(err => {\n  setError(err.message);\n  setLoading(false);\n});'}
+         ],
+         mistakes:['שכחת [] — INFINITE LOOP!', 'useEffect(async () => ...) — אסור! מחזיר Promise', 'שכחת setLoading(false) — ספינר לנצח']
+        },
+        {id:'2c', num:'2.ג', title:'Cleanup — AbortController',
+         whatToDo:'ביטול בקשה אם הרכיב מוסר. AbortController + signal + return cleanup.',
+         why:'race condition: עמוד משתנה → setState על רכיב מת → memory leak + warning.',
+         steps:[
+          {num:1, topic:'controller', action:'const controller = new AbortController();', verify:'controller חדש בכל run', code:'const controller = new AbortController();'},
+          {num:2, topic:'signal', action:'fetch(url, {signal: controller.signal})', verify:'fetch מחובר ל-controller', code:'fetch("/api/users", {\n  signal: controller.signal\n})'},
+          {num:3, topic:'cleanup', action:'return () => controller.abort();', verify:'unmount → ביטול', code:'return () => {\n  controller.abort();\n};'},
+          {num:4, topic:'AbortError', action:'if (err.name === "AbortError") return;', verify:'ביטול לא מציג שגיאה', code:'.catch(err => {\n  if (err.name === "AbortError") return;\n  setError(err.message);\n})'}
+         ],
+         mistakes:['שכחת return — אין cleanup', 'abort() בלי return — מבטל מיד!', 'AbortError כשגיאה רגילה — מציג למשתמש']
+        }
+       ]
+      }
+    ]},
+    {id:'backend', label:'Backend', icon:'\u{1F5A5}', questions:[
+      {id:'be-q1', number:3, title:'Express CRUD מלא',
+       desc:'שרת Express: GET, POST, PUT, DELETE users. Mongoose + try/catch + error middleware.',
+       sections:[
+        {id:'3a', num:'3.א', title:'שרת בסיסי',
+         whatToDo:'server.js עם Express, JSON parser, router, listen.',
+         why:'express.json() חובה — בלעדיו req.body = undefined.',
+         steps:[
+          {num:1, topic:'ייבוא', action:'import express from "express";', verify:'ESM — type:module ב-package.json', code:'import express from "express";'},
+          {num:2, topic:'app', action:'const app = express();', verify:'app זמין', code:'const app = express();'},
+          {num:3, topic:'JSON parser', action:'app.use(express.json()); — לפני routes!', verify:'req.body מקבל תוכן', code:'app.use(express.json());'},
+          {num:4, topic:'router', action:'app.use("/api", router);', verify:'/api/users → router', code:'app.use("/api", router);'},
+          {num:5, topic:'listen', action:'app.listen(PORT, callback)', verify:'"Server on port X"', code:'app.listen(process.env.PORT || 3000, () => {\n  console.log("Server running");\n});'}
+         ],
+         mistakes:['שכחת express.json() → req.body undefined', 'json אחרי routes — POST לא מקבל body', 'port hardcoded — לא cloud', 'שני app.listen — "address in use"']
+        },
+        {id:'3b', num:'3.ב', title:'Router CRUD',
+         whatToDo:'4 routes: GET, POST, PUT, DELETE. קובץ נפרד.',
+         why:'Router = מודולריות. Method נכון = RESTful.',
+         steps:[
+          {num:1, topic:'Router', action:'import { Router } from "express";', verify:'named import', code:'import { Router } from "express";\nconst router = Router();'},
+          {num:2, topic:'GET', action:'router.get("/users", getUsers);', verify:'GET /api/users', code:'router.get("/users", getUsers);'},
+          {num:3, topic:'POST', action:'router.post("/users", createUser);', verify:'POST /api/users', code:'router.post("/users", createUser);'},
+          {num:4, topic:'PUT', action:'router.put("/users/:id", updateUser);', verify:'PUT /api/users/123', code:'router.put("/users/:id", updateUser);'},
+          {num:5, topic:'DELETE', action:'router.delete("/users/:id", deleteUser);', verify:'DELETE /api/users/123', code:'router.delete("/users/:id", deleteUser);'},
+          {num:6, topic:'export', action:'export default router;', verify:'נטען ב-server.js', code:'export default router;'}
+         ],
+         mistakes:['POST למחיקה — לא RESTful!', 'שכחת : ב-param → /users/id literal', 'logic בrouter — separate!']
+        },
+        {id:'3c', num:'3.ג', title:'Handlers async + try/catch',
+         whatToDo:'4 handlers: async, try/catch, next(err). Status codes נכונים.',
+         why:'ב-async, throw לא נתפס! חובה next(err). בלי — שרת קורס.',
+         steps:[
+          {num:1, topic:'getUsers', action:'async + try { User.find() } catch { next(err) }', verify:'GET → מערך JSON', code:'export async function getUsers(req, res, next) {\n  try {\n    const users = await User.find();\n    res.json(users);\n  } catch (err) {\n    next(err);\n  }\n}'},
+          {num:2, topic:'createUser', action:'status(201)!', verify:'POST → 201, לא 200', code:'export async function createUser(req, res, next) {\n  try {\n    const user = await User.create(req.body);\n    res.status(201).json(user);\n  } catch (err) { next(err); }\n}'},
+          {num:3, topic:'updateUser', action:'{new:true} + if(!user) 404', verify:'id לא קיים → 404', code:'export async function updateUser(req, res, next) {\n  try {\n    const user = await User.findByIdAndUpdate(\n      req.params.id, req.body, { new: true }\n    );\n    if (!user) return res.status(404).json({error:"Not found"});\n    res.json(user);\n  } catch (err) { next(err); }\n}'},
+          {num:4, topic:'deleteUser', action:'204 No Content', verify:'DELETE → 204, אין body', code:'export async function deleteUser(req, res, next) {\n  try {\n    await User.findByIdAndDelete(req.params.id);\n    res.status(204).end();\n  } catch (err) { next(err); }\n}'}
+         ],
+         mistakes:['שכחת await — Promise במקום data', 'שכחת next(err) — שגיאה אובדת', 'שכחת {new:true} — מחזיר ישן', '200 ב-POST — צריך 201', 'שכחת !user check — null ב-200']
+        },
+        {id:'3d', num:'3.ד', title:'Error middleware',
+         whatToDo:'4 ארגומנטים (err,req,res,next). אחרון ב-app.use.',
+         why:'4 ארגומנטים = סימן ל-Express שזה error handler.',
+         steps:[
+          {num:1, topic:'הגדרה', action:'function errorHandler(err, req, res, next) — 4!', verify:'בלי 4 → Express לא מזהה', code:'export function errorHandler(err, req, res, next) {\n  console.error(err);\n}'},
+          {num:2, topic:'ValidationError', action:'err.name === "ValidationError" → 400', verify:'POST לא תקין → 400', code:'if (err.name === "ValidationError") {\n  return res.status(400).json({error: "Validation failed"});\n}'},
+          {num:3, topic:'Duplicate', action:'err.code === 11000 → 409', verify:'email כפול → 409', code:'if (err.code === 11000) {\n  return res.status(409).json({error: "Duplicate"});\n}'},
+          {num:4, topic:'generic', action:'status 500 + הסתרה בprod', verify:'prod → "Server error"', code:'const msg = process.env.NODE_ENV === "production"\n  ? "Server error" : err.message;\nres.status(500).json({error: msg});'},
+          {num:5, topic:'רישום', action:'app.use(errorHandler) — אחרי routes!', verify:'לפני → לא ירוץ', code:'app.use("/api", router);\napp.use(errorHandler); // אחרון!'}
+         ],
+         mistakes:['3 ארגומנטים — Express לא מזהה!', 'לפני routes — לא נקרא', 'err.message בprod — חושף מבנה DB', 'res.send + res.json — "headers already sent"']
+        }
+       ]
+      },
+      {id:'be-q2', number:4, title:'אימות JWT — login + protected routes',
+       desc:'Endpoint /login: verify password, sign JWT. Middleware authenticate: verify token. Protected routes.',
+       sections:[
+        {id:'4a', num:'4.א', title:'/login — sign token',
+         whatToDo:'POST email+password. אם נכון → JWT. אחרת → 401.',
+         why:'JWT = כרטיס חתום. השרת לא שומר session. כל בקשה שולחת token.',
+         steps:[
+          {num:1, topic:'secret', action:'process.env.JWT_SECRET — מסביבה!', verify:'סוד לא בקוד', code:'import jwt from "jsonwebtoken";\nconst SECRET = process.env.JWT_SECRET;'},
+          {num:2, topic:'findOne', action:'User.findOne({email}). לא נמצא → 401', verify:'401, לא 404 (לא חושפים)', code:'const user = await User.findOne({ email });\nif (!user) return res.status(401).json({error: "Invalid credentials"});'},
+          {num:3, topic:'bcrypt', action:'bcrypt.compare(password, user.passwordHash)', verify:'await חובה!', code:'const ok = await bcrypt.compare(password, user.passwordHash);\nif (!ok) return res.status(401).json({error: "Invalid credentials"});'},
+          {num:4, topic:'sign', action:'jwt.sign({id}, SECRET, {expiresIn:"15m"})', verify:'string ארוך עם 3 חלקים', code:'const token = jwt.sign(\n  { id: user._id },\n  SECRET,\n  { expiresIn: "15m" }\n);'},
+          {num:5, topic:'return', action:'res.json({ token })', verify:'קליינט מקבל token', code:'res.json({ token });'}
+         ],
+         mistakes:['סיסמה ב-payload! JWT לא מוצפן!', 'בלי expiresIn — תקף לנצח', 'הודעות שונות: "user not found" vs "wrong password" — חושף', 'שכחת await bcrypt.compare — Promise truthy תמיד!']
+        },
+        {id:'4b', num:'4.ב', title:'Middleware authenticate',
+         whatToDo:'מחלץ token מ-Authorization: Bearer ..., verify, שומר req.user, next().',
+         why:'כל endpoint מוגן צריך user. middleware אחד במקום חזרה.',
+         steps:[
+          {num:1, topic:'חילוץ', action:'req.headers.authorization?.split(" ")[1]', verify:'?.split = optional chaining', code:'const token = req.headers.authorization?.split(" ")[1];'},
+          {num:2, topic:'בדיקה', action:'if (!token) → 401', verify:'בלי token → 401', code:'if (!token) return res.status(401).json({error: "No token"});'},
+          {num:3, topic:'verify', action:'try { req.user = jwt.verify(token, SECRET); next(); }', verify:'תקין → ממשיך', code:'try {\n  req.user = jwt.verify(token, SECRET);\n  next();\n} catch (err) {\n  res.status(401).json({error: "Invalid token"});\n}'}
+         ],
+         mistakes:['שכחת next() — תיתקע', 'jwt.decode במקום verify — לא בודק חתימה!', 'בלי try/catch — verify זורק, middleware קורס']
+        }
+       ]
+      }
+    ]},
+    {id:'devops', label:'DevOps', icon:'⚙️', questions:[
+      {id:'do-q1', number:5, title:'Dockerfile מאופטם',
+       desc:'Dockerfile ל-Node.js: alpine image, cache layers, production only, non-root.',
+       sections:[
+        {id:'5a', num:'5.א', title:'Base image',
+         whatToDo:'FROM node:20-alpine — קל (~5MB vs ~900MB).',
+         why:'גודל image: זמן build, download, storage, startup.',
+         steps:[
+          {num:1, topic:'FROM', action:'FROM node:20-alpine — לא latest!', verify:'reproducible build', code:'FROM node:20-alpine'},
+          {num:2, topic:'WORKDIR', action:'WORKDIR /app', verify:'כל הפקודות ב-/app', code:'WORKDIR /app'}
+         ],
+         mistakes:['FROM node:latest — לא reproducible', 'FROM node — 900MB+', 'בלי WORKDIR — קבצים ב-/']
+        },
+        {id:'5b', num:'5.ב', title:'Cache layers',
+         whatToDo:'COPY package.json → npm ci → COPY . .',
+         why:'Docker cache: אם קוד משתנה אבל package.json לא → npm ci לא ירוץ שוב!',
+         steps:[
+          {num:1, topic:'package files', action:'COPY package.json package-lock.json ./', verify:'רק שניהם', code:'COPY package.json package-lock.json ./'},
+          {num:2, topic:'npm ci', action:'RUN npm ci --only=production', verify:'ci = clean, production = בלי dev', code:'RUN npm ci --only=production'},
+          {num:3, topic:'code', action:'COPY . . — רק אחרי npm ci!', verify:'שינוי קוד = רק שכבה זו', code:'COPY . .'}
+         ],
+         mistakes:['COPY . . ראשון — שובר cache!', 'npm install במקום ci — איטי', 'שכחת --only=production — dev deps בimage', 'שכחת .dockerignore — node_modules מקומי']
+        },
+        {id:'5c', num:'5.ג', title:'CMD + security',
+         whatToDo:'EXPOSE, CMD exec form, USER non-root.',
+         why:'CMD ["node",...] = PID 1 ישירות. USER node = אבטחה.',
+         steps:[
+          {num:1, topic:'EXPOSE', action:'EXPOSE 3000 — תיעוד בלבד!', verify:'לא חושף בפועל', code:'EXPOSE 3000'},
+          {num:2, topic:'USER', action:'USER node — לא root!', verify:'אבטחה', code:'RUN chown -R node:node /app\nUSER node'},
+          {num:3, topic:'CMD', action:'CMD ["node", "server.js"] — exec form', verify:'signals עובדים', code:'CMD ["node", "server.js"]'}
+         ],
+         mistakes:['CMD shell form — sh כ-PID 1', 'CMD ["npm","start"] — npm עוטף', 'שכחת USER — root!', 'EXPOSE = לא חושף!']
+        }
+       ]
+      }
+    ]}
+  ]
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let currentTopic = 'frontend';
+let currentQuestionId = null;
+let completedQuestions = JSON.parse(localStorage.getItem('dw-completed') || '[]');
+
+// ============================================================
+// DOM REFERENCES
+// ============================================================
+const topicTabsEl = document.getElementById('topic-tabs');
+const questionListEl = document.getElementById('question-list');
+const mainContentEl = document.getElementById('main-content');
+const emptyStateEl = document.getElementById('empty-state');
+const questionContentEl = document.getElementById('question-content');
+const progressBarEl = document.getElementById('progress-bar');
+const progressCountEl = document.getElementById('progress-count');
+const progressTotalEl = document.getElementById('progress-total');
+const statCompletedEl = document.getElementById('stat-completed');
+
+// ============================================================
+// HELPERS
+// ============================================================
+function getAllQuestions() {
+  const all = [];
+  QUESTIONS.topics.forEach(t => t.questions.forEach(q => all.push(q)));
+  return all;
+}
+
+function getQuestionById(id) {
+  for (const topic of QUESTIONS.topics) {
+    for (const q of topic.questions) {
+      if (q.id === id) return q;
+    }
+  }
+  return null;
+}
+
+function getTopicQuestions(topicId) {
+  const topic = QUESTIONS.topics.find(t => t.id === topicId);
+  return topic ? topic.questions : [];
+}
+
+function isCompleted(qId) {
+  return completedQuestions.includes(qId);
+}
+
+function toggleCompleted(qId) {
+  if (isCompleted(qId)) {
+    completedQuestions = completedQuestions.filter(id => id !== qId);
+  } else {
+    completedQuestions.push(qId);
+  }
+  localStorage.setItem('dw-completed', JSON.stringify(completedQuestions));
+  updateProgress();
+  renderQuestionList();
+  if (currentQuestionId === qId) renderQuestion(qId);
+}
+
+function updateProgress() {
+  const total = getAllQuestions().length;
+  const done = completedQuestions.length;
+  const pct = total > 0 ? (done / total) * 100 : 0;
+
+  progressBarEl.style.width = pct + '%';
+  progressCountEl.textContent = done;
+  progressTotalEl.textContent = total;
+  statCompletedEl.textContent = done;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ============================================================
+// RENDER: TOPIC TABS
+// ============================================================
+function renderTopicTabs() {
+  topicTabsEl.innerHTML = '';
+  QUESTIONS.topics.forEach(topic => {
+    const tab = document.createElement('button');
+    tab.className = 'topic-tab' + (topic.id === currentTopic ? ' active' : '');
+    tab.innerHTML = `<span class="tab-icon">${topic.icon}</span>${topic.label}`;
+    tab.addEventListener('click', () => {
+      currentTopic = topic.id;
+      renderTopicTabs();
+      renderQuestionList();
+    });
+    topicTabsEl.appendChild(tab);
+  });
+}
+
+// ============================================================
+// RENDER: QUESTION LIST
+// ============================================================
+function renderQuestionList() {
+  const questions = getTopicQuestions(currentTopic);
+  questionListEl.innerHTML = '';
+
+  questions.forEach(q => {
+    const item = document.createElement('div');
+    let classes = 'question-item';
+    if (q.id === currentQuestionId) classes += ' active';
+    if (isCompleted(q.id)) classes += ' completed';
+    item.className = classes;
+
+    item.innerHTML = `
+      <div class="q-number">שאלה ${q.number}</div>
+      <div class="q-title">${q.title}</div>
+      <div class="q-desc">${q.desc}</div>
+    `;
+
+    item.addEventListener('click', () => {
+      currentQuestionId = q.id;
+      renderQuestionList();
+      renderQuestion(q.id);
+    });
+
+    questionListEl.appendChild(item);
+  });
+}
+
+// ============================================================
+// RENDER: QUESTION CONTENT
+// ============================================================
+function renderQuestion(qId) {
+  const q = getQuestionById(qId);
+  if (!q) return;
+
+  emptyStateEl.style.display = 'none';
+  questionContentEl.style.display = 'block';
+
+  let html = '';
+
+  // Header
+  html += `
+    <div class="question-header">
+      <span class="q-badge">שאלה ${q.number}</span>
+      <h1>${q.title}</h1>
+      <div class="q-description">${q.desc}</div>
+      <button class="neo-btn complete-btn ${isCompleted(q.id) ? 'is-completed' : ''}" onclick="toggleCompleted('${q.id}')">
+        ${isCompleted(q.id) ? '✅ הושלם!' : 'סמן כהושלם'}
+      </button>
+    </div>
+  `;
+
+  // Sections
+  q.sections.forEach(section => {
+    html += `<div class="section-block">`;
+
+    // Section header
+    html += `
+      <div class="section-head">
+        <span class="section-num">${section.num}</span>
+        <span class="section-title">${section.title}</span>
+      </div>
+    `;
+
+    // Info cards
+    html += `
+      <div class="info-cards">
+        <div class="info-card what-to-do">
+          <div class="card-label">\u{1F4CB} מה צריך לעשות</div>
+          <div class="card-text">${section.whatToDo}</div>
+        </div>
+        <div class="info-card why-card">
+          <div class="card-label">\u{1F4A1} למה?</div>
+          <div class="card-text">${section.why}</div>
+        </div>
+      </div>
+    `;
+
+    // Steps
+    html += `<div class="steps-container">`;
+    html += `<div class="steps-title">\u{1F527} צעדים</div>`;
+
+    section.steps.forEach(step => {
+      html += `
+        <div class="step-item">
+          <div class="step-header">
+            <span class="step-num">${step.num}</span>
+            <span class="step-topic">${step.topic}</span>
+          </div>
+          <div class="step-body">
+            <div class="step-action">
+              <span class="action-icon">▶</span>
+              <span>${escapeHtml(step.action)}</span>
+            </div>
+            <div class="step-verify">
+              <span class="verify-icon">✓</span>
+              <span>${escapeHtml(step.verify)}</span>
+            </div>
+            <div class="step-code">${escapeHtml(step.code)}</div>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `</div>`; // steps-container
+
+    // Mistakes
+    if (section.mistakes && section.mistakes.length > 0) {
+      html += `
+        <div class="mistakes-container">
+          <div class="mistakes-title">⚠️ טעויות נפוצות</div>
+          <div class="mistakes-grid">
+      `;
+      section.mistakes.forEach(m => {
+        html += `
+          <div class="mistake-chip">
+            <span class="mistake-icon">⚠️</span>
+            <span>${escapeHtml(m)}</span>
+          </div>
+        `;
+      });
+      html += `</div></div>`;
+    }
+
+    html += `</div>`; // section-block
+  });
+
+  questionContentEl.innerHTML = html;
+
+  // Scroll to top of main content
+  mainContentEl.scrollTop = 0;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  renderTopicTabs();
+  renderQuestionList();
+  updateProgress();
+}
+
+init();
+</script>
+</body>
+</html>

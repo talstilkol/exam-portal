@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>פתרון 100 — Currency — Express שרת תעריפי מטבע (20 נק׳)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0f172a;--bg:#f8fafc;--accent:#7c3aed;--accent2:#2563eb;--good:#16a34a}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Heebo,Arial,sans-serif;background:linear-gradient(135deg,#fef9c3,#dbeafe);color:var(--ink);line-height:1.7;direction:rtl;padding:24px}
+  .wrap{max-width:1100px;margin:0 auto}
+  .hero{padding:24px 28px;border:3px solid #000;border-radius:18px;background:linear-gradient(135deg,#0f172a,#312e81 60%,#7c3aed);color:#fff;box-shadow:6px 6px 0 #000;margin-bottom:18px}
+  .hero h1{margin:0 0 8px;font-size:28px}
+  .hero .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .hero .pill{padding:4px 10px;border:2px solid #fff;border-radius:999px;font-size:12px;font-weight:900;background:rgba(255,255,255,.15)}
+  .hero .pill.gold{background:#facc15;color:#000;border-color:#000}
+  section.card{padding:18px 22px;border:2.5px solid #000;border-radius:16px;background:#fff;box-shadow:5px 5px 0 #000;margin-bottom:16px}
+  section.card h2{margin:0 0 10px;font-size:20px;color:#1f2937;display:flex;gap:8px;align-items:center}
+  ul.fixes{padding:0;margin:0;list-style:none;display:grid;gap:6px}
+  ul.fixes li{padding:8px 12px;border:2px solid #000;border-radius:8px;background:#f0fdf4;font-weight:600;font-size:13.5px;display:flex;gap:8px}
+  ul.fixes li .fix-mark{font-weight:900}
+  table.req{width:100%;border-collapse:collapse}
+  table.req td{padding:8px 12px;border-bottom:1.5px solid #cbd5e1;font-size:13.5px;vertical-align:top}
+  table.req .req-mark{width:24px;text-align:center;font-weight:900;font-size:16px}
+  table.req tr.req-yes .req-mark{color:#16a34a}
+  table.req tr.req-no .req-mark{color:#dc2626}
+  .annotated-code{border:2px solid #000;border-radius:12px;background:#0f172a;padding:14px;direction:ltr;text-align:left;overflow-x:auto;font-family:Consolas,Monaco,monospace;font-size:13px;line-height:1.65}
+  .code-line{display:flex;gap:10px;padding:1px 4px;border-radius:4px;cursor:help;color:#e2e8f0}
+  .code-line:hover{background:rgba(250,204,21,.1)}
+  .code-line:focus{outline:2px solid #facc15;outline-offset:-2px}
+  .code-line.is-comment .src{color:#94a3b8;font-style:italic}
+  .code-line.is-fix{background:rgba(16,185,129,.18)}
+  .code-line.is-fix .src{color:#86efac}
+  .ln{color:#64748b;min-width:36px;text-align:left;user-select:none;flex:0 0 auto}
+  .src{flex:1;white-space:pre;color:#e2e8f0}
+  .src .keyword{color:#c084fc}
+  .src .string{color:#fcd34d}
+  /* Hover tooltip */
+  .code-line[data-tip]{position:relative}
+  .code-line[data-tip]:hover::after{
+    content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);right:0;
+    background:#facc15;color:#0f172a;padding:6px 10px;border:2px solid #000;border-radius:8px;
+    font-size:11.5px;font-weight:900;direction:rtl;white-space:normal;width:max-content;max-width:380px;
+    box-shadow:3px 3px 0 #000;z-index:5;pointer-events:none;font-family:Heebo,Arial,sans-serif
+  }
+  .lang-pill{display:inline-block;padding:2px 9px;background:#1f2937;color:#facc15;border-radius:999px;font-size:11px;font-weight:900;margin-right:8px;font-family:Consolas,monospace}
+  @media print{body{background:#fff !important;padding:10px}section.card{box-shadow:none;border:1.5px solid #94a3b8;break-inside:avoid}section.card:hover{transform:none}.hero{background:#0f172a !important;box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}.annotated-code{border:1px solid #64748b}.code-line:hover::after{display:none}.back-link{display:none !important}}
+
+  /* === Phase C: Dark mode === */
+  @media(prefers-color-scheme:dark){
+    :root{--ink:#e2e8f0;--bg:#0f172a}
+    body{background:#0f172a;color:var(--ink)}
+    section.card{background:#1e293b;border-color:#334155;box-shadow:5px 5px 0 #000}
+    section.card h2{color:#e2e8f0}
+    ul.fixes li{background:#1a2e1a;border-color:#334155;color:#d1fae5}
+    table.req td{border-color:#334155;color:#cbd5e1}
+    .hero{box-shadow:6px 6px 0 #1e1b4b}
+    .back-link{border-color:rgba(255,255,255,.3) !important;color:#93c5fd !important}
+  }
+  /* === Phase C: Responsive === */
+  @media(max-width:768px){
+    body{padding:12px}
+    .hero{padding:16px 18px;border-radius:12px}
+    .hero h1{font-size:20px}
+    .hero .meta{gap:5px}
+    .hero .pill{font-size:10px;padding:3px 7px}
+    section.card{padding:12px 14px;border-radius:12px}
+    section.card h2{font-size:16px}
+    ul.fixes li{font-size:12px;padding:6px 8px}
+    table.req td{padding:6px 8px;font-size:12px}
+    .annotated-code{padding:8px;font-size:11px;border-radius:8px}
+    .code-line[data-tip]:hover::after{max-width:260px;font-size:10px}
+    .ln{min-width:28px;font-size:11px}
+  }
+  /* === Phase C: Animations === */
+  section.card{transition:transform .15s,box-shadow .15s}
+  section.card:hover{transform:translateY(-2px);box-shadow:5px 7px 0 #000}
+  ul.fixes li{transition:background .15s}
+  ul.fixes li:hover{background:#dcfce7}
+  .back-link:hover{border-color:rgba(255,255,255,.7) !important;background:rgba(255,255,255,.1) !important}
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:0.01ms !important;transition-duration:0.01ms !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>🏆 פתרון לציון 100 — Currency — Express שרת תעריפי מטבע (20 נק׳)</h1>
+    <p style="margin:0;color:#dbeafe">קוד <strong>מתוקן</strong> — עם כל הבאגים שתועדו במקור מתוקנים בפועל.
+    רחפו על כל שורה לתיאור קצר; שורות ירוקות הן תיקונים.</p>
+    <div class="meta">
+      <span class="pill gold">Express</span>
+      <span class="pill">~60 שורות</span>
+      <span class="pill">qid: currency-q3</span>
+    </div>
+      <a class="back-link" href="../qa-bundle-r3/currency-q3.html" style="display:inline-block;margin-top:12px;padding:6px 14px;border:2px solid rgba(255,255,255,.4);border-radius:8px;color:#dbeafe;text-decoration:none;font-size:12px;font-weight:700;transition:.12s">← חזרה לשאלה המקורית</a>
+  </header>
+
+  <section class="card">
+    <h2>🔧 באגים שתוקנו (לא רק תועדו — תוקנו בקוד)</h2>
+    <ul class="fixes"><li><span class="fix-mark">✅</span> query params הם מחרוזות — amount צריך המרה עם Number()</li><li><span class="fix-mark">✅</span> בדיקה ש־from !== to (אסור להמיר מטבע לעצמו)</li><li><span class="fix-mark">✅</span> חלוקה באפס — בדיקה ש־toRate.value !== 0</li><li><span class="fix-mark">✅</span> 404 כאשר סוג מטבע לא נמצא ב־convert</li></ul>
+  </section>
+
+  <section class="card">
+    <h2>✅ דרישה-מול-מימוש (טבלת בקרה)</h2>
+    <table class="req"><tr class="req-yes"><td class="req-mark">✓</td><td>שרת Express עם express.json() + cors()</td></tr><tr class="req-yes"><td class="req-mark">✓</td><td>מערך rates[] עם אובייקטים {type, value}</td></tr><tr class="req-yes"><td class="req-mark">✓</td><td>GET /rates — כל התעריפים</td></tr><tr class="req-yes"><td class="req-mark">✓</td><td>POST /rates — הוספת תעריף, type אנגלית בלבד, value חיובי</td></tr><tr class="req-yes"><td class="req-mark">✓</td><td>PUT /rates/:type — עדכון value לפי type, 404 אם לא נמצא</td></tr><tr class="req-yes"><td class="req-mark">✓</td><td>DELETE /rates/:type — מחיקה לפי type, 404 אם לא נמצא</td></tr><tr class="req-yes"><td class="req-mark">✓</td><td>GET /convert?from=X&to=Y&amount=Z — חישוב המרה</td></tr></table>
+  </section>
+
+  <section class="card">
+    <h2>📦 הקובץ המלא — קוד מתוקן עם hover-tip לכל שורה</h2>
+    <div class="annotated-code lang-js"><div class="code-lines"><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">1</span><span class="src">// Currency Rates — Express Q3 (20 pts)</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">2</span><span class="src">// Currency rate API with CRUD + conversion</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">3</span><span class="src">&nbsp;</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">4</span><span class="src">const express = require(&quot;express&quot;);</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">5</span><span class="src">const cors = require(&quot;cors&quot;);</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">6</span><span class="src">&nbsp;</span></div><div class="code-line" data-tip="const: משתנה שלא מוקצה מחדש — נכון לרוב המקרים." tabindex="0"><span class="ln">7</span><span class="src">const app = express();</span></div><div class="code-line" data-tip="middleware: מפרש JSON מגוף הבקשה." tabindex="0"><span class="ln">8</span><span class="src">app.use(express.json());</span></div><div class="code-line" data-tip="middleware: מאפשר קריאות cross-origin." tabindex="0"><span class="ln">9</span><span class="src">app.use(cors());</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">10</span><span class="src">&nbsp;</span></div><div class="code-line" data-tip="let: משתנה שאפשר לעדכן — המערך ישתנה בעקבות POST/PUT/DELETE." tabindex="0"><span class="ln">11</span><span class="src">let rates = [</span></div><div class="code-line" data-tip="נתון התחלתי — דולר אמריקאי." tabindex="0"><span class="ln">12</span><span class="src">  { type: &quot;USD&quot;, value: 3.5 },</span></div><div class="code-line" data-tip="נתון התחלתי — אירו." tabindex="0"><span class="ln">13</span><span class="src">  { type: &quot;EUR&quot;, value: 3.9 },</span></div><div class="code-line" data-tip="נתון התחלתי — לירה שטרלינג." tabindex="0"><span class="ln">14</span><span class="src">  { type: &quot;GBP&quot;, value: 4.5 },</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">15</span><span class="src">];</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">16</span><span class="src">&nbsp;</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">17</span><span class="src">// GET /rates — return all rates</span></div><div class="code-line" data-tip="Express endpoint: מחזיר את כל המטבעות." tabindex="0"><span class="ln">18</span><span class="src">app.get(&quot;/rates&quot;, (req, res) =&gt; {</span></div><div class="code-line" data-tip="שולח תשובה ללקוח — מערך התעריפים המלא." tabindex="0"><span class="ln">19</span><span class="src">  res.json(rates);</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">20</span><span class="src">});</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">21</span><span class="src">&nbsp;</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">22</span><span class="src">// POST /rates — add new rate</span></div><div class="code-line" data-tip="Express endpoint: הוספת תעריף חדש." tabindex="0"><span class="ln">23</span><span class="src">app.post(&quot;/rates&quot;, (req, res) =&gt; {</span></div><div class="code-line" data-tip="destructuring: חילוץ type ו־value מגוף הבקשה." tabindex="0"><span class="ln">24</span><span class="src">  const { type, value } = req.body;</span></div><div class="code-line" data-tip="ולידציה: type חייב להיות אנגלית בלבד (regex)." tabindex="0"><span class="ln">25</span><span class="src">  if (!type || !/^[A-Za-z]+$/.test(type)) {</span></div><div class="code-line" data-tip="return 400: קלט לא תקין — type חייב להכיל אותיות אנגליות בלבד." tabindex="0"><span class="ln">26</span><span class="src">    return res.status(400).json({ error: &quot;type must be English letters only&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">27</span><span class="src">  }</span></div><div class="code-line" data-tip="ולידציה: value חייב להיות מספר חיובי." tabindex="0"><span class="ln">28</span><span class="src">  if (typeof value !== &quot;number&quot; || value &lt;= 0) {</span></div><div class="code-line" data-tip="return 400: קלט לא תקין — value חייב להיות חיובי." tabindex="0"><span class="ln">29</span><span class="src">    return res.status(400).json({ error: &quot;value must be a positive number&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">30</span><span class="src">  }</span></div><div class="code-line" data-tip="יצירת אובייקט תעריף חדש ודחיפה למערך." tabindex="0"><span class="ln">31</span><span class="src">  const newRate = { type: type.toUpperCase(), value };</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">32</span><span class="src">  rates.push(newRate);</span></div><div class="code-line" data-tip="שולח 201 — נוצר בהצלחה." tabindex="0"><span class="ln">33</span><span class="src">  res.status(201).json(newRate);</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">34</span><span class="src">});</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">35</span><span class="src">&nbsp;</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">36</span><span class="src">// PUT /rates/:type — update value by type</span></div><div class="code-line" data-tip="Express endpoint: עדכון ערך תעריף לפי סוג." tabindex="0"><span class="ln">37</span><span class="src">app.put(&quot;/rates/:type&quot;, (req, res) =&gt; {</span></div><div class="code-line" data-tip="חיפוש במערך לפי type (case-insensitive)." tabindex="0"><span class="ln">38</span><span class="src">  const rate = rates.find(r =&gt; r.type === req.params.type.toUpperCase());</span></div><div class="code-line" data-tip="תנאי: אם לא נמצא — 404." tabindex="0"><span class="ln">39</span><span class="src">  if (!rate) {</span></div><div class="code-line" data-tip="return 404: סוג מטבע לא קיים במערך." tabindex="0"><span class="ln">40</span><span class="src">    return res.status(404).json({ error: &quot;Rate not found&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">41</span><span class="src">  }</span></div><div class="code-line" data-tip="ולידציה: value חדש חייב להיות מספר חיובי." tabindex="0"><span class="ln">42</span><span class="src">  if (typeof req.body.value !== &quot;number&quot; || req.body.value &lt;= 0) {</span></div><div class="code-line" data-tip="return 400: ערך לא תקין." tabindex="0"><span class="ln">43</span><span class="src">    return res.status(400).json({ error: &quot;value must be a positive number&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">44</span><span class="src">  }</span></div><div class="code-line" data-tip="עדכון הערך באובייקט שנמצא." tabindex="0"><span class="ln">45</span><span class="src">  rate.value = req.body.value;</span></div><div class="code-line" data-tip="שולח את האובייקט המעודכן." tabindex="0"><span class="ln">46</span><span class="src">  res.json(rate);</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">47</span><span class="src">});</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">48</span><span class="src">&nbsp;</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">49</span><span class="src">// DELETE /rates/:type — delete by type</span></div><div class="code-line" data-tip="Express endpoint: מחיקת תעריף לפי סוג." tabindex="0"><span class="ln">50</span><span class="src">app.delete(&quot;/rates/:type&quot;, (req, res) =&gt; {</span></div><div class="code-line" data-tip="חיפוש אינדקס במערך." tabindex="0"><span class="ln">51</span><span class="src">  const idx = rates.findIndex(r =&gt; r.type === req.params.type.toUpperCase());</span></div><div class="code-line" data-tip="תנאי: אם לא נמצא — 404." tabindex="0"><span class="ln">52</span><span class="src">  if (idx === -1) {</span></div><div class="code-line" data-tip="return 404: סוג מטבע לא קיים במערך." tabindex="0"><span class="ln">53</span><span class="src">    return res.status(404).json({ error: &quot;Rate not found&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">54</span><span class="src">  }</span></div><div class="code-line" data-tip="splice: מסיר איבר אחד מהמערך במקום idx." tabindex="0"><span class="ln">55</span><span class="src">  rates.splice(idx, 1);</span></div><div class="code-line" data-tip="שולח 200 — נמחק בהצלחה." tabindex="0"><span class="ln">56</span><span class="src">  res.json({ message: &quot;Deleted&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">57</span><span class="src">});</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">58</span><span class="src">&nbsp;</span></div><div class="code-line is-comment" data-tip="הערה: לא רץ ב־runtime, רק לקריאה." tabindex="0"><span class="ln">59</span><span class="src">// GET /convert?from=X&amp;to=Y&amp;amount=Z</span></div><div class="code-line" data-tip="Express endpoint: חישוב המרה בין שני מטבעות." tabindex="0"><span class="ln">60</span><span class="src">app.get(&quot;/convert&quot;, (req, res) =&gt; {</span></div><div class="code-line" data-tip="destructuring: חילוץ from, to, amount מה־query string." tabindex="0"><span class="ln">61</span><span class="src">  const { from, to, amount } = req.query;</span></div><div class="code-line is-fix" data-tip="תיקון: query params הם תמיד מחרוזות — חייבים להמיר ל־Number." tabindex="0"><span class="ln">62</span><span class="src">  const numAmount = Number(amount);</span></div><div class="code-line is-fix" data-tip="תיקון: ולידציה — amount חייב להיות מספר חוקי וחיובי." tabindex="0"><span class="ln">63</span><span class="src">  if (!from || !to || isNaN(numAmount) || numAmount &lt;= 0) {</span></div><div class="code-line" data-tip="return 400: פרמטרים חסרים או לא תקינים." tabindex="0"><span class="ln">64</span><span class="src">    return res.status(400).json({ error: &quot;from, to, amount are required (amount &gt; 0)&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">65</span><span class="src">  }</span></div><div class="code-line is-fix" data-tip="תיקון: אסור להמיר מטבע לעצמו — from !== to." tabindex="0"><span class="ln">66</span><span class="src">  if (from.toUpperCase() === to.toUpperCase()) {</span></div><div class="code-line is-fix" data-tip="תיקון: 400 אם from ו־to זהים." tabindex="0"><span class="ln">67</span><span class="src">    return res.status(400).json({ error: &quot;from and to must be different&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">68</span><span class="src">  }</span></div><div class="code-line" data-tip="חיפוש תעריף המקור במערך." tabindex="0"><span class="ln">69</span><span class="src">  const fromRate = rates.find(r =&gt; r.type === from.toUpperCase());</span></div><div class="code-line" data-tip="חיפוש תעריף היעד במערך." tabindex="0"><span class="ln">70</span><span class="src">  const toRate = rates.find(r =&gt; r.type === to.toUpperCase());</span></div><div class="code-line is-fix" data-tip="תיקון: 404 אם אחד מסוגי המטבע לא נמצא." tabindex="0"><span class="ln">71</span><span class="src">  if (!fromRate || !toRate) {</span></div><div class="code-line is-fix" data-tip="תיקון: החזרת 404 עם הודעה מפורטת." tabindex="0"><span class="ln">72</span><span class="src">    return res.status(404).json({ error: &quot;One or both currency types not found&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">73</span><span class="src">  }</span></div><div class="code-line is-fix" data-tip="תיקון: בדיקת חלוקה באפס — toRate.value לא יכול להיות 0." tabindex="0"><span class="ln">74</span><span class="src">  if (toRate.value === 0) {</span></div><div class="code-line is-fix" data-tip="תיקון: 400 כדי למנוע חלוקה ב־0." tabindex="0"><span class="ln">75</span><span class="src">    return res.status(400).json({ error: &quot;Cannot divide by zero (toRate is 0)&quot; });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">76</span><span class="src">  }</span></div><div class="code-line" data-tip="חישוב ההמרה: (amount * fromRate) / toRate." tabindex="0"><span class="ln">77</span><span class="src">  const result = (numAmount * fromRate.value) / toRate.value;</span></div><div class="code-line" data-tip="שולח תשובה עם תוצאת ההמרה." tabindex="0"><span class="ln">78</span><span class="src">  res.json({ from, to, amount: numAmount, result });</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">79</span><span class="src">});</span></div><div class="code-line" data-tip="שורה ריקה — מפרידה בלוקים לוגיים." tabindex="0"><span class="ln">80</span><span class="src">&nbsp;</span></div><div class="code-line" data-tip="הפעלת השרת על פורט 3000." tabindex="0"><span class="ln">81</span><span class="src">const PORT = 3000;</span></div><div class="code-line" data-tip="listen: השרת מתחיל להאזין לבקשות." tabindex="0"><span class="ln">82</span><span class="src">app.listen(PORT, () =&gt; {</span></div><div class="code-line" data-tip="הדפסה לקונסול — מאשרת שהשרת רץ." tabindex="0"><span class="ln">83</span><span class="src">  console.log(`Currency server running on http://localhost:${PORT}`);</span></div><div class="code-line" data-tip="שורת קוד — בדקו סוגריים, שמות משתנים, וההקשר לדרישת השאלה." tabindex="0"><span class="ln">84</span><span class="src">});</span></div></div></div>
+  </section>
+
+</div>
+</body>
+</html>

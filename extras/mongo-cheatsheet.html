@@ -990,6 +990,58 @@ app.<span class="mt">delete</span>(<span class="str">'/items/:id'</span>, <span 
   app.<span class="mt">listen</span>(PORT, () <span class="op">=></span> <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">`Server on port ${PORT}`</span>));
 })();</pre>
 
+    <h3 id="aggregation">Aggregation Pipeline</h3>
+    <p>שרשרת שלבים שמעבדת מסמכים ומחזירה תוצאות מחושבות:</p>
+<pre><span class="cm">// דוגמה: ממוצע ציונים לפי קורס</span>
+<span class="kw">const</span> results = <span class="kw">await</span> Student.<span class="mt">aggregate</span>([
+  { <span class="pr">$match</span>: { <span class="pr">active</span>: <span class="num">true</span> } },
+  { <span class="pr">$group</span>: {
+    <span class="pr">_id</span>: <span class="str">"$course"</span>,
+    <span class="pr">avgGrade</span>: { <span class="pr">$avg</span>: <span class="str">"$grade"</span> },
+    <span class="pr">count</span>: { <span class="pr">$sum</span>: <span class="num">1</span> }
+  }},
+  { <span class="pr">$sort</span>: { <span class="pr">avgGrade</span>: <span class="num">-1</span> } },
+  { <span class="pr">$project</span>: { <span class="pr">_id</span>: <span class="num">0</span>, <span class="pr">course</span>: <span class="str">"$_id"</span>, <span class="pr">avgGrade</span>: <span class="num">1</span>, <span class="pr">count</span>: <span class="num">1</span> } }
+]);</pre>
+
+    <table>
+      <tr><th>Stage</th><th>תפקיד</th><th>דוגמה</th></tr>
+      <tr><td><code>$match</code></td><td>סינון מסמכים (כמו find)</td><td><code>{ active: true }</code></td></tr>
+      <tr><td><code>$group</code></td><td>קיבוץ + חישוב (sum, avg, count)</td><td><code>{ _id: "$field", total: { $sum: 1 } }</code></td></tr>
+      <tr><td><code>$sort</code></td><td>מיון תוצאות</td><td><code>{ avgGrade: -1 }</code></td></tr>
+      <tr><td><code>$project</code></td><td>בחירת/שינוי שדות בפלט</td><td><code>{ _id: 0, name: 1 }</code></td></tr>
+      <tr><td><code>$lookup</code></td><td>JOIN בין collections</td><td>ראו populate למטה</td></tr>
+      <tr><td><code>$unwind</code></td><td>פריסת מערך לשורות נפרדות</td><td><code>"$tags"</code></td></tr>
+      <tr><td><code>$limit</code></td><td>הגבלת מס׳ תוצאות</td><td><code>10</code></td></tr>
+    </table>
+
+    <h3 id="populate">Populate — קשרים בין Collections</h3>
+    <p>הפניה (ref) למסמך ב-collection אחר, populate טוען אותו אוטומטית:</p>
+<pre><span class="cm">// Schema עם ref</span>
+<span class="kw">const</span> courseSchema = <span class="kw">new</span> Schema({
+  <span class="pr">name</span>: String,
+  <span class="pr">teacher</span>: { <span class="pr">type</span>: Schema.Types.ObjectId, <span class="pr">ref</span>: <span class="str">'Teacher'</span> },
+  <span class="pr">students</span>: [{ <span class="pr">type</span>: Schema.Types.ObjectId, <span class="pr">ref</span>: <span class="str">'Student'</span> }]
+});
+
+<span class="cm">// שימוש ב-populate</span>
+<span class="kw">const</span> course = <span class="kw">await</span> Course
+  .<span class="mt">findById</span>(id)
+  .<span class="mt">populate</span>(<span class="str">'teacher'</span>)
+  .<span class="mt">populate</span>(<span class="str">'students'</span>);
+
+<span class="cm">// populate עם סינון שדות</span>
+<span class="kw">await</span> Course.<span class="mt">findById</span>(id)
+  .<span class="mt">populate</span>({ <span class="pr">path</span>: <span class="str">'students'</span>, <span class="pr">select</span>: <span class="str">'name grade'</span> });
+
+<span class="cm">// nested populate</span>
+<span class="kw">await</span> Course.<span class="mt">findById</span>(id)
+  .<span class="mt">populate</span>({ <span class="pr">path</span>: <span class="str">'teacher'</span>, <span class="pr">populate</span>: { <span class="pr">path</span>: <span class="str">'department'</span> } });</pre>
+
+    <div class="tip-box">
+      <strong>$lookup vs populate:</strong> &mdash; <code>populate</code> = Mongoose convenience (multiple queries מאחורי הקלעים). <code>$lookup</code> = aggregation stage (JOIN אחד ב-DB, יעיל יותר). במבחן — populate פשוט יותר לכתיבה.
+    </div>
+
     <h3>צ'קליסט לפני הגשה</h3>
     <table>
       <tr><th>בדיקה</th><th>סטטוס</th></tr>
@@ -1037,5 +1089,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<footer style="border-top:3px solid #000;padding:16px 24px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:20px">
+<strong>🔗 כלים נוספים:</strong>
+<a href="flow-canvas.html" style="color:#7c3aed;font-weight:700">🗺 Flow Canvas</a>
+<a href="practice-bank.html" style="color:#7c3aed;font-weight:700">💪 בנק תרגול</a>
+<a href="simulations.html" style="color:#7c3aed;font-weight:700">🎮 סימולציות</a>
+<a href="code-browser.html" style="color:#7c3aed;font-weight:700">💻 קוד מקור</a>
+<a href="progress-dashboard.html" style="color:#7c3aed;font-weight:700">📊 דשבורד</a>
+</footer>
 </body>
 </html>

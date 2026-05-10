@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📊 דשבורד התקדמות</title>
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--brand:#7c3aed;--gold:#facc15;--green:#16a34a;--blue:#2563eb;--red:#dc2626;--shadow:4px 4px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:28px 24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(22px,4vw,36px);margin:0}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:14px}
+.main{max-width:1100px;margin:0 auto;padding:24px 16px}
+
+/* Overall progress ring */
+.overall{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin:24px 0 30px}
+.ring-box{text-align:center}
+.ring-label{font-weight:900;font-size:14px;margin-top:8px}
+.ring-sub{font-size:12px;color:#64748b;font-weight:600}
+.ring-svg{width:120px;height:120px}
+.ring-bg{fill:none;stroke:#e2e8f0;stroke-width:8}
+.ring-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .8s ease}
+.ring-text{font-size:22px;font-weight:900;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px}
+.card{background:#fff;border:3px solid #000;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);transition:.15s}
+.card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #0f172a}
+.card-head{padding:12px 16px;font-weight:900;font-size:15px;border-bottom:2px solid #000;display:flex;align-items:center;gap:8px}
+.card-body{padding:14px 16px}
+.card-bar{height:12px;background:#e2e8f0;border-radius:6px;border:2px solid #000;overflow:hidden;margin:8px 0}
+.card-bar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.card-stat{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:#64748b;margin-top:6px}
+.card-stat b{color:var(--ink)}
+.card-items{margin-top:10px;display:flex;flex-direction:column;gap:4px}
+.card-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 8px;border-radius:6px;background:#f8fafc}
+.card-item.done{background:#dcfce7}
+.card-item.done::before{content:'✓';color:var(--green);font-weight:900}
+.card-item.pending::before{content:'○';color:#94a3b8}
+.card-link{display:inline-block;margin-top:10px;padding:6px 14px;background:var(--brand);color:#fff;border:2px solid #000;border-radius:8px;font-weight:800;font-size:12px;text-decoration:none;transition:.15s}
+.card-link:hover{transform:translateY(-1px);box-shadow:2px 2px 0 #000}
+
+/* Reset */
+.reset-bar{text-align:center;margin:24px 0}
+.reset-btn{padding:8px 20px;background:#fee2e2;color:#991b1b;border:2px solid #000;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer;transition:.15s}
+.reset-btn:hover{background:#fecaca;transform:translateY(-1px);box-shadow:2px 2px 0 #000}
+
+@media print{body{background:#fff}.hero{padding:12px;background:#333!important;-webkit-print-color-adjust:exact}.reset-bar{display:none}}
+</style>
+</head>
+<body>
+<div class="hero">
+<h1>📊 דשבורד התקדמות</h1>
+<p>מעקב אחרי ההתקדמות שלך בכל הכלים — תרגול, סימולציות, מפת קורס ועוד</p>
+</div>
+<div class="main">
+<div class="overall" id="overall"></div>
+<div class="cards" id="cards"></div>
+<div class="reset-bar"><button class="reset-btn" onclick="resetAll()">🗑 אפס את כל ההתקדמות</button></div>
+</div>
+<script>
+const TOOLS = [
+  {
+    id: 'course-map',
+    name: 'מפת קורס',
+    icon: '🗂',
+    color: '#7c3aed',
+    link: 'course-map.html',
+    getProgress() {
+      const data = JSON.parse(localStorage.getItem('cm-checked') || '{}');
+      const total = 16;
+      const done = Object.keys(data).length;
+      return { done, total, items: null };
+    }
+  },
+  {
+    id: 'practice-bank',
+    name: 'בנק תרגול',
+    icon: '💪',
+    color: '#2563eb',
+    link: 'practice-bank.html',
+    getProgress() {
+      const data = JSON.parse(localStorage.getItem('pb-solved') || '{}');
+      const done = Object.keys(data).length;
+      const total = 38;
+      return { done, total, items: null };
+    }
+  },
+  {
+    id: 'simulations',
+    name: 'סימולציות',
+    icon: '🎮',
+    color: '#16a34a',
+    link: 'simulations.html',
+    getProgress() {
+      const data = JSON.parse(localStorage.getItem('sim-progress') || '{}');
+      const total = 9;
+      const done = Object.keys(data).filter(k => data[k] === 'completed').length;
+      return { done, total, items: null };
+    }
+  },
+  {
+    id: 'flow-canvas',
+    name: 'מפת זרימה',
+    icon: '🗺',
+    color: '#f97316',
+    link: 'flow-canvas.html',
+    getProgress() {
+      const data = JSON.parse(localStorage.getItem('fc-visited') || '[]');
+      const total = 27;
+      const done = Array.isArray(data) ? data.length : 0;
+      return { done, total, items: null };
+    }
+  },
+  {
+    id: 'code-browser',
+    name: 'דפדפן קוד',
+    icon: '💻',
+    color: '#06b6d4',
+    link: 'code-browser.html',
+    getProgress() {
+      const data = JSON.parse(localStorage.getItem('cb-viewed') || '[]');
+      const total = 27;
+      const done = Array.isArray(data) ? data.length : 0;
+      return { done, total, items: null };
+    }
+  },
+  {
+    id: 'file-graph',
+    name: 'File Graph',
+    icon: '📂',
+    color: '#dc2626',
+    link: 'file-graph.html',
+    getProgress() {
+      const data = JSON.parse(localStorage.getItem('fg-visited') || '[]');
+      const total = 9;
+      const done = Array.isArray(data) ? data.length : 0;
+      return { done, total, items: null };
+    }
+  },
+  {
+    id: 'sequence-diagrams',
+    name: 'Sequence Diagrams',
+    icon: '🔄',
+    color: '#8b5cf6',
+    link: 'sequence-diagrams.html',
+    getProgress() {
+      const data = JSON.parse(localStorage.getItem('sd-viewed') || '[]');
+      const total = 12;
+      const done = Array.isArray(data) ? data.length : 0;
+      return { done, total, items: null };
+    }
+  },
+  {
+    id: 'exam-strategy',
+    name: 'אסטרטגיית מבחן',
+    icon: '🎯',
+    color: '#ec4899',
+    link: 'exam-strategy.html',
+    getProgress() {
+      const data = JSON.parse(localStorage.getItem('es-checklist') || '[]');
+      const total = 18;
+      const done = Array.isArray(data) ? data.length : 0;
+      return { done, total, items: null };
+    }
+  },
+  {
+    id: 'exam-knowledge',
+    name: 'מרכז ידע',
+    icon: '📚',
+    color: '#0891b2',
+    link: 'exam-knowledge.html',
+    getProgress() {
+      const data = JSON.parse(localStorage.getItem('ek-viewed') || '[]');
+      const total = 10;
+      const done = Array.isArray(data) ? data.length : 0;
+      return { done, total, items: null };
+    }
+  },
+  {
+    id: 'debug-walkthrough',
+    name: 'Debug צעד-אחר-צעד',
+    icon: '🔍',
+    color: '#b45309',
+    link: 'debug-walkthrough.html',
+    getProgress() {
+      const data = JSON.parse(localStorage.getItem('dw-completed') || '[]');
+      const total = 5;
+      const done = Array.isArray(data) ? data.length : 0;
+      return { done, total, items: null };
+    }
+  },
+  {
+    id: 'data-flow',
+    name: 'Data Flow',
+    icon: '📦',
+    color: '#059669',
+    link: 'data-flow.html',
+    getProgress() {
+      const data = JSON.parse(localStorage.getItem('df-viewed') || '[]');
+      const total = 5;
+      const done = Array.isArray(data) ? data.length : 0;
+      return { done, total, items: null };
+    }
+  }
+];
+
+function renderRing(pct, color, size = 120) {
+  const r = 48, c = 2 * Math.PI * r;
+  const offset = c - (pct / 100) * c;
+  return `<svg class="ring-svg" viewBox="0 0 ${size} ${size}">
+    <circle class="ring-bg" cx="${size/2}" cy="${size/2}" r="${r}"/>
+    <circle class="ring-fill" cx="${size/2}" cy="${size/2}" r="${r}" stroke="${color}"
+      stroke-dasharray="${c}" stroke-dashoffset="${offset}"
+      transform="rotate(-90 ${size/2} ${size/2})"/>
+    <text class="ring-text" x="${size/2}" y="${size/2}">${Math.round(pct)}%</text>
+  </svg>`;
+}
+
+function render() {
+  let totalDone = 0, totalTotal = 0;
+  const results = TOOLS.map(t => {
+    const p = t.getProgress();
+    totalDone += p.done;
+    totalTotal += p.total;
+    return { ...t, ...p };
+  });
+
+  const overallPct = totalTotal > 0 ? (totalDone / totalTotal * 100) : 0;
+
+  let overallHtml = `<div class="ring-box">
+    ${renderRing(overallPct, '#7c3aed')}
+    <div class="ring-label">התקדמות כללית</div>
+    <div class="ring-sub">${totalDone}/${totalTotal} פריטים</div>
+  </div>`;
+
+  results.forEach(r => {
+    const pct = r.total > 0 ? (r.done / r.total * 100) : 0;
+    overallHtml += `<div class="ring-box">
+      ${renderRing(pct, r.color, 90)}
+      <div class="ring-label">${r.icon} ${r.name}</div>
+      <div class="ring-sub">${r.done}/${r.total}</div>
+    </div>`;
+  });
+
+  document.getElementById('overall').innerHTML = overallHtml;
+
+  let cardsHtml = '';
+  results.forEach(r => {
+    const pct = r.total > 0 ? (r.done / r.total * 100) : 0;
+    cardsHtml += `<div class="card">
+      <div class="card-head" style="background:${r.color};color:#fff">${r.icon} ${r.name}</div>
+      <div class="card-body">
+        <div class="card-bar"><div class="card-bar-fill" style="width:${pct}%;background:${r.color}"></div></div>
+        <div class="card-stat"><span><b>${r.done}</b> הושלמו</span><span><b>${r.total}</b> סה״כ</span><span><b>${Math.round(pct)}%</b></span></div>
+        <a class="card-link" href="${r.link}">${r.icon} פתח את ${r.name}</a>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('cards').innerHTML = cardsHtml;
+}
+
+function resetAll() {
+  if (!confirm('האם אתה בטוח? כל ההתקדמות תימחק.')) return;
+  ['cm-checked', 'pb-solved', 'sim-progress', 'fc-visited', 'cb-viewed', 'fg-visited', 'sd-viewed', 'es-checklist', 'ek-viewed', 'dw-completed', 'df-viewed'].forEach(k => localStorage.removeItem(k));
+  render();
+}
+
+render();
+</script>
+<footer style="border-top:3px solid #000;padding:16px 24px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+<strong>🔗 כלים נוספים:</strong>
+<a href="flow-canvas.html" style="color:#7c3aed;font-weight:700">🗺 Flow Canvas</a>
+<a href="file-graph.html" style="color:#7c3aed;font-weight:700">📂 File Graph</a>
+<a href="practice-bank.html" style="color:#7c3aed;font-weight:700">💪 בנק תרגול</a>
+<a href="simulations.html" style="color:#7c3aed;font-weight:700">🎮 סימולציות</a>
+<a href="course-map.html" style="color:#7c3aed;font-weight:700">🗂 Course Map</a>
+<a href="code-browser.html" style="color:#7c3aed;font-weight:700">💻 קוד מקור</a>
+<a href="exam-knowledge.html" style="color:#7c3aed;font-weight:700">📚 מרכז ידע</a>
+<a href="debug-walkthrough.html" style="color:#7c3aed;font-weight:700">🔍 Debug</a>
+<a href="data-flow.html" style="color:#7c3aed;font-weight:700">📦 Data Flow</a>
+</footer>
+</body>
+</html>
