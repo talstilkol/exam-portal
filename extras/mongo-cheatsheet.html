@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MongoDB + Mongoose — Cheatsheet למבחן</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', 'Arial Hebrew', system-ui, sans-serif;
+    background: #f0e6d3;
+    color: #1a1a1a;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* ===== HEADER ===== */
+  header {
+    text-align: center;
+    padding: 45px 25px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border: 4px solid #000;
+    box-shadow: 8px 8px 0 #000;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 200px; height: 200px;
+    background: #4ade80;
+    border-radius: 50%;
+    opacity: 0.15;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -40px;
+    width: 250px; height: 250px;
+    background: #a78bfa;
+    border-radius: 50%;
+    opacity: 0.12;
+  }
+  header h1 {
+    font-size: 2.6em;
+    color: #4ade80;
+    text-shadow: 3px 3px 0 #000;
+    position: relative;
+    z-index: 1;
+  }
+  header p {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.15em;
+    margin-top: 10px;
+    position: relative;
+    z-index: 1;
+  }
+  .header-badges {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    font-weight: 800;
+    font-size: 0.85em;
+    border: 3px solid #000;
+    box-shadow: 3px 3px 0 #000;
+  }
+  .badge-green  { background: #4ade80; color: #000; }
+  .badge-yellow { background: #facc15; color: #000; }
+  .badge-pink   { background: #f472b6; color: #000; }
+  .badge-blue   { background: #60a5fa; color: #000; }
+
+  /* ===== TOC ===== */
+  .toc {
+    background: #fff;
+    border: 4px solid #000;
+    box-shadow: 6px 6px 0 #000;
+    padding: 20px 25px;
+    margin-bottom: 28px;
+  }
+  .toc h2 {
+    font-size: 1.3em;
+    margin-bottom: 12px;
+    color: #1a1a2e;
+    border-bottom: 3px solid #000;
+    padding-bottom: 8px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+  }
+  .toc a {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #1a1a2e;
+    font-weight: 700;
+    border: 2px solid #000;
+    background: #e9ecef;
+    transition: all 0.15s;
+    font-size: 0.9em;
+  }
+  .toc a:hover {
+    background: #facc15;
+    box-shadow: 3px 3px 0 #000;
+    transform: translate(-2px, -2px);
+  }
+
+  /* ===== SECTIONS ===== */
+  .section {
+    background: #fff;
+    border: 4px solid #000;
+    box-shadow: 6px 6px 0 #000;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 16px 22px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .section-header:hover { filter: brightness(0.95); }
+  .section-header h2 {
+    font-size: 1.35em;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+  }
+  .section-header .toggle {
+    font-size: 1.5em;
+    color: #fff;
+    font-weight: 900;
+    transition: transform 0.25s;
+  }
+  .section.collapsed .toggle { transform: rotate(-90deg); }
+  .section.collapsed .section-body { display: none; }
+
+  .section-body { padding: 22px; }
+
+  /* Section color themes */
+  .sec-green  .section-header { background: #16a34a; }
+  .sec-blue   .section-header { background: #2563eb; }
+  .sec-purple .section-header { background: #7c3aed; }
+  .sec-orange .section-header { background: #ea580c; }
+  .sec-pink   .section-header { background: #db2777; }
+  .sec-teal   .section-header { background: #0d9488; }
+  .sec-red    .section-header { background: #dc2626; }
+  .sec-indigo .section-header { background: #4f46e5; }
+
+  /* ===== CODE BLOCKS ===== */
+  pre {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    padding: 18px;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0 #000;
+    overflow-x: auto;
+    font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+    font-size: 0.88em;
+    line-height: 1.6;
+    margin: 14px 0;
+    direction: ltr;
+    text-align: left;
+    white-space: pre;
+    tab-size: 2;
+  }
+  .kw  { color: #cba6f7; }  /* keyword: const, let, await, async, try, catch, if */
+  .fn  { color: #89b4fa; }  /* function name */
+  .str { color: #a6e3a1; }  /* string */
+  .num { color: #fab387; }  /* number */
+  .cm  { color: #6c7086; }  /* comment */
+  .op  { color: #89dceb; }  /* operator: =>, =, {, } */
+  .ty  { color: #f9e2af; }  /* type: String, Number, Boolean */
+  .pr  { color: #f38ba8; }  /* property */
+  .mt  { color: #94e2d5; }  /* method on object */
+
+  code {
+    background: #2d2d3f;
+    color: #a6e3a1;
+    padding: 2px 7px;
+    border: 2px solid #000;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 0.88em;
+    direction: ltr;
+    display: inline;
+    unicode-bidi: embed;
+  }
+
+  /* ===== TIP & WARNING BOXES ===== */
+  .tip-box {
+    background: #ecfdf5;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0 #16a34a;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+  .tip-box::before {
+    content: "\1F4A1 \05D8\05D9\05E4 \05DC\05DE\05D1\05D7\05DF";
+    display: block;
+    font-weight: 900;
+    font-size: 1.05em;
+    color: #16a34a;
+    margin-bottom: 6px;
+  }
+
+  .warn-box {
+    background: #fef2f2;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0 #dc2626;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+  .warn-box::before {
+    content: "\26A0\FE0F \05D8\05E2\05D5\05EA \05E0\05E4\05D5\05E6\05D4";
+    display: block;
+    font-weight: 900;
+    font-size: 1.05em;
+    color: #dc2626;
+    margin-bottom: 6px;
+  }
+
+  .exam-box {
+    background: #eff6ff;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0 #2563eb;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+  .exam-box::before {
+    content: "\1F4DD \05D3\05E4\05D5\05E1 \05DE\05D4\05DE\05D1\05D7\05DF";
+    display: block;
+    font-weight: 900;
+    font-size: 1.05em;
+    color: #2563eb;
+    margin-bottom: 6px;
+  }
+
+  /* ===== TABLES ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    border: 3px solid #000;
+  }
+  th {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 10px 14px;
+    text-align: right;
+    border: 2px solid #000;
+    font-size: 0.92em;
+  }
+  td {
+    padding: 8px 14px;
+    border: 2px solid #000;
+    font-size: 0.9em;
+  }
+  tr:nth-child(even) td { background: #f8fafc; }
+
+  /* ===== MISC ===== */
+  h3 {
+    font-size: 1.15em;
+    margin: 18px 0 8px;
+    padding: 6px 12px;
+    background: #fef3c7;
+    border-right: 5px solid #f59e0b;
+    display: inline-block;
+  }
+
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 20px; }
+  li { margin: 4px 0; }
+
+  .inline-label {
+    display: inline-block;
+    padding: 2px 10px;
+    font-weight: 800;
+    font-size: 0.8em;
+    border: 2px solid #000;
+    margin-left: 8px;
+  }
+  .label-get    { background: #4ade80; }
+  .label-post   { background: #facc15; }
+  .label-put    { background: #60a5fa; }
+  .label-delete { background: #f87171; }
+
+  /* ===== DARK MODE ===== */
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1a2e; color: #e0e0e0; }
+    .toc, .section { background: #16213e; }
+    .toc h2 { color: #e0e0e0; border-color: #334155; }
+    .toc a { background: #1e293b; color: #e0e0e0; border-color: #334155; }
+    .toc a:hover { background: #facc15; color: #000; }
+    .section { border-color: #334155; box-shadow: 6px 6px 0 #0f172a; }
+    .tip-box { background: #064e3b; color: #d1fae5; border-color: #334155; box-shadow-color: #16a34a; }
+    .warn-box { background: #450a0a; color: #fecaca; border-color: #334155; }
+    .exam-box { background: #1e3a5f; color: #bfdbfe; border-color: #334155; }
+    h3 { background: #422006; color: #fde68a; border-color: #f59e0b; }
+    table { border-color: #334155; }
+    th { border-color: #334155; }
+    td { border-color: #334155; color: #e0e0e0; }
+    tr:nth-child(even) td { background: #1e293b; }
+    code { border-color: #334155; }
+    pre { border-color: #334155; box-shadow: 4px 4px 0 #0f172a; }
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 700px) {
+    header h1 { font-size: 1.8em; }
+    .toc-grid { grid-template-columns: 1fr; }
+    pre { font-size: 0.8em; padding: 12px; }
+    .section-body { padding: 14px; }
+    .header-badges { gap: 6px; }
+    .badge { font-size: 0.75em; padding: 4px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- ==================== HEADER ==================== -->
+<header>
+  <h1>MongoDB + Mongoose</h1>
+  <p>Cheatsheet מלא לשאלה 3 במבחן Full-Stack</p>
+  <div class="header-badges">
+    <span class="badge badge-green">Schema</span>
+    <span class="badge badge-yellow">CRUD</span>
+    <span class="badge badge-pink">Express Routes</span>
+    <span class="badge badge-blue">Query Operators</span>
+  </div>
+</header>
+
+<!-- ==================== TOC ==================== -->
+<div class="toc">
+  <h2>תוכן עניינים</h2>
+  <div class="toc-grid">
+    <a href="#sec-basics">1. מה זה MongoDB</a>
+    <a href="#sec-setup">2. חיבור Mongoose</a>
+    <a href="#sec-schema">3. הגדרת Schema</a>
+    <a href="#sec-model">4. יצירת Model</a>
+    <a href="#sec-crud">5. פעולות CRUD</a>
+    <a href="#sec-operators">6. Query Operators</a>
+    <a href="#sec-exam-patterns">7. דפוסים מהמבחנים</a>
+    <a href="#sec-mistakes">8. טעויות נפוצות</a>
+  </div>
+</div>
+
+<!-- ==================== 1. BASICS ==================== -->
+<div class="section sec-green" id="sec-basics">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>1. MongoDB - בסיס</h2>
+    <span class="toggle">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <h3>מה זה MongoDB?</h3>
+    <p>מסד נתונים <strong>NoSQL</strong> מבוסס <strong>מסמכים (documents)</strong>. במקום טבלאות ושורות (כמו ב-SQL), הנתונים נשמרים כאובייקטי JSON.</p>
+
+    <table>
+      <tr><th>SQL (MySQL)</th><th>MongoDB</th></tr>
+      <tr><td>Database</td><td>Database</td></tr>
+      <tr><td>Table</td><td>Collection</td></tr>
+      <tr><td>Row</td><td>Document</td></tr>
+      <tr><td>Column</td><td>Field</td></tr>
+    </table>
+
+    <h3>מבנה Document</h3>
+    <p>כל document הוא אובייקט JSON (נשמר כ-BSON - Binary JSON):</p>
+<pre>{
+  <span class="str">"_id"</span>: <span class="fn">ObjectId</span>(<span class="str">"507f1f77bcf86cd799439011"</span>),
+  <span class="str">"name"</span>: <span class="str">"Tal"</span>,
+  <span class="str">"age"</span>: <span class="num">25</span>,
+  <span class="str">"hobbies"</span>: [<span class="str">"coding"</span>, <span class="str">"music"</span>],
+  <span class="str">"address"</span>: {
+    <span class="str">"city"</span>: <span class="str">"Tel Aviv"</span>,
+    <span class="str">"zip"</span>: <span class="str">"61000"</span>
+  }
+}</pre>
+
+    <h3>MongoDB Atlas - אחסון בענן</h3>
+    <p>Atlas זה שירות ענן חינמי של MongoDB. מקבלים <strong>connection string</strong> לחיבור:</p>
+<pre><span class="str">mongodb+srv://user:password@cluster0.abc123.mongodb.net/myDatabase</span>
+<span class="cm">//          ^user  ^pass     ^cluster address             ^db name</span></pre>
+
+    <div class="tip-box">
+      <code>_id</code> נוצר אוטומטית על ידי MongoDB לכל document. זה שדה ייחודי מסוג <code>ObjectId</code>. לא צריך ליצור אותו ידנית.
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 2. SETUP ==================== -->
+<div class="section sec-blue" id="sec-setup">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>2. חיבור Mongoose</h2>
+    <span class="toggle">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <h3>התקנה וחיבור בסיסי</h3>
+<pre><span class="cm">// התקנה: npm install mongoose</span>
+
+<span class="kw">const</span> mongoose = <span class="fn">require</span>(<span class="str">'mongoose'</span>);
+
+<span class="kw">const</span> MONGO_URL = <span class="str">'mongodb://127.0.0.1:27017/myapp'</span>;
+<span class="cm">// או ב-Atlas:</span>
+<span class="cm">// const MONGO_URL = 'mongodb+srv://user:pass@cluster.mongodb.net/myapp';</span>
+
+mongoose.<span class="mt">connect</span>(MONGO_URL)
+  .<span class="mt">then</span>(() <span class="op">=></span> <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">'Connected to MongoDB'</span>))
+  .<span class="mt">catch</span>(err <span class="op">=></span> <span class="fn">console</span>.<span class="mt">error</span>(<span class="str">'Connection failed:'</span>, err));</pre>
+
+    <h3>חיבור עם async/await (הדפוס מהמבחנים)</h3>
+<pre><span class="kw">async function</span> <span class="fn">start</span>() {
+  <span class="kw">try</span> {
+    <span class="kw">await</span> mongoose.<span class="mt">connect</span>(MONGO_URL);
+    <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">'Connected to MongoDB'</span>);
+    app.<span class="mt">listen</span>(<span class="num">3000</span>, () <span class="op">=></span>
+      <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">'Server running on port 3000'</span>)
+    );
+  } <span class="kw">catch</span> (err) {
+    <span class="fn">console</span>.<span class="mt">error</span>(<span class="str">'Failed to start:'</span>, err);
+    process.<span class="mt">exit</span>(<span class="num">1</span>);
+  }
+}
+<span class="fn">start</span>();</pre>
+
+    <h3>אירועי חיבור</h3>
+<pre>mongoose.connection.<span class="mt">on</span>(<span class="str">'connected'</span>, () <span class="op">=></span> <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">'DB connected'</span>));
+mongoose.connection.<span class="mt">on</span>(<span class="str">'error'</span>, err <span class="op">=></span> <span class="fn">console</span>.<span class="mt">error</span>(<span class="str">'DB error:'</span>, err));
+mongoose.connection.<span class="mt">on</span>(<span class="str">'disconnected'</span>, () <span class="op">=></span> <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">'DB disconnected'</span>));</pre>
+
+    <div class="tip-box">
+      במבחן, תמיד שימו את <code>app.listen()</code> <strong>בתוך</strong> ה-callback של החיבור ל-MongoDB, כדי שהשרת לא ירוץ לפני שיש חיבור למסד.
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 3. SCHEMA ==================== -->
+<div class="section sec-purple" id="sec-schema">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>3. הגדרת Schema</h2>
+    <span class="toggle">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <h3>Schema בסיסי</h3>
+<pre><span class="kw">const</span> userSchema = <span class="kw">new</span> mongoose.<span class="fn">Schema</span>({
+  <span class="pr">name</span>:      { <span class="pr">type</span>: <span class="ty">String</span>, <span class="pr">required</span>: <span class="kw">true</span>, <span class="pr">trim</span>: <span class="kw">true</span> },
+  <span class="pr">age</span>:       { <span class="pr">type</span>: <span class="ty">Number</span>, <span class="pr">min</span>: <span class="num">0</span> },
+  <span class="pr">email</span>:     { <span class="pr">type</span>: <span class="ty">String</span>, <span class="pr">unique</span>: <span class="kw">true</span>, <span class="pr">lowercase</span>: <span class="kw">true</span> },
+  <span class="pr">isActive</span>:  { <span class="pr">type</span>: <span class="ty">Boolean</span>, <span class="pr">default</span>: <span class="kw">true</span> },
+  <span class="pr">createdAt</span>: { <span class="pr">type</span>: <span class="ty">Date</span>, <span class="pr">default</span>: Date.now }
+});</pre>
+
+    <h3>כל סוגי השדות</h3>
+    <table>
+      <tr><th>Type</th><th>דוגמה</th><th>הסבר</th></tr>
+      <tr><td><code>String</code></td><td><code>"hello"</code></td><td>טקסט</td></tr>
+      <tr><td><code>Number</code></td><td><code>42, 3.14</code></td><td>מספר</td></tr>
+      <tr><td><code>Boolean</code></td><td><code>true/false</code></td><td>ערך בוליאני</td></tr>
+      <tr><td><code>Date</code></td><td><code>Date.now</code></td><td>תאריך</td></tr>
+      <tr><td><code>Array</code></td><td><code>[String]</code></td><td>מערך</td></tr>
+      <tr><td><code>ObjectId</code></td><td><code>Schema.Types.ObjectId</code></td><td>הפניה ל-document אחר</td></tr>
+      <tr><td><code>Mixed</code></td><td><code>Schema.Types.Mixed</code></td><td>כל טיפוס</td></tr>
+    </table>
+
+    <h3>Validators - אימות נתונים</h3>
+<pre><span class="kw">const</span> productSchema = <span class="kw">new</span> mongoose.<span class="fn">Schema</span>({
+  <span class="pr">name</span>: {
+    <span class="pr">type</span>: <span class="ty">String</span>,
+    <span class="pr">required</span>: [<span class="kw">true</span>, <span class="str">'Name is required'</span>],  <span class="cm">// + הודעת שגיאה</span>
+    <span class="pr">minlength</span>: <span class="num">2</span>,
+    <span class="pr">maxlength</span>: <span class="num">100</span>,
+    <span class="pr">trim</span>: <span class="kw">true</span>
+  },
+  <span class="pr">price</span>: {
+    <span class="pr">type</span>: <span class="ty">Number</span>,
+    <span class="pr">required</span>: <span class="kw">true</span>,
+    <span class="pr">min</span>: [<span class="num">0</span>, <span class="str">'Price cannot be negative'</span>],
+    <span class="pr">max</span>: <span class="num">99999</span>
+  },
+  <span class="pr">category</span>: {
+    <span class="pr">type</span>: <span class="ty">String</span>,
+    <span class="pr">enum</span>: [<span class="str">'electronics'</span>, <span class="str">'clothing'</span>, <span class="str">'food'</span>]  <span class="cm">// ערכים מותרים בלבד</span>
+  },
+  <span class="pr">email</span>: {
+    <span class="pr">type</span>: <span class="ty">String</span>,
+    <span class="pr">match</span>: <span class="op">/</span><span class="str">^[\w.-]+@[\w.-]+\.\w+$</span><span class="op">/</span>      <span class="cm">// regex validation</span>
+  },
+  <span class="pr">sku</span>: {
+    <span class="pr">type</span>: <span class="ty">String</span>,
+    <span class="pr">unique</span>: <span class="kw">true</span>                         <span class="cm">// אינדקס ייחודי</span>
+  }
+});</pre>
+
+    <h3>Timestamps אוטומטיים</h3>
+<pre><span class="kw">const</span> schema = <span class="kw">new</span> mongoose.<span class="fn">Schema</span>(
+  { <span class="pr">name</span>: <span class="ty">String</span> },
+  { <span class="pr">timestamps</span>: <span class="kw">true</span> }  <span class="cm">// מוסיף createdAt + updatedAt אוטומטית</span>
+);</pre>
+
+    <h3>Nested Schema / Subdocuments</h3>
+<pre><span class="kw">const</span> addressSchema = <span class="kw">new</span> mongoose.<span class="fn">Schema</span>({
+  <span class="pr">city</span>:   <span class="ty">String</span>,
+  <span class="pr">street</span>: <span class="ty">String</span>,
+  <span class="pr">zip</span>:    <span class="ty">String</span>
+});
+
+<span class="kw">const</span> personSchema = <span class="kw">new</span> mongoose.<span class="fn">Schema</span>({
+  <span class="pr">name</span>:      <span class="ty">String</span>,
+  <span class="pr">address</span>:   addressSchema,        <span class="cm">// subdocument יחיד</span>
+  <span class="pr">addresses</span>: [addressSchema]        <span class="cm">// מערך של subdocuments</span>
+});</pre>
+
+    <div class="tip-box">
+      <code>unique: true</code> הוא לא validator רגיל - הוא יוצר <strong>אינדקס</strong> ב-MongoDB. השגיאה שלו היא <code>E11000 duplicate key</code> ולא validation error.
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 4. MODEL ==================== -->
+<div class="section sec-orange" id="sec-model">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>4. יצירת Model</h2>
+    <span class="toggle">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <h3>Model = Class שמייצג Collection</h3>
+<pre><span class="cm">// mongoose.model(שם יחיד, schema)</span>
+<span class="cm">// MongoDB יוצר collection בשם רבים (users)</span>
+<span class="kw">const</span> User = mongoose.<span class="fn">model</span>(<span class="str">'User'</span>, userSchema);
+<span class="cm">//                         'User' → collection name: 'users'</span>
+<span class="cm">//                         'Person' → 'people'</span>
+<span class="cm">//                         'Course' → 'courses'</span></pre>
+
+    <h3>מוסכמות שמות</h3>
+    <table>
+      <tr><th>שם Model</th><th>שם Collection</th></tr>
+      <tr><td><code>'User'</code></td><td><code>users</code></td></tr>
+      <tr><td><code>'Student'</code></td><td><code>students</code></td></tr>
+      <tr><td><code>'Teacher'</code></td><td><code>teachers</code></td></tr>
+      <tr><td><code>'Course'</code></td><td><code>courses</code></td></tr>
+    </table>
+
+    <div class="tip-box">
+      שם ה-Model תמיד <strong>Uppercase יחיד</strong> באנגלית. Mongoose ממיר אותו אוטומטית ל-lowercase רבים עבור ה-collection.
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 5. CRUD ==================== -->
+<div class="section sec-pink" id="sec-crud">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>5. CRUD Operations - עם Express Routes</h2>
+    <span class="toggle">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3><span class="inline-label label-post">POST</span> Create - יצירה</h3>
+<pre><span class="cm">// דרך 1: new + save</span>
+app.<span class="mt">post</span>(<span class="str">'/users'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> user = <span class="kw">new</span> <span class="fn">User</span>(req.body);
+    <span class="kw">await</span> user.<span class="mt">save</span>();
+    res.<span class="mt">status</span>(<span class="num">201</span>).<span class="mt">json</span>(user);
+  } <span class="kw">catch</span> (err) {
+    res.<span class="mt">status</span>(<span class="num">400</span>).<span class="mt">json</span>({ <span class="pr">error</span>: err.message });
+  }
+});
+
+<span class="cm">// דרך 2: Model.create (קיצור)</span>
+app.<span class="mt">post</span>(<span class="str">'/users'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> user = <span class="kw">await</span> User.<span class="mt">create</span>(req.body);
+    res.<span class="mt">status</span>(<span class="num">201</span>).<span class="mt">json</span>(user);
+  } <span class="kw">catch</span> (err) {
+    res.<span class="mt">status</span>(<span class="num">400</span>).<span class="mt">json</span>({ <span class="pr">error</span>: err.message });
+  }
+});</pre>
+
+    <h3><span class="inline-label label-get">GET</span> Read - קריאה</h3>
+<pre><span class="cm">// כל המסמכים</span>
+app.<span class="mt">get</span>(<span class="str">'/users'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">const</span> users = <span class="kw">await</span> User.<span class="mt">find</span>();
+  res.<span class="mt">json</span>(users);
+});
+
+<span class="cm">// לפי ID</span>
+app.<span class="mt">get</span>(<span class="str">'/users/:id'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">const</span> user = <span class="kw">await</span> User.<span class="mt">findById</span>(req.params.id);
+  <span class="kw">if</span> (!user) <span class="kw">return</span> res.<span class="mt">status</span>(<span class="num">404</span>).<span class="mt">json</span>({ <span class="pr">error</span>: <span class="str">'Not found'</span> });
+  res.<span class="mt">json</span>(user);
+});
+
+<span class="cm">// עם פילטר</span>
+<span class="kw">const</span> adults = <span class="kw">await</span> User.<span class="mt">find</span>({ <span class="pr">age</span>: { <span class="op">$gte</span>: <span class="num">18</span> } });
+
+<span class="cm">// מסמך אחד לפי שדה</span>
+<span class="kw">const</span> user = <span class="kw">await</span> User.<span class="mt">findOne</span>({ <span class="pr">email</span>: <span class="str">'test@test.com'</span> });
+
+<span class="cm">// בחירת שדות ספציפיים</span>
+<span class="kw">const</span> names = <span class="kw">await</span> User.<span class="mt">find</span>().<span class="mt">select</span>(<span class="str">'name email'</span>);
+
+<span class="cm">// מיון והגבלה</span>
+<span class="kw">const</span> recent = <span class="kw">await</span> User.<span class="mt">find</span>()
+  .<span class="mt">sort</span>({ <span class="pr">createdAt</span>: <span class="num">-1</span> })  <span class="cm">// -1 = יורד (חדש ראשון)</span>
+  .<span class="mt">limit</span>(<span class="num">10</span>);               <span class="cm">// מקסימום 10 תוצאות</span></pre>
+
+    <h3><span class="inline-label label-put">PUT</span> Update - עדכון</h3>
+<pre><span class="cm">// findByIdAndUpdate - הדרך הנפוצה ביותר</span>
+app.<span class="mt">put</span>(<span class="str">'/users/:id'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> updated = <span class="kw">await</span> User.<span class="mt">findByIdAndUpdate</span>(
+      req.params.id,            <span class="cm">// מי לעדכן</span>
+      req.body,                 <span class="cm">// מה לעדכן</span>
+      { <span class="pr">new</span>: <span class="kw">true</span>, <span class="pr">runValidators</span>: <span class="kw">true</span> }  <span class="cm">// אופציות!</span>
+    );
+    <span class="kw">if</span> (!updated) <span class="kw">return</span> res.<span class="mt">status</span>(<span class="num">404</span>).<span class="mt">json</span>({ <span class="pr">error</span>: <span class="str">'Not found'</span> });
+    res.<span class="mt">json</span>(updated);
+  } <span class="kw">catch</span> (err) {
+    res.<span class="mt">status</span>(<span class="num">400</span>).<span class="mt">json</span>({ <span class="pr">error</span>: err.message });
+  }
+});
+
+<span class="cm">// findOneAndUpdate - לפי שדה כלשהו (לא רק _id)</span>
+<span class="kw">const</span> updated = <span class="kw">await</span> User.<span class="mt">findOneAndUpdate</span>(
+  { <span class="pr">id</span>: <span class="fn">Number</span>(req.params.id) },  <span class="cm">// תנאי חיפוש</span>
+  req.body,
+  { <span class="pr">new</span>: <span class="kw">true</span>, <span class="pr">runValidators</span>: <span class="kw">true</span> }
+);
+
+<span class="cm">// updateMany - עדכון מרובה</span>
+<span class="kw">await</span> User.<span class="mt">updateMany</span>(
+  { <span class="pr">active</span>: <span class="kw">false</span> },                  <span class="cm">// תנאי</span>
+  { <span class="op">$set</span>: { <span class="pr">status</span>: <span class="str">'inactive'</span> } }  <span class="cm">// עדכון</span>
+);</pre>
+
+    <h3><span class="inline-label label-delete">DELETE</span> Delete - מחיקה</h3>
+<pre>app.<span class="mt">delete</span>(<span class="str">'/users/:id'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> deleted = <span class="kw">await</span> User.<span class="mt">findByIdAndDelete</span>(req.params.id);
+    <span class="kw">if</span> (!deleted) <span class="kw">return</span> res.<span class="mt">status</span>(<span class="num">404</span>).<span class="mt">json</span>({ <span class="pr">error</span>: <span class="str">'Not found'</span> });
+    res.<span class="mt">status</span>(<span class="num">204</span>).<span class="mt">end</span>();  <span class="cm">// No Content</span>
+  } <span class="kw">catch</span> (err) {
+    res.<span class="mt">status</span>(<span class="num">500</span>).<span class="mt">json</span>({ <span class="pr">error</span>: err.message });
+  }
+});
+
+<span class="cm">// מחיקת מרובים</span>
+<span class="kw">await</span> User.<span class="mt">deleteMany</span>({ <span class="pr">age</span>: { <span class="op">$lt</span>: <span class="num">18</span> } });</pre>
+
+    <div class="warn-box">
+      <strong><code>{ new: true }</code></strong> - בלי זה, <code>findByIdAndUpdate</code> מחזיר את המסמך <strong>לפני</strong> העדכון! תמיד תוסיפו את זה.<br>
+      <strong><code>{ runValidators: true }</code></strong> - בלי זה, validators של ה-Schema לא רצים בעדכון!
+    </div>
+
+    <div class="tip-box">
+      סטטוס קודים חשובים: <code>201</code> ליצירה, <code>200</code> לקריאה/עדכון, <code>204</code> למחיקה, <code>404</code> ללא נמצא, <code>400</code> לקלט לא תקין.
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 6. OPERATORS ==================== -->
+<div class="section sec-teal" id="sec-operators">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>6. Query Operators - אופרטורים</h2>
+    <span class="toggle">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>Comparison - השוואה</h3>
+    <table>
+      <tr><th>Operator</th><th>משמעות</th><th>דוגמה</th></tr>
+      <tr><td><code>$eq</code></td><td>שווה</td><td><code>{ age: { $eq: 25 } }</code></td></tr>
+      <tr><td><code>$ne</code></td><td>לא שווה</td><td><code>{ status: { $ne: 'deleted' } }</code></td></tr>
+      <tr><td><code>$gt</code></td><td>גדול מ</td><td><code>{ age: { $gt: 18 } }</code></td></tr>
+      <tr><td><code>$gte</code></td><td>גדול או שווה</td><td><code>{ age: { $gte: 18 } }</code></td></tr>
+      <tr><td><code>$lt</code></td><td>קטן מ</td><td><code>{ price: { $lt: 100 } }</code></td></tr>
+      <tr><td><code>$lte</code></td><td>קטן או שווה</td><td><code>{ price: { $lte: 50 } }</code></td></tr>
+      <tr><td><code>$in</code></td><td>בתוך רשימה</td><td><code>{ color: { $in: ['red','blue'] } }</code></td></tr>
+      <tr><td><code>$nin</code></td><td>לא ברשימה</td><td><code>{ status: { $nin: ['deleted'] } }</code></td></tr>
+    </table>
+
+    <h3>Logical - לוגיים</h3>
+<pre><span class="cm">// $or - אחד מהתנאים</span>
+<span class="kw">await</span> User.<span class="mt">find</span>({
+  <span class="op">$or</span>: [
+    { <span class="pr">age</span>: { <span class="op">$lt</span>: <span class="num">18</span> } },
+    { <span class="pr">status</span>: <span class="str">'minor'</span> }
+  ]
+});
+
+<span class="cm">// $and - כל התנאים (ברוב המקרים אפשר פשוט לשים כמה שדות)</span>
+<span class="kw">await</span> User.<span class="mt">find</span>({
+  <span class="op">$and</span>: [
+    { <span class="pr">age</span>: { <span class="op">$gte</span>: <span class="num">18</span> } },
+    { <span class="pr">age</span>: { <span class="op">$lte</span>: <span class="num">65</span> } }
+  ]
+});
+
+<span class="cm">// $not - הפוך תנאי</span>
+<span class="kw">await</span> User.<span class="mt">find</span>({ <span class="pr">age</span>: { <span class="op">$not</span>: { <span class="op">$gt</span>: <span class="num">30</span> } } });</pre>
+
+    <h3>Element</h3>
+<pre><span class="cm">// $exists - בדיקה אם שדה קיים</span>
+<span class="kw">await</span> User.<span class="mt">find</span>({ <span class="pr">email</span>: { <span class="op">$exists</span>: <span class="kw">true</span> } });</pre>
+
+    <h3>Update Operators - אופרטורי עדכון</h3>
+    <table>
+      <tr><th>Operator</th><th>פעולה</th><th>דוגמה</th></tr>
+      <tr><td><code>$set</code></td><td>הגדר ערך</td><td><code>{ $set: { name: 'New' } }</code></td></tr>
+      <tr><td><code>$unset</code></td><td>הסר שדה</td><td><code>{ $unset: { temp: '' } }</code></td></tr>
+      <tr><td><code>$inc</code></td><td>הגדל/הקטן מספר</td><td><code>{ $inc: { views: 1 } }</code></td></tr>
+      <tr><td><code>$push</code></td><td>הוסף לסוף מערך</td><td><code>{ $push: { tags: 'new' } }</code></td></tr>
+      <tr><td><code>$pull</code></td><td>הסר מתוך מערך</td><td><code>{ $pull: { tags: 'old' } }</code></td></tr>
+      <tr><td><code>$addToSet</code></td><td>הוסף למערך (ללא כפילויות)</td><td><code>{ $addToSet: { tags: 'unique' } }</code></td></tr>
+    </table>
+
+<pre><span class="cm">// דוגמה: הוסף 1 לצפיות והוסף תגית</span>
+<span class="kw">await</span> Post.<span class="mt">findByIdAndUpdate</span>(id, {
+  <span class="op">$inc</span>: { <span class="pr">views</span>: <span class="num">1</span> },
+  <span class="op">$push</span>: { <span class="pr">tags</span>: <span class="str">'trending'</span> }
+});</pre>
+
+    <div class="tip-box">
+      ב-<code>find()</code> אפשר פשוט לכתוב <code>{ age: 25 }</code> במקום <code>{ age: { $eq: 25 } }</code>. זה אותו דבר.
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 7. EXAM PATTERNS ==================== -->
+<div class="section sec-indigo" id="sec-exam-patterns">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>7. דפוסים מהמבחנים</h2>
+    <span class="toggle">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>Parking Q3 - שלושה Endpoints מיוחדים</h3>
+    <div class="exam-box">
+      <strong>דפוס 1: POST עם פילטר</strong> - <code>/low-salary</code> מקבל ערך ב-body ומחזיר תוצאות מסוננות.
+    </div>
+<pre><span class="cm">// POST /low-salary - מורים עם שכר נמוך מהערך שנשלח</span>
+app.<span class="mt">post</span>(<span class="str">'/low-salary'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">const</span> { minSalary } = req.body;
+  <span class="kw">const</span> list = <span class="kw">await</span> Teacher.<span class="mt">find</span>({ <span class="pr">salary</span>: { <span class="op">$lt</span>: minSalary } });
+  res.<span class="mt">json</span>(list);
+});</pre>
+
+    <div class="exam-box">
+      <strong>דפוס 2: Upsert</strong> - <code>/add-or-update</code> אם קיים עדכן, אחרת צור חדש.
+    </div>
+<pre><span class="cm">// POST /add-or-update - upsert pattern</span>
+app.<span class="mt">post</span>(<span class="str">'/add-or-update'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">const</span> result = <span class="kw">await</span> Teacher.<span class="mt">findOneAndUpdate</span>(
+    { <span class="pr">id</span>: req.body.id },          <span class="cm">// חפש לפי id</span>
+    req.body,                     <span class="cm">// עדכן/צור עם הנתונים האלה</span>
+    { <span class="pr">upsert</span>: <span class="kw">true</span>, <span class="pr">new</span>: <span class="kw">true</span> }   <span class="cm">// upsert=true יוצר אם לא קיים</span>
+  );
+  res.<span class="mt">json</span>(result);
+});</pre>
+
+    <h3>Flights Q3 - CRUD מלא לסטודנטים</h3>
+    <div class="exam-box">
+      <strong>דפוס 3: CRUD מלא</strong> - GET all, GET by id, POST create, PUT update, DELETE
+    </div>
+<pre><span class="cm">// Schema עם validators מגוונים</span>
+<span class="kw">const</span> studentSchema = <span class="kw">new</span> mongoose.<span class="fn">Schema</span>({
+  <span class="pr">id</span>:    { <span class="pr">type</span>: <span class="ty">Number</span>, <span class="pr">required</span>: <span class="kw">true</span>, <span class="pr">unique</span>: <span class="kw">true</span> },
+  <span class="pr">name</span>:  { <span class="pr">type</span>: <span class="ty">String</span>, <span class="pr">required</span>: <span class="kw">true</span>, <span class="pr">trim</span>: <span class="kw">true</span> },
+  <span class="pr">age</span>:   { <span class="pr">type</span>: <span class="ty">Number</span>, <span class="pr">required</span>: <span class="kw">true</span>, <span class="pr">min</span>: <span class="num">18</span> },
+  <span class="pr">gpa</span>:   { <span class="pr">type</span>: <span class="ty">Number</span>, <span class="pr">required</span>: <span class="kw">true</span>, <span class="pr">min</span>: <span class="num">0</span>, <span class="pr">max</span>: <span class="num">100</span> },
+  <span class="pr">year</span>:  { <span class="pr">type</span>: <span class="ty">Number</span>, <span class="pr">required</span>: <span class="kw">true</span>, <span class="pr">min</span>: <span class="num">1</span>, <span class="pr">max</span>: <span class="num">6</span> },
+  <span class="pr">email</span>: { <span class="pr">type</span>: <span class="ty">String</span>, <span class="pr">trim</span>: <span class="kw">true</span>, <span class="pr">lowercase</span>: <span class="kw">true</span> }
+}, { <span class="pr">timestamps</span>: <span class="kw">true</span> });
+
+<span class="cm">// POST /students/filter - פילטר משולב</span>
+app.<span class="mt">post</span>(<span class="str">'/students/filter'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">const</span> { minGpa, year, nameContains } = req.body;
+  <span class="kw">const</span> query = {};
+  <span class="kw">if</span> (<span class="kw">typeof</span> minGpa === <span class="str">'number'</span>) query.<span class="pr">gpa</span> = { <span class="op">$gte</span>: minGpa };
+  <span class="kw">if</span> (<span class="kw">typeof</span> year === <span class="str">'number'</span>)   query.<span class="pr">year</span> = year;
+  <span class="kw">if</span> (nameContains) query.<span class="pr">name</span> = { <span class="op">$regex</span>: nameContains, <span class="op">$options</span>: <span class="str">'i'</span> };
+  <span class="kw">const</span> list = <span class="kw">await</span> Student.<span class="mt">find</span>(query);
+  res.<span class="mt">json</span>(list);
+});</pre>
+
+    <h3>Willing Q3 - קורסים</h3>
+    <div class="exam-box">
+      <strong>דפוס 4: Custom validator</strong> - בדיקה ש-capacity הוא מספר שלם חיובי.
+    </div>
+<pre><span class="pr">capacity</span>: {
+  <span class="pr">type</span>: <span class="ty">Number</span>,
+  <span class="pr">required</span>: <span class="kw">true</span>,
+  <span class="pr">min</span>: <span class="num">1</span>,
+  <span class="pr">validate</span>: {
+    <span class="pr">validator</span>: Number.isInteger,
+    <span class="pr">message</span>: <span class="str">'capacity must be integer'</span>
+  }
+}</pre>
+
+    <h3>HelpMe Q3 - תיאוריה: יתרונות וחסרונות MongoDB</h3>
+    <table>
+      <tr><th>יתרונות</th><th>חסרונות</th></tr>
+      <tr><td>גמישות סכמה (Schemaless) - לא צריך להגדיר מבנה מראש</td><td>אין ACID transactions חזקים (עד גרסה 4.0)</td></tr>
+      <tr><td>JSON-native - נוח לעבודה עם Node.js</td><td>אין JOIN חזק - <code>$lookup</code> מוגבל ואיטי</td></tr>
+      <tr><td>Horizontal scaling - sharding קל</td><td>שימוש גבוה בזיכרון</td></tr>
+      <tr><td>Aggregation pipeline עוצמתי</td><td></td></tr>
+      <tr><td>Replication מובנה לאמינות</td><td></td></tr>
+    </table>
+
+    <div class="tip-box">
+      במבחן תיאורטי - לזכור לפחות <strong>3 יתרונות + 2 חסרונות</strong>. התשובה הכי חשובה: "גמיש אבל חסר JOIN ו-ACID".
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 8. MISTAKES ==================== -->
+<div class="section sec-red" id="sec-mistakes">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>8. טעויות נפוצות וטיפים למבחן</h2>
+    <span class="toggle">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <div class="warn-box">
+      <strong>1. שכחתם <code>express.json()</code></strong><br>
+      בלי <code>app.use(express.json())</code> ה-<code>req.body</code> יהיה <code>undefined</code>!
+    </div>
+<pre><span class="kw">const</span> app = <span class="fn">express</span>();
+app.<span class="mt">use</span>(express.<span class="mt">json</span>());  <span class="cm">// &lt;-- חובה! תמיד בהתחלה</span></pre>
+
+    <div class="warn-box">
+      <strong>2. שכחתם <code>{ new: true }</code></strong><br>
+      <code>findByIdAndUpdate</code> מחזיר את הישן. תוסיפו <code>{ new: true }</code> לקבל את החדש.
+    </div>
+<pre><span class="cm">// BAD - מחזיר את המסמך הישן</span>
+<span class="kw">const</span> user = <span class="kw">await</span> User.<span class="mt">findByIdAndUpdate</span>(id, data);
+
+<span class="cm">// GOOD - מחזיר את המסמך המעודכן</span>
+<span class="kw">const</span> user = <span class="kw">await</span> User.<span class="mt">findByIdAndUpdate</span>(id, data, { <span class="pr">new</span>: <span class="kw">true</span> });</pre>
+
+    <div class="warn-box">
+      <strong>3. חסר <code>async/await</code></strong><br>
+      כל פעולות Mongoose הן <strong>אסינכרוניות</strong>. בלי <code>await</code> תקבלו Promise ולא תוצאה.
+    </div>
+<pre><span class="cm">// BAD - users = Promise, not array!</span>
+app.<span class="mt">get</span>(<span class="str">'/users'</span>, (req, res) <span class="op">=></span> {
+  <span class="kw">const</span> users = User.<span class="mt">find</span>();   <span class="cm">// חסר await!</span>
+  res.<span class="mt">json</span>(users);            <span class="cm">// שולח Promise, לא data</span>
+});
+
+<span class="cm">// GOOD</span>
+app.<span class="mt">get</span>(<span class="str">'/users'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">const</span> users = <span class="kw">await</span> User.<span class="mt">find</span>();
+  res.<span class="mt">json</span>(users);
+});</pre>
+
+    <div class="warn-box">
+      <strong>4. חסר <code>try/catch</code></strong><br>
+      בלי error handling, שגיאה תקריס את השרת.
+    </div>
+<pre><span class="cm">// BAD - if save fails, server crashes</span>
+app.<span class="mt">post</span>(<span class="str">'/users'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">const</span> user = <span class="kw">await</span> User.<span class="mt">create</span>(req.body);
+  res.<span class="mt">json</span>(user);
+});
+
+<span class="cm">// GOOD - with error handling</span>
+app.<span class="mt">post</span>(<span class="str">'/users'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> user = <span class="kw">await</span> User.<span class="mt">create</span>(req.body);
+    res.<span class="mt">status</span>(<span class="num">201</span>).<span class="mt">json</span>(user);
+  } <span class="kw">catch</span> (err) {
+    res.<span class="mt">status</span>(<span class="num">400</span>).<span class="mt">json</span>({ <span class="pr">error</span>: err.message });
+  }
+});</pre>
+
+    <div class="warn-box">
+      <strong>5. סטטוס 200 במקום 201 ליצירה</strong><br>
+      <code>201 Created</code> הוא הסטטוס הנכון ל-POST שיוצר משאב חדש.
+    </div>
+
+    <div class="warn-box">
+      <strong>6. שכחתם <code>runValidators: true</code></strong><br>
+      ב-update, validators של ה-Schema <strong>לא רצים</strong> כברירת מחדל!
+    </div>
+
+    <div class="warn-box">
+      <strong>7. Connection string ללא שם מסד נתונים</strong>
+    </div>
+<pre><span class="cm">// BAD - missing database name</span>
+<span class="str">'mongodb+srv://user:pass@cluster.mongodb.net/'</span>
+
+<span class="cm">// GOOD</span>
+<span class="str">'mongodb+srv://user:pass@cluster.mongodb.net/myDatabaseName'</span></pre>
+
+    <h3>תבנית מלאה לשאלה 3 - Copy/Paste</h3>
+    <div class="exam-box">
+      זו התבנית שתמיד עובדת. שנו את השם, השדות, וה-endpoints לפי מה שנדרש בשאלה.
+    </div>
+<pre><span class="kw">const</span> express = <span class="fn">require</span>(<span class="str">'express'</span>);
+<span class="kw">const</span> mongoose = <span class="fn">require</span>(<span class="str">'mongoose'</span>);
+
+<span class="kw">const</span> PORT = <span class="num">3000</span>;
+<span class="kw">const</span> MONGO_URL = <span class="str">'mongodb://127.0.0.1:27017/exam'</span>;
+
+<span class="cm">// ---- Schema ----</span>
+<span class="kw">const</span> itemSchema = <span class="kw">new</span> mongoose.<span class="fn">Schema</span>({
+  <span class="pr">id</span>:   { <span class="pr">type</span>: <span class="ty">Number</span>, <span class="pr">required</span>: <span class="kw">true</span>, <span class="pr">unique</span>: <span class="kw">true</span> },
+  <span class="pr">name</span>: { <span class="pr">type</span>: <span class="ty">String</span>, <span class="pr">required</span>: <span class="kw">true</span>, <span class="pr">trim</span>: <span class="kw">true</span> },
+  <span class="cm">// ... more fields per spec</span>
+}, { <span class="pr">timestamps</span>: <span class="kw">true</span> });
+
+<span class="kw">const</span> Item = mongoose.<span class="fn">model</span>(<span class="str">'Item'</span>, itemSchema);
+
+<span class="cm">// ---- App ----</span>
+<span class="kw">const</span> app = <span class="fn">express</span>();
+app.<span class="mt">use</span>(express.<span class="mt">json</span>());
+
+<span class="cm">// GET all</span>
+app.<span class="mt">get</span>(<span class="str">'/items'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> all = <span class="kw">await</span> Item.<span class="mt">find</span>();
+    res.<span class="mt">json</span>(all);
+  } <span class="kw">catch</span> (e) { res.<span class="mt">status</span>(<span class="num">500</span>).<span class="mt">json</span>({ <span class="pr">error</span>: e.message }); }
+});
+
+<span class="cm">// GET by id</span>
+app.<span class="mt">get</span>(<span class="str">'/items/:id'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> item = <span class="kw">await</span> Item.<span class="mt">findOne</span>({ <span class="pr">id</span>: <span class="fn">Number</span>(req.params.id) });
+    <span class="kw">if</span> (!item) <span class="kw">return</span> res.<span class="mt">status</span>(<span class="num">404</span>).<span class="mt">json</span>({ <span class="pr">error</span>: <span class="str">'Not found'</span> });
+    res.<span class="mt">json</span>(item);
+  } <span class="kw">catch</span> (e) { res.<span class="mt">status</span>(<span class="num">500</span>).<span class="mt">json</span>({ <span class="pr">error</span>: e.message }); }
+});
+
+<span class="cm">// POST create</span>
+app.<span class="mt">post</span>(<span class="str">'/items'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> item = <span class="kw">await</span> Item.<span class="mt">create</span>(req.body);
+    res.<span class="mt">status</span>(<span class="num">201</span>).<span class="mt">json</span>(item);
+  } <span class="kw">catch</span> (e) {
+    <span class="kw">if</span> (e.code === <span class="num">11000</span>) <span class="kw">return</span> res.<span class="mt">status</span>(<span class="num">409</span>).<span class="mt">json</span>({ <span class="pr">error</span>: <span class="str">'Duplicate'</span> });
+    res.<span class="mt">status</span>(<span class="num">400</span>).<span class="mt">json</span>({ <span class="pr">error</span>: e.message });
+  }
+});
+
+<span class="cm">// PUT update</span>
+app.<span class="mt">put</span>(<span class="str">'/items/:id'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> updated = <span class="kw">await</span> Item.<span class="mt">findOneAndUpdate</span>(
+      { <span class="pr">id</span>: <span class="fn">Number</span>(req.params.id) },
+      req.body,
+      { <span class="pr">new</span>: <span class="kw">true</span>, <span class="pr">runValidators</span>: <span class="kw">true</span> }
+    );
+    <span class="kw">if</span> (!updated) <span class="kw">return</span> res.<span class="mt">status</span>(<span class="num">404</span>).<span class="mt">json</span>({ <span class="pr">error</span>: <span class="str">'Not found'</span> });
+    res.<span class="mt">json</span>(updated);
+  } <span class="kw">catch</span> (e) { res.<span class="mt">status</span>(<span class="num">400</span>).<span class="mt">json</span>({ <span class="pr">error</span>: e.message }); }
+});
+
+<span class="cm">// DELETE</span>
+app.<span class="mt">delete</span>(<span class="str">'/items/:id'</span>, <span class="kw">async</span> (req, res) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> deleted = <span class="kw">await</span> Item.<span class="mt">findOneAndDelete</span>({ <span class="pr">id</span>: <span class="fn">Number</span>(req.params.id) });
+    <span class="kw">if</span> (!deleted) <span class="kw">return</span> res.<span class="mt">status</span>(<span class="num">404</span>).<span class="mt">json</span>({ <span class="pr">error</span>: <span class="str">'Not found'</span> });
+    res.<span class="mt">status</span>(<span class="num">204</span>).<span class="mt">end</span>();
+  } <span class="kw">catch</span> (e) { res.<span class="mt">status</span>(<span class="num">500</span>).<span class="mt">json</span>({ <span class="pr">error</span>: e.message }); }
+});
+
+<span class="cm">// ---- Boot ----</span>
+(<span class="kw">async</span> () <span class="op">=></span> {
+  <span class="kw">await</span> mongoose.<span class="mt">connect</span>(MONGO_URL);
+  app.<span class="mt">listen</span>(PORT, () <span class="op">=></span> <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">`Server on port ${PORT}`</span>));
+})();</pre>
+
+    <h3>צ'קליסט לפני הגשה</h3>
+    <table>
+      <tr><th>בדיקה</th><th>סטטוס</th></tr>
+      <tr><td><code>express.json()</code> קיים?</td><td>&#9744;</td></tr>
+      <tr><td><code>mongoose.connect()</code> עם שם DB?</td><td>&#9744;</td></tr>
+      <tr><td>Schema מוגדר עם validators?</td><td>&#9744;</td></tr>
+      <tr><td>Model נוצר עם <code>mongoose.model()</code>?</td><td>&#9744;</td></tr>
+      <tr><td>כל route עם <code>async</code> ו-<code>await</code>?</td><td>&#9744;</td></tr>
+      <tr><td>כל route עטוף ב-<code>try/catch</code>?</td><td>&#9744;</td></tr>
+      <tr><td>POST יצירה מחזיר <code>201</code>?</td><td>&#9744;</td></tr>
+      <tr><td>Update עם <code>{ new: true, runValidators: true }</code>?</td><td>&#9744;</td></tr>
+      <tr><td>DELETE מחזיר <code>204</code>?</td><td>&#9744;</td></tr>
+      <tr><td>GET by id בודק <code>if (!result)</code> ומחזיר <code>404</code>?</td><td>&#9744;</td></tr>
+      <tr><td><code>app.listen</code> בתוך callback של connect?</td><td>&#9744;</td></tr>
+    </table>
+
+    <div class="tip-box">
+      שננו את התבנית הזו. בכל מבחן שאלה 3 היא אותו מבנה: <strong>Schema &rarr; Model &rarr; Express routes &rarr; Connect &rarr; Listen</strong>. רק השדות וה-endpoints משתנים.
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+function toggleSection(header) {
+  const section = header.parentElement;
+  section.classList.toggle('collapsed');
+}
+
+// Expand all by default on page load, collapse on click
+document.addEventListener('DOMContentLoaded', () => {
+  // Smooth scroll for TOC links
+  document.querySelectorAll('.toc a').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        const section = target.closest('.section');
+        if (section && section.classList.contains('collapsed')) {
+          section.classList.remove('collapsed');
+        }
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>

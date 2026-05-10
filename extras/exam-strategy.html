@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎯 אסטרטגיית מבחן — Quick Card</title>
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--gold:#facc15;--green:#16a34a;--red:#dc2626;--orange:#f97316;--blue:#2563eb;--purple:#7c3aed;--shadow:4px 4px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding:20px}
+.wrap{max-width:960px;margin:auto}
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:24px;border:3px solid #000;border-radius:18px;margin-bottom:20px;box-shadow:var(--shadow);text-align:center}
+.hero h1{font-size:clamp(22px,4vw,34px);margin:0}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:14px}
+.card{background:var(--card);border:2.5px solid var(--border);border-radius:16px;margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow)}
+.card-head{padding:14px 18px;border-bottom:2.5px solid #000;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:900;font-size:17px}
+.card-head .chevron{transition:.2s;font-size:12px}
+.card.collapsed .card-body{display:none}
+.card.collapsed .chevron{transform:rotate(-90deg)}
+.card-body{padding:16px 18px}
+.time-head{background:linear-gradient(135deg,#111827,#1e3a8a);color:#fff}
+.react-head{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff}
+.js-head{background:linear-gradient(135deg,#854d0e,#ca8a04);color:#fff}
+.express-head{background:linear-gradient(135deg,#065f46,#16a34a);color:#fff}
+.tips-head{background:linear-gradient(135deg,#7c2d12,#dc2626);color:#fff}
+.check-head{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff}
+ol,ul{padding-right:20px}
+li{margin-bottom:8px;font-size:14px}
+.step{display:flex;gap:12px;padding:12px;border:2px solid #e2e8f0;border-radius:12px;margin-bottom:10px;align-items:flex-start}
+.step-num{min-width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff;flex-shrink:0}
+.step-num.r{background:var(--blue)}
+.step-num.j{background:#ca8a04}
+.step-num.e{background:var(--green)}
+.step-body h4{margin:0;font-size:14px}
+.step-body p{margin:2px 0 0;font-size:13px;color:#475569}
+.time-bar{display:flex;border-radius:12px;overflow:hidden;border:2px solid #000;height:36px;margin:12px 0}
+.time-seg{display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;color:#fff}
+.warn{background:#fef2f2;border:2px solid var(--red);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:13px;font-weight:700}
+.warn::before{content:'⚠️ ';font-size:16px}
+.tip{background:#fefce8;border:2px solid #ca8a04;border-radius:10px;padding:10px 14px;margin:10px 0;font-size:13px;font-weight:700}
+.tip::before{content:'💡 ';font-size:16px}
+.checklist{list-style:none;padding:0}
+.checklist li{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid #e2e8f0;font-size:14px;font-weight:700}
+.checklist li::before{content:'☐';font-size:18px;color:#94a3b8}
+.points{display:inline-block;background:#111827;color:var(--gold);padding:2px 8px;border-radius:6px;font-weight:900;font-size:12px;border:1.5px solid #000}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.mini-card{background:#f8fafc;border:2px solid #000;border-radius:10px;padding:12px;box-shadow:2px 2px 0 #0f172a}
+.mini-card h4{margin:0 0 6px;font-size:14px}
+.mini-card ul{padding-right:16px;margin:0}
+.mini-card li{font-size:13px;margin-bottom:4px}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155}
+  .step{border-color:#334155}
+  .warn{background:#450a0a;color:#fca5a5}
+  .tip{background:#422006;color:#fde68a}
+  .mini-card{background:#0f172a;border-color:#475569}
+  .checklist li{border-color:#334155}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>🎯 אסטרטגיית מבחן — Quick Card</h1>
+    <p>סדר עבודה, חלוקת זמן, ומה לא לשכוח. הדפיסו את הדף הזה!</p>
+  </div>
+
+  <!-- TIME ALLOCATION -->
+  <div class="card">
+    <div class="card-head time-head" onclick="this.parentElement.classList.toggle('collapsed')">
+      <span class="chevron">▼</span>
+      ⏱ חלוקת זמן — 3 שעות מבחן
+    </div>
+    <div class="card-body">
+      <div class="time-bar">
+        <div class="time-seg" style="flex:5;background:var(--blue)">Q1 React — 90 דק׳</div>
+        <div class="time-seg" style="flex:2.5;background:#ca8a04">Q2 JS — 45 דק׳</div>
+        <div class="time-seg" style="flex:2.5;background:var(--green)">Q3 Server — 45 דק׳</div>
+      </div>
+      <div class="grid2" style="margin-top:12px">
+        <div class="mini-card">
+          <h4>⚛️ Q1 — React <span class="points">50 נק׳</span></h4>
+          <ul>
+            <li>קראו הכל לפני שמתחילים (5 דק׳)</li>
+            <li>בנו Router + components ריקים (10 דק׳)</li>
+            <li>State ב-App + localStorage (10 דק׳)</li>
+            <li>Login + Register עם ולידציות (25 דק׳)</li>
+            <li>שאר הדפים + פיצ׳רים (30 דק׳)</li>
+            <li>בדיקה אחרונה: key ב-map, cleanup ב-useEffect (10 דק׳)</li>
+          </ul>
+        </div>
+        <div class="mini-card">
+          <h4>📐 Q2 — JS Algorithm <span class="points">25 נק׳</span></h4>
+          <ul>
+            <li>הבינו input/output מהדוגמה (3 דק׳)</li>
+            <li>כתבו function signature + validation (5 דק׳)</li>
+            <li>מימוש האלגוריתם (20 דק׳)</li>
+            <li>בדיקה: edge cases — ריק, שלילי, אפס (7 דק׳)</li>
+            <li>וידוא: return ולא console.log (2 דק׳)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mini-card" style="margin-top:12px">
+        <h4>🖥 Q3 — Server/Express <span class="points">25 נק׳</span></h4>
+        <ul>
+          <li>Setup: express + json + cors + listen (5 דק׳)</li>
+          <li>הגדרת routes לפי הדרישות (15 דק׳)</li>
+          <li>בדיקה ב-Postman/Thunder Client (10 דק׳)</li>
+          <li>אם MongoDB: schema + model + connect (10 דק׳)</li>
+          <li>Error handling: try/catch + status codes (5 דק׳)</li>
+        </ul>
+      </div>
+      <div class="tip">אם נתקעתם ב-Q1 יותר מ-90 דק׳ — עברו ל-Q2/Q3. הם שווים 50 נקודות ביחד ולוקחים פחות זמן!</div>
+    </div>
+  </div>
+
+  <!-- REACT STRATEGY -->
+  <div class="card">
+    <div class="card-head react-head" onclick="this.parentElement.classList.toggle('collapsed')">
+      <span class="chevron">▼</span>
+      ⚛️ אסטרטגיית React — Q1
+    </div>
+    <div class="card-body">
+      <div class="step"><div class="step-num r">1</div><div class="step-body"><h4>התקנה + Router</h4><p><code>npm create vite@latest</code> → <code>npm i react-router-dom</code> → BrowserRouter ב-main.jsx → Routes ב-App</p></div></div>
+      <div class="step"><div class="step-num r">2</div><div class="step-body"><h4>Components ריקים</h4><p>צרו קובץ לכל component עם return בסיסי. חברו ל-Routes. וודאו שהניווט עובד.</p></div></div>
+      <div class="step"><div class="step-num r">3</div><div class="step-body"><h4>State ב-App</h4><p>הגדירו את כל ה-state הראשי: users[], currentUser, items[], etc. העבירו כ-props.</p></div></div>
+      <div class="step"><div class="step-num r">4</div><div class="step-body"><h4>localStorage</h4><p>הוסיפו מיד: <code>useState(() =&gt; JSON.parse(localStorage...))</code> + <code>useEffect(()=&gt; localStorage.setItem(...))</code></p></div></div>
+      <div class="step"><div class="step-num r">5</div><div class="step-body"><h4>Login/Register + Validation</h4><p>הטופס הכי חשוב. regex לכל שדה, הודעות שגיאה inline, כפתור disabled עד שתקין.</p></div></div>
+      <div class="step"><div class="step-num r">6</div><div class="step-body"><h4>שאר הפיצ׳רים</h4><p>CRUD, search, filter, sort — לפי הדרישות. השתמשו ב-.map() עם key ייחודי.</p></div></div>
+      <div class="step"><div class="step-num r">7</div><div class="step-body"><h4>בדיקה אחרונה</h4><p>✓ key ב-map ✓ cleanup ב-useEffect ✓ ולידציות עובדות ✓ localStorage נשמר ✓ ניווט תקין</p></div></div>
+
+      <div class="warn">אל תשכחו: כל .map() חייב key ייחודי! כל useEffect עם interval/listener חייב cleanup!</div>
+    </div>
+  </div>
+
+  <!-- JS STRATEGY -->
+  <div class="card">
+    <div class="card-head js-head" onclick="this.parentElement.classList.toggle('collapsed')">
+      <span class="chevron">▼</span>
+      📐 אסטרטגיית JavaScript — Q2
+    </div>
+    <div class="card-body">
+      <div class="step"><div class="step-num j">1</div><div class="step-body"><h4>קראו את השאלה פעמיים</h4><p>הבינו: מה הקלט? מה הפלט? מה הדוגמה מראה? הריצו את הדוגמה בראש.</p></div></div>
+      <div class="step"><div class="step-num j">2</div><div class="step-body"><h4>כתבו function signature</h4><p><code>function solve(arr, target) { }</code> — שם ברור, פרמטרים לפי הדרישה.</p></div></div>
+      <div class="step"><div class="step-num j">3</div><div class="step-body"><h4>ולידציית קלט</h4><p><code>if (!Array.isArray(arr)) throw ...</code> — בדקו סוג, ריקות, ערכים לא חוקיים.</p></div></div>
+      <div class="step"><div class="step-num j">4</div><div class="step-body"><h4>מימוש</h4><p>אל תחפשו פתרון אלגנטי — פתרון שעובד > פתרון יפה. השתמשו בלולאות רגילות.</p></div></div>
+      <div class="step"><div class="step-num j">5</div><div class="step-body"><h4>edge cases</h4><p>בדקו: מערך ריק, מספר שלילי, אפס, ערך אחד בלבד, כפילויות.</p></div></div>
+
+      <div class="warn">Math.abs() למספרים שליליים! String(num).length לא עובד על שליליים בגלל ה-minus.</div>
+      <div class="tip">return ולא console.log! הפונקציה צריכה להחזיר ערך, לא להדפיס.</div>
+    </div>
+  </div>
+
+  <!-- EXPRESS STRATEGY -->
+  <div class="card">
+    <div class="card-head express-head" onclick="this.parentElement.classList.toggle('collapsed')">
+      <span class="chevron">▼</span>
+      🖥 אסטרטגיית Express — Q3
+    </div>
+    <div class="card-body">
+      <div class="step"><div class="step-num e">1</div><div class="step-body"><h4>Setup בסיסי</h4><p>express + json + cors + listen. <strong>אל תשכחו express.json()!</strong> בלי זה req.body ריק.</p></div></div>
+      <div class="step"><div class="step-num e">2</div><div class="step-body"><h4>הגדרת data</h4><p>מערך בזיכרון / חיבור MongoDB / קובץ — לפי הדרישה. הכינו נתוני דוגמה.</p></div></div>
+      <div class="step"><div class="step-num e">3</div><div class="step-body"><h4>Routes אחד אחד</h4><p>GET all → GET by id → POST create → PUT/PATCH update → DELETE. Status codes נכונים!</p></div></div>
+      <div class="step"><div class="step-num e">4</div><div class="step-body"><h4>Filter route</h4><p>אם יש סינון: POST /filter עם AND logic. כל פילטר שנשלח חייב להתקיים.</p></div></div>
+      <div class="step"><div class="step-num e">5</div><div class="step-body"><h4>בדיקה</h4><p>Postman / Thunder Client. בדקו כל route. שלחו body ריק — האם יש שגיאה ברורה?</p></div></div>
+
+      <div class="warn">Status 201 ליצירה, לא 200! appendFile ולא writeFile אם רוצים להוסיף לקובץ!</div>
+      <div class="tip">אם MongoDB: אל תשכחו { new: true, runValidators: true } ב-findByIdAndUpdate.</div>
+    </div>
+  </div>
+
+  <!-- POINT LOSERS -->
+  <div class="card">
+    <div class="card-head tips-head" onclick="this.parentElement.classList.toggle('collapsed')">
+      <span class="chevron">▼</span>
+      🚫 מפסידי נקודות — מה לא לעשות
+    </div>
+    <div class="card-body">
+      <ol>
+        <li><strong>חסר key ב-map</strong> — React מתריע ב-console. הבודק מוריד על זה. השתמשו ב-id ייחודי, לא index.</li>
+        <li><strong>חסר express.json()</strong> — הguf של POST/PUT ריק. הכל נשבר בלי זה.</li>
+        <li><strong>ולידציות חלשות</strong> — בדקו כל שדה שנדרש. אל תסתפקו ב-"חובה" — בדקו regex, אורך, תבנית.</li>
+        <li><strong>localStorage לא מסונכרן</strong> — אם כתבתם setUsers אבל לא עשיתם useEffect לשמור — הנתונים נעלמים ברענון.</li>
+        <li><strong>console.log במקום return</strong> — ב-Q2 הפונקציה חייבת להחזיר, לא להדפיס.</li>
+        <li><strong>חסר cleanup ב-useEffect</strong> — setInterval / addEventListener בלי return () => clear... = memory leak.</li>
+        <li><strong>mutation של state</strong> — <code>users.push(x)</code> לא מעדכן React! צריך <code>setUsers([...users, x])</code></li>
+        <li><strong>סינון OR במקום AND</strong> — ב-filter routes, כל התנאים צריכים להתקיים ביחד.</li>
+        <li><strong>חסר status code</strong> — 201 ליצירה, 404 ללא נמצא, 400 לולידציה.</li>
+        <li><strong>Math.abs חסר</strong> — ב-Q2 עם מספרים שליליים, String(-42).length = 3 (כולל ה-minus).</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- LAST MINUTE CHECKLIST -->
+  <div class="card">
+    <div class="card-head check-head" onclick="this.parentElement.classList.toggle('collapsed')">
+      <span class="chevron">▼</span>
+      ✅ צ׳ק-ליסט דקה אחרונה
+    </div>
+    <div class="card-body">
+      <h4 style="margin-bottom:8px">⚛️ React (Q1):</h4>
+      <ul class="checklist">
+        <li>כל .map() יש key ייחודי (לא index)</li>
+        <li>useEffect עם interval → יש cleanup</li>
+        <li>localStorage: init מ-storage + sync ב-useEffect</li>
+        <li>ולידציות: regex + הודעת שגיאה inline לכל שדה</li>
+        <li>password === confirmPassword</li>
+        <li>navigate אחרי login/register מוצלח</li>
+        <li>כל component מייצא/מייבא נכון</li>
+        <li>BrowserRouter עוטף את Routes</li>
+      </ul>
+      <h4 style="margin:14px 0 8px">📐 JavaScript (Q2):</h4>
+      <ul class="checklist">
+        <li>הפונקציה מחזירה return ולא console.log</li>
+        <li>ולידציית קלט: Array.isArray, typeof</li>
+        <li>Math.abs למספרים שליליים</li>
+        <li>edge case: מערך ריק, ערך אחד, כפילויות</li>
+      </ul>
+      <h4 style="margin:14px 0 8px">🖥 Express (Q3):</h4>
+      <ul class="checklist">
+        <li>express.json() לפני כל ה-routes</li>
+        <li>status 201 ליצירה</li>
+        <li>try/catch סביב DB operations</li>
+        <li>res.json() ולא res.send() ל-JSON</li>
+        <li>filter = AND logic (כל התנאים ביחד)</li>
+        <li>אם MongoDB: { new: true } ב-update</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<script>
+document.querySelectorAll('.card-head').forEach(h=>{
+  h.style.cursor='pointer';
+});
+</script>
+</body>
+</html>

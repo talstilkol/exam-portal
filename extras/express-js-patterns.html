@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Express Middleware & JS Algorithm Patterns</title>
+  <style>
+    :root {
+      --bg: #f5f0e8;
+      --text: #1a1a1a;
+      --card-bg: #ffffff;
+      --accent-yellow: #FFD700;
+      --accent-red: #FF4444;
+      --accent-blue: #4488FF;
+      --accent-green: #22CC66;
+      --accent-purple: #9966FF;
+      --accent-orange: #FF8833;
+      --accent-pink: #FF66AA;
+      --border: #1a1a1a;
+      --shadow: 5px 5px 0px #1a1a1a;
+      --shadow-lg: 8px 8px 0px #1a1a1a;
+      --code-bg: #1e1e2e;
+      --code-text: #cdd6f4;
+      --kw: #cba6f7;
+      --str: #a6e3a1;
+      --num: #fab387;
+      --fn: #89b4fa;
+      --cm: #6c7086;
+      --op: #89dceb;
+      --header-from: #1a1a2e;
+      --header-to: #16213e;
+    }
+
+    [data-theme="dark"] {
+      --bg: #1a1a2e;
+      --text: #e0e0e0;
+      --card-bg: #252540;
+      --border: #e0e0e0;
+      --shadow: 5px 5px 0px #000;
+      --shadow-lg: 8px 8px 0px #000;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ── Header ── */
+    .hero {
+      background: linear-gradient(135deg, var(--header-from), var(--header-to));
+      color: #fff;
+      padding: 3rem 2rem 2.5rem;
+      text-align: center;
+      border-bottom: 5px solid var(--accent-yellow);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.02) 20px, rgba(255,255,255,0.02) 40px);
+    }
+    .hero h1 {
+      font-size: 2.6rem;
+      font-weight: 900;
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+      position: relative;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      margin-top: 0.5rem;
+      opacity: 0.85;
+      position: relative;
+    }
+
+    /* ── Controls Bar ── */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem 2rem;
+      background: var(--card-bg);
+      border-bottom: 3px solid var(--border);
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .controls button {
+      padding: 0.5rem 1.2rem;
+      border: 3px solid var(--border);
+      border-radius: 0;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--border);
+      transition: transform 0.1s, box-shadow 0.1s;
+      background: var(--accent-yellow);
+      color: #1a1a1a;
+    }
+    .controls button:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0 var(--border);
+    }
+    .controls button:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--border);
+    }
+    .controls button.dark-btn { background: #333; color: #fff; }
+
+    /* ── Main Container ── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* ── Part Header ── */
+    .part-header {
+      padding: 1.2rem 2rem;
+      border: 4px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      margin: 2.5rem 0 1.5rem;
+      font-size: 1.6rem;
+      font-weight: 900;
+      text-align: center;
+    }
+    .part-header.express { background: var(--accent-green); color: #1a1a1a; }
+    .part-header.algo { background: var(--accent-purple); color: #fff; }
+
+    /* ── Section ── */
+    .section {
+      background: var(--card-bg);
+      border: 3px solid var(--border);
+      box-shadow: var(--shadow);
+      margin-bottom: 1.8rem;
+      overflow: hidden;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.4rem;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 800;
+      font-size: 1.2rem;
+      border-bottom: 3px solid var(--border);
+      transition: background 0.2s;
+    }
+    .section-header:hover { filter: brightness(0.95); }
+    .section-header .icon { font-size: 1.4rem; transition: transform 0.3s; }
+    .section.collapsed .section-header .icon { transform: rotate(180deg); }
+    .section.collapsed .section-body { display: none; }
+    .section-body { padding: 1.4rem; }
+
+    .section-header.clr-green { background: #c8f7c5; }
+    .section-header.clr-blue { background: #b3d9ff; }
+    .section-header.clr-orange { background: #ffe0b3; }
+    .section-header.clr-red { background: #ffcccc; }
+    .section-header.clr-purple { background: #e0ccff; }
+    .section-header.clr-pink { background: #ffcce6; }
+    .section-header.clr-yellow { background: #fff3b3; }
+    .section-header.clr-teal { background: #b3fff0; }
+    [data-theme="dark"] .section-header.clr-green { background: #1a4d1a; color: #c8f7c5; }
+    [data-theme="dark"] .section-header.clr-blue { background: #1a3366; color: #b3d9ff; }
+    [data-theme="dark"] .section-header.clr-orange { background: #4d2e00; color: #ffe0b3; }
+    [data-theme="dark"] .section-header.clr-red { background: #4d1a1a; color: #ffcccc; }
+    [data-theme="dark"] .section-header.clr-purple { background: #2d1a4d; color: #e0ccff; }
+    [data-theme="dark"] .section-header.clr-pink { background: #4d1a33; color: #ffcce6; }
+    [data-theme="dark"] .section-header.clr-yellow { background: #4d4400; color: #fff3b3; }
+    [data-theme="dark"] .section-header.clr-teal { background: #004d40; color: #b3fff0; }
+
+    /* ── Code Blocks ── */
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1.2rem;
+      border: 2px solid var(--border);
+      box-shadow: 3px 3px 0 var(--border);
+      overflow-x: auto;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      direction: ltr;
+      text-align: left;
+      font-family: 'Consolas', 'Courier New', monospace;
+      margin: 0.8rem 0;
+      position: relative;
+    }
+    pre .copy-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: #444;
+      color: #ccc;
+      border: 1px solid #666;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    pre .copy-btn:hover { background: #666; }
+
+    .kw { color: var(--kw); font-weight: bold; }
+    .str { color: var(--str); }
+    .num { color: var(--num); }
+    .fn { color: var(--fn); }
+    .cm { color: var(--cm); font-style: italic; }
+    .op { color: var(--op); }
+
+    /* ── Callout Boxes ── */
+    .tip-box, .warn-box, .pattern-box {
+      padding: 1rem 1.2rem;
+      border: 3px solid var(--border);
+      margin: 1rem 0;
+      font-weight: 600;
+    }
+    .tip-box {
+      background: #fff8dc;
+      box-shadow: 4px 4px 0 #b8860b;
+      border-color: #b8860b;
+    }
+    .tip-box::before { content: '\1F4A1 \FE0F  '; }
+    [data-theme="dark"] .tip-box { background: #3d3500; color: #ffe066; border-color: #b8860b; }
+
+    .warn-box {
+      background: #ffe6e6;
+      box-shadow: 4px 4px 0 #cc0000;
+      border-color: #cc0000;
+    }
+    .warn-box::before { content: '\26A0\FE0F  '; }
+    [data-theme="dark"] .warn-box { background: #3d0000; color: #ff9999; border-color: #cc0000; }
+
+    .pattern-box {
+      background: #e6f0ff;
+      box-shadow: 4px 4px 0 #0044cc;
+      border-color: #0044cc;
+    }
+    .pattern-box::before { content: '\1F4CB  '; }
+    [data-theme="dark"] .pattern-box { background: #001a3d; color: #99ccff; border-color: #0044cc; }
+
+    /* ── Inline helpers ── */
+    code {
+      background: #2d2d3f;
+      color: #e0c0ff;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.88em;
+      direction: ltr;
+      display: inline;
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 2px solid var(--border);
+      margin: 0 4px 4px 0;
+    }
+    .badge.green { background: #c8f7c5; }
+    .badge.red { background: #ffcccc; }
+    .badge.blue { background: #b3d9ff; }
+    .badge.purple { background: #e0ccff; }
+
+    /* ── Status Code Table ── */
+    .status-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.8rem 0;
+      direction: ltr;
+      text-align: left;
+    }
+    .status-table th, .status-table td {
+      border: 2px solid var(--border);
+      padding: 0.6rem 1rem;
+    }
+    .status-table th {
+      background: var(--accent-yellow);
+      color: #1a1a1a;
+      font-weight: 800;
+    }
+    .status-table tr:nth-child(even) { background: rgba(0,0,0,0.04); }
+    [data-theme="dark"] .status-table tr:nth-child(even) { background: rgba(255,255,255,0.04); }
+
+    /* ── Middleware Flow Diagram ── */
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1.2rem;
+      margin: 1rem 0;
+      background: #f0f0f0;
+      border: 2px dashed var(--border);
+      flex-wrap: wrap;
+      direction: ltr;
+    }
+    [data-theme="dark"] .flow-diagram { background: #2a2a3a; }
+    .flow-box {
+      padding: 0.5rem 1rem;
+      border: 3px solid var(--border);
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 3px 3px 0 var(--border);
+    }
+    .flow-arrow { font-size: 1.5rem; font-weight: 900; }
+
+    /* ── Exam Strategy List ── */
+    .strategy-list {
+      list-style: none;
+      counter-reset: step;
+    }
+    .strategy-list li {
+      counter-increment: step;
+      padding: 0.5rem 0;
+      padding-right: 2.5rem;
+      position: relative;
+    }
+    .strategy-list li::before {
+      content: counter(step);
+      position: absolute;
+      right: 0;
+      top: 0.5rem;
+      width: 2rem;
+      height: 2rem;
+      background: var(--accent-yellow);
+      border: 2px solid var(--border);
+      text-align: center;
+      line-height: 2rem;
+      font-weight: 900;
+      font-size: 0.9rem;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      margin-top: 2rem;
+      border-top: 3px solid var(--border);
+      font-weight: 600;
+      opacity: 0.7;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .hero h1 { font-size: 1.7rem; }
+      .container { padding: 1rem; }
+      pre { font-size: 0.78rem; padding: 0.8rem; }
+      .controls { gap: 0.5rem; }
+      .controls button { padding: 0.4rem 0.8rem; font-size: 0.82rem; }
+      .flow-diagram { gap: 0.3rem; }
+      .flow-box { padding: 0.3rem 0.6rem; font-size: 0.75rem; }
+    }
+
+    @media print {
+      .controls { display: none; }
+      .section.collapsed .section-body { display: block !important; }
+      pre { box-shadow: none; border: 1px solid #999; }
+      .section { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════ HEADER ════════════════ -->
+  <header class="hero">
+    <h1>Express Middleware & JS Algorithm Patterns</h1>
+    <p>דף עזר מקיף למבחן Full-Stack &mdash; Node/Express + אלגוריתמים ב-JS</p>
+  </header>
+
+  <!-- ════════════════ CONTROLS ════════════════ -->
+  <nav class="controls">
+    <button onclick="toggleAll(true)">פתח הכל</button>
+    <button onclick="toggleAll(false)">סגור הכל</button>
+    <button onclick="scrollToPart('part-express')">Express</button>
+    <button onclick="scrollToPart('part-algo')">אלגוריתמים</button>
+    <button class="dark-btn" onclick="toggleTheme()">מצב כהה / בהיר</button>
+  </nav>
+
+  <main class="container">
+
+    <!-- ╔══════════════════════════════════════════╗ -->
+    <!-- ║          PART 1: EXPRESS / NODE          ║ -->
+    <!-- ╚══════════════════════════════════════════╝ -->
+    <div class="part-header express" id="part-express">חלק 1: Express / Node.js Patterns</div>
+
+    <!-- ── Section 1: Express Setup ── -->
+    <div class="section" id="sec-setup">
+      <div class="section-header clr-green" onclick="toggleSection('sec-setup')">
+        <span>Express Setup Pattern &mdash; הקמת שרת בסיסי</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <p>כל שרת Express מתחיל באותה תבנית. <strong>שינון הסדר הזה הוא קריטי.</strong></p>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">const</span> express = <span class="fn">require</span>(<span class="str">'express'</span>);
+<span class="kw">const</span> cors = <span class="fn">require</span>(<span class="str">'cors'</span>);
+<span class="kw">const</span> app = <span class="fn">express</span>();
+
+<span class="cm">// Middleware — חייב להיות לפני ה-routes!</span>
+app.<span class="fn">use</span>(express.<span class="fn">json</span>());        <span class="cm">// מפרסר JSON מ-body</span>
+app.<span class="fn">use</span>(<span class="fn">cors</span>());                  <span class="cm">// מאפשר cross-origin</span>
+app.<span class="fn">use</span>(express.<span class="fn">static</span>(<span class="str">'public'</span>)); <span class="cm">// מגיש קבצים סטטיים</span>
+
+<span class="kw">const</span> PORT = <span class="num">3000</span>;
+app.<span class="fn">listen</span>(PORT, () =&gt; <span class="fn">console.log</span>(<span class="str">`Server on <span class="op">${</span>PORT<span class="op">}</span>`</span>));</pre>
+
+        <div class="warn-box">
+          <strong>טעות נפוצה:</strong> שוכחים <code>app.use(express.json())</code> &mdash;
+          בלי זה <code>req.body</code> יהיה <code>undefined</code> תמיד!
+        </div>
+
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> תמיד כתוב את ה-middleware <em>לפני</em> ה-routes.
+          סדר הקוד = סדר הביצוע.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 2: Middleware Chain ── -->
+    <div class="section" id="sec-middleware">
+      <div class="section-header clr-blue" onclick="toggleSection('sec-middleware')">
+        <span>Middleware Chain &mdash; שרשרת ה-Middleware</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <p><strong>מה זה Middleware?</strong> פונקציה שרצה <em>בין</em> הבקשה לתשובה. כל middleware מקבל <code>(req, res, next)</code>.</p>
+
+        <div class="flow-diagram">
+          <div class="flow-box" style="background:var(--accent-blue);color:#fff">Request</div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="flow-box" style="background:var(--accent-yellow)">json()</div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="flow-box" style="background:var(--accent-yellow)">cors()</div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="flow-box" style="background:var(--accent-yellow)">static()</div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="flow-box" style="background:var(--accent-orange)">Custom MW</div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="flow-box" style="background:var(--accent-green);color:#1a1a1a">Route Handler</div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="flow-box" style="background:var(--accent-red);color:#fff">Error MW</div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="flow-box" style="background:var(--accent-blue);color:#fff">Response</div>
+        </div>
+
+        <h3 style="margin-top:1rem;">Custom Middleware &mdash; לוגינג</h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">const</span> logger = (<span class="op">req</span>, <span class="op">res</span>, <span class="op">next</span>) =&gt; {
+  <span class="fn">console.log</span>(<span class="str">`<span class="op">${</span>req.method<span class="op">}</span> <span class="op">${</span>req.url<span class="op">}</span> - <span class="op">${</span><span class="kw">new</span> Date().toISOString()<span class="op">}</span>`</span>);
+  <span class="fn">next</span>(); <span class="cm">// חובה! בלי next הבקשה תיתקע</span>
+};
+app.<span class="fn">use</span>(logger);</pre>
+
+        <h3>Custom Middleware &mdash; בדיקת Auth</h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">const</span> authCheck = (<span class="op">req</span>, <span class="op">res</span>, <span class="op">next</span>) =&gt; {
+  <span class="kw">const</span> token = req.headers[<span class="str">'authorization'</span>];
+  <span class="kw">if</span> (!token) {
+    <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">json</span>({ error: <span class="str">'No token provided'</span> });
+  }
+  <span class="fn">next</span>();
+};
+<span class="cm">// שימוש רק על routes ספציפיים:</span>
+app.<span class="fn">get</span>(<span class="str">'/admin'</span>, authCheck, (req, res) =&gt; { ... });</pre>
+
+        <h3>Error Middleware &mdash; 4 פרמטרים!</h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="cm">// חייב 4 פרמטרים — ככה Express מזהה שזה error handler</span>
+app.<span class="fn">use</span>((<span class="op">err</span>, <span class="op">req</span>, <span class="op">res</span>, <span class="op">next</span>) =&gt; {
+  <span class="fn">console.error</span>(err.stack);
+  res.<span class="fn">status</span>(<span class="num">500</span>).<span class="fn">json</span>({ error: err.message });
+});</pre>
+
+        <div class="warn-box">
+          <strong>טעות נפוצה:</strong> Error middleware חייב להיות <em>אחרי</em> כל ה-routes! אם שמים אותו לפני &mdash; הוא לא יתפוס שגיאות.
+        </div>
+
+        <div class="pattern-box">
+          <strong>סיכום:</strong> Middleware רץ לפי סדר הכתיבה. כל אחד חייב לקרוא ל-<code>next()</code> או לשלוח תשובה. Error middleware = 4 פרמטרים, תמיד בסוף.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 3: Route Patterns ── -->
+    <div class="section" id="sec-routes">
+      <div class="section-header clr-orange" onclick="toggleSection('sec-routes')">
+        <span>Route Patterns &mdash; CRUD מלא</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <h3>GET &mdash; קריאת כל הפריטים</h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button>app.<span class="fn">get</span>(<span class="str">'/items'</span>, (req, res) =&gt; {
+  res.<span class="fn">json</span>(items);
+});</pre>
+
+        <h3>GET by ID &mdash; קריאת פריט ספציפי</h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button>app.<span class="fn">get</span>(<span class="str">'/items/:id'</span>, (req, res) =&gt; {
+  <span class="kw">const</span> item = items.<span class="fn">find</span>(i =&gt; i.id === req.params.id);
+  <span class="kw">if</span> (!item) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">404</span>).<span class="fn">json</span>({ error: <span class="str">'Not found'</span> });
+  res.<span class="fn">json</span>(item);
+});</pre>
+
+        <h3>POST &mdash; יצירת פריט חדש</h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button>app.<span class="fn">post</span>(<span class="str">'/items'</span>, (req, res) =&gt; {
+  <span class="kw">const</span> { name, price } = req.body;
+  <span class="kw">if</span> (!name || !price) {
+    <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">400</span>).<span class="fn">json</span>({ error: <span class="str">'Missing fields'</span> });
+  }
+  <span class="kw">const</span> item = { id: <span class="fn">Date.now</span>().<span class="fn">toString</span>(), name, price };
+  items.<span class="fn">push</span>(item);
+  res.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>(item);
+});</pre>
+
+        <h3>PUT &mdash; עדכון פריט</h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button>app.<span class="fn">put</span>(<span class="str">'/items/:id'</span>, (req, res) =&gt; {
+  <span class="kw">const</span> index = items.<span class="fn">findIndex</span>(i =&gt; i.id === req.params.id);
+  <span class="kw">if</span> (index === -<span class="num">1</span>) {
+    <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">404</span>).<span class="fn">json</span>({ error: <span class="str">'Not found'</span> });
+  }
+  items[index] = { ...items[index], ...req.body };
+  res.<span class="fn">json</span>(items[index]);
+});</pre>
+
+        <h3>DELETE &mdash; מחיקת פריט</h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button>app.<span class="fn">delete</span>(<span class="str">'/items/:id'</span>, (req, res) =&gt; {
+  <span class="kw">const</span> index = items.<span class="fn">findIndex</span>(i =&gt; i.id === req.params.id);
+  <span class="kw">if</span> (index === -<span class="num">1</span>) {
+    <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">404</span>).<span class="fn">json</span>({ error: <span class="str">'Not found'</span> });
+  }
+  <span class="kw">const</span> deleted = items.<span class="fn">splice</span>(index, <span class="num">1</span>);
+  res.<span class="fn">json</span>(deleted[<span class="num">0</span>]);
+});</pre>
+
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> POST מחזיר <code>201</code>, GET/PUT/DELETE מחזירים <code>200</code>. תמיד בדוק אם הפריט קיים לפני update/delete!
+        </div>
+
+        <div class="warn-box">
+          <strong>טעות נפוצה:</strong> <code>req.params.id</code> הוא תמיד <strong>string</strong>. אם ה-id במערך הוא number, צריך להמיר: <code>Number(req.params.id)</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 4: Filter/Search ── -->
+    <div class="section" id="sec-filter">
+      <div class="section-header clr-purple" onclick="toggleSection('sec-filter')">
+        <span>Filter / Search Pattern &mdash; סינון לפי תנאים (שאלה 3)</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <p>דפוס חוזר במבחנים: לסנן מערך לפי מספר תנאים שמגיעים מה-body.</p>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button>app.<span class="fn">post</span>(<span class="str">'/items/filter'</span>, (req, res) =&gt; {
+  <span class="kw">const</span> { yearMin, name, priceMax } = req.body;
+  <span class="kw">let</span> result = [...items]; <span class="cm">// העתק! לא לשנות את המקורי</span>
+
+  <span class="kw">if</span> (yearMin) {
+    result = result.<span class="fn">filter</span>(i =&gt; i.year &gt;= yearMin);
+  }
+  <span class="kw">if</span> (name) {
+    result = result.<span class="fn">filter</span>(i =&gt;
+      i.name.<span class="fn">toLowerCase</span>().<span class="fn">includes</span>(name.<span class="fn">toLowerCase</span>())
+    );
+  }
+  <span class="kw">if</span> (priceMax) {
+    result = result.<span class="fn">filter</span>(i =&gt; i.price &lt;= priceMax);
+  }
+
+  res.<span class="fn">json</span>(result);
+});</pre>
+
+        <div class="warn-box">
+          <strong>טעות נפוצה:</strong> הסינון הוא <strong>AND</strong> &mdash; כל התנאים חייבים להתקיים יחד!
+          כל <code>if</code> מצמצם את התוצאה הקודמת. זה <em>לא</em> OR.
+        </div>
+
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> תמיד צור העתק עם <code>[...items]</code> כדי לא לפגוע במערך המקורי.
+          השוואת שמות &mdash; תמיד עם <code>.toLowerCase()</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 5: File System ── -->
+    <div class="section" id="sec-fs">
+      <div class="section-header clr-teal" onclick="toggleSection('sec-fs')">
+        <span>File System Operations &mdash; קריאה וכתיבה לקבצים</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">const</span> fs = <span class="fn">require</span>(<span class="str">'fs'</span>);
+
+<span class="cm">// קריאת קובץ</span>
+<span class="kw">const</span> data = fs.<span class="fn">readFileSync</span>(<span class="str">'data.txt'</span>, <span class="str">'utf-8'</span>);
+
+<span class="cm">// הוספה לסוף הקובץ (append) — לא מוחק תוכן קיים!</span>
+fs.<span class="fn">appendFileSync</span>(<span class="str">'data.txt'</span>, newLine + <span class="str">'\n'</span>);
+
+<span class="cm">// כתיבה מחדש (write) — מוחק את כל התוכן הקודם!</span>
+fs.<span class="fn">writeFileSync</span>(<span class="str">'data.txt'</span>, content);</pre>
+
+        <div class="warn-box">
+          <strong>טעות נפוצה קריטית:</strong> <code>appendFileSync</code> מוסיף לסוף הקובץ.
+          <code>writeFileSync</code> <strong>דורס את הכל!</strong> אם רוצים להוסיף שורה &mdash; תמיד <code>appendFileSync</code>.
+        </div>
+
+        <h3>דוגמה: שמירת log לקובץ</h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button>app.<span class="fn">post</span>(<span class="str">'/log'</span>, (req, res) =&gt; {
+  <span class="kw">const</span> { message } = req.body;
+  <span class="kw">const</span> timestamp = <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toISOString</span>();
+  <span class="kw">const</span> line = <span class="str">`<span class="op">${</span>timestamp<span class="op">}</span> - <span class="op">${</span>message<span class="op">}</span>`</span>;
+  fs.<span class="fn">appendFileSync</span>(<span class="str">'log.txt'</span>, line + <span class="str">'\n'</span>);
+  res.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>({ success: <span class="kw">true</span> });
+});</pre>
+
+        <div class="pattern-box">
+          <strong>סיכום:</strong> <code>readFileSync</code> = קריאה |
+          <code>appendFileSync</code> = הוספה לסוף |
+          <code>writeFileSync</code> = דריסה מלאה.
+          תמיד להוסיף <code>'utf-8'</code> כפרמטר שני ב-readFileSync.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 6: Status Codes ── -->
+    <div class="section" id="sec-status">
+      <div class="section-header clr-red" onclick="toggleSection('sec-status')">
+        <span>Status Codes &mdash; קודי תשובה</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <table class="status-table">
+          <thead>
+            <tr><th>Code</th><th>Name</th><th>Usage (מתי משתמשים)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>200</strong></td><td>OK</td><td>GET success, PUT/DELETE success</td></tr>
+            <tr><td><strong>201</strong></td><td>Created</td><td>POST success &mdash; נוצר פריט חדש</td></tr>
+            <tr><td><strong>400</strong></td><td>Bad Request</td><td>Validation failed, missing fields</td></tr>
+            <tr><td><strong>404</strong></td><td>Not Found</td><td>הפריט לא נמצא (ID לא קיים)</td></tr>
+            <tr><td><strong>500</strong></td><td>Server Error</td><td>שגיאה פנימית בשרת (try/catch)</td></tr>
+          </tbody>
+        </table>
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> POST = <code>201</code>. כל השאר = <code>200</code>. שגיאת קלט = <code>400</code>. לא נמצא = <code>404</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 7: Error Handling ── -->
+    <div class="section" id="sec-errors">
+      <div class="section-header clr-red" onclick="toggleSection('sec-errors')">
+        <span>Error Handling Pattern &mdash; טיפול בשגיאות</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button>app.<span class="fn">post</span>(<span class="str">'/items'</span>, <span class="kw">async</span> (req, res) =&gt; {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> { name, price } = req.body;
+    <span class="kw">if</span> (!name) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'Name is required'</span>);
+    <span class="cm">// ... operation ...</span>
+    res.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>(result);
+  } <span class="kw">catch</span> (err) {
+    res.<span class="fn">status</span>(<span class="num">500</span>).<span class="fn">json</span>({ error: err.message });
+  }
+});</pre>
+
+        <div class="pattern-box">
+          <strong>סיכום:</strong> עטוף כל route ב-<code>try/catch</code>.
+          שגיאת validation &rarr; <code>400</code> עם הודעה ברורה.
+          שגיאת שרת &rarr; <code>500</code> עם <code>err.message</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════╗ -->
+    <!-- ║     PART 2: JS ALGORITHM PATTERNS        ║ -->
+    <!-- ╚══════════════════════════════════════════╝ -->
+    <div class="part-header algo" id="part-algo">חלק 2: JavaScript Algorithm Patterns &mdash; שאלות Q2</div>
+
+    <!-- ── Pattern 1: Accumulator / Group By ── -->
+    <div class="section" id="sec-accumulator">
+      <div class="section-header clr-yellow" onclick="toggleSection('sec-accumulator')">
+        <span>Pattern 1: Accumulator / Group By &mdash; צבירה וקיבוץ</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <div class="pattern-box">
+          <strong>שימושים:</strong>
+          <span class="badge purple">football-q2</span> סכום לפי אורך ספרות
+          <span class="badge purple">willing-q2</span> ספירת זוגיים/אי-זוגיים
+        </div>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">function</span> <span class="fn">groupByLength</span>(arr) {
+  <span class="kw">const</span> result = {};
+  <span class="kw">for</span> (<span class="kw">const</span> num <span class="kw">of</span> arr) {
+    <span class="kw">const</span> key = <span class="fn">String</span>(<span class="fn">Math.abs</span>(num)).length; <span class="cm">// Math.abs למספרים שליליים!</span>
+    result[key] = (result[key] || <span class="num">0</span>) + num;
+  }
+  <span class="kw">return</span> result;
+}
+
+<span class="cm">// דוגמה: groupByLength([5, 12, 300, -7, 45])</span>
+<span class="cm">// ➜ { 1: -2, 2: 57, 3: 300 }</span>
+<span class="cm">// key=1 → 5+(-7)=-2, key=2 → 12+45=57, key=3 → 300</span></pre>
+
+        <div class="warn-box">
+          <strong>טעות נפוצה:</strong> לשכוח <code>Math.abs()</code> עבור מספרים שליליים. בלי זה, <code>String(-7).length</code> = 2 (כולל המינוס) במקום 1.
+        </div>
+
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> הדפוס <code>result[key] = (result[key] || 0) + value</code> הוא הבסיס של כל Group By. שינו רק את ה-key ואת הפעולה.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pattern 2: Contiguous Subsequence ── -->
+    <div class="section" id="sec-subseq">
+      <div class="section-header clr-green" onclick="toggleSection('sec-subseq')">
+        <span>Pattern 2: Contiguous Subsequence &mdash; תת-רצף רציף</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <div class="pattern-box">
+          <strong>שימושים:</strong>
+          <span class="badge purple">parking-q2</span> ספירת תת-רצפים עם סכום מטרה
+        </div>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">function</span> <span class="fn">countSubsequences</span>(arr, target) {
+  <span class="kw">let</span> count = <span class="num">0</span>;
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; arr.length; i++) {
+    <span class="kw">let</span> sum = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="kw">let</span> j = i; j &lt; arr.length; j++) {
+      sum += arr[j];
+      <span class="kw">if</span> (sum === target) count++;
+    }
+  }
+  <span class="kw">return</span> count;
+}
+
+<span class="cm">// דוגמה: countSubsequences([1, 2, 3, 0, 3], 3)</span>
+<span class="cm">// ➜ 4</span>
+<span class="cm">// [3], [3], [1,2], [3,0]</span></pre>
+
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> שימו לב &mdash; <code>j</code> מתחיל מ-<code>i</code> (לא מ-0). זה מה שמבטיח רצף <em>רציף</em>.
+          לולאה חיצונית = נקודת התחלה. לולאה פנימית = הרחבת הרצף.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pattern 3: Matrix Traversal ── -->
+    <div class="section" id="sec-matrix">
+      <div class="section-header clr-blue" onclick="toggleSection('sec-matrix')">
+        <span>Pattern 3: Matrix Traversal &mdash; סריקת מטריצה</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <div class="pattern-box">
+          <strong>שימושים:</strong>
+          <span class="badge purple">flights-q2</span> ספירה במטריצה
+        </div>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">function</span> <span class="fn">countInMatrix</span>(matrix, numbers) {
+  <span class="kw">let</span> count = <span class="num">0</span>;
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; matrix.length; i++) {
+    <span class="kw">for</span> (<span class="kw">let</span> j = <span class="num">0</span>; j &lt; matrix[i].length; j++) {
+      <span class="kw">if</span> (numbers.<span class="fn">includes</span>(matrix[i][j])) count++;
+    }
+  }
+  <span class="kw">return</span> count;
+}
+
+<span class="cm">// דוגמה:</span>
+<span class="cm">// countInMatrix([[1,2,3],[4,5,6],[7,8,9]], [2,5,9])</span>
+<span class="cm">// ➜ 3</span></pre>
+
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> <code>matrix.length</code> = מספר שורות.
+          <code>matrix[i].length</code> = מספר עמודות בשורה i. אל תניח שכל השורות באותו אורך!
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pattern 4: Series Detection ── -->
+    <div class="section" id="sec-series">
+      <div class="section-header clr-orange" onclick="toggleSection('sec-series')">
+        <span>Pattern 4: Series Detection &mdash; זיהוי סדרה חשבונית/הנדסית</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <div class="pattern-box">
+          <strong>שימושים:</strong>
+          <span class="badge purple">helpme-q2</span> זיהוי סדרה חשבונית או הנדסית
+        </div>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">function</span> <span class="fn">detectSeries</span>(arr) {
+  <span class="kw">if</span> (arr.length &lt; <span class="num">2</span>) <span class="kw">return</span> <span class="str">'none'</span>;
+
+  <span class="kw">const</span> diff = arr[<span class="num">1</span>] - arr[<span class="num">0</span>];  <span class="cm">// הפרש קבוע (חשבונית)</span>
+  <span class="kw">const</span> ratio = arr[<span class="num">1</span>] / arr[<span class="num">0</span>]; <span class="cm">// מנה קבועה (הנדסית)</span>
+
+  <span class="kw">let</span> isArith = <span class="kw">true</span>, isGeo = <span class="kw">true</span>;
+
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">2</span>; i &lt; arr.length; i++) {
+    <span class="kw">if</span> (arr[i] - arr[i-<span class="num">1</span>] !== diff) isArith = <span class="kw">false</span>;
+    <span class="kw">if</span> (arr[i] / arr[i-<span class="num">1</span>] !== ratio) isGeo = <span class="kw">false</span>;
+  }
+
+  <span class="kw">if</span> (isArith) <span class="kw">return</span> <span class="str">'arithmetic'</span>;
+  <span class="kw">if</span> (isGeo) <span class="kw">return</span> <span class="str">'geometric'</span>;
+  <span class="kw">return</span> <span class="str">'none'</span>;
+}
+
+<span class="cm">// דוגמה: detectSeries([2, 4, 6, 8])   ➜ 'arithmetic' (d=2)</span>
+<span class="cm">// דוגמה: detectSeries([3, 9, 27, 81]) ➜ 'geometric' (q=3)</span>
+<span class="cm">// דוגמה: detectSeries([1, 3, 7, 10])  ➜ 'none'</span></pre>
+
+        <div class="warn-box">
+          <strong>טעות נפוצה:</strong> חלוקה באפס! אם <code>arr[0] === 0</code>, אז <code>ratio</code> יהיה <code>Infinity</code>. צריך לטפל ב-edge case הזה.
+        </div>
+
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> חשבונית = <strong>הפרש</strong> קבוע (חיבור/חיסור). הנדסית = <strong>מנה</strong> קבועה (כפל/חילוק).
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pattern 5: Digit Manipulation ── -->
+    <div class="section" id="sec-digits">
+      <div class="section-header clr-pink" onclick="toggleSection('sec-digits')">
+        <span>Pattern 5: Digit Manipulation &mdash; מניפולציית ספרות</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <div class="pattern-box">
+          <strong>שימושים:</strong>
+          <span class="badge purple">bank-q2</span> מיון ספרות
+          <span class="badge purple">logistics-q2</span> בינארי לעשרוני
+        </div>
+
+        <h3>מיון ספרות בלי <code>.sort()</code></h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">function</span> <span class="fn">sortDigits</span>(num) {
+  <span class="kw">const</span> digits = <span class="fn">String</span>(<span class="fn">Math.abs</span>(num)).<span class="fn">split</span>(<span class="str">''</span>).<span class="fn">map</span>(Number);
+  <span class="cm">// Bubble sort ידני</span>
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; digits.length; i++) {
+    <span class="kw">for</span> (<span class="kw">let</span> j = i + <span class="num">1</span>; j &lt; digits.length; j++) {
+      <span class="kw">if</span> (digits[j] &lt; digits[i]) {
+        [digits[i], digits[j]] = [digits[j], digits[i]]; <span class="cm">// swap</span>
+      }
+    }
+  }
+  <span class="kw">return</span> <span class="fn">Number</span>(digits.<span class="fn">join</span>(<span class="str">''</span>));
+}
+
+<span class="cm">// דוגמה: sortDigits(5831) ➜ 1358</span>
+<span class="cm">// דוגמה: sortDigits(-472) ➜ 247</span></pre>
+
+        <h3>בינארי לעשרוני (בלי parseInt)</h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">function</span> <span class="fn">binaryToDecimal</span>(binary) {
+  <span class="kw">let</span> decimal = <span class="num">0</span>;
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; binary.length; i++) {
+    decimal = decimal * <span class="num">2</span> + <span class="fn">Number</span>(binary[i]);
+  }
+  <span class="kw">return</span> decimal;
+}
+
+<span class="cm">// דוגמה: binaryToDecimal("1101") ➜ 13</span>
+<span class="cm">// 1*8 + 1*4 + 0*2 + 1*1 = 13</span></pre>
+
+        <h3>בדיקת פלינדרום</h3>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">function</span> <span class="fn">isPalindrome</span>(str) {
+  <span class="kw">return</span> str === str.<span class="fn">split</span>(<span class="str">''</span>).<span class="fn">reverse</span>().<span class="fn">join</span>(<span class="str">''</span>);
+}
+
+<span class="cm">// דוגמה: isPalindrome("racecar") ➜ true</span>
+<span class="cm">// דוגמה: isPalindrome("hello")   ➜ false</span></pre>
+
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> מיון ספרות:
+          <code>String &rarr; split &rarr; map(Number) &rarr; sort &rarr; join &rarr; Number</code>.
+          בינארי: <code>decimal = decimal * 2 + currentBit</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pattern 6: Subsequence Check ── -->
+    <div class="section" id="sec-subsequence">
+      <div class="section-header clr-teal" onclick="toggleSection('sec-subsequence')">
+        <span>Pattern 6: Subsequence Check &mdash; בדיקת תת-סדרה</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <div class="pattern-box">
+          <strong>שימושים:</strong>
+          <span class="badge purple">travel-q2</span> בדיקה אם מערך מופיע כתת-סדרה בסדר
+        </div>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="kw">function</span> <span class="fn">isSubsequence</span>(arr, subArr) {
+  <span class="kw">let</span> j = <span class="num">0</span>; <span class="cm">// מצביע על subArr</span>
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; arr.length && j &lt; subArr.length; i++) {
+    <span class="kw">if</span> (arr[i] === subArr[j]) j++;
+  }
+  <span class="kw">return</span> j === subArr.length;
+}
+
+<span class="cm">// דוגמה: isSubsequence([1,5,2,8,3,9], [5,8,9]) ➜ true</span>
+<span class="cm">// 5 מופיע לפני 8, ו-8 לפני 9 (לא חייב רצוף!)</span>
+<span class="cm">// דוגמה: isSubsequence([1,5,2,8,3,9], [8,5,9]) ➜ false</span>
+<span class="cm">// 8 מופיע אחרי 5, לא לפני — הסדר לא תואם</span></pre>
+
+        <div class="warn-box">
+          <strong>טעות נפוצה:</strong> תת-סדרה (subsequence) &#8800; תת-רצף (subarray)!
+          תת-סדרה שומרת על <strong>סדר</strong> אבל לא חייבת להיות <strong>רציפה</strong>.
+        </div>
+
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> שני מצביעים: <code>i</code> על המערך הגדול, <code>j</code> על הקטן. מקדמים את <code>j</code> רק כשיש התאמה. אם <code>j</code> הגיע לסוף &mdash; מצאנו.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pattern 7: Modified Fibonacci ── -->
+    <div class="section" id="sec-fib">
+      <div class="section-header clr-orange" onclick="toggleSection('sec-fib')">
+        <span>Pattern 7: Modified Fibonacci &mdash; סדרת פיבונאצ'י</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <div class="pattern-box">
+          <strong>שימושים:</strong>
+          <span class="badge purple">currency-q2</span> מציאת מיקום בסדרה מסוג פיבונאצ'י
+        </div>
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="cm">// סדרת פיבונאצ'י קלאסית</span>
+<span class="kw">function</span> <span class="fn">fibonacci</span>(n) {
+  <span class="kw">if</span> (n &lt;= <span class="num">0</span>) <span class="kw">return</span> <span class="num">0</span>;
+  <span class="kw">if</span> (n === <span class="num">1</span>) <span class="kw">return</span> <span class="num">1</span>;
+  <span class="kw">let</span> a = <span class="num">0</span>, b = <span class="num">1</span>;
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">2</span>; i &lt;= n; i++) {
+    [a, b] = [b, a + b];
+  }
+  <span class="kw">return</span> b;
+}
+
+<span class="cm">// מציאת מיקום מספר בסדרת פיבונאצ'י</span>
+<span class="kw">function</span> <span class="fn">findFibPosition</span>(target) {
+  <span class="kw">if</span> (target &lt; <span class="num">0</span>) <span class="kw">return</span> -<span class="num">1</span>;
+  <span class="kw">let</span> a = <span class="num">0</span>, b = <span class="num">1</span>, pos = <span class="num">0</span>;
+  <span class="kw">while</span> (a &lt; target) {
+    [a, b] = [b, a + b];
+    pos++;
+  }
+  <span class="kw">return</span> a === target ? pos : -<span class="num">1</span>;
+}
+
+<span class="cm">// דוגמה: findFibPosition(8) ➜ 6</span>
+<span class="cm">// סדרה: 0,1,1,2,3,5,8 — מיקום 6</span>
+<span class="cm">// דוגמה: findFibPosition(7) ➜ -1 (לא בסדרה)</span></pre>
+
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> עבודה עם שני משתנים <code>a, b</code> וה-swap הוא
+          <code>[a, b] = [b, a + b]</code>. לא צריך רקורסיה &mdash; לולאה פשוטה ויעילה יותר.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Edge Cases & Validation ── -->
+    <div class="section" id="sec-edge">
+      <div class="section-header clr-red" onclick="toggleSection('sec-edge')">
+        <span>Edge Cases &amp; Validation &mdash; מקרי קצה וולידציה</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <pre><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="cm">// 1. מערך ריק</span>
+<span class="kw">if</span> (!arr || arr.length === <span class="num">0</span>) <span class="kw">return</span> defaultValue;
+
+<span class="cm">// 2. מספרים שליליים — ספרות</span>
+<span class="kw">const</span> digits = <span class="fn">String</span>(<span class="fn">Math.abs</span>(num));
+
+<span class="cm">// 3. בדיקת NaN</span>
+<span class="kw">if</span> (<span class="kw">typeof</span> x !== <span class="str">'number'</span> || <span class="fn">isNaN</span>(x)) {
+  <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'Invalid input'</span>);
+}
+
+<span class="cm">// 4. בדיקה שזה מערך</span>
+<span class="kw">if</span> (!<span class="fn">Array.isArray</span>(arr)) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'Expected array'</span>);
+
+<span class="cm">// 5. 0 vs -0 (edge case נדיר)</span>
+<span class="fn">Object.is</span>(<span class="num">0</span>, -<span class="num">0</span>); <span class="cm">// false</span>
+<span class="num">0</span> === -<span class="num">0</span>;          <span class="cm">// true (זהירות!)</span>
+
+<span class="cm">// 6. חלוקה באפס</span>
+<span class="kw">if</span> (denominator === <span class="num">0</span>) <span class="kw">return</span> <span class="str">'Cannot divide by zero'</span>;</pre>
+
+        <div class="warn-box">
+          <strong>טעות נפוצה:</strong> לא לבדוק קלט לפני עיבוד. <strong>תמיד</strong> תתחילו עם validations! במיוחד: מערך ריק, null/undefined, סוג שגוי.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Exam Strategy ── -->
+    <div class="section" id="sec-strategy">
+      <div class="section-header clr-yellow" onclick="toggleSection('sec-strategy')">
+        <span>Exam Strategy &mdash; אסטרטגיית מבחן לשאלות JS</span>
+        <span class="icon">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <ol class="strategy-list">
+          <li><strong>קראו את השאלה פעמיים</strong> &mdash; הבינו מה הקלט ומה הפלט המצופה.</li>
+          <li><strong>כתבו את חתימת הפונקציה קודם</strong> &mdash; <code>function solve(arr, target)</code></li>
+          <li><strong>הוסיפו validations</strong> &mdash; מערך ריק? null? סוג שגוי?</li>
+          <li><strong>טפלו ב-edge cases</strong> &mdash; מספרים שליליים, 0, מערך באורך 1.</li>
+          <li><strong>בדקו עם הדוגמה שבשאלה</strong> &mdash; רוצו את הפונקציה בראש.</li>
+          <li><strong>בדקו עם edge case</strong> &mdash; מערך ריק, מספר שלילי, אפס.</li>
+        </ol>
+
+        <div class="tip-box">
+          <strong>טיפ למבחן:</strong> אם לא בטוחים באלגוריתם &mdash; תתחילו עם brute force (לולאות מקוננות). עדיף תשובה נכונה ואיטית מאשר תשובה לא נכונה ומהירה.
+        </div>
+
+        <div class="pattern-box">
+          <strong>זיהוי Pattern לפי סוג השאלה:</strong><br>
+          "קבצו/סכמו לפי X" &rarr; <strong>Accumulator</strong><br>
+          "ספרו תת-רצפים עם סכום" &rarr; <strong>Contiguous Subsequence</strong><br>
+          "סרקו מטריצה" &rarr; <strong>Matrix Traversal</strong><br>
+          "סדרה חשבונית/הנדסית?" &rarr; <strong>Series Detection</strong><br>
+          "מיינו ספרות / המירו בסיסים" &rarr; <strong>Digit Manipulation</strong><br>
+          "האם X מופיע בסדר ב-Y?" &rarr; <strong>Subsequence Check</strong><br>
+          "מצאו מיקום בסדרה" &rarr; <strong>Modified Fibonacci</strong>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ════════════════ FOOTER ════════════════ -->
+  <footer class="footer">
+    Express Middleware & JS Algorithm Patterns &mdash; Full-Stack Exam Cheatsheet
+  </footer>
+
+  <!-- ════════════════ JAVASCRIPT ════════════════ -->
+  <script>
+    /* ── Toggle section collapse ── */
+    function toggleSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('collapsed');
+    }
+
+    /* ── Toggle all sections ── */
+    function toggleAll(open) {
+      document.querySelectorAll('.section').forEach(s => {
+        if (open) {
+          s.classList.remove('collapsed');
+        } else {
+          s.classList.add('collapsed');
+        }
+      });
+    }
+
+    /* ── Scroll to part ── */
+    function scrollToPart(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /* ── Dark mode toggle ── */
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme');
+      if (current === 'dark') {
+        body.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+      } else {
+        body.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    /* ── Restore saved theme ── */
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+      }
+    })();
+
+    /* ── Copy code to clipboard ── */
+    function copyCode(btn) {
+      const pre = btn.closest('pre');
+      const text = pre.textContent.replace('copy', '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'copied!';
+        setTimeout(() => { btn.textContent = 'copy'; }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TypeScript Cheatsheet - מדריך מקיף למבחן</title>
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --text: #1a1a1a;
+    --card-bg: #ffffff;
+    --border: #1a1a1a;
+    --shadow: #1a1a1a;
+    --accent-blue: #3b82f6;
+    --accent-green: #10b981;
+    --accent-purple: #8b5cf6;
+    --accent-orange: #f59e0b;
+    --accent-red: #ef4444;
+    --accent-pink: #ec4899;
+    --accent-cyan: #06b6d4;
+    --accent-lime: #84cc16;
+    --code-bg: #1e1e2e;
+    --code-text: #cdd6f4;
+    --tip-bg: #fef3c7;
+    --tip-border: #f59e0b;
+    --header-from: #1e1b4b;
+    --header-to: #312e81;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f0f17;
+      --text: #e2e8f0;
+      --card-bg: #1a1a2e;
+      --border: #e2e8f0;
+      --shadow: #000000;
+      --code-bg: #11111b;
+      --tip-bg: #422006;
+      --tip-border: #f59e0b;
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--header-from), var(--header-to));
+    color: #fff;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    border-bottom: 4px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
+  }
+  header p {
+    font-size: 1rem;
+    opacity: 0.85;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .toc {
+    background: var(--card-bg);
+    border: 3px solid var(--border);
+    box-shadow: 6px 6px 0 var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+  }
+  .toc h2 { font-size: 1.3rem; margin-bottom: 1rem; }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.6rem;
+  }
+  .toc a {
+    display: block;
+    padding: 0.5rem 0.8rem;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    box-shadow: 3px 3px 0 var(--shadow);
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .toc a:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--shadow);
+  }
+
+  .section {
+    background: var(--card-bg);
+    border: 3px solid var(--border);
+    box-shadow: 6px 6px 0 var(--shadow);
+    margin-bottom: 2rem;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    font-weight: 800;
+    font-size: 1.25rem;
+    transition: background 0.15s;
+  }
+  .section-header:hover { filter: brightness(0.95); }
+  .section-header .arrow {
+    font-size: 1.4rem;
+    transition: transform 0.25s;
+    display: inline-block;
+  }
+  .section.collapsed .arrow { transform: rotate(-90deg); }
+  .section.collapsed .section-body { display: none; }
+
+  .s-blue .section-header    { background: #dbeafe; color: #1e3a8a; }
+  .s-green .section-header   { background: #d1fae5; color: #064e3b; }
+  .s-purple .section-header  { background: #ede9fe; color: #3b0764; }
+  .s-orange .section-header  { background: #ffedd5; color: #7c2d12; }
+  .s-red .section-header     { background: #fee2e2; color: #7f1d1d; }
+  .s-pink .section-header    { background: #fce7f3; color: #831843; }
+  .s-cyan .section-header    { background: #cffafe; color: #134e4a; }
+  .s-lime .section-header    { background: #ecfccb; color: #365314; }
+
+  @media (prefers-color-scheme: dark) {
+    .s-blue .section-header   { background: #1e3a8a; color: #dbeafe; }
+    .s-green .section-header  { background: #064e3b; color: #d1fae5; }
+    .s-purple .section-header { background: #3b0764; color: #ede9fe; }
+    .s-orange .section-header { background: #7c2d12; color: #ffedd5; }
+    .s-red .section-header    { background: #7f1d1d; color: #fee2e2; }
+    .s-pink .section-header   { background: #831843; color: #fce7f3; }
+    .s-cyan .section-header   { background: #134e4a; color: #cffafe; }
+    .s-lime .section-header   { background: #365314; color: #ecfccb; }
+  }
+
+  .section-body { padding: 1.5rem; }
+
+  h3 {
+    font-size: 1.1rem;
+    margin: 1.5rem 0 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 2px dashed var(--border);
+  }
+  h3:first-child { margin-top: 0; }
+
+  p, ul { margin-bottom: 0.8rem; }
+  ul { padding-right: 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1rem 1.2rem;
+    margin: 0.8rem 0 1.2rem;
+    border: 3px solid var(--border);
+    box-shadow: 4px 4px 0 var(--shadow);
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    direction: ltr;
+    text-align: left;
+    font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  }
+
+  .kw  { color: #cba6f7; }  /* purple - keywords */
+  .tp  { color: #89b4fa; }  /* blue - types */
+  .vl  { color: #a6e3a1; }  /* green - values/identifiers */
+  .st  { color: #fab387; }  /* orange - strings */
+  .cm  { color: #6c7086; font-style: italic; } /* gray - comments */
+  .fn  { color: #89dceb; }  /* cyan - function names */
+  .nb  { color: #f9e2af; }  /* yellow - numbers */
+  .op  { color: #cdd6f4; }  /* default - operators */
+  .rx  { color: #f38ba8; }  /* red - react/jsx */
+
+  .tip {
+    background: var(--tip-bg);
+    border: 3px solid var(--tip-border);
+    box-shadow: 4px 4px 0 var(--shadow);
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    font-size: 0.92rem;
+  }
+  .tip strong { display: block; margin-bottom: 0.3rem; font-size: 1rem; }
+
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 2px solid var(--border);
+    border-radius: 3px;
+    margin-left: 0.4rem;
+  }
+  .badge-important { background: #fee2e2; color: #991b1b; }
+  .badge-easy { background: #d1fae5; color: #064e3b; }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: 0.85rem;
+    opacity: 0.6;
+    border-top: 3px solid var(--border);
+  }
+
+  @media (max-width: 640px) {
+    header h1 { font-size: 1.5rem; }
+    .section-header { font-size: 1.05rem; padding: 0.8rem 1rem; }
+    .section-body { padding: 1rem; }
+    pre { font-size: 0.8rem; padding: 0.8rem; }
+    .toc-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TypeScript Cheatsheet</h1>
+  <p>מדריך מקיף לטייפסקריפט - הכנה למבחן Full-Stack</p>
+</header>
+
+<div class="container">
+
+<!-- Table of Contents -->
+<div class="toc">
+  <h2>תוכן עניינים</h2>
+  <div class="toc-grid">
+    <a href="#basics">1. יסודות TypeScript</a>
+    <a href="#enums">2. Enums - מניות</a>
+    <a href="#tuples">3. Tuples - טאפלים</a>
+    <a href="#functions">4. Functions - פונקציות</a>
+    <a href="#objects">5. Objects & Interfaces</a>
+    <a href="#generics">6. Generics - גנריקס</a>
+    <a href="#react">7. TypeScript + React</a>
+    <a href="#practice">8. תרגול מהשיעורי בית</a>
+  </div>
+</div>
+
+<!-- ===================== SECTION 1: BASICS ===================== -->
+<div class="section s-blue" id="basics">
+  <div class="section-header" onclick="toggleSection(this)">
+    <span>1. יסודות TypeScript</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>Primitive Types - טיפוסים בסיסיים</h3>
+    <p>TypeScript מרחיב את JavaScript עם מערכת טיפוסים סטטית. הנה כל הטיפוסים הבסיסיים:</p>
+<pre><span class="cm">// טיפוסים בסיסיים</span>
+<span class="kw">let</span> <span class="vl">userName</span>: <span class="tp">string</span> = <span class="st">"Alice"</span>;
+<span class="kw">let</span> <span class="vl">age</span>: <span class="tp">number</span> = <span class="nb">25</span>;
+<span class="kw">let</span> <span class="vl">isActive</span>: <span class="tp">boolean</span> = <span class="nb">true</span>;
+<span class="kw">let</span> <span class="vl">nothing</span>: <span class="tp">null</span> = <span class="nb">null</span>;
+<span class="kw">let</span> <span class="vl">notDefined</span>: <span class="tp">undefined</span> = <span class="nb">undefined</span>;
+
+<span class="cm">// any - מבטל את בדיקת הטיפוסים (נמנעים מלהשתמש!)</span>
+<span class="kw">let</span> <span class="vl">anything</span>: <span class="tp">any</span> = <span class="st">"hello"</span>;
+<span class="vl">anything</span> = <span class="nb">42</span>;       <span class="cm">// OK - אין שגיאה</span>
+<span class="vl">anything</span>.<span class="fn">toFixed</span>(); <span class="cm">// OK - אין בדיקה</span>
+
+<span class="cm">// unknown - גרסה בטוחה של any</span>
+<span class="kw">let</span> <span class="vl">mystery</span>: <span class="tp">unknown</span> = <span class="st">"hello"</span>;
+<span class="cm">// mystery.toUpperCase(); // ERROR! חייבים לבדוק קודם</span>
+<span class="kw">if</span> (<span class="kw">typeof</span> <span class="vl">mystery</span> === <span class="st">"string"</span>) {
+  <span class="vl">mystery</span>.<span class="fn">toUpperCase</span>(); <span class="cm">// OK - אחרי narrowing</span>
+}
+
+<span class="cm">// void - פונקציה שלא מחזירה ערך</span>
+<span class="kw">function</span> <span class="fn">logMessage</span>(<span class="vl">msg</span>: <span class="tp">string</span>): <span class="tp">void</span> {
+  console.<span class="fn">log</span>(<span class="vl">msg</span>);
+}
+
+<span class="cm">// never - פונקציה שלעולם לא מסתיימת</span>
+<span class="kw">function</span> <span class="fn">throwError</span>(<span class="vl">msg</span>: <span class="tp">string</span>): <span class="tp">never</span> {
+  <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="vl">msg</span>);
+}</pre>
+
+    <h3>Type Inference - הסקת טיפוסים</h3>
+    <p>TypeScript יודע להסיק טיפוסים אוטומטית - לא תמיד חייבים לכתוב אנוטציות:</p>
+<pre><span class="cm">// TS מסיק את הטיפוס בעצמו</span>
+<span class="kw">let</span> <span class="vl">name</span> = <span class="st">"Bob"</span>;       <span class="cm">// string (מוסק)</span>
+<span class="kw">let</span> <span class="vl">count</span> = <span class="nb">10</span>;        <span class="cm">// number (מוסק)</span>
+<span class="kw">let</span> <span class="vl">flag</span> = <span class="nb">true</span>;       <span class="cm">// boolean (מוסק)</span>
+
+<span class="cm">// הסקה בפונקציות - TS מסיק את ערך ההחזרה</span>
+<span class="kw">function</span> <span class="fn">add</span>(<span class="vl">a</span>: <span class="tp">number</span>, <span class="vl">b</span>: <span class="tp">number</span>) {
+  <span class="kw">return</span> <span class="vl">a</span> + <span class="vl">b</span>; <span class="cm">// TS מסיק: number</span>
+}
+
+<span class="cm">// מתי כן כותבים אנוטציה?</span>
+<span class="cm">// 1. משתנה שמתחיל ללא ערך</span>
+<span class="kw">let</span> <span class="vl">items</span>: <span class="tp">string</span>[];  <span class="cm">// חייבים - אחרת TS לא יודע</span>
+<span class="cm">// 2. פרמטרים של פונקציה</span>
+<span class="kw">function</span> <span class="fn">greet</span>(<span class="vl">name</span>: <span class="tp">string</span>) {} <span class="cm">// חייבים!</span></pre>
+
+    <h3>Union Types & Literal Types</h3>
+    <p>Union type מאפשר למשתנה להיות אחד מכמה טיפוסים. Literal type מגביל לערכים ספציפיים:</p>
+<pre><span class="cm">// Union Types - אחד מכמה טיפוסים</span>
+<span class="kw">let</span> <span class="vl">id</span>: <span class="tp">string</span> | <span class="tp">number</span>;
+<span class="vl">id</span> = <span class="st">"abc"</span>;  <span class="cm">// OK</span>
+<span class="vl">id</span> = <span class="nb">123</span>;    <span class="cm">// OK</span>
+<span class="cm">// id = true; // ERROR!</span>
+
+<span class="cm">// Literal Types - ערכים ספציפיים</span>
+<span class="kw">type</span> <span class="tp">Role</span> = <span class="st">"admin"</span> | <span class="st">"user"</span> | <span class="st">"guest"</span>;
+<span class="kw">let</span> <span class="vl">userRole</span>: <span class="tp">Role</span> = <span class="st">"admin"</span>; <span class="cm">// OK</span>
+<span class="cm">// let userRole: Role = "superuser"; // ERROR!</span>
+
+<span class="kw">type</span> <span class="tp">Status</span> = <span class="st">"loading"</span> | <span class="st">"success"</span> | <span class="st">"error"</span>;
+<span class="kw">function</span> <span class="fn">showStatus</span>(<span class="vl">s</span>: <span class="tp">Status</span>) {
+  <span class="kw">switch</span>(<span class="vl">s</span>) {
+    <span class="kw">case</span> <span class="st">"loading"</span>: <span class="kw">return</span> <span class="st">"Loading..."</span>;
+    <span class="kw">case</span> <span class="st">"success"</span>: <span class="kw">return</span> <span class="st">"Done!"</span>;
+    <span class="kw">case</span> <span class="st">"error"</span>:   <span class="kw">return</span> <span class="st">"Failed!"</span>;
+  }
+}</pre>
+
+    <h3>Type Aliases, Optional & Readonly</h3>
+<pre><span class="cm">// Type Alias - שם לטיפוס מורכב</span>
+<span class="kw">type</span> <span class="tp">User</span> = {
+  <span class="vl">name</span>: <span class="tp">string</span>;
+  <span class="vl">age</span>: <span class="tp">number</span>;
+  <span class="vl">email</span>: <span class="tp">string</span>;
+};
+
+<span class="cm">// Optional property - שדה אופציונלי עם ?</span>
+<span class="kw">type</span> <span class="tp">Profile</span> = {
+  <span class="vl">name</span>: <span class="tp">string</span>;
+  <span class="vl">age</span>?: <span class="tp">number</span>;          <span class="cm">// אופציונלי - יכול להיות undefined</span>
+  <span class="vl">bio</span>?: <span class="tp">string</span>;
+};
+
+<span class="kw">const</span> <span class="vl">p1</span>: <span class="tp">Profile</span> = { <span class="vl">name</span>: <span class="st">"Dan"</span> };              <span class="cm">// OK</span>
+<span class="kw">const</span> <span class="vl">p2</span>: <span class="tp">Profile</span> = { <span class="vl">name</span>: <span class="st">"Dan"</span>, <span class="vl">age</span>: <span class="nb">30</span> };    <span class="cm">// OK</span>
+
+<span class="cm">// Readonly - שדה שלא ניתן לשנות</span>
+<span class="kw">type</span> <span class="tp">Config</span> = {
+  <span class="kw">readonly</span> <span class="vl">id</span>: <span class="tp">number</span>;
+  <span class="kw">readonly</span> <span class="vl">apiKey</span>: <span class="tp">string</span>;
+  <span class="vl">debug</span>: <span class="tp">boolean</span>;       <span class="cm">// ניתן לשנות</span>
+};
+
+<span class="kw">const</span> <span class="vl">config</span>: <span class="tp">Config</span> = { <span class="vl">id</span>: <span class="nb">1</span>, <span class="vl">apiKey</span>: <span class="st">"xyz"</span>, <span class="vl">debug</span>: <span class="nb">true</span> };
+<span class="cm">// config.id = 2;      // ERROR! readonly</span>
+<span class="vl">config</span>.<span class="vl">debug</span> = <span class="nb">false</span>;  <span class="cm">// OK</span></pre>
+
+    <div class="tip">
+      <strong>&#128161; &#1496;&#1497;&#1508; &#1500;&#1502;&#1489;&#1495;&#1503;</strong>
+      ההבדל בין <code>any</code> ל-<code>unknown</code> שאלה קלאסית! <code>any</code> מבטל את כל הבדיקות, <code>unknown</code> מכריח narrowing לפני שימוש. תמיד העדיפו <code>unknown</code> על <code>any</code>.
+      <br>כלל אצבע: אם TS מסיק נכון, אל תכתבו אנוטציה. אם לא, כתבו.
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== SECTION 2: ENUMS ===================== -->
+<div class="section s-green" id="enums">
+  <div class="section-header" onclick="toggleSection(this)">
+    <span>2. Enums - מניות</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>Numeric Enums</h3>
+    <p>Enum הוא אוסף של קבועים בעלי שם. ב-numeric enum הערכים הם מספרים:</p>
+<pre><span class="cm">// Numeric enum - ערכים מספריים אוטומטיים</span>
+<span class="kw">enum</span> <span class="tp">Direction</span> {
+  Up,      <span class="cm">// 0</span>
+  Down,    <span class="cm">// 1</span>
+  Left,    <span class="cm">// 2</span>
+  Right    <span class="cm">// 3</span>
+}
+
+<span class="kw">let</span> <span class="vl">dir</span>: <span class="tp">Direction</span> = <span class="tp">Direction</span>.<span class="vl">Up</span>;
+console.<span class="fn">log</span>(<span class="vl">dir</span>);           <span class="cm">// 0</span>
+console.<span class="fn">log</span>(<span class="tp">Direction</span>[<span class="nb">0</span>]);  <span class="cm">// "Up" - reverse mapping!</span>
+
+<span class="cm">// אפשר לקבוע ערך התחלתי</span>
+<span class="kw">enum</span> <span class="tp">StatusCode</span> {
+  OK = <span class="nb">200</span>,
+  NotFound = <span class="nb">404</span>,
+  ServerError = <span class="nb">500</span>
+}</pre>
+
+    <h3>String Enums</h3>
+    <p>ב-string enum כל ערך הוא מחרוזת. קריא יותר אך אין reverse mapping:</p>
+<pre><span class="cm">// String enum - ערכי מחרוזת</span>
+<span class="kw">enum</span> <span class="tp">Color</span> {
+  Red   = <span class="st">"RED"</span>,
+  Green = <span class="st">"GREEN"</span>,
+  Blue  = <span class="st">"BLUE"</span>
+}
+
+<span class="kw">let</span> <span class="vl">fav</span>: <span class="tp">Color</span> = <span class="tp">Color</span>.<span class="vl">Blue</span>;
+console.<span class="fn">log</span>(<span class="vl">fav</span>); <span class="cm">// "BLUE"</span>
+
+<span class="cm">// שימוש ב-enum כטיפוס ובתנאי</span>
+<span class="kw">function</span> <span class="fn">paint</span>(<span class="vl">color</span>: <span class="tp">Color</span>): <span class="tp">string</span> {
+  <span class="kw">switch</span> (<span class="vl">color</span>) {
+    <span class="kw">case</span> <span class="tp">Color</span>.<span class="vl">Red</span>:   <span class="kw">return</span> <span class="st">"Painting red!"</span>;
+    <span class="kw">case</span> <span class="tp">Color</span>.<span class="vl">Green</span>: <span class="kw">return</span> <span class="st">"Painting green!"</span>;
+    <span class="kw">case</span> <span class="tp">Color</span>.<span class="vl">Blue</span>:  <span class="kw">return</span> <span class="st">"Painting blue!"</span>;
+  }
+}
+<span class="fn">paint</span>(<span class="tp">Color</span>.<span class="vl">Red</span>); <span class="cm">// "Painting red!"</span></pre>
+
+    <h3>Enum vs Union Literal</h3>
+<pre><span class="cm">// Option A: Enum</span>
+<span class="kw">enum</span> <span class="tp">Size</span> {
+  Small  = <span class="st">"S"</span>,
+  Medium = <span class="st">"M"</span>,
+  Large  = <span class="st">"L"</span>
+}
+
+<span class="cm">// Option B: Union Literal (קל יותר, אין runtime code)</span>
+<span class="kw">type</span> <span class="tp">SizeUnion</span> = <span class="st">"S"</span> | <span class="st">"M"</span> | <span class="st">"L"</span>;
+
+<span class="cm">// מתי להשתמש בכל אחד?</span>
+<span class="cm">// Enum: כשצריכים reverse mapping, או ערכים מספריים</span>
+<span class="cm">// Union: כשרוצים פשטות, ללא קוד נוסף ב-JS output</span></pre>
+
+    <div class="tip">
+      <strong>&#128161; &#1496;&#1497;&#1508; &#1500;&#1502;&#1489;&#1495;&#1503;</strong>
+      שימו לב ל-Enum שמור ל-runtime (מתקמפל ל-JS אמיתי), בעוד ש-union literal נמחק בקומפילציה.
+      <br>ב-string enum אין reverse mapping. ב-numeric enum - יש.
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== SECTION 3: TUPLES ===================== -->
+<div class="section s-purple" id="tuples">
+  <div class="section-header" onclick="toggleSection(this)">
+    <span>3. Tuples - טאפלים</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>Basic Tuples</h3>
+    <p>Tuple הוא מערך עם אורך קבוע וטיפוסים שונים בכל מיקום:</p>
+<pre><span class="cm">// Basic Tuple - מערך קבוע</span>
+<span class="kw">let</span> <span class="vl">pair</span>: [<span class="tp">string</span>, <span class="tp">number</span>] = [<span class="st">"Alice"</span>, <span class="nb">25</span>];
+
+console.<span class="fn">log</span>(<span class="vl">pair</span>[<span class="nb">0</span>]); <span class="cm">// "Alice" - string</span>
+console.<span class="fn">log</span>(<span class="vl">pair</span>[<span class="nb">1</span>]); <span class="cm">// 25 - number</span>
+
+<span class="cm">// שגיאות:</span>
+<span class="cm">// pair = ["Alice"];          // ERROR - חסר number</span>
+<span class="cm">// pair = [25, "Alice"];      // ERROR - סדר לא נכון</span>
+
+<span class="cm">// שימוש נפוץ: החזרת כמה ערכים מפונקציה</span>
+<span class="kw">function</span> <span class="fn">getUser</span>(): [<span class="tp">string</span>, <span class="tp">number</span>] {
+  <span class="kw">return</span> [<span class="st">"Bob"</span>, <span class="nb">30</span>];
+}
+<span class="kw">const</span> [<span class="vl">name</span>, <span class="vl">userAge</span>] = <span class="fn">getUser</span>(); <span class="cm">// destructuring</span></pre>
+
+    <h3>Named Tuples, Optional & Rest</h3>
+<pre><span class="cm">// Named Tuples (TS 4.0+) - שמות לתיעוד</span>
+<span class="kw">type</span> <span class="tp">Point</span> = [<span class="vl">x</span>: <span class="tp">number</span>, <span class="vl">y</span>: <span class="tp">number</span>];
+<span class="kw">const</span> <span class="vl">origin</span>: <span class="tp">Point</span> = [<span class="nb">0</span>, <span class="nb">0</span>];
+
+<span class="cm">// Optional Elements</span>
+<span class="kw">type</span> <span class="tp">RGB</span> = [<span class="tp">number</span>, <span class="tp">number</span>, <span class="tp">number</span>, <span class="tp">number</span>?]; <span class="cm">// alpha אופציונלי</span>
+<span class="kw">const</span> <span class="vl">red</span>: <span class="tp">RGB</span> = [<span class="nb">255</span>, <span class="nb">0</span>, <span class="nb">0</span>];       <span class="cm">// OK</span>
+<span class="kw">const</span> <span class="vl">blue</span>: <span class="tp">RGB</span> = [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">255</span>, <span class="nb">0.5</span>]; <span class="cm">// OK</span>
+
+<span class="cm">// Rest Elements</span>
+<span class="kw">type</span> <span class="tp">StringAndNums</span> = [<span class="tp">string</span>, ...<span class="tp">number</span>[]];
+<span class="kw">const</span> <span class="vl">data</span>: <span class="tp">StringAndNums</span> = [<span class="st">"grades"</span>, <span class="nb">90</span>, <span class="nb">85</span>, <span class="nb">95</span>, <span class="nb">78</span>]; <span class="cm">// OK</span>
+
+<span class="cm">// readonly tuple</span>
+<span class="kw">type</span> <span class="tp">Coord</span> = <span class="kw">readonly</span> [<span class="tp">number</span>, <span class="tp">number</span>];
+<span class="kw">const</span> <span class="vl">pos</span>: <span class="tp">Coord</span> = [<span class="nb">10</span>, <span class="nb">20</span>];
+<span class="cm">// pos[0] = 5; // ERROR! readonly</span></pre>
+
+    <div class="tip">
+      <strong>&#128161; &#1496;&#1497;&#1508; &#1500;&#1502;&#1489;&#1495;&#1503;</strong>
+      Tuple vs Array: מערך רגיל (<code>number[]</code>) הוא באורך משתנה עם טיפוס אחיד. Tuple הוא באורך קבוע עם טיפוסים שונים בכל מקום.
+      <br><code>useState</code> של React מחזיר tuple: <code>[value, setter]</code>.
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== SECTION 4: FUNCTIONS ===================== -->
+<div class="section s-orange" id="functions">
+  <div class="section-header" onclick="toggleSection(this)">
+    <span>4. Functions - פונקציות</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>Typed Parameters & Return Types</h3>
+<pre><span class="cm">// פרמטרים וערך החזרה מוטייפים</span>
+<span class="kw">function</span> <span class="fn">add</span>(<span class="vl">a</span>: <span class="tp">number</span>, <span class="vl">b</span>: <span class="tp">number</span>): <span class="tp">number</span> {
+  <span class="kw">return</span> <span class="vl">a</span> + <span class="vl">b</span>;
+}
+
+<span class="cm">// Arrow function</span>
+<span class="kw">const</span> <span class="fn">multiply</span> = (<span class="vl">a</span>: <span class="tp">number</span>, <span class="vl">b</span>: <span class="tp">number</span>): <span class="tp">number</span> => <span class="vl">a</span> * <span class="vl">b</span>;
+
+<span class="cm">// פונקציה שמחזירה אובייקט</span>
+<span class="kw">function</span> <span class="fn">createUser</span>(<span class="vl">name</span>: <span class="tp">string</span>, <span class="vl">age</span>: <span class="tp">number</span>): { <span class="vl">name</span>: <span class="tp">string</span>; <span class="vl">age</span>: <span class="tp">number</span> } {
+  <span class="kw">return</span> { <span class="vl">name</span>, <span class="vl">age</span> };
+}</pre>
+
+    <h3>Optional, Default & Rest Parameters</h3>
+<pre><span class="cm">// Optional parameter - עם ?</span>
+<span class="kw">function</span> <span class="fn">greet</span>(<span class="vl">name</span>: <span class="tp">string</span>, <span class="vl">title</span>?: <span class="tp">string</span>): <span class="tp">string</span> {
+  <span class="kw">if</span> (<span class="vl">title</span>) <span class="kw">return</span> <span class="st">`Hello, </span>${<span class="vl">title</span>}<span class="st"> </span>${<span class="vl">name</span>}<span class="st">`</span>;
+  <span class="kw">return</span> <span class="st">`Hello, </span>${<span class="vl">name</span>}<span class="st">`</span>;
+}
+<span class="fn">greet</span>(<span class="st">"Alice"</span>);           <span class="cm">// "Hello, Alice"</span>
+<span class="fn">greet</span>(<span class="st">"Alice"</span>, <span class="st">"Dr."</span>);  <span class="cm">// "Hello, Dr. Alice"</span>
+
+<span class="cm">// Default parameter - ערך ברירת מחדל</span>
+<span class="kw">function</span> <span class="fn">power</span>(<span class="vl">base</span>: <span class="tp">number</span>, <span class="vl">exp</span>: <span class="tp">number</span> = <span class="nb">2</span>): <span class="tp">number</span> {
+  <span class="kw">return</span> Math.<span class="fn">pow</span>(<span class="vl">base</span>, <span class="vl">exp</span>);
+}
+<span class="fn">power</span>(<span class="nb">3</span>);      <span class="cm">// 9 (exp=2 by default)</span>
+<span class="fn">power</span>(<span class="nb">3</span>, <span class="nb">3</span>);   <span class="cm">// 27</span>
+
+<span class="cm">// Rest parameters</span>
+<span class="kw">function</span> <span class="fn">sum</span>(...<span class="vl">nums</span>: <span class="tp">number</span>[]): <span class="tp">number</span> {
+  <span class="kw">return</span> <span class="vl">nums</span>.<span class="fn">reduce</span>((<span class="vl">total</span>, <span class="vl">n</span>) => <span class="vl">total</span> + <span class="vl">n</span>, <span class="nb">0</span>);
+}
+<span class="fn">sum</span>(<span class="nb">1</span>, <span class="nb">2</span>, <span class="nb">3</span>, <span class="nb">4</span>); <span class="cm">// 10</span></pre>
+
+    <h3>Function Type Expressions</h3>
+<pre><span class="cm">// הגדרת טיפוס של פונקציה</span>
+<span class="kw">type</span> <span class="tp">MathOp</span> = (<span class="vl">a</span>: <span class="tp">number</span>, <span class="vl">b</span>: <span class="tp">number</span>) => <span class="tp">number</span>;
+
+<span class="kw">const</span> <span class="fn">addOp</span>: <span class="tp">MathOp</span> = (<span class="vl">a</span>, <span class="vl">b</span>) => <span class="vl">a</span> + <span class="vl">b</span>;
+<span class="kw">const</span> <span class="fn">subOp</span>: <span class="tp">MathOp</span> = (<span class="vl">a</span>, <span class="vl">b</span>) => <span class="vl">a</span> - <span class="vl">b</span>;
+
+<span class="cm">// פונקציה שמקבלת פונקציה כפרמטר (callback)</span>
+<span class="kw">function</span> <span class="fn">calculate</span>(<span class="vl">x</span>: <span class="tp">number</span>, <span class="vl">y</span>: <span class="tp">number</span>, <span class="vl">op</span>: <span class="tp">MathOp</span>): <span class="tp">number</span> {
+  <span class="kw">return</span> <span class="fn">op</span>(<span class="vl">x</span>, <span class="vl">y</span>);
+}
+<span class="fn">calculate</span>(<span class="nb">10</span>, <span class="nb">5</span>, <span class="fn">addOp</span>); <span class="cm">// 15</span>
+<span class="fn">calculate</span>(<span class="nb">10</span>, <span class="nb">5</span>, <span class="fn">subOp</span>); <span class="cm">// 5</span></pre>
+
+    <h3>void vs undefined, never</h3>
+<pre><span class="cm">// void - הפונקציה לא מחזירה ערך משמעותי</span>
+<span class="kw">function</span> <span class="fn">logIt</span>(<span class="vl">msg</span>: <span class="tp">string</span>): <span class="tp">void</span> {
+  console.<span class="fn">log</span>(<span class="vl">msg</span>);
+  <span class="cm">// return undefined; // OK - תקין אבל מיותר</span>
+}
+
+<span class="cm">// undefined - מחזירה undefined במפורש</span>
+<span class="kw">function</span> <span class="fn">findItem</span>(<span class="vl">id</span>: <span class="tp">number</span>): <span class="tp">string</span> | <span class="tp">undefined</span> {
+  <span class="kw">const</span> <span class="vl">items</span> = [<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>];
+  <span class="kw">return</span> <span class="vl">items</span>[<span class="vl">id</span>]; <span class="cm">// יכול להחזיר undefined</span>
+}
+
+<span class="cm">// never - לעולם לא מסתיימת (throw / infinite loop)</span>
+<span class="kw">function</span> <span class="fn">fail</span>(<span class="vl">msg</span>: <span class="tp">string</span>): <span class="tp">never</span> {
+  <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="vl">msg</span>);
+}
+
+<span class="cm">// never שימושי ב-exhaustive check</span>
+<span class="kw">type</span> <span class="tp">Shape</span> = <span class="st">"circle"</span> | <span class="st">"square"</span>;
+<span class="kw">function</span> <span class="fn">area</span>(<span class="vl">shape</span>: <span class="tp">Shape</span>) {
+  <span class="kw">switch</span> (<span class="vl">shape</span>) {
+    <span class="kw">case</span> <span class="st">"circle"</span>:  <span class="kw">return</span> <span class="st">"circle area"</span>;
+    <span class="kw">case</span> <span class="st">"square"</span>:  <span class="kw">return</span> <span class="st">"square area"</span>;
+    <span class="kw">default</span>:
+      <span class="kw">const</span> <span class="vl">_never</span>: <span class="tp">never</span> = <span class="vl">shape</span>; <span class="cm">// ERROR if missing case</span>
+      <span class="kw">return</span> <span class="vl">_never</span>;
+  }
+}</pre>
+
+    <div class="tip">
+      <strong>&#128161; &#1496;&#1497;&#1508; &#1500;&#1502;&#1489;&#1495;&#1503;</strong>
+      <code>void</code> אומר "לא אכפת לנו מערך ההחזרה". <code>never</code> אומר "הפונקציה לעולם לא מסיימת".
+      <br>פרמטר אופציונלי (<code>?</code>) חייב להיות אחרון! פרמטר עם default לא חייב.
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== SECTION 5: OBJECTS & INTERFACES ===================== -->
+<div class="section s-red" id="objects">
+  <div class="section-header" onclick="toggleSection(this)">
+    <span>5. Objects & Interfaces</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>Interface Declaration</h3>
+<pre><span class="cm">// הגדרת interface</span>
+<span class="kw">interface</span> <span class="tp">User</span> {
+  <span class="vl">id</span>: <span class="tp">number</span>;
+  <span class="vl">name</span>: <span class="tp">string</span>;
+  <span class="vl">email</span>: <span class="tp">string</span>;
+  <span class="vl">isActive</span>: <span class="tp">boolean</span>;
+}
+
+<span class="kw">const</span> <span class="vl">user</span>: <span class="tp">User</span> = {
+  <span class="vl">id</span>: <span class="nb">1</span>,
+  <span class="vl">name</span>: <span class="st">"Alice"</span>,
+  <span class="vl">email</span>: <span class="st">"alice@test.com"</span>,
+  <span class="vl">isActive</span>: <span class="nb">true</span>
+};</pre>
+
+    <h3>Extending Interfaces</h3>
+<pre><span class="cm">// הרחבת interface</span>
+<span class="kw">interface</span> <span class="tp">Animal</span> {
+  <span class="vl">name</span>: <span class="tp">string</span>;
+  <span class="vl">age</span>: <span class="tp">number</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Dog</span> <span class="kw">extends</span> <span class="tp">Animal</span> {
+  <span class="vl">breed</span>: <span class="tp">string</span>;
+  <span class="fn">bark</span>(): <span class="tp">void</span>;
+}
+
+<span class="kw">const</span> <span class="vl">myDog</span>: <span class="tp">Dog</span> = {
+  <span class="vl">name</span>: <span class="st">"Rex"</span>,
+  <span class="vl">age</span>: <span class="nb">5</span>,
+  <span class="vl">breed</span>: <span class="st">"Labrador"</span>,
+  <span class="fn">bark</span>() { console.<span class="fn">log</span>(<span class="st">"Woof!"</span>); }
+};
+
+<span class="cm">// הרחבה מרובה</span>
+<span class="kw">interface</span> <span class="tp">Timestamped</span> {
+  <span class="vl">createdAt</span>: <span class="tp">Date</span>;
+  <span class="vl">updatedAt</span>: <span class="tp">Date</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Post</span> <span class="kw">extends</span> <span class="tp">User</span>, <span class="tp">Timestamped</span> {
+  <span class="vl">title</span>: <span class="tp">string</span>;
+  <span class="vl">content</span>: <span class="tp">string</span>;
+}</pre>
+
+    <h3>Implementing Interfaces in Classes</h3>
+<pre><span class="kw">interface</span> <span class="tp">Printable</span> {
+  <span class="fn">print</span>(): <span class="tp">void</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Loggable</span> {
+  <span class="fn">log</span>(<span class="vl">msg</span>: <span class="tp">string</span>): <span class="tp">void</span>;
+}
+
+<span class="kw">class</span> <span class="tp">Report</span> <span class="kw">implements</span> <span class="tp">Printable</span>, <span class="tp">Loggable</span> {
+  <span class="kw">constructor</span>(<span class="kw">public</span> <span class="vl">title</span>: <span class="tp">string</span>) {}
+
+  <span class="fn">print</span>(): <span class="tp">void</span> {
+    console.<span class="fn">log</span>(<span class="st">`Report: </span>${<span class="kw">this</span>.<span class="vl">title</span>}<span class="st">`</span>);
+  }
+
+  <span class="fn">log</span>(<span class="vl">msg</span>: <span class="tp">string</span>): <span class="tp">void</span> {
+    console.<span class="fn">log</span>(<span class="st">`[</span>${<span class="kw">this</span>.<span class="vl">title</span>}<span class="st">]: </span>${<span class="vl">msg</span>}<span class="st">`</span>);
+  }
+}</pre>
+
+    <h3>Interface vs Type Alias</h3>
+<pre><span class="cm">// Interface - ניתן להרחבה, declaration merging</span>
+<span class="kw">interface</span> <span class="tp">IUser</span> {
+  <span class="vl">name</span>: <span class="tp">string</span>;
+}
+<span class="kw">interface</span> <span class="tp">IUser</span> {  <span class="cm">// declaration merging - מתמזגים!</span>
+  <span class="vl">age</span>: <span class="tp">number</span>;
+}
+<span class="cm">// IUser = { name: string; age: number }</span>
+
+<span class="cm">// Type - יותר גמיש, unions, tuples, primitives</span>
+<span class="kw">type</span> <span class="tp">ID</span> = <span class="tp">string</span> | <span class="tp">number</span>;            <span class="cm">// union - רק type!</span>
+<span class="kw">type</span> <span class="tp">Pair</span> = [<span class="tp">string</span>, <span class="tp">number</span>];          <span class="cm">// tuple - רק type!</span>
+<span class="kw">type</span> <span class="tp">Callback</span> = () => <span class="tp">void</span>;             <span class="cm">// function type</span>
+
+<span class="cm">// כלל אצבע:</span>
+<span class="cm">// interface - לאובייקטים ו-classes</span>
+<span class="cm">// type - ל-unions, tuples, מורכבים</span></pre>
+
+    <h3>Index Signatures & Intersection Types</h3>
+<pre><span class="cm">// Index Signature - מפתחות דינמיים</span>
+<span class="kw">interface</span> <span class="tp">Dictionary</span> {
+  [<span class="vl">key</span>: <span class="tp">string</span>]: <span class="tp">string</span>;
+}
+
+<span class="kw">const</span> <span class="vl">translations</span>: <span class="tp">Dictionary</span> = {
+  <span class="vl">hello</span>: <span class="st">"shalom"</span>,
+  <span class="vl">goodbye</span>: <span class="st">"lehitraot"</span>,
+  <span class="cm">// כל מפתח string עם ערך string</span>
+};
+
+<span class="cm">// Intersection Types - שילוב טיפוסים</span>
+<span class="kw">type</span> <span class="tp">HasId</span> = { <span class="vl">id</span>: <span class="tp">number</span> };
+<span class="kw">type</span> <span class="tp">HasName</span> = { <span class="vl">name</span>: <span class="tp">string</span> };
+<span class="kw">type</span> <span class="tp">Entity</span> = <span class="tp">HasId</span> & <span class="tp">HasName</span>;  <span class="cm">// חייב את שניהם!</span>
+
+<span class="kw">const</span> <span class="vl">entity</span>: <span class="tp">Entity</span> = {
+  <span class="vl">id</span>: <span class="nb">1</span>,
+  <span class="vl">name</span>: <span class="st">"Item"</span>
+};</pre>
+
+    <div class="tip">
+      <strong>&#128161; &#1496;&#1497;&#1508; &#1500;&#1502;&#1489;&#1495;&#1503;</strong>
+      <code>extends</code> = ירושה (interface מ-interface). <code>implements</code> = class מיישם interface.
+      <br><code>&</code> (intersection) = חייבים את הכל. <code>|</code> (union) = אחד מהם.
+      <br>interface תומך ב-declaration merging, type לא.
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== SECTION 6: GENERICS ===================== -->
+<div class="section s-pink" id="generics">
+  <div class="section-header" onclick="toggleSection(this)">
+    <span>6. Generics - גנריקס</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>Generic Functions</h3>
+    <p>Generics מאפשרים ליצור קוד גמיש שעובד עם טיפוסים שונים בלי לאבד type safety:</p>
+<pre><span class="cm">// ללא generics - חייבים ליצור פונקציה לכל טיפוס</span>
+<span class="kw">function</span> <span class="fn">firstString</span>(<span class="vl">arr</span>: <span class="tp">string</span>[]): <span class="tp">string</span> { <span class="kw">return</span> <span class="vl">arr</span>[<span class="nb">0</span>]; }
+<span class="kw">function</span> <span class="fn">firstNumber</span>(<span class="vl">arr</span>: <span class="tp">number</span>[]): <span class="tp">number</span> { <span class="kw">return</span> <span class="vl">arr</span>[<span class="nb">0</span>]; }
+
+<span class="cm">// עם generics - פונקציה אחת לכל הטיפוסים!</span>
+<span class="kw">function</span> <span class="fn">first</span>&lt;<span class="tp">T</span>&gt;(<span class="vl">arr</span>: <span class="tp">T</span>[]): <span class="tp">T</span> {
+  <span class="kw">return</span> <span class="vl">arr</span>[<span class="nb">0</span>];
+}
+
+<span class="fn">first</span>&lt;<span class="tp">string</span>&gt;([<span class="st">"a"</span>, <span class="st">"b"</span>]);  <span class="cm">// "a" (string)</span>
+<span class="fn">first</span>&lt;<span class="tp">number</span>&gt;([<span class="nb">1</span>, <span class="nb">2</span>, <span class="nb">3</span>]);  <span class="cm">// 1 (number)</span>
+<span class="fn">first</span>([<span class="nb">true</span>, <span class="nb">false</span>]);       <span class="cm">// true - TS מסיק T = boolean</span>
+
+<span class="cm">// identity function</span>
+<span class="kw">function</span> <span class="fn">identity</span>&lt;<span class="tp">T</span>&gt;(<span class="vl">arg</span>: <span class="tp">T</span>): <span class="tp">T</span> {
+  <span class="kw">return</span> <span class="vl">arg</span>;
+}
+<span class="kw">const</span> <span class="vl">result</span> = <span class="fn">identity</span>(<span class="st">"hello"</span>); <span class="cm">// T = string (מוסק)</span></pre>
+
+    <h3>Generic Interfaces & Constraints</h3>
+<pre><span class="cm">// Generic Interface</span>
+<span class="kw">interface</span> <span class="tp">ApiResponse</span>&lt;<span class="tp">T</span>&gt; {
+  <span class="vl">data</span>: <span class="tp">T</span>;
+  <span class="vl">status</span>: <span class="tp">number</span>;
+  <span class="vl">message</span>: <span class="tp">string</span>;
+}
+
+<span class="kw">const</span> <span class="vl">userRes</span>: <span class="tp">ApiResponse</span>&lt;<span class="tp">User</span>&gt; = {
+  <span class="vl">data</span>: { <span class="vl">id</span>: <span class="nb">1</span>, <span class="vl">name</span>: <span class="st">"Alice"</span>, <span class="vl">email</span>: <span class="st">"a@b.c"</span>, <span class="vl">isActive</span>: <span class="nb">true</span> },
+  <span class="vl">status</span>: <span class="nb">200</span>,
+  <span class="vl">message</span>: <span class="st">"OK"</span>
+};
+
+<span class="cm">// Generic Constraints - הגבלת T</span>
+<span class="kw">interface</span> <span class="tp">HasLength</span> {
+  <span class="vl">length</span>: <span class="tp">number</span>;
+}
+
+<span class="kw">function</span> <span class="fn">logLength</span>&lt;<span class="tp">T</span> <span class="kw">extends</span> <span class="tp">HasLength</span>&gt;(<span class="vl">item</span>: <span class="tp">T</span>): <span class="tp">void</span> {
+  console.<span class="fn">log</span>(<span class="vl">item</span>.<span class="vl">length</span>);
+}
+
+<span class="fn">logLength</span>(<span class="st">"hello"</span>);     <span class="cm">// 5 - string has length</span>
+<span class="fn">logLength</span>([<span class="nb">1</span>, <span class="nb">2</span>, <span class="nb">3</span>]); <span class="cm">// 3 - array has length</span>
+<span class="cm">// logLength(42);       // ERROR! number has no length</span></pre>
+
+    <h3>Built-in Utility Types</h3>
+<pre><span class="kw">interface</span> <span class="tp">User</span> {
+  <span class="vl">id</span>: <span class="tp">number</span>;
+  <span class="vl">name</span>: <span class="tp">string</span>;
+  <span class="vl">email</span>: <span class="tp">string</span>;
+  <span class="vl">age</span>: <span class="tp">number</span>;
+}
+
+<span class="cm">// Partial&lt;T&gt; - כל השדות הופכים לאופציונליים</span>
+<span class="kw">type</span> <span class="tp">UpdateUser</span> = <span class="tp">Partial</span>&lt;<span class="tp">User</span>&gt;;
+<span class="cm">// = { id?: number; name?: string; email?: string; age?: number }</span>
+
+<span class="kw">function</span> <span class="fn">updateUser</span>(<span class="vl">id</span>: <span class="tp">number</span>, <span class="vl">data</span>: <span class="tp">Partial</span>&lt;<span class="tp">User</span>&gt;) {
+  <span class="cm">// data can have any subset of User fields</span>
+}
+<span class="fn">updateUser</span>(<span class="nb">1</span>, { <span class="vl">name</span>: <span class="st">"New Name"</span> }); <span class="cm">// OK!</span>
+
+<span class="cm">// Required&lt;T&gt; - כל השדות הופכים לחובה</span>
+<span class="kw">type</span> <span class="tp">FullUser</span> = <span class="tp">Required</span>&lt;<span class="tp">User</span>&gt;;
+
+<span class="cm">// Pick&lt;T, K&gt; - בוחרים שדות ספציפיים</span>
+<span class="kw">type</span> <span class="tp">UserPreview</span> = <span class="tp">Pick</span>&lt;<span class="tp">User</span>, <span class="st">"name"</span> | <span class="st">"email"</span>&gt;;
+<span class="cm">// = { name: string; email: string }</span>
+
+<span class="cm">// Omit&lt;T, K&gt; - מוציאים שדות ספציפיים</span>
+<span class="kw">type</span> <span class="tp">CreateUser</span> = <span class="tp">Omit</span>&lt;<span class="tp">User</span>, <span class="st">"id"</span>&gt;;
+<span class="cm">// = { name: string; email: string; age: number }</span>
+
+<span class="cm">// Record&lt;K, V&gt; - יוצרים אובייקט עם מפתחות וערכים</span>
+<span class="kw">type</span> <span class="tp">Scores</span> = <span class="tp">Record</span>&lt;<span class="tp">string</span>, <span class="tp">number</span>&gt;;
+<span class="kw">const</span> <span class="vl">grades</span>: <span class="tp">Scores</span> = {
+  <span class="vl">math</span>: <span class="nb">95</span>,
+  <span class="vl">english</span>: <span class="nb">88</span>,
+  <span class="vl">science</span>: <span class="nb">92</span>
+};
+
+<span class="cm">// Readonly&lt;T&gt; - כל השדות readonly</span>
+<span class="kw">type</span> <span class="tp">FrozenUser</span> = <span class="tp">Readonly</span>&lt;<span class="tp">User</span>&gt;;</pre>
+
+    <div class="tip">
+      <strong>&#128161; &#1496;&#1497;&#1508; &#1500;&#1502;&#1489;&#1495;&#1503;</strong>
+      <code>Partial</code> - שימושי ל-update functions. <code>Omit</code> - שימושי ליצירה (בלי id שנוצר אוטומטית).
+      <br><code>Pick</code> vs <code>Omit</code>: Pick בוחר מה לקחת, Omit בוחר מה להוציא.
+      <br><code>Record&lt;string, T&gt;</code> = אובייקט עם מפתחות מחרוזת וערכי T.
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== SECTION 7: TS + REACT ===================== -->
+<div class="section s-cyan" id="react">
+  <div class="section-header" onclick="toggleSection(this)">
+    <span>7. TypeScript + React <span class="badge badge-important">קריטי למבחן</span></span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>Typed Props</h3>
+<pre><span class="cm">// הגדרת props עם interface</span>
+<span class="kw">interface</span> <span class="tp">UserCardProps</span> {
+  <span class="vl">name</span>: <span class="tp">string</span>;
+  <span class="vl">age</span>: <span class="tp">number</span>;
+  <span class="vl">avatar</span>?: <span class="tp">string</span>;         <span class="cm">// אופציונלי</span>
+  <span class="vl">isOnline</span>: <span class="tp">boolean</span>;
+  <span class="fn">onClick</span>: () => <span class="tp">void</span>;    <span class="cm">// callback</span>
+}
+
+<span class="kw">function</span> <span class="fn">UserCard</span>({ <span class="vl">name</span>, <span class="vl">age</span>, <span class="vl">avatar</span>, <span class="vl">isOnline</span>, <span class="vl">onClick</span> }: <span class="tp">UserCardProps</span>) {
+  <span class="kw">return</span> (
+    <span class="rx">&lt;div</span> <span class="vl">onClick</span>={<span class="vl">onClick</span>}<span class="rx">&gt;</span>
+      <span class="rx">&lt;h2&gt;</span>{<span class="vl">name</span>} (<span class="vl">age</span>: {<span class="vl">age</span>})<span class="rx">&lt;/h2&gt;</span>
+      {<span class="vl">avatar</span> && <span class="rx">&lt;img</span> <span class="vl">src</span>={<span class="vl">avatar</span>} <span class="rx">/&gt;</span>}
+      <span class="rx">&lt;span&gt;</span>{<span class="vl">isOnline</span> ? <span class="st">"Online"</span> : <span class="st">"Offline"</span>}<span class="rx">&lt;/span&gt;</span>
+    <span class="rx">&lt;/div&gt;</span>
+  );
+}
+
+<span class="cm">// שימוש בקומפוננטה</span>
+<span class="rx">&lt;UserCard</span>
+  <span class="vl">name</span>=<span class="st">"Alice"</span>
+  <span class="vl">age</span>={<span class="nb">25</span>}
+  <span class="vl">isOnline</span>={<span class="nb">true</span>}
+  <span class="vl">onClick</span>={() => console.<span class="fn">log</span>(<span class="st">"clicked"</span>)}
+<span class="rx">/&gt;</span></pre>
+
+    <h3>Typed State (useState)</h3>
+<pre><span class="kw">import</span> { <span class="vl">useState</span> } <span class="kw">from</span> <span class="st">"react"</span>;
+
+<span class="cm">// TS מסיק את הטיפוס מהערך ההתחלתי</span>
+<span class="kw">const</span> [<span class="vl">count</span>, <span class="fn">setCount</span>] = <span class="fn">useState</span>(<span class="nb">0</span>);          <span class="cm">// number</span>
+<span class="kw">const</span> [<span class="vl">text</span>, <span class="fn">setText</span>] = <span class="fn">useState</span>(<span class="st">""</span>);            <span class="cm">// string</span>
+
+<span class="cm">// כשהערך ההתחלתי null, חייבים generic</span>
+<span class="kw">interface</span> <span class="tp">User</span> {
+  <span class="vl">id</span>: <span class="tp">number</span>;
+  <span class="vl">name</span>: <span class="tp">string</span>;
+}
+<span class="kw">const</span> [<span class="vl">user</span>, <span class="fn">setUser</span>] = <span class="fn">useState</span>&lt;<span class="tp">User</span> | <span class="tp">null</span>&gt;(<span class="nb">null</span>);
+
+<span class="cm">// מערך</span>
+<span class="kw">const</span> [<span class="vl">items</span>, <span class="fn">setItems</span>] = <span class="fn">useState</span>&lt;<span class="tp">string</span>[]&gt;([]);
+
+<span class="cm">// שימוש:</span>
+<span class="fn">setUser</span>({ <span class="vl">id</span>: <span class="nb">1</span>, <span class="vl">name</span>: <span class="st">"Alice"</span> });
+<span class="cm">// setUser({ id: 1 }); // ERROR! missing name</span>
+
+<span class="cm">// בדיקת null לפני גישה</span>
+<span class="kw">if</span> (<span class="vl">user</span>) {
+  console.<span class="fn">log</span>(<span class="vl">user</span>.<span class="vl">name</span>); <span class="cm">// OK - TS יודע שלא null</span>
+}</pre>
+
+    <h3>Typed Events</h3>
+<pre><span class="kw">import</span> <span class="tp">React</span> <span class="kw">from</span> <span class="st">"react"</span>;
+
+<span class="kw">function</span> <span class="fn">LoginForm</span>() {
+  <span class="kw">const</span> [<span class="vl">email</span>, <span class="fn">setEmail</span>] = <span class="fn">useState</span>(<span class="st">""</span>);
+
+  <span class="cm">// ChangeEvent - לשינוי ב-input</span>
+  <span class="kw">const</span> <span class="fn">handleChange</span> = (<span class="vl">e</span>: <span class="tp">React</span>.<span class="tp">ChangeEvent</span>&lt;<span class="tp">HTMLInputElement</span>&gt;) => {
+    <span class="fn">setEmail</span>(<span class="vl">e</span>.<span class="vl">target</span>.<span class="vl">value</span>);
+  };
+
+  <span class="cm">// FormEvent - לשליחת טופס</span>
+  <span class="kw">const</span> <span class="fn">handleSubmit</span> = (<span class="vl">e</span>: <span class="tp">React</span>.<span class="tp">FormEvent</span>&lt;<span class="tp">HTMLFormElement</span>&gt;) => {
+    <span class="vl">e</span>.<span class="fn">preventDefault</span>();
+    console.<span class="fn">log</span>(<span class="st">"Submitted:"</span>, <span class="vl">email</span>);
+  };
+
+  <span class="cm">// MouseEvent - ללחיצה</span>
+  <span class="kw">const</span> <span class="fn">handleClick</span> = (<span class="vl">e</span>: <span class="tp">React</span>.<span class="tp">MouseEvent</span>&lt;<span class="tp">HTMLButtonElement</span>&gt;) => {
+    console.<span class="fn">log</span>(<span class="st">"Clicked at"</span>, <span class="vl">e</span>.<span class="vl">clientX</span>, <span class="vl">e</span>.<span class="vl">clientY</span>);
+  };
+
+  <span class="cm">// SelectEvent - ל-select element</span>
+  <span class="kw">const</span> <span class="fn">handleSelect</span> = (<span class="vl">e</span>: <span class="tp">React</span>.<span class="tp">ChangeEvent</span>&lt;<span class="tp">HTMLSelectElement</span>&gt;) => {
+    console.<span class="fn">log</span>(<span class="st">"Selected:"</span>, <span class="vl">e</span>.<span class="vl">target</span>.<span class="vl">value</span>);
+  };
+
+  <span class="kw">return</span> (
+    <span class="rx">&lt;form</span> <span class="vl">onSubmit</span>={<span class="vl">handleSubmit</span>}<span class="rx">&gt;</span>
+      <span class="rx">&lt;input</span> <span class="vl">value</span>={<span class="vl">email</span>} <span class="vl">onChange</span>={<span class="vl">handleChange</span>} <span class="rx">/&gt;</span>
+      <span class="rx">&lt;button</span> <span class="vl">onClick</span>={<span class="vl">handleClick</span>}<span class="rx">&gt;</span>Submit<span class="rx">&lt;/button&gt;</span>
+    <span class="rx">&lt;/form&gt;</span>
+  );
+}</pre>
+
+    <h3>Typed Refs & Children</h3>
+<pre><span class="kw">import</span> { <span class="vl">useRef</span>, <span class="vl">useEffect</span> } <span class="kw">from</span> <span class="st">"react"</span>;
+
+<span class="kw">function</span> <span class="fn">AutoFocusInput</span>() {
+  <span class="cm">// useRef עם טיפוס HTML element</span>
+  <span class="kw">const</span> <span class="vl">inputRef</span> = <span class="fn">useRef</span>&lt;<span class="tp">HTMLInputElement</span>&gt;(<span class="nb">null</span>);
+
+  <span class="fn">useEffect</span>(() => {
+    <span class="cm">// חייבים לבדוק null!</span>
+    <span class="kw">if</span> (<span class="vl">inputRef</span>.<span class="vl">current</span>) {
+      <span class="vl">inputRef</span>.<span class="vl">current</span>.<span class="fn">focus</span>();
+    }
+  }, []);
+
+  <span class="kw">return</span> <span class="rx">&lt;input</span> <span class="vl">ref</span>={<span class="vl">inputRef</span>} <span class="rx">/&gt;</span>;
+}
+
+<span class="cm">// Children type - קומפוננטה שעוטפת תוכן</span>
+<span class="kw">interface</span> <span class="tp">CardProps</span> {
+  <span class="vl">title</span>: <span class="tp">string</span>;
+  <span class="vl">children</span>: <span class="tp">React</span>.<span class="tp">ReactNode</span>;  <span class="cm">// כל תוכן React תקין</span>
+}
+
+<span class="kw">function</span> <span class="fn">Card</span>({ <span class="vl">title</span>, <span class="vl">children</span> }: <span class="tp">CardProps</span>) {
+  <span class="kw">return</span> (
+    <span class="rx">&lt;div</span> <span class="vl">className</span>=<span class="st">"card"</span><span class="rx">&gt;</span>
+      <span class="rx">&lt;h2&gt;</span>{<span class="vl">title</span>}<span class="rx">&lt;/h2&gt;</span>
+      {<span class="vl">children</span>}
+    <span class="rx">&lt;/div&gt;</span>
+  );
+}
+
+<span class="cm">// React.FC - סגנון ישן (חלק נמנעים ממנו)</span>
+<span class="cm">// הוא מוסיף children אוטומטית ומשנה את הטיפוס</span>
+<span class="kw">const</span> <span class="fn">OldCard</span>: <span class="tp">React</span>.<span class="tp">FC</span>&lt;<span class="tp">CardProps</span>&gt; = ({ <span class="vl">title</span>, <span class="vl">children</span> }) => {
+  <span class="kw">return</span> <span class="rx">&lt;div&gt;</span>{<span class="vl">title</span>} - {<span class="vl">children</span>}<span class="rx">&lt;/div&gt;</span>;
+};
+<span class="cm">// למה נמנעים: FC משנה את defaultProps ואת return type</span>
+<span class="cm">// עדיף: function component רגילה עם Props interface</span></pre>
+
+    <div class="tip">
+      <strong>&#128161; &#1496;&#1497;&#1508; &#1500;&#1502;&#1489;&#1495;&#1503;</strong>
+      את האירועים הכי חשוב לזכור:
+      <br><code>React.ChangeEvent&lt;HTMLInputElement&gt;</code> - שינוי ב-input
+      <br><code>React.FormEvent&lt;HTMLFormElement&gt;</code> - שליחת טופס
+      <br><code>React.MouseEvent&lt;HTMLButtonElement&gt;</code> - לחיצה
+      <br><code>useState&lt;Type | null&gt;(null)</code> - כשמתחילים מ-null חייבים generic!
+      <br><code>useRef&lt;HTMLElement&gt;(null)</code> - תמיד לבדוק <code>.current</code> לפני שימוש.
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== SECTION 8: PRACTICE ===================== -->
+<div class="section s-lime" id="practice">
+  <div class="section-header" onclick="toggleSection(this)">
+    <span>8. תרגול מהשיעורי בית</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>Book Type with Enum Genres (שיעורי בית TS 1)</h3>
+<pre><span class="cm">// Enum ל-genres</span>
+<span class="kw">enum</span> <span class="tp">Genre</span> {
+  Fiction     = <span class="st">"FICTION"</span>,
+  NonFiction  = <span class="st">"NON_FICTION"</span>,
+  Science     = <span class="st">"SCIENCE"</span>,
+  History     = <span class="st">"HISTORY"</span>,
+  Fantasy     = <span class="st">"FANTASY"</span>
+}
+
+<span class="cm">// Interface לספר</span>
+<span class="kw">interface</span> <span class="tp">Book</span> {
+  <span class="kw">readonly</span> <span class="vl">id</span>: <span class="tp">number</span>;
+  <span class="vl">title</span>: <span class="tp">string</span>;
+  <span class="vl">author</span>: <span class="tp">string</span>;
+  <span class="vl">genre</span>: <span class="tp">Genre</span>;
+  <span class="vl">pages</span>: <span class="tp">number</span>;
+  <span class="vl">isAvailable</span>: <span class="tp">boolean</span>;
+  <span class="vl">rating</span>?: <span class="tp">number</span>;  <span class="cm">// 1-5, אופציונלי</span>
+}
+
+<span class="cm">// יצירת ספרים</span>
+<span class="kw">const</span> <span class="vl">books</span>: <span class="tp">Book</span>[] = [
+  {
+    <span class="vl">id</span>: <span class="nb">1</span>,
+    <span class="vl">title</span>: <span class="st">"Dune"</span>,
+    <span class="vl">author</span>: <span class="st">"Frank Herbert"</span>,
+    <span class="vl">genre</span>: <span class="tp">Genre</span>.<span class="vl">Fantasy</span>,
+    <span class="vl">pages</span>: <span class="nb">412</span>,
+    <span class="vl">isAvailable</span>: <span class="nb">true</span>,
+    <span class="vl">rating</span>: <span class="nb">5</span>
+  },
+  {
+    <span class="vl">id</span>: <span class="nb">2</span>,
+    <span class="vl">title</span>: <span class="st">"Sapiens"</span>,
+    <span class="vl">author</span>: <span class="st">"Yuval Harari"</span>,
+    <span class="vl">genre</span>: <span class="tp">Genre</span>.<span class="vl">History</span>,
+    <span class="vl">pages</span>: <span class="nb">443</span>,
+    <span class="vl">isAvailable</span>: <span class="nb">false</span>
+  }
+];
+
+<span class="cm">// פונקציות עזר</span>
+<span class="kw">function</span> <span class="fn">getBooksByGenre</span>(<span class="vl">books</span>: <span class="tp">Book</span>[], <span class="vl">genre</span>: <span class="tp">Genre</span>): <span class="tp">Book</span>[] {
+  <span class="kw">return</span> <span class="vl">books</span>.<span class="fn">filter</span>(<span class="vl">b</span> => <span class="vl">b</span>.<span class="vl">genre</span> === <span class="vl">genre</span>);
+}
+
+<span class="kw">function</span> <span class="fn">getAvailableBooks</span>(<span class="vl">books</span>: <span class="tp">Book</span>[]): <span class="tp">Book</span>[] {
+  <span class="kw">return</span> <span class="vl">books</span>.<span class="fn">filter</span>(<span class="vl">b</span> => <span class="vl">b</span>.<span class="vl">isAvailable</span>);
+}
+
+<span class="kw">function</span> <span class="fn">addBook</span>(<span class="vl">books</span>: <span class="tp">Book</span>[], <span class="vl">newBook</span>: <span class="tp">Omit</span>&lt;<span class="tp">Book</span>, <span class="st">"id"</span>&gt;): <span class="tp">Book</span>[] {
+  <span class="kw">const</span> <span class="vl">id</span> = <span class="vl">books</span>.<span class="vl">length</span> + <span class="nb">1</span>;
+  <span class="kw">return</span> [...<span class="vl">books</span>, { ...<span class="vl">newBook</span>, <span class="vl">id</span> }];
+}</pre>
+
+    <h3>User Types with Unions (שיעורי בית TS 1)</h3>
+<pre><span class="cm">// תפקידי משתמש</span>
+<span class="kw">type</span> <span class="tp">UserRole</span> = <span class="st">"admin"</span> | <span class="st">"editor"</span> | <span class="st">"viewer"</span>;
+
+<span class="cm">// טיפוס בסיסי</span>
+<span class="kw">interface</span> <span class="tp">BaseUser</span> {
+  <span class="vl">id</span>: <span class="tp">number</span>;
+  <span class="vl">name</span>: <span class="tp">string</span>;
+  <span class="vl">email</span>: <span class="tp">string</span>;
+  <span class="vl">role</span>: <span class="tp">UserRole</span>;
+}
+
+<span class="cm">// Discriminated union - טיפוס שונה לכל role</span>
+<span class="kw">interface</span> <span class="tp">AdminUser</span> <span class="kw">extends</span> <span class="tp">BaseUser</span> {
+  <span class="vl">role</span>: <span class="st">"admin"</span>;
+  <span class="vl">permissions</span>: <span class="tp">string</span>[];
+  <span class="vl">canDelete</span>: <span class="tp">boolean</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">EditorUser</span> <span class="kw">extends</span> <span class="tp">BaseUser</span> {
+  <span class="vl">role</span>: <span class="st">"editor"</span>;
+  <span class="vl">department</span>: <span class="tp">string</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">ViewerUser</span> <span class="kw">extends</span> <span class="tp">BaseUser</span> {
+  <span class="vl">role</span>: <span class="st">"viewer"</span>;
+}
+
+<span class="kw">type</span> <span class="tp">AppUser</span> = <span class="tp">AdminUser</span> | <span class="tp">EditorUser</span> | <span class="tp">ViewerUser</span>;
+
+<span class="cm">// Narrowing with discriminated union</span>
+<span class="kw">function</span> <span class="fn">getUserInfo</span>(<span class="vl">user</span>: <span class="tp">AppUser</span>): <span class="tp">string</span> {
+  <span class="kw">switch</span> (<span class="vl">user</span>.<span class="vl">role</span>) {
+    <span class="kw">case</span> <span class="st">"admin"</span>:
+      <span class="kw">return</span> <span class="st">`Admin </span>${<span class="vl">user</span>.<span class="vl">name</span>}<span class="st"> - </span>${<span class="vl">user</span>.<span class="vl">permissions</span>.<span class="fn">join</span>(<span class="st">", "</span>)}<span class="st">`</span>;
+    <span class="kw">case</span> <span class="st">"editor"</span>:
+      <span class="kw">return</span> <span class="st">`Editor </span>${<span class="vl">user</span>.<span class="vl">name</span>}<span class="st"> from </span>${<span class="vl">user</span>.<span class="vl">department</span>}<span class="st">`</span>;
+    <span class="kw">case</span> <span class="st">"viewer"</span>:
+      <span class="kw">return</span> <span class="st">`Viewer </span>${<span class="vl">user</span>.<span class="vl">name</span>}<span class="st">`</span>;
+  }
+}</pre>
+
+    <h3>Budget Manager (שיעורי בית React + TS 2)</h3>
+<pre><span class="cm">// Transaction Types</span>
+<span class="kw">enum</span> <span class="tp">TransactionType</span> {
+  Income  = <span class="st">"INCOME"</span>,
+  Expense = <span class="st">"EXPENSE"</span>
+}
+
+<span class="kw">enum</span> <span class="tp">Category</span> {
+  Food      = <span class="st">"FOOD"</span>,
+  Transport = <span class="st">"TRANSPORT"</span>,
+  Housing   = <span class="st">"HOUSING"</span>,
+  Salary    = <span class="st">"SALARY"</span>,
+  Other     = <span class="st">"OTHER"</span>
+}
+
+<span class="kw">interface</span> <span class="tp">Transaction</span> {
+  <span class="kw">readonly</span> <span class="vl">id</span>: <span class="tp">number</span>;
+  <span class="vl">type</span>: <span class="tp">TransactionType</span>;
+  <span class="vl">category</span>: <span class="tp">Category</span>;
+  <span class="vl">amount</span>: <span class="tp">number</span>;
+  <span class="vl">description</span>: <span class="tp">string</span>;
+  <span class="vl">date</span>: <span class="tp">string</span>;
+}
+
+<span class="cm">// React Component with full typing</span>
+<span class="kw">import</span> { <span class="vl">useState</span> } <span class="kw">from</span> <span class="st">"react"</span>;
+
+<span class="kw">function</span> <span class="fn">BudgetManager</span>() {
+  <span class="kw">const</span> [<span class="vl">transactions</span>, <span class="fn">setTransactions</span>] =
+    <span class="fn">useState</span>&lt;<span class="tp">Transaction</span>[]&gt;([]);
+
+  <span class="cm">// הוספת טרנזקציה - Omit&lt;T,"id"&gt; כי id נוצר אוטומטית</span>
+  <span class="kw">const</span> <span class="fn">addTransaction</span> = (<span class="vl">data</span>: <span class="tp">Omit</span>&lt;<span class="tp">Transaction</span>, <span class="st">"id"</span>&gt;) => {
+    <span class="kw">const</span> <span class="vl">newTx</span>: <span class="tp">Transaction</span> = {
+      ...<span class="vl">data</span>,
+      <span class="vl">id</span>: Date.<span class="fn">now</span>()
+    };
+    <span class="fn">setTransactions</span>(<span class="vl">prev</span> => [...<span class="vl">prev</span>, <span class="vl">newTx</span>]);
+  };
+
+  <span class="cm">// חישוב יתרה</span>
+  <span class="kw">const</span> <span class="fn">getBalance</span> = (): <span class="tp">number</span> => {
+    <span class="kw">return</span> <span class="vl">transactions</span>.<span class="fn">reduce</span>((<span class="vl">sum</span>, <span class="vl">tx</span>) => {
+      <span class="kw">return</span> <span class="vl">tx</span>.<span class="vl">type</span> === <span class="tp">TransactionType</span>.<span class="vl">Income</span>
+        ? <span class="vl">sum</span> + <span class="vl">tx</span>.<span class="vl">amount</span>
+        : <span class="vl">sum</span> - <span class="vl">tx</span>.<span class="vl">amount</span>;
+    }, <span class="nb">0</span>);
+  };
+
+  <span class="cm">// סינון לפי קטגוריה</span>
+  <span class="kw">const</span> <span class="fn">filterByCategory</span> = (<span class="vl">cat</span>: <span class="tp">Category</span>): <span class="tp">Transaction</span>[] => {
+    <span class="kw">return</span> <span class="vl">transactions</span>.<span class="fn">filter</span>(<span class="vl">tx</span> => <span class="vl">tx</span>.<span class="vl">category</span> === <span class="vl">cat</span>);
+  };
+
+  <span class="cm">// טיפול בטופס</span>
+  <span class="kw">const</span> <span class="fn">handleSubmit</span> = (<span class="vl">e</span>: <span class="tp">React</span>.<span class="tp">FormEvent</span>&lt;<span class="tp">HTMLFormElement</span>&gt;) => {
+    <span class="vl">e</span>.<span class="fn">preventDefault</span>();
+    <span class="fn">addTransaction</span>({
+      <span class="vl">type</span>: <span class="tp">TransactionType</span>.<span class="vl">Expense</span>,
+      <span class="vl">category</span>: <span class="tp">Category</span>.<span class="vl">Food</span>,
+      <span class="vl">amount</span>: <span class="nb">50</span>,
+      <span class="vl">description</span>: <span class="st">"Groceries"</span>,
+      <span class="vl">date</span>: <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toISOString</span>()
+    });
+  };
+
+  <span class="kw">return</span> (
+    <span class="rx">&lt;div&gt;</span>
+      <span class="rx">&lt;h1&gt;</span>Balance: {<span class="fn">getBalance</span>()}<span class="rx">&lt;/h1&gt;</span>
+      {<span class="vl">transactions</span>.<span class="fn">map</span>(<span class="vl">tx</span> => (
+        <span class="rx">&lt;div</span> <span class="vl">key</span>={<span class="vl">tx</span>.<span class="vl">id</span>}<span class="rx">&gt;</span>
+          {<span class="vl">tx</span>.<span class="vl">description</span>}: {<span class="vl">tx</span>.<span class="vl">amount</span>}
+        <span class="rx">&lt;/div&gt;</span>
+      ))}
+    <span class="rx">&lt;/div&gt;</span>
+  );
+}</pre>
+
+    <div class="tip">
+      <strong>&#128161; &#1496;&#1497;&#1508; &#1500;&#1502;&#1489;&#1495;&#1503;</strong>
+      דפוס חוזר במבחן: <code>Omit&lt;Type, "id"&gt;</code> ליצירת אובייקטים חדשים (בלי id שנוצר אוטומטית).
+      <br>Discriminated Union (כמו <code>role</code> או <code>type</code>) - מאפשר ל-TS לדעת בדיוק איזה interface יש ב-switch.
+      <br>תמיד לרשום <code>useState&lt;Type[]&gt;([])</code> כשמתחילים ממערך ריק עם טיפוס מורכב.
+    </div>
+
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<footer>
+  TypeScript Cheatsheet | Full-Stack Exam Prep | 2025
+</footer>
+
+<script>
+function toggleSection(header) {
+  const section = header.parentElement;
+  section.classList.toggle('collapsed');
+}
+
+// Expand all sections on page load
+document.addEventListener('DOMContentLoaded', () => {
+  // Smooth scroll for TOC links
+  document.querySelectorAll('.toc a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href').slice(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        // Make sure section is expanded
+        target.classList.remove('collapsed');
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Keyboard shortcut: Ctrl+E to expand/collapse all
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'e') {
+      e.preventDefault();
+      const sections = document.querySelectorAll('.section');
+      const allCollapsed = [...sections].every(s => s.classList.contains('collapsed'));
+      sections.forEach(s => {
+        if (allCollapsed) {
+          s.classList.remove('collapsed');
+        } else {
+          s.classList.add('collapsed');
+        }
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

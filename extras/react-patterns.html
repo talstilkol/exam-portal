@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React Hooks & Patterns - דפדוף מבחן</title>
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --text: #1a1a1a;
+    --card-bg: #ffffff;
+    --border: #1a1a1a;
+    --shadow: #1a1a1a;
+    --accent-blue: #3b82f6;
+    --accent-green: #10b981;
+    --accent-purple: #8b5cf6;
+    --accent-orange: #f59e0b;
+    --accent-red: #ef4444;
+    --accent-pink: #ec4899;
+    --accent-teal: #14b8a6;
+    --tip-bg: #fef9c3;
+    --tip-border: #f59e0b;
+    --warning-bg: #fee2e2;
+    --warning-border: #ef4444;
+    --pattern-bg: #dbeafe;
+    --pattern-border: #3b82f6;
+    --code-bg: #1e1e2e;
+    --code-text: #cdd6f4;
+    --header-from: #1e1b4b;
+    --header-to: #312e81;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #18181b;
+      --text: #e4e4e7;
+      --card-bg: #27272a;
+      --border: #e4e4e7;
+      --shadow: #000000;
+      --tip-bg: #422006;
+      --tip-border: #f59e0b;
+      --warning-bg: #450a0a;
+      --warning-border: #ef4444;
+      --pattern-bg: #172554;
+      --pattern-border: #3b82f6;
+      --code-bg: #0f0f17;
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    direction: rtl;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--header-from), var(--header-to));
+    color: white;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    border-bottom: 5px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.03) 20px, rgba(255,255,255,0.03) 40px);
+  }
+  header h1 { font-size: 2.4rem; position: relative; font-weight: 900; }
+  header p { font-size: 1.1rem; opacity: 0.9; margin-top: 0.5rem; position: relative; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+
+  /* TOC */
+  .toc {
+    background: var(--card-bg);
+    border: 3px solid var(--border);
+    box-shadow: 6px 6px 0 var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+  }
+  .toc h2 { font-size: 1.4rem; margin-bottom: 1rem; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.5rem; }
+  .toc a {
+    display: block;
+    padding: 0.5rem 0.8rem;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 3px 3px 0 var(--shadow);
+  }
+  .toc a:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--shadow); }
+
+  /* Section */
+  .section {
+    background: var(--card-bg);
+    border: 3px solid var(--border);
+    box-shadow: 6px 6px 0 var(--shadow);
+    margin-bottom: 2rem;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.3rem;
+    font-weight: 800;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .section-header:hover { filter: brightness(0.95); }
+  .section-header .arrow { transition: transform 0.3s; font-size: 1.5rem; }
+  .section-header.collapsed .arrow { transform: rotate(-90deg); }
+  .section-body { padding: 1.5rem; border-top: 3px solid var(--border); }
+  .section-body.hidden { display: none; }
+
+  .sh-blue { background: #dbeafe; color: #1e3a5f; }
+  .sh-green { background: #d1fae5; color: #064e3b; }
+  .sh-purple { background: #ede9fe; color: #3b0764; }
+  .sh-orange { background: #ffedd5; color: #7c2d12; }
+  .sh-pink { background: #fce7f3; color: #831843; }
+  .sh-teal { background: #ccfbf1; color: #134e4a; }
+  .sh-red { background: #fee2e2; color: #7f1d1d; }
+  .sh-yellow { background: #fef9c3; color: #713f12; }
+  .sh-indigo { background: #e0e7ff; color: #312e81; }
+
+  @media (prefers-color-scheme: dark) {
+    .sh-blue { background: #1e3a5f; color: #bfdbfe; }
+    .sh-green { background: #064e3b; color: #a7f3d0; }
+    .sh-purple { background: #3b0764; color: #ddd6fe; }
+    .sh-orange { background: #7c2d12; color: #fed7aa; }
+    .sh-pink { background: #831843; color: #fbcfe8; }
+    .sh-teal { background: #134e4a; color: #99f6e4; }
+    .sh-red { background: #7f1d1d; color: #fecaca; }
+    .sh-yellow { background: #713f12; color: #fef08a; }
+    .sh-indigo { background: #312e81; color: #c7d2fe; }
+  }
+
+  h3 { font-size: 1.15rem; margin: 1.2rem 0 0.6rem; padding-bottom: 0.3rem; border-bottom: 2px dashed var(--border); }
+  h4 { font-size: 1rem; margin: 0.8rem 0 0.4rem; }
+  p, li { font-size: 0.95rem; }
+  ul { padding-right: 1.5rem; margin-bottom: 0.8rem; }
+  li { margin-bottom: 0.3rem; }
+
+  /* Code blocks */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1rem 1.2rem;
+    border: 3px solid var(--border);
+    box-shadow: 4px 4px 0 var(--shadow);
+    overflow-x: auto;
+    direction: ltr;
+    text-align: left;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin: 0.7rem 0 1rem;
+    border-radius: 4px;
+    font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  }
+  code {
+    font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+    font-size: 0.88rem;
+  }
+  .inline-code {
+    background: var(--code-bg);
+    color: var(--accent-green);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    direction: ltr;
+    display: inline-block;
+    font-size: 0.85rem;
+    border: 1px solid #444;
+  }
+
+  /* Syntax colors */
+  .kw { color: #c678dd; }  /* keywords: const, return, if, function */
+  .fn { color: #61afef; }  /* functions / components */
+  .hk { color: #98c379; }  /* hooks */
+  .st { color: #e5c07b; }  /* strings */
+  .cm { color: #5c6370; font-style: italic; }  /* comments */
+  .nb { color: #d19a66; }  /* numbers */
+  .op { color: #56b6c2; }  /* operators, JSX tags */
+  .pr { color: #e06c75; }  /* props, params */
+
+  /* Tip / Warning / Pattern boxes */
+  .tip-box, .warn-box, .pattern-box {
+    padding: 1rem 1.2rem;
+    margin: 0.8rem 0;
+    border-radius: 4px;
+    border-width: 3px;
+    border-style: solid;
+  }
+  .tip-box {
+    background: var(--tip-bg);
+    border-color: var(--tip-border);
+    box-shadow: 4px 4px 0 var(--tip-border);
+  }
+  .warn-box {
+    background: var(--warning-bg);
+    border-color: var(--warning-border);
+    box-shadow: 4px 4px 0 var(--warning-border);
+  }
+  .pattern-box {
+    background: var(--pattern-bg);
+    border-color: var(--pattern-border);
+    box-shadow: 4px 4px 0 var(--pattern-border);
+  }
+  .box-title { font-weight: 800; font-size: 1rem; margin-bottom: 0.4rem; }
+
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 0.8rem 0;
+  }
+  .comparison > div { flex: 1; }
+  .bad-label, .good-label { font-weight: 800; margin-bottom: 0.3rem; font-size: 0.9rem; }
+  .bad-label { color: var(--accent-red); }
+  .good-label { color: var(--accent-green); }
+
+  .regex-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.8rem 0;
+    direction: ltr;
+  }
+  .regex-table th, .regex-table td {
+    border: 2px solid var(--border);
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+  .regex-table th { background: var(--code-bg); color: var(--code-text); font-weight: 700; }
+  .regex-table td:first-child { font-weight: 700; direction: rtl; text-align: right; }
+  .regex-table code { color: var(--accent-green); }
+
+  .part-divider {
+    text-align: center;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--text);
+    position: relative;
+  }
+  .part-divider::before, .part-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 25%;
+    height: 4px;
+    background: var(--border);
+  }
+  .part-divider::before { right: 0; }
+  .part-divider::after { left: 0; }
+
+  @media (max-width: 700px) {
+    header h1 { font-size: 1.6rem; }
+    .container { padding: 0.8rem; }
+    .section-header { font-size: 1.05rem; padding: 0.8rem 1rem; }
+    .section-body { padding: 1rem; }
+    pre { font-size: 0.78rem; padding: 0.8rem; }
+    .comparison { grid-template-columns: 1fr; }
+    .toc-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>React Hooks &amp; Common Patterns</h1>
+  <p>דף עזר מקיף למבחן Full-Stack &mdash; כל ה-Hooks, דפוסים חוזרים, ו-Regex</p>
+</header>
+
+<div class="container">
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>תוכן עניינים</h2>
+  <div class="toc-grid">
+    <a href="#useState">useState - ניהול State</a>
+    <a href="#useEffect">useEffect - תופעות לוואי</a>
+    <a href="#useRef">useRef - הפניות ו-DOM</a>
+    <a href="#useMemo">useMemo - חישובים יקרים</a>
+    <a href="#useCallback">useCallback - פונקציות ממומואיזות</a>
+    <a href="#useNavigate">useNavigate - ניווט</a>
+    <a href="#useParams">useParams - פרמטרים דינמיים</a>
+    <a href="#login">Login / Register Pattern</a>
+    <a href="#crud">CRUD Table Pattern</a>
+    <a href="#localStorage">localStorage Persistence</a>
+    <a href="#router">React Router Setup</a>
+    <a href="#validation">Form Validation Pattern</a>
+    <a href="#stateArch">State Architecture</a>
+    <a href="#regex">Regex Collection</a>
+  </div>
+</div>
+
+<!-- ============================== PART 1 ============================== -->
+<div class="part-divider">PART 1 &mdash; React Hooks Deep Dive</div>
+
+<!-- ===== useState ===== -->
+<div class="section" id="useState">
+  <div class="section-header sh-blue" onclick="toggle(this)">
+    <span>useState - ניהול State</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>שימוש בסיסי - מספר / מחרוזת</h3>
+    <p>מחזיר מערך: <span class="inline-code">[value, setter]</span>. כל קריאה ל-setter גורמת ל-re-render.</p>
+<pre><span class="kw">const</span> [<span class="pr">count</span>, <span class="fn">setCount</span>] = <span class="hk">useState</span>(<span class="nb">0</span>);
+<span class="kw">const</span> [<span class="pr">name</span>, <span class="fn">setName</span>] = <span class="hk">useState</span>(<span class="st">''</span>);
+
+<span class="kw">return</span> (
+  <span class="op">&lt;div&gt;</span>
+    <span class="op">&lt;p&gt;</span>{<span class="pr">count</span>}<span class="op">&lt;/p&gt;</span>
+    <span class="op">&lt;button</span> <span class="pr">onClick</span>={() =&gt; <span class="fn">setCount</span>(<span class="pr">count</span> + <span class="nb">1</span>)}<span class="op">&gt;</span>+1<span class="op">&lt;/button&gt;</span>
+    <span class="op">&lt;input</span> <span class="pr">value</span>={<span class="pr">name</span>} <span class="pr">onChange</span>={<span class="pr">e</span> =&gt; <span class="fn">setName</span>(<span class="pr">e</span>.target.value)} <span class="op">/&gt;</span>
+  <span class="op">&lt;/div&gt;</span>
+);</pre>
+
+    <h3>State של אובייקט</h3>
+    <p>חייבים ליצור אובייקט חדש עם spread. אסור לשנות ישירות!</p>
+<pre><span class="kw">const</span> [<span class="pr">form</span>, <span class="fn">setForm</span>] = <span class="hk">useState</span>({ <span class="pr">name</span>: <span class="st">''</span>, <span class="pr">email</span>: <span class="st">''</span>, <span class="pr">age</span>: <span class="nb">0</span> });
+
+<span class="cm">// עדכון שדה בודד - spread + override</span>
+<span class="kw">const</span> <span class="fn">handleChange</span> = (<span class="pr">e</span>) =&gt; {
+  <span class="fn">setForm</span>({ ...<span class="pr">form</span>, [<span class="pr">e</span>.target.name]: <span class="pr">e</span>.target.value });
+};
+
+<span class="op">&lt;input</span> <span class="pr">name</span>=<span class="st">"name"</span> <span class="pr">value</span>={<span class="pr">form</span>.name} <span class="pr">onChange</span>={<span class="fn">handleChange</span>} <span class="op">/&gt;</span>
+<span class="op">&lt;input</span> <span class="pr">name</span>=<span class="st">"email"</span> <span class="pr">value</span>={<span class="pr">form</span>.email} <span class="pr">onChange</span>={<span class="fn">handleChange</span>} <span class="op">/&gt;</span></pre>
+
+    <h3>State של מערך - הוספה, מחיקה, עדכון</h3>
+<pre><span class="kw">const</span> [<span class="pr">items</span>, <span class="fn">setItems</span>] = <span class="hk">useState</span>([]);
+
+<span class="cm">// הוספה - spread + new item</span>
+<span class="fn">setItems</span>([...<span class="pr">items</span>, <span class="pr">newItem</span>]);
+
+<span class="cm">// מחיקה - filter</span>
+<span class="fn">setItems</span>(<span class="pr">items</span>.<span class="fn">filter</span>(<span class="pr">item</span> =&gt; <span class="pr">item</span>.id !== <span class="pr">idToDelete</span>));
+
+<span class="cm">// עדכון פריט ספציפי - map</span>
+<span class="fn">setItems</span>(<span class="pr">items</span>.<span class="fn">map</span>(<span class="pr">item</span> =&gt;
+  <span class="pr">item</span>.id === <span class="pr">idToUpdate</span>
+    ? { ...<span class="pr">item</span>, <span class="pr">name</span>: <span class="st">'new name'</span> }
+    : <span class="pr">item</span>
+));</pre>
+
+    <h3>Functional Update - עדכון על בסיס ערך קודם</h3>
+    <p>כשהערך החדש תלוי בקודם, תמיד להשתמש בפונקציה כדי למנוע בעיות של stale state.</p>
+<pre><span class="cm">// בעייתי - יכול לדלג על עדכונים</span>
+<span class="fn">setCount</span>(<span class="pr">count</span> + <span class="nb">1</span>);
+
+<span class="cm">// נכון - מבטיח שהערך מעודכן</span>
+<span class="fn">setCount</span>(<span class="pr">prev</span> =&gt; <span class="pr">prev</span> + <span class="nb">1</span>);
+
+<span class="cm">// גם עם מערכים:</span>
+<span class="fn">setItems</span>(<span class="pr">prev</span> =&gt; [...<span class="pr">prev</span>, <span class="pr">newItem</span>]);</pre>
+
+    <h3>Lazy Initialization - אתחול עצלן</h3>
+    <p>אם החישוב הראשוני יקר, מעבירים פונקציה. היא תרוץ רק בפעם הראשונה.</p>
+<pre><span class="cm">// הפונקציה תרוץ רק ב-render הראשון</span>
+<span class="kw">const</span> [<span class="pr">data</span>, <span class="fn">setData</span>] = <span class="hk">useState</span>(() =&gt; {
+  <span class="kw">const</span> <span class="pr">saved</span> = localStorage.<span class="fn">getItem</span>(<span class="st">'myData'</span>);
+  <span class="kw">return</span> <span class="pr">saved</span> ? JSON.<span class="fn">parse</span>(<span class="pr">saved</span>) : [];
+});</pre>
+
+    <div class="warn-box">
+      <div class="box-title">&#9888;&#65039; טעות נפוצה: Mutation ישיר vs Immutable Update</div>
+      <div class="comparison">
+        <div>
+          <div class="bad-label">&#10060; לא נכון - Mutation ישיר</div>
+<pre><span class="cm">// React לא יעשה re-render!</span>
+<span class="pr">form</span>.name = <span class="st">'Tal'</span>;
+<span class="fn">setForm</span>(<span class="pr">form</span>);
+
+<span class="pr">items</span>.<span class="fn">push</span>(<span class="pr">newItem</span>);
+<span class="fn">setItems</span>(<span class="pr">items</span>);</pre>
+        </div>
+        <div>
+          <div class="good-label">&#9989; נכון - אובייקט/מערך חדש</div>
+<pre><span class="fn">setForm</span>({ ...<span class="pr">form</span>, <span class="pr">name</span>: <span class="st">'Tal'</span> });
+
+<span class="fn">setItems</span>([...<span class="pr">items</span>, <span class="pr">newItem</span>]);</pre>
+        </div>
+      </div>
+      <p>React משווה references. אם מעבירים את אותו אובייקט - הוא לא יודע שמשהו השתנה!</p>
+    </div>
+
+    <div class="tip-box">
+      <div class="box-title">&#128161; טיפ למבחן</div>
+      <p>ב-90% מהמבחנים: טופס = אובייקט state, רשימה = מערך state. תמיד spread כשמעדכנים.
+      שם השדה <span class="inline-code">name</span> ב-input תואם לשם ב-state כדי לעשות <span class="inline-code">[e.target.name]</span>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== useEffect ===== -->
+<div class="section" id="useEffect">
+  <div class="section-header sh-green" onclick="toggle(this)">
+    <span>useEffect - תופעות לוואי (Side Effects)</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>שימוש בסיסי</h3>
+    <p>רץ <strong>אחרי</strong> כל render שבו ה-dependencies השתנו.</p>
+<pre><span class="cm">// רץ אחרי כל render</span>
+<span class="hk">useEffect</span>(() =&gt; {
+  document.title = <span class="st">`Count: </span>${<span class="pr">count</span>}<span class="st">`</span>;
+});
+
+<span class="cm">// רץ רק כש-count משתנה</span>
+<span class="hk">useEffect</span>(() =&gt; {
+  document.title = <span class="st">`Count: </span>${<span class="pr">count</span>}<span class="st">`</span>;
+}, [<span class="pr">count</span>]);
+
+<span class="cm">// רץ רק פעם אחת - mount</span>
+<span class="hk">useEffect</span>(() =&gt; {
+  <span class="fn">fetchData</span>();
+}, []);</pre>
+
+    <h3>Cleanup Function - ניקוי</h3>
+    <p>הפונקציה שמוחזרת רצה <strong>לפני</strong> האפקט הבא או כש-component מת (unmount).</p>
+<pre><span class="hk">useEffect</span>(() =&gt; {
+  <span class="kw">const</span> <span class="pr">id</span> = <span class="fn">setInterval</span>(() =&gt; {
+    <span class="fn">setSeconds</span>(<span class="pr">prev</span> =&gt; <span class="pr">prev</span> + <span class="nb">1</span>);
+  }, <span class="nb">1000</span>);
+
+  <span class="cm">// cleanup - חייב לנקות intervals!</span>
+  <span class="kw">return</span> () =&gt; <span class="fn">clearInterval</span>(<span class="pr">id</span>);
+}, []);
+
+<span class="cm">// Event listener</span>
+<span class="hk">useEffect</span>(() =&gt; {
+  <span class="kw">const</span> <span class="fn">handler</span> = (<span class="pr">e</span>) =&gt; <span class="fn">setKey</span>(<span class="pr">e</span>.key);
+  window.<span class="fn">addEventListener</span>(<span class="st">'keydown'</span>, <span class="fn">handler</span>);
+  <span class="kw">return</span> () =&gt; window.<span class="fn">removeEventListener</span>(<span class="st">'keydown'</span>, <span class="fn">handler</span>);
+}, []);</pre>
+
+    <h3>Fetching Data - דפוס שליפת נתונים</h3>
+<pre><span class="kw">const</span> [<span class="pr">data</span>, <span class="fn">setData</span>] = <span class="hk">useState</span>([]);
+<span class="kw">const</span> [<span class="pr">loading</span>, <span class="fn">setLoading</span>] = <span class="hk">useState</span>(<span class="kw">true</span>);
+<span class="kw">const</span> [<span class="pr">error</span>, <span class="fn">setError</span>] = <span class="hk">useState</span>(<span class="kw">null</span>);
+
+<span class="hk">useEffect</span>(() =&gt; {
+  <span class="kw">const</span> <span class="fn">fetchData</span> = <span class="kw">async</span> () =&gt; {
+    <span class="kw">try</span> {
+      <span class="fn">setLoading</span>(<span class="kw">true</span>);
+      <span class="kw">const</span> <span class="pr">res</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="st">'https://api.example.com/items'</span>);
+      <span class="kw">const</span> <span class="pr">json</span> = <span class="kw">await</span> <span class="pr">res</span>.<span class="fn">json</span>();
+      <span class="fn">setData</span>(<span class="pr">json</span>);
+    } <span class="kw">catch</span> (<span class="pr">err</span>) {
+      <span class="fn">setError</span>(<span class="pr">err</span>.message);
+    } <span class="kw">finally</span> {
+      <span class="fn">setLoading</span>(<span class="kw">false</span>);
+    }
+  };
+  <span class="fn">fetchData</span>();
+}, []);
+
+<span class="kw">if</span> (<span class="pr">loading</span>) <span class="kw">return</span> <span class="op">&lt;p&gt;</span>Loading...<span class="op">&lt;/p&gt;</span>;
+<span class="kw">if</span> (<span class="pr">error</span>) <span class="kw">return</span> <span class="op">&lt;p&gt;</span>Error: {<span class="pr">error</span>}<span class="op">&lt;/p&gt;</span>;</pre>
+
+    <div class="warn-box">
+      <div class="box-title">&#9888;&#65039; טעות נפוצה: לולאה אינסופית</div>
+<pre><span class="cm">// &#10060; לולאה אינסופית! אובייקט חדש כל render</span>
+<span class="hk">useEffect</span>(() =&gt; {
+  <span class="fn">setItems</span>([...<span class="pr">items</span>, <span class="pr">newItem</span>]);  <span class="cm">// זה גורם ל-re-render &rarr; effect רץ שוב &rarr; ...</span>
+}, [<span class="pr">items</span>]);
+
+<span class="cm">// &#10060; שכחתם [] - רץ כל render!</span>
+<span class="hk">useEffect</span>(() =&gt; {
+  <span class="fn">fetch</span>(<span class="st">'...'</span>).<span class="fn">then</span>(<span class="pr">r</span> =&gt; <span class="pr">r</span>.<span class="fn">json</span>()).<span class="fn">then</span>(<span class="fn">setData</span>);
+}); <span class="cm">// &larr; אין deps! fetch אינסופי</span></pre>
+    </div>
+
+    <div class="warn-box">
+      <div class="box-title">&#9888;&#65039; טעות נפוצה: שכחת cleanup</div>
+      <p>שכחת <span class="inline-code">clearInterval</span> או <span class="inline-code">removeEventListener</span> = memory leak + התנהגות לא צפויה.</p>
+    </div>
+
+    <div class="tip-box">
+      <div class="box-title">&#128161; טיפ למבחן</div>
+      <p>כלל: מה שנכנס ל-deps? כל משתנה שמשתמשים בו בתוך ה-effect ומגיע מ-state/props.
+      <br>אם רוצים לרוץ רק ב-mount: <span class="inline-code">[]</span> ריק.
+      <br>אם רוצים לסנכרן ל-localStorage: <span class="inline-code">[items]</span>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== useRef ===== -->
+<div class="section" id="useRef">
+  <div class="section-header sh-purple" onclick="toggle(this)">
+    <span>useRef - הפניות ו-DOM</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>גישה ל-DOM</h3>
+<pre><span class="kw">const</span> <span class="pr">inputRef</span> = <span class="hk">useRef</span>(<span class="kw">null</span>);
+
+<span class="kw">const</span> <span class="fn">handleClick</span> = () =&gt; {
+  <span class="pr">inputRef</span>.current.<span class="fn">focus</span>();        <span class="cm">// פוקוס על input</span>
+  <span class="pr">inputRef</span>.current.value = <span class="st">''</span>;    <span class="cm">// ניקוי (לא מומלץ - controlled עדיף)</span>
+};
+
+<span class="kw">return</span> <span class="op">&lt;input</span> <span class="pr">ref</span>={<span class="pr">inputRef</span>} <span class="op">/&gt;</span>;</pre>
+
+    <h3>ערך שלא גורם ל-re-render</h3>
+    <p>שינוי <span class="inline-code">.current</span> לא גורם ל-render. מושלם לספירות, timers, ערכים קודמים.</p>
+<pre><span class="kw">const</span> <span class="pr">renderCount</span> = <span class="hk">useRef</span>(<span class="nb">0</span>);
+
+<span class="hk">useEffect</span>(() =&gt; {
+  <span class="pr">renderCount</span>.current += <span class="nb">1</span>;
+  console.<span class="fn">log</span>(<span class="st">`Rendered </span>${<span class="pr">renderCount</span>.current}<span class="st"> times`</span>);
+});</pre>
+
+    <h3>שמירת ערך קודם</h3>
+<pre><span class="kw">const</span> <span class="pr">prevValue</span> = <span class="hk">useRef</span>();
+
+<span class="hk">useEffect</span>(() =&gt; {
+  <span class="pr">prevValue</span>.current = <span class="pr">count</span>;  <span class="cm">// מעדכן אחרי render</span>
+}, [<span class="pr">count</span>]);
+
+<span class="cm">// prevValue.current = הערך הקודם של count</span></pre>
+
+    <div class="tip-box">
+      <div class="box-title">&#128161; טיפ למבחן: useRef vs useState</div>
+      <ul>
+        <li><strong>useState</strong> - כשרוצים שהמסך יתעדכן כשהערך משתנה</li>
+        <li><strong>useRef</strong> - כשרוצים לשמור ערך בלי לגרום ל-render (DOM, timer ID, ערך קודם)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== useMemo ===== -->
+<div class="section" id="useMemo">
+  <div class="section-header sh-orange" onclick="toggle(this)">
+    <span>useMemo - חישובים יקרים</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>שימוש בסיסי</h3>
+    <p>מחשב ערך רק כשה-dependencies משתנים. חוסך חישוב מיותר בכל render.</p>
+<pre><span class="kw">const</span> <span class="pr">sortedItems</span> = <span class="hk">useMemo</span>(() =&gt; {
+  console.<span class="fn">log</span>(<span class="st">'Sorting...'</span>); <span class="cm">// רץ רק כש-items משתנה</span>
+  <span class="kw">return</span> [...<span class="pr">items</span>].<span class="fn">sort</span>((<span class="pr">a</span>, <span class="pr">b</span>) =&gt; <span class="pr">a</span>.name.<span class="fn">localeCompare</span>(<span class="pr">b</span>.name));
+}, [<span class="pr">items</span>]);
+
+<span class="cm">// סינון יקר</span>
+<span class="kw">const</span> <span class="pr">filtered</span> = <span class="hk">useMemo</span>(() =&gt; {
+  <span class="kw">return</span> <span class="pr">items</span>.<span class="fn">filter</span>(<span class="pr">item</span> =&gt;
+    <span class="pr">item</span>.name.<span class="fn">toLowerCase</span>().<span class="fn">includes</span>(<span class="pr">search</span>.<span class="fn">toLowerCase</span>())
+  );
+}, [<span class="pr">items</span>, <span class="pr">search</span>]);</pre>
+
+    <div class="tip-box">
+      <div class="box-title">&#128161; טיפ למבחן</div>
+      <p>אל תשתמשו ב-useMemo על כל דבר. רק על חישובים שבאמת איטיים (מיון, סינון של רשימות גדולות).
+      סינון של 10 פריטים? לא צריך useMemo. סינון של 10,000? כן.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== useCallback ===== -->
+<div class="section" id="useCallback">
+  <div class="section-header sh-pink" onclick="toggle(this)">
+    <span>useCallback - פונקציות ממומואיזות</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>מניעת re-render מיותר של ילדים</h3>
+    <p>כל render יוצר פונקציה חדשה. useCallback שומר את אותה פונקציה כל עוד ה-deps לא השתנו.</p>
+<pre><span class="cm">// בלי useCallback - פונקציה חדשה כל render</span>
+<span class="kw">const</span> <span class="fn">handleDelete</span> = (<span class="pr">id</span>) =&gt; {
+  <span class="fn">setItems</span>(<span class="pr">prev</span> =&gt; <span class="pr">prev</span>.<span class="fn">filter</span>(<span class="pr">item</span> =&gt; <span class="pr">item</span>.id !== <span class="pr">id</span>));
+};
+
+<span class="cm">// עם useCallback - אותה reference</span>
+<span class="kw">const</span> <span class="fn">handleDelete</span> = <span class="hk">useCallback</span>((<span class="pr">id</span>) =&gt; {
+  <span class="fn">setItems</span>(<span class="pr">prev</span> =&gt; <span class="pr">prev</span>.<span class="fn">filter</span>(<span class="pr">item</span> =&gt; <span class="pr">item</span>.id !== <span class="pr">id</span>));
+}, []); <span class="cm">// [] כי משתמשים ב-functional update</span>
+
+<span class="cm">// עכשיו Child לא יעשה re-render מיותר</span>
+<span class="op">&lt;Child</span> <span class="pr">onDelete</span>={<span class="fn">handleDelete</span>} <span class="op">/&gt;</span></pre>
+
+    <div class="tip-box">
+      <div class="box-title">&#128161; טיפ למבחן</div>
+      <p>useCallback שימושי בעיקר כש:
+      <br>1. מעבירים פונקציה כ-prop לקומפוננטה שעטופה ב-<span class="inline-code">React.memo</span>
+      <br>2. הפונקציה היא dependency ב-useEffect</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== useNavigate ===== -->
+<div class="section" id="useNavigate">
+  <div class="section-header sh-teal" onclick="toggle(this)">
+    <span>useNavigate - ניווט (React Router)</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>ניווט בסיסי</h3>
+<pre><span class="kw">import</span> { <span class="hk">useNavigate</span> } <span class="kw">from</span> <span class="st">'react-router-dom'</span>;
+
+<span class="kw">function</span> <span class="fn">LoginPage</span>() {
+  <span class="kw">const</span> <span class="pr">navigate</span> = <span class="hk">useNavigate</span>();
+
+  <span class="kw">const</span> <span class="fn">handleLogin</span> = () =&gt; {
+    <span class="cm">// ... בדיקת login</span>
+    <span class="pr">navigate</span>(<span class="st">'/home'</span>);         <span class="cm">// ניווט לדף הבית</span>
+    <span class="pr">navigate</span>(<span class="st">'/home'</span>, { <span class="pr">replace</span>: <span class="kw">true</span> }); <span class="cm">// בלי history</span>
+  };
+
+  <span class="kw">return</span> <span class="op">&lt;button</span> <span class="pr">onClick</span>={<span class="fn">handleLogin</span>}<span class="op">&gt;</span>Login<span class="op">&lt;/button&gt;</span>;
+}</pre>
+
+    <h3>ניווט עם state</h3>
+<pre><span class="cm">// שליחת state</span>
+<span class="pr">navigate</span>(<span class="st">'/edit'</span>, { <span class="pr">state</span>: { <span class="pr">item</span>: <span class="pr">selectedItem</span> } });
+
+<span class="cm">// קבלת state בדף היעד</span>
+<span class="kw">import</span> { <span class="hk">useLocation</span> } <span class="kw">from</span> <span class="st">'react-router-dom'</span>;
+<span class="kw">const</span> <span class="pr">location</span> = <span class="hk">useLocation</span>();
+<span class="kw">const</span> <span class="pr">item</span> = <span class="pr">location</span>.state?.item;</pre>
+
+    <h3>ניווט אחורה</h3>
+<pre><span class="pr">navigate</span>(-<span class="nb">1</span>);  <span class="cm">// חזרה לדף הקודם</span>
+<span class="pr">navigate</span>(-<span class="nb">2</span>);  <span class="cm">// שני דפים אחורה</span></pre>
+  </div>
+</div>
+
+<!-- ===== useParams ===== -->
+<div class="section" id="useParams">
+  <div class="section-header sh-indigo" onclick="toggle(this)">
+    <span>useParams - פרמטרים דינמיים</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>שימוש בסיסי</h3>
+<pre><span class="cm">// Route definition</span>
+<span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/edit/:id"</span> <span class="pr">element</span>={<span class="op">&lt;EditPage /&gt;</span>} <span class="op">/&gt;</span>
+
+<span class="cm">// בקומפוננטה</span>
+<span class="kw">import</span> { <span class="hk">useParams</span> } <span class="kw">from</span> <span class="st">'react-router-dom'</span>;
+
+<span class="kw">function</span> <span class="fn">EditPage</span>() {
+  <span class="kw">const</span> { <span class="pr">id</span> } = <span class="hk">useParams</span>();  <span class="cm">// "123" from /edit/123</span>
+
+  <span class="kw">const</span> <span class="pr">item</span> = <span class="pr">items</span>.<span class="fn">find</span>(<span class="pr">i</span> =&gt; <span class="pr">i</span>.id === Number(<span class="pr">id</span>));
+  <span class="cm">// &#9888; useParams מחזיר string! לפעמים צריך Number()</span>
+}</pre>
+
+    <h3>מספר פרמטרים</h3>
+<pre><span class="cm">// Route: /team/:teamName/edit/:id</span>
+<span class="kw">const</span> { <span class="pr">teamName</span>, <span class="pr">id</span> } = <span class="hk">useParams</span>();
+<span class="cm">// /team/rockets/edit/5 &rarr; teamName="rockets", id="5"</span></pre>
+
+    <div class="tip-box">
+      <div class="box-title">&#128161; טיפ למבחן</div>
+      <p><span class="inline-code">useParams</span> מחזיר <strong>string</strong>. אם צריכים מספר לחיפוש, להמיר: <span class="inline-code">Number(id)</span> או <span class="inline-code">parseInt(id)</span>.
+      <br>אם רוצים לנווט עם ID: <span class="inline-code">navigate(`/edit/${item.id}`)</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== PART 2 ============================== -->
+<div class="part-divider">PART 2 &mdash; Common Exam Patterns (דפוסים חוזרים)</div>
+
+<!-- ===== Login/Register ===== -->
+<div class="section" id="login">
+  <div class="section-header sh-red" onclick="toggle(this)">
+    <span>Login / Register Pattern</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <div class="pattern-box">
+      <div class="box-title">&#128203; Pattern: מערכת Login + Register מלאה</div>
+      <p>הדפוס הכי נפוץ במבחנים. כולל: טופס, ולידציה, שמירה ב-localStorage, ניווט.</p>
+    </div>
+
+<pre><span class="cm">// App.jsx - State ברמה העליונה</span>
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">const</span> [<span class="pr">users</span>, <span class="fn">setUsers</span>] = <span class="hk">useState</span>(() =&gt; {
+    <span class="kw">const</span> <span class="pr">saved</span> = localStorage.<span class="fn">getItem</span>(<span class="st">'users'</span>);
+    <span class="kw">return</span> <span class="pr">saved</span> ? JSON.<span class="fn">parse</span>(<span class="pr">saved</span>) : [];
+  });
+  <span class="kw">const</span> [<span class="pr">currentUser</span>, <span class="fn">setCurrentUser</span>] = <span class="hk">useState</span>(<span class="kw">null</span>);
+
+  <span class="cm">// שמירה ל-localStorage</span>
+  <span class="hk">useEffect</span>(() =&gt; {
+    localStorage.<span class="fn">setItem</span>(<span class="st">'users'</span>, JSON.<span class="fn">stringify</span>(<span class="pr">users</span>));
+  }, [<span class="pr">users</span>]);
+
+  <span class="kw">const</span> <span class="fn">handleRegister</span> = (<span class="pr">newUser</span>) =&gt; {
+    <span class="fn">setUsers</span>(<span class="pr">prev</span> =&gt; [...<span class="pr">prev</span>, <span class="pr">newUser</span>]);
+  };
+
+  <span class="kw">const</span> <span class="fn">handleLogin</span> = (<span class="pr">username</span>, <span class="pr">password</span>) =&gt; {
+    <span class="kw">const</span> <span class="pr">user</span> = <span class="pr">users</span>.<span class="fn">find</span>(
+      <span class="pr">u</span> =&gt; <span class="pr">u</span>.username === <span class="pr">username</span> &amp;&amp; <span class="pr">u</span>.password === <span class="pr">password</span>
+    );
+    <span class="kw">if</span> (<span class="pr">user</span>) { <span class="fn">setCurrentUser</span>(<span class="pr">user</span>); <span class="kw">return true</span>; }
+    <span class="kw">return false</span>;
+  };
+
+  <span class="kw">return</span> (
+    <span class="op">&lt;BrowserRouter&gt;</span>
+      <span class="op">&lt;Routes&gt;</span>
+        <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/"</span> <span class="pr">element</span>={<span class="op">&lt;Login</span> <span class="pr">onLogin</span>={<span class="fn">handleLogin</span>} <span class="op">/&gt;</span>} <span class="op">/&gt;</span>
+        <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/register"</span> <span class="pr">element</span>={<span class="op">&lt;Register</span> <span class="pr">onRegister</span>={<span class="fn">handleRegister</span>} <span class="op">/&gt;</span>} <span class="op">/&gt;</span>
+        <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/home"</span> <span class="pr">element</span>={<span class="op">&lt;Home</span> <span class="pr">user</span>={<span class="pr">currentUser</span>} <span class="op">/&gt;</span>} <span class="op">/&gt;</span>
+      <span class="op">&lt;/Routes&gt;</span>
+    <span class="op">&lt;/BrowserRouter&gt;</span>
+  );
+}</pre>
+
+    <h3>Login Component</h3>
+<pre><span class="kw">function</span> <span class="fn">Login</span>({ <span class="pr">onLogin</span> }) {
+  <span class="kw">const</span> [<span class="pr">username</span>, <span class="fn">setUsername</span>] = <span class="hk">useState</span>(<span class="st">''</span>);
+  <span class="kw">const</span> [<span class="pr">password</span>, <span class="fn">setPassword</span>] = <span class="hk">useState</span>(<span class="st">''</span>);
+  <span class="kw">const</span> [<span class="pr">error</span>, <span class="fn">setError</span>] = <span class="hk">useState</span>(<span class="st">''</span>);
+  <span class="kw">const</span> <span class="pr">navigate</span> = <span class="hk">useNavigate</span>();
+
+  <span class="kw">const</span> <span class="fn">handleSubmit</span> = (<span class="pr">e</span>) =&gt; {
+    <span class="pr">e</span>.<span class="fn">preventDefault</span>();
+    <span class="kw">if</span> (<span class="fn">onLogin</span>(<span class="pr">username</span>, <span class="pr">password</span>)) {
+      <span class="pr">navigate</span>(<span class="st">'/home'</span>);
+    } <span class="kw">else</span> {
+      <span class="fn">setError</span>(<span class="st">'שם משתמש או סיסמה שגויים'</span>);
+    }
+  };
+
+  <span class="kw">return</span> (
+    <span class="op">&lt;form</span> <span class="pr">onSubmit</span>={<span class="fn">handleSubmit</span>}<span class="op">&gt;</span>
+      <span class="op">&lt;input</span> <span class="pr">value</span>={<span class="pr">username</span>}
+        <span class="pr">onChange</span>={<span class="pr">e</span> =&gt; <span class="fn">setUsername</span>(<span class="pr">e</span>.target.value)}
+        <span class="pr">placeholder</span>=<span class="st">"Username"</span> <span class="op">/&gt;</span>
+      <span class="op">&lt;input</span> <span class="pr">type</span>=<span class="st">"password"</span> <span class="pr">value</span>={<span class="pr">password</span>}
+        <span class="pr">onChange</span>={<span class="pr">e</span> =&gt; <span class="fn">setPassword</span>(<span class="pr">e</span>.target.value)}
+        <span class="pr">placeholder</span>=<span class="st">"Password"</span> <span class="op">/&gt;</span>
+      {<span class="pr">error</span> &amp;&amp; <span class="op">&lt;p</span> <span class="pr">style</span>={{ <span class="pr">color</span>: <span class="st">'red'</span> }}<span class="op">&gt;</span>{<span class="pr">error</span>}<span class="op">&lt;/p&gt;</span>}
+      <span class="op">&lt;button</span> <span class="pr">type</span>=<span class="st">"submit"</span><span class="op">&gt;</span>Login<span class="op">&lt;/button&gt;</span>
+      <span class="op">&lt;button</span> <span class="pr">onClick</span>={() =&gt; <span class="pr">navigate</span>(<span class="st">'/register'</span>)}<span class="op">&gt;</span>Register<span class="op">&lt;/button&gt;</span>
+    <span class="op">&lt;/form&gt;</span>
+  );
+}</pre>
+
+    <h3>Register Component with Validation</h3>
+<pre><span class="kw">function</span> <span class="fn">Register</span>({ <span class="pr">onRegister</span> }) {
+  <span class="kw">const</span> [<span class="pr">form</span>, <span class="fn">setForm</span>] = <span class="hk">useState</span>({
+    <span class="pr">username</span>: <span class="st">''</span>, <span class="pr">password</span>: <span class="st">''</span>, <span class="pr">confirmPass</span>: <span class="st">''</span>, <span class="pr">email</span>: <span class="st">''</span>
+  });
+  <span class="kw">const</span> [<span class="pr">errors</span>, <span class="fn">setErrors</span>] = <span class="hk">useState</span>({});
+  <span class="kw">const</span> <span class="pr">navigate</span> = <span class="hk">useNavigate</span>();
+
+  <span class="kw">const</span> <span class="fn">validate</span> = () =&gt; {
+    <span class="kw">const</span> <span class="pr">errs</span> = {};
+    <span class="kw">if</span> (!<span class="pr">form</span>.username || <span class="pr">form</span>.username.length &lt; <span class="nb">4</span>)
+      <span class="pr">errs</span>.username = <span class="st">'שם משתמש - מינימום 4 תווים'</span>;
+    <span class="kw">if</span> (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&amp;*]).{8,20}$/.<span class="fn">test</span>(<span class="pr">form</span>.password))
+      <span class="pr">errs</span>.password = <span class="st">'סיסמה: 8-20 תווים, אות גדולה+קטנה+ספרה+תו מיוחד'</span>;
+    <span class="kw">if</span> (<span class="pr">form</span>.password !== <span class="pr">form</span>.confirmPass)
+      <span class="pr">errs</span>.confirmPass = <span class="st">'הסיסמאות לא תואמות'</span>;
+    <span class="kw">if</span> (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.<span class="fn">test</span>(<span class="pr">form</span>.email))
+      <span class="pr">errs</span>.email = <span class="st">'כתובת מייל לא תקינה'</span>;
+    <span class="kw">return</span> <span class="pr">errs</span>;
+  };
+
+  <span class="kw">const</span> <span class="fn">handleChange</span> = (<span class="pr">e</span>) =&gt; {
+    <span class="fn">setForm</span>({ ...<span class="pr">form</span>, [<span class="pr">e</span>.target.name]: <span class="pr">e</span>.target.value });
+  };
+
+  <span class="kw">const</span> <span class="fn">handleSubmit</span> = (<span class="pr">e</span>) =&gt; {
+    <span class="pr">e</span>.<span class="fn">preventDefault</span>();
+    <span class="kw">const</span> <span class="pr">errs</span> = <span class="fn">validate</span>();
+    <span class="fn">setErrors</span>(<span class="pr">errs</span>);
+    <span class="kw">if</span> (Object.<span class="fn">keys</span>(<span class="pr">errs</span>).length === <span class="nb">0</span>) {
+      <span class="fn">onRegister</span>({ <span class="pr">username</span>: <span class="pr">form</span>.username, <span class="pr">password</span>: <span class="pr">form</span>.password,
+                    <span class="pr">email</span>: <span class="pr">form</span>.email });
+      <span class="pr">navigate</span>(<span class="st">'/'</span>);
+    }
+  };
+
+  <span class="kw">return</span> (
+    <span class="op">&lt;form</span> <span class="pr">onSubmit</span>={<span class="fn">handleSubmit</span>}<span class="op">&gt;</span>
+      <span class="op">&lt;input</span> <span class="pr">name</span>=<span class="st">"username"</span> <span class="pr">value</span>={<span class="pr">form</span>.username}
+        <span class="pr">onChange</span>={<span class="fn">handleChange</span>} <span class="pr">placeholder</span>=<span class="st">"Username"</span> <span class="op">/&gt;</span>
+      {<span class="pr">errors</span>.username &amp;&amp; <span class="op">&lt;p</span> <span class="pr">className</span>=<span class="st">"error"</span><span class="op">&gt;</span>{<span class="pr">errors</span>.username}<span class="op">&lt;/p&gt;</span>}
+
+      <span class="op">&lt;input</span> <span class="pr">name</span>=<span class="st">"password"</span> <span class="pr">type</span>=<span class="st">"password"</span> <span class="pr">value</span>={<span class="pr">form</span>.password}
+        <span class="pr">onChange</span>={<span class="fn">handleChange</span>} <span class="pr">placeholder</span>=<span class="st">"Password"</span> <span class="op">/&gt;</span>
+      {<span class="pr">errors</span>.password &amp;&amp; <span class="op">&lt;p</span> <span class="pr">className</span>=<span class="st">"error"</span><span class="op">&gt;</span>{<span class="pr">errors</span>.password}<span class="op">&lt;/p&gt;</span>}
+
+      <span class="op">&lt;input</span> <span class="pr">name</span>=<span class="st">"confirmPass"</span> <span class="pr">type</span>=<span class="st">"password"</span> <span class="pr">value</span>={<span class="pr">form</span>.confirmPass}
+        <span class="pr">onChange</span>={<span class="fn">handleChange</span>} <span class="pr">placeholder</span>=<span class="st">"Confirm Password"</span> <span class="op">/&gt;</span>
+      {<span class="pr">errors</span>.confirmPass &amp;&amp; <span class="op">&lt;p</span> <span class="pr">className</span>=<span class="st">"error"</span><span class="op">&gt;</span>{<span class="pr">errors</span>.confirmPass}<span class="op">&lt;/p&gt;</span>}
+
+      <span class="op">&lt;input</span> <span class="pr">name</span>=<span class="st">"email"</span> <span class="pr">value</span>={<span class="pr">form</span>.email}
+        <span class="pr">onChange</span>={<span class="fn">handleChange</span>} <span class="pr">placeholder</span>=<span class="st">"Email"</span> <span class="op">/&gt;</span>
+      {<span class="pr">errors</span>.email &amp;&amp; <span class="op">&lt;p</span> <span class="pr">className</span>=<span class="st">"error"</span><span class="op">&gt;</span>{<span class="pr">errors</span>.email}<span class="op">&lt;/p&gt;</span>}
+
+      <span class="op">&lt;button</span> <span class="pr">type</span>=<span class="st">"submit"</span><span class="op">&gt;</span>Register<span class="op">&lt;/button&gt;</span>
+    <span class="op">&lt;/form&gt;</span>
+  );
+}</pre>
+
+    <div class="tip-box">
+      <div class="box-title">&#128161; טיפ למבחן</div>
+      <p>שימו לב לדפוס: <span class="inline-code">errors</span> = אובייקט ריק אם אין שגיאות.
+      <br>בדיקה: <span class="inline-code">Object.keys(errs).length === 0</span> = הכל תקין.
+      <br>הצגה: <span class="inline-code">{errors.fieldName && &lt;p&gt;...&lt;/p&gt;}</span> מתחת לכל שדה.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CRUD Table ===== -->
+<div class="section" id="crud">
+  <div class="section-header sh-green" onclick="toggle(this)">
+    <span>CRUD Table Pattern - טבלת נתונים</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <div class="pattern-box">
+      <div class="box-title">&#128203; Pattern: CRUD מלא - הוספה, עריכה, מחיקה, חיפוש</div>
+      <p>הדפוס השני בשכיחות. טבלה עם טופס הוספה/עריכה, כפתורי מחיקה, ושדה חיפוש.</p>
+    </div>
+
+<pre><span class="kw">function</span> <span class="fn">ItemsManager</span>() {
+  <span class="kw">const</span> [<span class="pr">items</span>, <span class="fn">setItems</span>] = <span class="hk">useState</span>([]);
+  <span class="kw">const</span> [<span class="pr">form</span>, <span class="fn">setForm</span>] = <span class="hk">useState</span>({ <span class="pr">name</span>: <span class="st">''</span>, <span class="pr">price</span>: <span class="st">''</span> });
+  <span class="kw">const</span> [<span class="pr">editId</span>, <span class="fn">setEditId</span>] = <span class="hk">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> [<span class="pr">search</span>, <span class="fn">setSearch</span>] = <span class="hk">useState</span>(<span class="st">''</span>);
+
+  <span class="cm">// ADD / UPDATE</span>
+  <span class="kw">const</span> <span class="fn">handleSubmit</span> = (<span class="pr">e</span>) =&gt; {
+    <span class="pr">e</span>.<span class="fn">preventDefault</span>();
+    <span class="kw">if</span> (<span class="pr">editId</span>) {
+      <span class="cm">// UPDATE - map and replace</span>
+      <span class="fn">setItems</span>(<span class="pr">items</span>.<span class="fn">map</span>(<span class="pr">item</span> =&gt;
+        <span class="pr">item</span>.id === <span class="pr">editId</span>
+          ? { ...<span class="pr">item</span>, ...<span class="pr">form</span> }
+          : <span class="pr">item</span>
+      ));
+      <span class="fn">setEditId</span>(<span class="kw">null</span>);
+    } <span class="kw">else</span> {
+      <span class="cm">// ADD - spread + new</span>
+      <span class="fn">setItems</span>([...<span class="pr">items</span>, { ...<span class="pr">form</span>, <span class="pr">id</span>: Date.<span class="fn">now</span>() }]);
+    }
+    <span class="fn">setForm</span>({ <span class="pr">name</span>: <span class="st">''</span>, <span class="pr">price</span>: <span class="st">''</span> }); <span class="cm">// reset form</span>
+  };
+
+  <span class="cm">// DELETE</span>
+  <span class="kw">const</span> <span class="fn">handleDelete</span> = (<span class="pr">id</span>) =&gt; {
+    <span class="fn">setItems</span>(<span class="pr">items</span>.<span class="fn">filter</span>(<span class="pr">item</span> =&gt; <span class="pr">item</span>.id !== <span class="pr">id</span>));
+  };
+
+  <span class="cm">// EDIT - populate form</span>
+  <span class="kw">const</span> <span class="fn">handleEdit</span> = (<span class="pr">item</span>) =&gt; {
+    <span class="fn">setForm</span>({ <span class="pr">name</span>: <span class="pr">item</span>.name, <span class="pr">price</span>: <span class="pr">item</span>.price });
+    <span class="fn">setEditId</span>(<span class="pr">item</span>.id);
+  };
+
+  <span class="cm">// FILTER</span>
+  <span class="kw">const</span> <span class="pr">filtered</span> = <span class="pr">items</span>.<span class="fn">filter</span>(<span class="pr">item</span> =&gt;
+    <span class="pr">item</span>.name.<span class="fn">toLowerCase</span>().<span class="fn">includes</span>(<span class="pr">search</span>.<span class="fn">toLowerCase</span>())
+  );
+
+  <span class="kw">return</span> (
+    <span class="op">&lt;div&gt;</span>
+      <span class="op">&lt;input</span> <span class="pr">placeholder</span>=<span class="st">"Search..."</span> <span class="pr">value</span>={<span class="pr">search</span>}
+        <span class="pr">onChange</span>={<span class="pr">e</span> =&gt; <span class="fn">setSearch</span>(<span class="pr">e</span>.target.value)} <span class="op">/&gt;</span>
+
+      <span class="op">&lt;form</span> <span class="pr">onSubmit</span>={<span class="fn">handleSubmit</span>}<span class="op">&gt;</span>
+        <span class="op">&lt;input</span> <span class="pr">name</span>=<span class="st">"name"</span> <span class="pr">value</span>={<span class="pr">form</span>.name}
+          <span class="pr">onChange</span>={<span class="pr">e</span> =&gt; <span class="fn">setForm</span>({...<span class="pr">form</span>, <span class="pr">name</span>: <span class="pr">e</span>.target.value})} <span class="op">/&gt;</span>
+        <span class="op">&lt;input</span> <span class="pr">name</span>=<span class="st">"price"</span> <span class="pr">value</span>={<span class="pr">form</span>.price}
+          <span class="pr">onChange</span>={<span class="pr">e</span> =&gt; <span class="fn">setForm</span>({...<span class="pr">form</span>, <span class="pr">price</span>: <span class="pr">e</span>.target.value})} <span class="op">/&gt;</span>
+        <span class="op">&lt;button&gt;</span>{<span class="pr">editId</span> ? <span class="st">'Update'</span> : <span class="st">'Add'</span>}<span class="op">&lt;/button&gt;</span>
+      <span class="op">&lt;/form&gt;</span>
+
+      <span class="op">&lt;table&gt;</span>
+        <span class="op">&lt;thead&gt;&lt;tr&gt;</span>
+          <span class="op">&lt;th&gt;</span>Name<span class="op">&lt;/th&gt;&lt;th&gt;</span>Price<span class="op">&lt;/th&gt;&lt;th&gt;</span>Actions<span class="op">&lt;/th&gt;</span>
+        <span class="op">&lt;/tr&gt;&lt;/thead&gt;</span>
+        <span class="op">&lt;tbody&gt;</span>
+          {<span class="pr">filtered</span>.<span class="fn">map</span>(<span class="pr">item</span> =&gt; (
+            <span class="op">&lt;tr</span> <span class="pr">key</span>={<span class="pr">item</span>.id}<span class="op">&gt;</span>
+              <span class="op">&lt;td&gt;</span>{<span class="pr">item</span>.name}<span class="op">&lt;/td&gt;</span>
+              <span class="op">&lt;td&gt;</span>{<span class="pr">item</span>.price}<span class="op">&lt;/td&gt;</span>
+              <span class="op">&lt;td&gt;</span>
+                <span class="op">&lt;button</span> <span class="pr">onClick</span>={() =&gt; <span class="fn">handleEdit</span>(<span class="pr">item</span>)}<span class="op">&gt;</span>Edit<span class="op">&lt;/button&gt;</span>
+                <span class="op">&lt;button</span> <span class="pr">onClick</span>={() =&gt; <span class="fn">handleDelete</span>(<span class="pr">item</span>.id)}<span class="op">&gt;</span>Delete<span class="op">&lt;/button&gt;</span>
+              <span class="op">&lt;/td&gt;</span>
+            <span class="op">&lt;/tr&gt;</span>
+          ))}
+        <span class="op">&lt;/tbody&gt;</span>
+      <span class="op">&lt;/table&gt;</span>
+    <span class="op">&lt;/div&gt;</span>
+  );
+}</pre>
+
+    <div class="tip-box">
+      <div class="box-title">&#128161; טיפ למבחן</div>
+      <p><strong>key</strong> חייב להיות ייחודי. <span class="inline-code">Date.now()</span> פשוט ועובד. לעולם אל תשתמשו ב-index כ-key אם הרשימה משתנה!
+      <br><strong>editId</strong> מנהל את מצב העריכה. <span class="inline-code">null</span> = הוספה, ערך = עריכה.
+      <br><strong>filter</strong> עובד על הרשימה המקורית, לא משנה אותה.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== localStorage ===== -->
+<div class="section" id="localStorage">
+  <div class="section-header sh-yellow" onclick="toggle(this)">
+    <span>localStorage Persistence Pattern</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <div class="pattern-box">
+      <div class="box-title">&#128203; Pattern: שמירה וטעינה מ-localStorage</div>
+      <p>דפוס קריטי: טעינה ב-useState (lazy init) + שמירה ב-useEffect.</p>
+    </div>
+
+<pre><span class="cm">// שלב 1: טעינה מ-localStorage (lazy initialization)</span>
+<span class="kw">const</span> [<span class="pr">items</span>, <span class="fn">setItems</span>] = <span class="hk">useState</span>(() =&gt; {
+  <span class="kw">const</span> <span class="pr">saved</span> = localStorage.<span class="fn">getItem</span>(<span class="st">'items'</span>);
+  <span class="kw">return</span> <span class="pr">saved</span> ? JSON.<span class="fn">parse</span>(<span class="pr">saved</span>) : [];
+});
+
+<span class="cm">// שלב 2: שמירה ל-localStorage כש-items משתנה</span>
+<span class="hk">useEffect</span>(() =&gt; {
+  localStorage.<span class="fn">setItem</span>(<span class="st">'items'</span>, JSON.<span class="fn">stringify</span>(<span class="pr">items</span>));
+}, [<span class="pr">items</span>]);</pre>
+
+    <div class="warn-box">
+      <div class="box-title">&#9888;&#65039; טעויות נפוצות</div>
+      <ul>
+        <li>שכחת <span class="inline-code">JSON.parse()</span> בטעינה - מקבלים string במקום מערך</li>
+        <li>שכחת <span class="inline-code">JSON.stringify()</span> בשמירה - נשמר <span class="inline-code">[object Object]</span></li>
+        <li>שימוש ב-key שונה בטעינה ובשמירה</li>
+        <li>שכחת בדיקת <span class="inline-code">null</span> (אם אין ערך שמור, <span class="inline-code">getItem</span> מחזיר <span class="inline-code">null</span>)</li>
+      </ul>
+    </div>
+
+    <h3>Custom Hook - שימוש חוזר</h3>
+<pre><span class="kw">function</span> <span class="fn">useLocalStorage</span>(<span class="pr">key</span>, <span class="pr">initialValue</span>) {
+  <span class="kw">const</span> [<span class="pr">value</span>, <span class="fn">setValue</span>] = <span class="hk">useState</span>(() =&gt; {
+    <span class="kw">const</span> <span class="pr">saved</span> = localStorage.<span class="fn">getItem</span>(<span class="pr">key</span>);
+    <span class="kw">return</span> <span class="pr">saved</span> ? JSON.<span class="fn">parse</span>(<span class="pr">saved</span>) : <span class="pr">initialValue</span>;
+  });
+
+  <span class="hk">useEffect</span>(() =&gt; {
+    localStorage.<span class="fn">setItem</span>(<span class="pr">key</span>, JSON.<span class="fn">stringify</span>(<span class="pr">value</span>));
+  }, [<span class="pr">key</span>, <span class="pr">value</span>]);
+
+  <span class="kw">return</span> [<span class="pr">value</span>, <span class="fn">setValue</span>];
+}
+
+<span class="cm">// שימוש:</span>
+<span class="kw">const</span> [<span class="pr">todos</span>, <span class="fn">setTodos</span>] = <span class="fn">useLocalStorage</span>(<span class="st">'todos'</span>, []);</pre>
+  </div>
+</div>
+
+<!-- ===== React Router ===== -->
+<div class="section" id="router">
+  <div class="section-header sh-blue" onclick="toggle(this)">
+    <span>React Router Setup Pattern</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <div class="pattern-box">
+      <div class="box-title">&#128203; Pattern: הגדרת Router מלאה</div>
+      <p>כולל: Routes, Link, Navigate, Dynamic params, State passing.</p>
+    </div>
+
+    <h3>Setup בסיסי</h3>
+<pre><span class="kw">import</span> { <span class="fn">BrowserRouter</span>, <span class="fn">Routes</span>, <span class="fn">Route</span>, <span class="fn">Link</span>,
+  <span class="hk">useNavigate</span>, <span class="hk">useParams</span>, <span class="hk">useLocation</span> } <span class="kw">from</span> <span class="st">'react-router-dom'</span>;
+
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    <span class="op">&lt;BrowserRouter&gt;</span>
+      <span class="op">&lt;nav&gt;</span>
+        <span class="op">&lt;Link</span> <span class="pr">to</span>=<span class="st">"/"</span><span class="op">&gt;</span>Login<span class="op">&lt;/Link&gt;</span>
+        <span class="op">&lt;Link</span> <span class="pr">to</span>=<span class="st">"/home"</span><span class="op">&gt;</span>Home<span class="op">&lt;/Link&gt;</span>
+      <span class="op">&lt;/nav&gt;</span>
+      <span class="op">&lt;Routes&gt;</span>
+        <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/"</span> <span class="pr">element</span>={<span class="op">&lt;Login /&gt;</span>} <span class="op">/&gt;</span>
+        <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/register"</span> <span class="pr">element</span>={<span class="op">&lt;Register /&gt;</span>} <span class="op">/&gt;</span>
+        <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/home"</span> <span class="pr">element</span>={<span class="op">&lt;Home /&gt;</span>} <span class="op">/&gt;</span>
+        <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/edit/:id"</span> <span class="pr">element</span>={<span class="op">&lt;Edit /&gt;</span>} <span class="op">/&gt;</span>
+        <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/team/:teamName/edit/:id"</span> <span class="pr">element</span>={<span class="op">&lt;TeamEdit /&gt;</span>} <span class="op">/&gt;</span>
+        <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"*"</span> <span class="pr">element</span>={<span class="op">&lt;h1&gt;</span>404<span class="op">&lt;/h1&gt;</span>} <span class="op">/&gt;</span>
+      <span class="op">&lt;/Routes&gt;</span>
+    <span class="op">&lt;/BrowserRouter&gt;</span>
+  );
+}</pre>
+
+    <h3>Link vs useNavigate</h3>
+    <div class="comparison">
+      <div>
+        <div class="box-title">Link - ניווט דקלרטיבי (HTML)</div>
+<pre><span class="cm">// קישור רגיל - המשתמש לוחץ</span>
+<span class="op">&lt;Link</span> <span class="pr">to</span>=<span class="st">"/home"</span><span class="op">&gt;</span>Go Home<span class="op">&lt;/Link&gt;</span>
+<span class="op">&lt;Link</span> <span class="pr">to</span>={<span class="st">`/edit/</span>${<span class="pr">item</span>.id}<span class="st">`</span>}<span class="op">&gt;</span>Edit<span class="op">&lt;/Link&gt;</span></pre>
+      </div>
+      <div>
+        <div class="box-title">useNavigate - ניווט פרוגרמטי (JS)</div>
+<pre><span class="cm">// ניווט מתוך קוד - אחרי פעולה</span>
+<span class="kw">const</span> <span class="pr">navigate</span> = <span class="hk">useNavigate</span>();
+<span class="pr">navigate</span>(<span class="st">'/home'</span>);
+<span class="pr">navigate</span>(<span class="st">`/edit/</span>${<span class="pr">id</span>}<span class="st">`</span>);</pre>
+      </div>
+    </div>
+
+    <h3>העברת נתונים בין דפים</h3>
+<pre><span class="cm">// דף 1 - שולח</span>
+<span class="pr">navigate</span>(<span class="st">'/details'</span>, {
+  <span class="pr">state</span>: { <span class="pr">item</span>: <span class="pr">selectedItem</span>, <span class="pr">from</span>: <span class="st">'home'</span> }
+});
+
+<span class="cm">// דף 2 - מקבל</span>
+<span class="kw">function</span> <span class="fn">Details</span>() {
+  <span class="kw">const</span> <span class="pr">location</span> = <span class="hk">useLocation</span>();
+  <span class="kw">const</span> { <span class="pr">item</span>, <span class="pr">from</span> } = <span class="pr">location</span>.state || {};
+
+  <span class="kw">if</span> (!<span class="pr">item</span>) <span class="kw">return</span> <span class="op">&lt;p&gt;</span>No data<span class="op">&lt;/p&gt;</span>;
+  <span class="kw">return</span> <span class="op">&lt;h1&gt;</span>{<span class="pr">item</span>.name}<span class="op">&lt;/h1&gt;</span>;
+}</pre>
+
+    <div class="tip-box">
+      <div class="box-title">&#128161; טיפ למבחן</div>
+      <p>3 דרכים להעביר נתונים בין דפים:
+      <br>1. <strong>URL Params</strong>: <span class="inline-code">/edit/:id</span> + <span class="inline-code">useParams()</span> - מתאים ל-ID
+      <br>2. <strong>State</strong>: <span class="inline-code">navigate('/x', {state: ...})</span> + <span class="inline-code">useLocation()</span> - מתאים לאובייקט שלם
+      <br>3. <strong>Lifting State</strong>: state ב-App, מועבר כ-props לכל Route</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Form Validation ===== -->
+<div class="section" id="validation">
+  <div class="section-header sh-orange" onclick="toggle(this)">
+    <span>Form Validation Pattern - ולידציה</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <div class="pattern-box">
+      <div class="box-title">&#128203; Pattern: ולידציה מלאה עם הצגת שגיאות</div>
+      <p>ולידציה בזמן אמת (onChange) או בשליחה (onSubmit). שגיאות כאובייקט, הצגה מתחת לכל שדה.</p>
+    </div>
+
+    <h3>ולידציה ב-Submit</h3>
+<pre><span class="kw">const</span> [<span class="pr">form</span>, <span class="fn">setForm</span>] = <span class="hk">useState</span>({
+  <span class="pr">username</span>: <span class="st">''</span>, <span class="pr">password</span>: <span class="st">''</span>, <span class="pr">email</span>: <span class="st">''</span>, <span class="pr">phone</span>: <span class="st">''</span>
+});
+<span class="kw">const</span> [<span class="pr">errors</span>, <span class="fn">setErrors</span>] = <span class="hk">useState</span>({});
+
+<span class="kw">const</span> <span class="fn">validate</span> = () =&gt; {
+  <span class="kw">const</span> <span class="pr">errs</span> = {};
+
+  <span class="kw">if</span> (!/^[a-zA-Z0-9]{4,}$/.<span class="fn">test</span>(<span class="pr">form</span>.username))
+    <span class="pr">errs</span>.username = <span class="st">'שם משתמש: לפחות 4 תווים, אותיות ומספרים בלבד'</span>;
+
+  <span class="kw">if</span> (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&amp;*]).{8,20}$/.<span class="fn">test</span>(<span class="pr">form</span>.password))
+    <span class="pr">errs</span>.password = <span class="st">'סיסמה: 8-20, אות גדולה+קטנה+ספרה+תו מיוחד'</span>;
+
+  <span class="kw">if</span> (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.<span class="fn">test</span>(<span class="pr">form</span>.email))
+    <span class="pr">errs</span>.email = <span class="st">'כתובת מייל לא תקינה'</span>;
+
+  <span class="kw">if</span> (!/^\d{10}$/.<span class="fn">test</span>(<span class="pr">form</span>.phone))
+    <span class="pr">errs</span>.phone = <span class="st">'טלפון: בדיוק 10 ספרות'</span>;
+
+  <span class="kw">return</span> <span class="pr">errs</span>;
+};
+
+<span class="kw">const</span> <span class="fn">handleSubmit</span> = (<span class="pr">e</span>) =&gt; {
+  <span class="pr">e</span>.<span class="fn">preventDefault</span>();
+  <span class="kw">const</span> <span class="pr">errs</span> = <span class="fn">validate</span>();
+  <span class="fn">setErrors</span>(<span class="pr">errs</span>);
+  <span class="kw">if</span> (Object.<span class="fn">keys</span>(<span class="pr">errs</span>).length === <span class="nb">0</span>) {
+    <span class="cm">// הכל תקין - שלח!</span>
+  }
+};</pre>
+
+    <h3>ולידציה בזמן אמת (onChange)</h3>
+<pre><span class="kw">const</span> <span class="fn">handleChange</span> = (<span class="pr">e</span>) =&gt; {
+  <span class="kw">const</span> { <span class="pr">name</span>, <span class="pr">value</span> } = <span class="pr">e</span>.target;
+  <span class="fn">setForm</span>({ ...<span class="pr">form</span>, [<span class="pr">name</span>]: <span class="pr">value</span> });
+
+  <span class="cm">// ולידציה בזמן אמת</span>
+  <span class="kw">const</span> <span class="pr">newErrors</span> = { ...<span class="pr">errors</span> };
+  <span class="kw">switch</span> (<span class="pr">name</span>) {
+    <span class="kw">case</span> <span class="st">'email'</span>:
+      <span class="kw">if</span> (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.<span class="fn">test</span>(<span class="pr">value</span>))
+        <span class="pr">newErrors</span>.email = <span class="st">'מייל לא תקין'</span>;
+      <span class="kw">else</span>
+        <span class="kw">delete</span> <span class="pr">newErrors</span>.email;
+      <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="st">'phone'</span>:
+      <span class="kw">if</span> (!/^\d{10}$/.<span class="fn">test</span>(<span class="pr">value</span>))
+        <span class="pr">newErrors</span>.phone = <span class="st">'טלפון: 10 ספרות'</span>;
+      <span class="kw">else</span>
+        <span class="kw">delete</span> <span class="pr">newErrors</span>.phone;
+      <span class="kw">break</span>;
+  }
+  <span class="fn">setErrors</span>(<span class="pr">newErrors</span>);
+};</pre>
+
+    <h3>הצגת שגיאות בטופס</h3>
+<pre><span class="op">&lt;form</span> <span class="pr">onSubmit</span>={<span class="fn">handleSubmit</span>}<span class="op">&gt;</span>
+  <span class="op">&lt;div&gt;</span>
+    <span class="op">&lt;label&gt;</span>Email<span class="op">&lt;/label&gt;</span>
+    <span class="op">&lt;input</span> <span class="pr">name</span>=<span class="st">"email"</span> <span class="pr">value</span>={<span class="pr">form</span>.email}
+      <span class="pr">onChange</span>={<span class="fn">handleChange</span>}
+      <span class="pr">style</span>={{ <span class="pr">borderColor</span>: <span class="pr">errors</span>.email ? <span class="st">'red'</span> : <span class="st">'#ccc'</span> }} <span class="op">/&gt;</span>
+    {<span class="pr">errors</span>.email &amp;&amp;
+      <span class="op">&lt;p</span> <span class="pr">style</span>={{ <span class="pr">color</span>: <span class="st">'red'</span>, <span class="pr">fontSize</span>: <span class="st">'0.85rem'</span> }}<span class="op">&gt;</span>
+        {<span class="pr">errors</span>.email}
+      <span class="op">&lt;/p&gt;</span>}
+  <span class="op">&lt;/div&gt;</span>
+
+  <span class="op">&lt;button</span> <span class="pr">type</span>=<span class="st">"submit"</span>
+    <span class="pr">disabled</span>={Object.<span class="fn">keys</span>(<span class="pr">errors</span>).length &gt; <span class="nb">0</span>}<span class="op">&gt;</span>
+    Submit
+  <span class="op">&lt;/button&gt;</span>
+<span class="op">&lt;/form&gt;</span></pre>
+  </div>
+</div>
+
+<!-- ===== State Architecture ===== -->
+<div class="section" id="stateArch">
+  <div class="section-header sh-purple" onclick="toggle(this)">
+    <span>State Architecture - ארכיטקטורת State</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>איפה לשים State?</h3>
+    <div class="pattern-box">
+      <div class="box-title">&#128203; כלל אצבע: State עולה למעלה</div>
+      <ul>
+        <li><strong>רק קומפוננטה אחת צריכה?</strong> &rarr; State מקומי באותה קומפוננטה</li>
+        <li><strong>שתי קומפוננטות אחיות צריכות?</strong> &rarr; State בהורה המשותף (Lifting State Up)</li>
+        <li><strong>כל האפליקציה צריכה?</strong> &rarr; State ב-App</li>
+      </ul>
+    </div>
+
+    <h3>Lifting State Up</h3>
+<pre><span class="cm">// App - מחזיק את ה-state</span>
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">const</span> [<span class="pr">items</span>, <span class="fn">setItems</span>] = <span class="hk">useState</span>([]);
+
+  <span class="kw">const</span> <span class="fn">addItem</span> = (<span class="pr">item</span>) =&gt; <span class="fn">setItems</span>(<span class="pr">prev</span> =&gt; [...<span class="pr">prev</span>, <span class="pr">item</span>]);
+  <span class="kw">const</span> <span class="fn">deleteItem</span> = (<span class="pr">id</span>) =&gt; <span class="fn">setItems</span>(<span class="pr">prev</span> =&gt; <span class="pr">prev</span>.<span class="fn">filter</span>(<span class="pr">i</span> =&gt; <span class="pr">i</span>.id !== <span class="pr">id</span>));
+
+  <span class="kw">return</span> (
+    <span class="op">&lt;&gt;</span>
+      <span class="cm">{/* מעביר callback למטה */}</span>
+      <span class="op">&lt;AddForm</span> <span class="pr">onAdd</span>={<span class="fn">addItem</span>} <span class="op">/&gt;</span>
+      <span class="cm">{/* מעביר נתונים + callback */}</span>
+      <span class="op">&lt;ItemList</span> <span class="pr">items</span>={<span class="pr">items</span>} <span class="pr">onDelete</span>={<span class="fn">deleteItem</span>} <span class="op">/&gt;</span>
+    <span class="op">&lt;/&gt;</span>
+  );
+}
+
+<span class="cm">// AddForm - מקבל callback כ-prop</span>
+<span class="kw">function</span> <span class="fn">AddForm</span>({ <span class="pr">onAdd</span> }) {
+  <span class="kw">const</span> [<span class="pr">name</span>, <span class="fn">setName</span>] = <span class="hk">useState</span>(<span class="st">''</span>);
+
+  <span class="kw">const</span> <span class="fn">handleSubmit</span> = (<span class="pr">e</span>) =&gt; {
+    <span class="pr">e</span>.<span class="fn">preventDefault</span>();
+    <span class="fn">onAdd</span>({ <span class="pr">id</span>: Date.<span class="fn">now</span>(), <span class="pr">name</span> });
+    <span class="fn">setName</span>(<span class="st">''</span>);
+  };
+
+  <span class="kw">return</span> (
+    <span class="op">&lt;form</span> <span class="pr">onSubmit</span>={<span class="fn">handleSubmit</span>}<span class="op">&gt;</span>
+      <span class="op">&lt;input</span> <span class="pr">value</span>={<span class="pr">name</span>} <span class="pr">onChange</span>={<span class="pr">e</span> =&gt; <span class="fn">setName</span>(<span class="pr">e</span>.target.value)} <span class="op">/&gt;</span>
+      <span class="op">&lt;button&gt;</span>Add<span class="op">&lt;/button&gt;</span>
+    <span class="op">&lt;/form&gt;</span>
+  );
+}
+
+<span class="cm">// ItemList - מקבל נתונים + callback</span>
+<span class="kw">function</span> <span class="fn">ItemList</span>({ <span class="pr">items</span>, <span class="pr">onDelete</span> }) {
+  <span class="kw">return</span> (
+    <span class="op">&lt;ul&gt;</span>
+      {<span class="pr">items</span>.<span class="fn">map</span>(<span class="pr">item</span> =&gt; (
+        <span class="op">&lt;li</span> <span class="pr">key</span>={<span class="pr">item</span>.id}<span class="op">&gt;</span>
+          {<span class="pr">item</span>.name}
+          <span class="op">&lt;button</span> <span class="pr">onClick</span>={() =&gt; <span class="fn">onDelete</span>(<span class="pr">item</span>.id)}<span class="op">&gt;</span>X<span class="op">&lt;/button&gt;</span>
+        <span class="op">&lt;/li&gt;</span>
+      ))}
+    <span class="op">&lt;/ul&gt;</span>
+  );
+}</pre>
+
+    <h3>Props Drilling - העברת props דרך שכבות</h3>
+<pre><span class="cm">// App &rarr; Parent &rarr; Child &rarr; GrandChild</span>
+<span class="cm">// אם GrandChild צריך פונקציה מ-App,</span>
+<span class="cm">// היא עוברת דרך כל השכבות:</span>
+
+<span class="op">&lt;Parent</span> <span class="pr">onAction</span>={<span class="fn">handleAction</span>} <span class="op">/&gt;</span>
+  <span class="cm">// Parent לא משתמש ב-onAction, רק מעביר:</span>
+  <span class="op">&lt;Child</span> <span class="pr">onAction</span>={<span class="pr">onAction</span>} <span class="op">/&gt;</span>
+    <span class="cm">// Child גם רק מעביר:</span>
+    <span class="op">&lt;GrandChild</span> <span class="pr">onAction</span>={<span class="pr">onAction</span>} <span class="op">/&gt;</span>
+      <span class="cm">// GrandChild סוף סוף משתמש</span></pre>
+
+    <div class="tip-box">
+      <div class="box-title">&#128161; טיפ למבחן</div>
+      <p>במבחנים, בדרך כלל מספיק Lifting State Up ל-App.
+      <br>State משותף (users, items, currentUser) ב-App, מועבר כ-props.
+      <br>פונקציות (add, delete, update) מוגדרות ב-App ומועברות כ-callbacks.</p>
+    </div>
+
+    <h3>State ב-Route Components</h3>
+<pre><span class="cm">// דפוס נפוץ: Props דרך Routes</span>
+<span class="op">&lt;Routes&gt;</span>
+  <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/"</span> <span class="pr">element</span>={
+    <span class="op">&lt;Login</span>
+      <span class="pr">onLogin</span>={<span class="fn">handleLogin</span>}
+      <span class="pr">users</span>={<span class="pr">users</span>}
+    <span class="op">/&gt;</span>
+  } <span class="op">/&gt;</span>
+  <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/home"</span> <span class="pr">element</span>={
+    <span class="op">&lt;Home</span>
+      <span class="pr">user</span>={<span class="pr">currentUser</span>}
+      <span class="pr">items</span>={<span class="pr">items</span>}
+      <span class="pr">onAdd</span>={<span class="fn">addItem</span>}
+      <span class="pr">onDelete</span>={<span class="fn">deleteItem</span>}
+    <span class="op">/&gt;</span>
+  } <span class="op">/&gt;</span>
+  <span class="op">&lt;Route</span> <span class="pr">path</span>=<span class="st">"/edit/:id"</span> <span class="pr">element</span>={
+    <span class="op">&lt;EditItem</span>
+      <span class="pr">items</span>={<span class="pr">items</span>}
+      <span class="pr">onUpdate</span>={<span class="fn">updateItem</span>}
+    <span class="op">/&gt;</span>
+  } <span class="op">/&gt;</span>
+<span class="op">&lt;/Routes&gt;</span></pre>
+  </div>
+</div>
+
+<!-- ============================== PART 3 ============================== -->
+<div class="part-divider">PART 3 &mdash; Validation Regex Collection</div>
+
+<!-- ===== Regex ===== -->
+<div class="section" id="regex">
+  <div class="section-header sh-red" onclick="toggle(this)">
+    <span>Regex Collection - אוסף ביטויים רגולריים</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <div class="pattern-box">
+      <div class="box-title">&#128203; כל ה-Regex מ-9 מבחנים - טבלת עזר</div>
+    </div>
+
+    <table class="regex-table">
+      <thead>
+        <tr>
+          <th>שדה</th>
+          <th>Regex Pattern</th>
+          <th>הסבר</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Email</td>
+          <td><code>/^[^\s@]+@[^\s@]+\.[^\s@]+$/</code></td>
+          <td>text@text.text - no spaces, one @, one dot</td>
+        </tr>
+        <tr>
+          <td>Password (8-20, complex)</td>
+          <td><code>/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&amp;*]).{8,20}$/</code></td>
+          <td>lowercase + uppercase + digit + special, 8-20 chars</td>
+        </tr>
+        <tr>
+          <td>Phone (10 digits)</td>
+          <td><code>/^\d{10}$/</code></td>
+          <td>Exactly 10 digits</td>
+        </tr>
+        <tr>
+          <td>Car Number (7 digits)</td>
+          <td><code>/^\d{7}$/</code></td>
+          <td>Exactly 7 digits</td>
+        </tr>
+        <tr>
+          <td>English Name (Capital)</td>
+          <td><code>/^[A-Z][a-zA-Z]*(\s[A-Z][a-zA-Z]*)*$/</code></td>
+          <td>Each word starts with uppercase</td>
+        </tr>
+        <tr>
+          <td>Hebrew Name</td>
+          <td><code>/^[֐-׿\s]+$/</code></td>
+          <td>Hebrew characters + spaces only</td>
+        </tr>
+        <tr>
+          <td>Username (4+)</td>
+          <td><code>/^[a-zA-Z0-9]{4,}$/</code></td>
+          <td>Letters + digits, min 4 chars</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>שימוש ב-Regex בולידציה</h3>
+<pre><span class="cm">// דפוס הבדיקה: regex.test(value)</span>
+
+<span class="kw">const</span> <span class="pr">patterns</span> = {
+  <span class="pr">email</span>:    /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  <span class="pr">password</span>: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&amp;*]).{8,20}$/,
+  <span class="pr">phone</span>:    /^\d{10}$/,
+  <span class="pr">carNum</span>:   /^\d{7}$/,
+  <span class="pr">engName</span>:  /^[A-Z][a-zA-Z]*(\s[A-Z][a-zA-Z]*)*$/,
+  <span class="pr">hebName</span>:  /^[֐-׿\s]+$/,
+  <span class="pr">username</span>: /^[a-zA-Z0-9]{4,}$/,
+};
+
+<span class="cm">// שימוש:</span>
+<span class="kw">if</span> (!<span class="pr">patterns</span>.email.<span class="fn">test</span>(<span class="pr">form</span>.email)) {
+  <span class="pr">errors</span>.email = <span class="st">'כתובת מייל לא תקינה'</span>;
+}</pre>
+
+    <h3>פירוט Lookaheads בסיסמה</h3>
+<pre><span class="cm">// (?=.*[a-z])  - חייב אות קטנה אחת לפחות</span>
+<span class="cm">// (?=.*[A-Z])  - חייב אות גדולה אחת לפחות</span>
+<span class="cm">// (?=.*\d)     - חייב ספרה אחת לפחות</span>
+<span class="cm">// (?=.*[!@#$%^&*]) - חייב תו מיוחד אחד לפחות</span>
+<span class="cm">// .{8,20}      - אורך 8-20 תווים</span>
+
+<span class="cm">// דוגמאות תקינות: Ab1!abcd, Pass@123</span>
+<span class="cm">// דוגמאות לא תקינות: abc (קצר, חסר), ABCD1234 (חסר קטנה+מיוחד)</span></pre>
+
+    <h3>פונקציית ולידציה שלמה עם כל ה-Regex</h3>
+<pre><span class="kw">const</span> <span class="fn">validateForm</span> = (<span class="pr">form</span>) =&gt; {
+  <span class="kw">const</span> <span class="pr">errors</span> = {};
+
+  <span class="kw">if</span> (!<span class="pr">form</span>.username || !/^[a-zA-Z0-9]{4,}$/.<span class="fn">test</span>(<span class="pr">form</span>.username))
+    <span class="pr">errors</span>.username = <span class="st">'שם משתמש: מינימום 4 תווים, אותיות ומספרים'</span>;
+
+  <span class="kw">if</span> (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&amp;*]).{8,20}$/.<span class="fn">test</span>(<span class="pr">form</span>.password))
+    <span class="pr">errors</span>.password = <span class="st">'סיסמה: 8-20, גדולה+קטנה+ספרה+תו מיוחד'</span>;
+
+  <span class="kw">if</span> (<span class="pr">form</span>.password !== <span class="pr">form</span>.confirmPassword)
+    <span class="pr">errors</span>.confirmPassword = <span class="st">'הסיסמאות לא תואמות'</span>;
+
+  <span class="kw">if</span> (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.<span class="fn">test</span>(<span class="pr">form</span>.email))
+    <span class="pr">errors</span>.email = <span class="st">'כתובת מייל לא תקינה'</span>;
+
+  <span class="kw">if</span> (<span class="pr">form</span>.phone &amp;&amp; !/^\d{10}$/.<span class="fn">test</span>(<span class="pr">form</span>.phone))
+    <span class="pr">errors</span>.phone = <span class="st">'טלפון: בדיוק 10 ספרות'</span>;
+
+  <span class="kw">if</span> (<span class="pr">form</span>.carNumber &amp;&amp; !/^\d{7}$/.<span class="fn">test</span>(<span class="pr">form</span>.carNumber))
+    <span class="pr">errors</span>.carNumber = <span class="st">'מספר רכב: בדיוק 7 ספרות'</span>;
+
+  <span class="kw">if</span> (<span class="pr">form</span>.engName &amp;&amp; !/^[A-Z][a-zA-Z]*(\s[A-Z][a-zA-Z]*)*$/.<span class="fn">test</span>(<span class="pr">form</span>.engName))
+    <span class="pr">errors</span>.engName = <span class="st">'שם באנגלית: כל מילה מתחילה באות גדולה'</span>;
+
+  <span class="kw">if</span> (<span class="pr">form</span>.hebName &amp;&amp; !/^[֐-׿\s]+$/.<span class="fn">test</span>(<span class="pr">form</span>.hebName))
+    <span class="pr">errors</span>.hebName = <span class="st">'שם בעברית: אותיות עבריות בלבד'</span>;
+
+  <span class="kw">return</span> <span class="pr">errors</span>;
+};
+
+<span class="cm">// שימוש:</span>
+<span class="kw">const</span> <span class="pr">errs</span> = <span class="fn">validateForm</span>(<span class="pr">form</span>);
+<span class="kw">if</span> (Object.<span class="fn">keys</span>(<span class="pr">errs</span>).length === <span class="nb">0</span>) {
+  <span class="cm">// &#9989; valid - submit</span>
+} <span class="kw">else</span> {
+  <span class="fn">setErrors</span>(<span class="pr">errs</span>);
+}</pre>
+
+    <div class="tip-box">
+      <div class="box-title">&#128161; טיפ למבחן</div>
+      <p>1. תמיד <span class="inline-code">^</span> בתחילה ו-<span class="inline-code">$</span> בסוף (תפיסת כל המחרוזת)
+      <br>2. <span class="inline-code">?=</span> = Lookahead (חייב להכיל, בלי לצרוך)
+      <br>3. <span class="inline-code">{n}</span> = בדיוק n, <span class="inline-code">{n,}</span> = n ומעלה, <span class="inline-code">{n,m}</span> = בין n ל-m
+      <br>4. <span class="inline-code">\d</span> = ספרה, <span class="inline-code">[a-zA-Z]</span> = אותיות, <span class="inline-code">[^\s@]</span> = לא רווח ולא @</p>
+    </div>
+
+    <div class="warn-box">
+      <div class="box-title">&#9888;&#65039; טעות נפוצה ב-Regex</div>
+      <ul>
+        <li>שכחת <span class="inline-code">^</span> ו-<span class="inline-code">$</span> - "abc123!@#" יתאים ל-regex של סיסמה גם אם יש תווים נוספים</li>
+        <li>שימוש ב-<span class="inline-code">match()</span> במקום <span class="inline-code">test()</span> - <span class="inline-code">test</span> מחזיר boolean, <span class="inline-code">match</span> מחזיר מערך</li>
+        <li>שכחת escape לתווים מיוחדים ב-Regex: <span class="inline-code">.</span> צריך <span class="inline-code">\.</span> אם רוצים נקודה ממש</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Reference -->
+<div class="section">
+  <div class="section-header sh-teal" onclick="toggle(this)">
+    <span>Quick Reference - כרטיסיות חיפוש מהיר</span><span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+
+    <h3>Array Methods Cheat Sheet</h3>
+<pre><span class="cm">// הוספה (immutable)</span>
+[...<span class="pr">arr</span>, <span class="pr">newItem</span>]              <span class="cm">// לסוף</span>
+[<span class="pr">newItem</span>, ...<span class="pr">arr</span>]              <span class="cm">// להתחלה</span>
+
+<span class="cm">// מחיקה</span>
+<span class="pr">arr</span>.<span class="fn">filter</span>(<span class="pr">x</span> =&gt; <span class="pr">x</span>.id !== <span class="pr">id</span>)   <span class="cm">// לפי תנאי</span>
+
+<span class="cm">// עדכון</span>
+<span class="pr">arr</span>.<span class="fn">map</span>(<span class="pr">x</span> =&gt; <span class="pr">x</span>.id === <span class="pr">id</span> ? {...<span class="pr">x</span>, <span class="pr">name</span>: <span class="st">'new'</span>} : <span class="pr">x</span>)
+
+<span class="cm">// חיפוש</span>
+<span class="pr">arr</span>.<span class="fn">find</span>(<span class="pr">x</span> =&gt; <span class="pr">x</span>.id === <span class="pr">id</span>)     <span class="cm">// מחזיר item או undefined</span>
+<span class="pr">arr</span>.<span class="fn">findIndex</span>(<span class="pr">x</span> =&gt; <span class="pr">x</span>.id === <span class="pr">id</span>) <span class="cm">// מחזיר index או -1</span>
+<span class="pr">arr</span>.<span class="fn">some</span>(<span class="pr">x</span> =&gt; <span class="pr">x</span>.id === <span class="pr">id</span>)     <span class="cm">// מחזיר true/false</span>
+
+<span class="cm">// סינון</span>
+<span class="pr">arr</span>.<span class="fn">filter</span>(<span class="pr">x</span> =&gt; <span class="pr">x</span>.name.<span class="fn">includes</span>(<span class="pr">search</span>))</pre>
+
+    <h3>Event Handling Quick Ref</h3>
+<pre><span class="cm">// form submit - תמיד preventDefault!</span>
+<span class="kw">const</span> <span class="fn">handleSubmit</span> = (<span class="pr">e</span>) =&gt; { <span class="pr">e</span>.<span class="fn">preventDefault</span>(); ... };
+<span class="op">&lt;form</span> <span class="pr">onSubmit</span>={<span class="fn">handleSubmit</span>}<span class="op">&gt;</span>
+
+<span class="cm">// input change</span>
+<span class="op">&lt;input</span> <span class="pr">onChange</span>={(<span class="pr">e</span>) =&gt; <span class="fn">setValue</span>(<span class="pr">e</span>.target.value)} <span class="op">/&gt;</span>
+
+<span class="cm">// button click with param</span>
+<span class="op">&lt;button</span> <span class="pr">onClick</span>={() =&gt; <span class="fn">handleDelete</span>(<span class="pr">item</span>.id)}<span class="op">&gt;</span>
+
+<span class="cm">// select</span>
+<span class="op">&lt;select</span> <span class="pr">value</span>={<span class="pr">val</span>} <span class="pr">onChange</span>={(<span class="pr">e</span>) =&gt; <span class="fn">setVal</span>(<span class="pr">e</span>.target.value)}<span class="op">&gt;</span>
+  <span class="op">&lt;option</span> <span class="pr">value</span>=<span class="st">""</span><span class="op">&gt;</span>Select...<span class="op">&lt;/option&gt;</span>
+  <span class="op">&lt;option</span> <span class="pr">value</span>=<span class="st">"a"</span><span class="op">&gt;</span>Option A<span class="op">&lt;/option&gt;</span>
+<span class="op">&lt;/select&gt;</span>
+
+<span class="cm">// checkbox</span>
+<span class="op">&lt;input</span> <span class="pr">type</span>=<span class="st">"checkbox"</span> <span class="pr">checked</span>={<span class="pr">val</span>}
+  <span class="pr">onChange</span>={(<span class="pr">e</span>) =&gt; <span class="fn">setVal</span>(<span class="pr">e</span>.target.checked)} <span class="op">/&gt;</span></pre>
+
+    <h3>Conditional Rendering</h3>
+<pre><span class="cm">// && short circuit</span>
+{<span class="pr">isLoggedIn</span> &amp;&amp; <span class="op">&lt;Dashboard /&gt;</span>}
+
+<span class="cm">// ternary</span>
+{<span class="pr">isLoggedIn</span> ? <span class="op">&lt;Dashboard /&gt;</span> : <span class="op">&lt;Login /&gt;</span>}
+
+<span class="cm">// early return</span>
+<span class="kw">if</span> (<span class="pr">loading</span>) <span class="kw">return</span> <span class="op">&lt;Spinner /&gt;</span>;
+<span class="kw">if</span> (<span class="pr">error</span>) <span class="kw">return</span> <span class="op">&lt;Error</span> <span class="pr">msg</span>={<span class="pr">error</span>} <span class="op">/&gt;</span>;
+<span class="kw">return</span> <span class="op">&lt;Data /&gt;</span>;
+
+<span class="cm">// list rendering</span>
+{<span class="pr">items</span>.<span class="fn">map</span>(<span class="pr">item</span> =&gt; <span class="op">&lt;Card</span> <span class="pr">key</span>={<span class="pr">item</span>.id} {...<span class="pr">item</span>} <span class="op">/&gt;</span>)}</pre>
+
+    <h3>Imports Checklist</h3>
+<pre><span class="cm">// React hooks</span>
+<span class="kw">import</span> { <span class="hk">useState</span>, <span class="hk">useEffect</span>, <span class="hk">useRef</span>,
+  <span class="hk">useMemo</span>, <span class="hk">useCallback</span> } <span class="kw">from</span> <span class="st">'react'</span>;
+
+<span class="cm">// React Router</span>
+<span class="kw">import</span> { <span class="fn">BrowserRouter</span>, <span class="fn">Routes</span>, <span class="fn">Route</span>,
+  <span class="fn">Link</span>, <span class="hk">useNavigate</span>, <span class="hk">useParams</span>,
+  <span class="hk">useLocation</span> } <span class="kw">from</span> <span class="st">'react-router-dom'</span>;</pre>
+
+  </div>
+</div>
+
+</div> <!-- /container -->
+
+<script>
+function toggle(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('hidden');
+  header.classList.toggle('collapsed');
+}
+</script>
+</body>
+</html>

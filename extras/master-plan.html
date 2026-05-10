@@ -229,40 +229,40 @@ const GAPS = [
 ];
 
 const TASKS = [
-  // TypeScript
-  {id:'t1',title:'TypeScript Cheatsheet — types, enum, tuple, functions, objects, generics',tags:['ts'],time:25,gap:'g1',done:false},
-  {id:'t2',title:'TypeScript + React — typed props, typed state, typed event handlers, models',tags:['ts','react'],time:20,gap:'g1',done:false},
-  {id:'t3',title:'TS Practice: Book type, enum genres, User unions/interfaces (מתוך שיעורי בית)',tags:['ts'],time:15,gap:'g1',done:false},
-  {id:'t4',title:'TS Practice: Budget Manager — transactions, summary, categories (מתוך HW)',tags:['ts','react'],time:15,gap:'g1',done:false},
-  // MongoDB
-  {id:'t5',title:'MongoDB/Mongoose Theory — Schema, Model, connection, CRUD operations',tags:['mongo'],time:20,gap:'g2',done:false},
-  {id:'t6',title:'Mongoose Patterns — upsert, aggregation, populate, indexing, validators',tags:['mongo'],time:15,gap:'g2',done:false},
-  {id:'t7',title:'MongoDB from exam questions — parking-q3, flights-q3, willing-q3 patterns extraction',tags:['mongo','express'],time:15,gap:'g2',done:false},
-  // React Hooks
-  {id:'t8',title:'React Hooks Cheatsheet — useState, useEffect, useRef, useMemo, useCallback',tags:['react'],time:20,gap:'g3',done:false},
-  {id:'t9',title:'Hooks Pitfalls — infinite loops, stale closures, missing deps, cleanup',tags:['react'],time:15,gap:'g3',done:false},
-  // Validation
-  {id:'t10',title:'Validation Regex Patterns — email, password, phone, carNumber, English name',tags:['general'],time:15,gap:'g4',done:false},
-  {id:'t11',title:'Form Validation UI — inline errors, per-field display, real-time validation',tags:['react'],time:10,gap:'g4',done:false},
-  // Common Patterns
-  {id:'t12',title:'Login/Register Pattern — flow, state, validation, navigation, localStorage',tags:['react'],time:15,gap:'g5',done:false},
-  {id:'t13',title:'CRUD Table Pattern — add, edit, delete, search, filter, sort',tags:['react'],time:15,gap:'g5',done:false},
-  {id:'t14',title:'State Architecture — lifting state, prop drilling, context, persist to storage',tags:['react'],time:10,gap:'g5',done:false},
-  // Express
-  {id:'t15',title:'Express Middleware Chain — json, cors, auth, error, static, custom',tags:['express'],time:15,gap:'g6',done:false},
-  {id:'t16',title:'Error Handling Patterns — try/catch, status codes, error middleware, async errors',tags:['express'],time:10,gap:'g6',done:false},
-  // localStorage
-  {id:'t17',title:'localStorage Patterns — serialize, parse, useEffect sync, initial state, key naming',tags:['react','js'],time:10,gap:'g7',done:false},
-  // Router
-  {id:'t18',title:'React Router Cheatsheet — BrowserRouter, Routes, Link, useNavigate, useParams, dynamic',tags:['react'],time:12,gap:'g8',done:false},
-  // Algorithm
-  {id:'t19',title:'JS Algorithm Patterns — accumulator, digit ops, sliding window, matrix traversal',tags:['js'],time:15,gap:'g9',done:false},
-  {id:'t20',title:'JS Edge Cases — negative numbers, empty arrays, NaN, 0 vs -0, type coercion',tags:['js'],time:10,gap:'g9',done:false},
-  // Strategy
-  {id:'t21',title:'Exam Strategy Card — סדר עבודה, חלוקת זמן, checklist בזמן המבחן',tags:['general'],time:10,gap:'g10',done:false},
+  // TypeScript — ts-cheatsheet.html ✓
+  {id:'t1',title:'TypeScript Cheatsheet — types, enum, tuple, functions, objects, generics',tags:['ts'],time:25,gap:'g1',done:true},
+  {id:'t2',title:'TypeScript + React — typed props, typed state, typed event handlers, models',tags:['ts','react'],time:20,gap:'g1',done:true},
+  {id:'t3',title:'TS Practice: Book type, enum genres, User unions/interfaces (מתוך שיעורי בית)',tags:['ts'],time:15,gap:'g1',done:true},
+  {id:'t4',title:'TS Practice: Budget Manager — transactions, summary, categories (מתוך HW)',tags:['ts','react'],time:15,gap:'g1',done:true},
+  // MongoDB — mongo-cheatsheet.html ✓
+  {id:'t5',title:'MongoDB/Mongoose Theory — Schema, Model, connection, CRUD operations',tags:['mongo'],time:20,gap:'g2',done:true},
+  {id:'t6',title:'Mongoose Patterns — upsert, aggregation, populate, indexing, validators',tags:['mongo'],time:15,gap:'g2',done:true},
+  {id:'t7',title:'MongoDB from exam questions — parking-q3, flights-q3, willing-q3 patterns extraction',tags:['mongo','express'],time:15,gap:'g2',done:true},
+  // React Hooks — react-patterns.html ✓
+  {id:'t8',title:'React Hooks Cheatsheet — useState, useEffect, useRef, useMemo, useCallback',tags:['react'],time:20,gap:'g3',done:true},
+  {id:'t9',title:'Hooks Pitfalls — infinite loops, stale closures, missing deps, cleanup',tags:['react'],time:15,gap:'g3',done:true},
+  // Validation — react-patterns.html ✓
+  {id:'t10',title:'Validation Regex Patterns — email, password, phone, carNumber, English name',tags:['general'],time:15,gap:'g4',done:true},
+  {id:'t11',title:'Form Validation UI — inline errors, per-field display, real-time validation',tags:['react'],time:10,gap:'g4',done:true},
+  // Common Patterns — react-patterns.html ✓
+  {id:'t12',title:'Login/Register Pattern — flow, state, validation, navigation, localStorage',tags:['react'],time:15,gap:'g5',done:true},
+  {id:'t13',title:'CRUD Table Pattern — add, edit, delete, search, filter, sort',tags:['react'],time:15,gap:'g5',done:true},
+  {id:'t14',title:'State Architecture — lifting state, prop drilling, context, persist to storage',tags:['react'],time:10,gap:'g5',done:true},
+  // Express — express-js-patterns.html ✓
+  {id:'t15',title:'Express Middleware Chain — json, cors, auth, error, static, custom',tags:['express'],time:15,gap:'g6',done:true},
+  {id:'t16',title:'Error Handling Patterns — try/catch, status codes, error middleware, async errors',tags:['express'],time:10,gap:'g6',done:true},
+  // localStorage — react-patterns.html ✓
+  {id:'t17',title:'localStorage Patterns — serialize, parse, useEffect sync, initial state, key naming',tags:['react','js'],time:10,gap:'g7',done:true},
+  // Router — react-patterns.html ✓
+  {id:'t18',title:'React Router Cheatsheet — BrowserRouter, Routes, Link, useNavigate, useParams, dynamic',tags:['react'],time:12,gap:'g8',done:true},
+  // Algorithm — express-js-patterns.html ✓
+  {id:'t19',title:'JS Algorithm Patterns — accumulator, digit ops, sliding window, matrix traversal',tags:['js'],time:15,gap:'g9',done:true},
+  {id:'t20',title:'JS Edge Cases — negative numbers, empty arrays, NaN, 0 vs -0, type coercion',tags:['js'],time:10,gap:'g9',done:true},
+  // Strategy — exam-strategy.html ✓
+  {id:'t21',title:'Exam Strategy Card — סדר עבודה, חלוקת זמן, checklist בזמן המבחן',tags:['general'],time:10,gap:'g10',done:true},
   // Integration into portal
-  {id:'t22',title:'שילוב כל הדפים החדשים בפורטל — כרטיסים + ניווט',tags:['general'],time:10,gap:null,done:false},
-  {id:'t23',title:'בדיקה סופית — כל הלינקים עובדים, responsive, dark mode',tags:['general'],time:10,gap:null,done:false}
+  {id:'t22',title:'שילוב כל הדפים החדשים בפורטל — כרטיסים + ניווט',tags:['general'],time:10,gap:null,done:true},
+  {id:'t23',title:'בדיקה סופית — כל הלינקים עובדים, responsive, dark mode',tags:['general'],time:10,gap:null,done:true}
 ];
 
 const TAG_LABELS = {react:'React',js:'JavaScript',express:'Express',ts:'TypeScript',mongo:'MongoDB',general:'כללי'};
