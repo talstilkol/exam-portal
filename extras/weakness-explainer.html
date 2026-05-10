@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🧠 נקודות חולשה — הסבר אסוציאטיבי</title>
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--border:#0f172a;--gold:#facc15;--green:#16a34a;--red:#dc2626;--orange:#f97316;--blue:#2563eb;--purple:#7c3aed;--cyan:#06b6d4;--shadow:4px 4px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7}
+
+/* TABS */
+.tab-bar{display:flex;background:#111827;border-bottom:3px solid #000;overflow-x:auto;position:sticky;top:0;z-index:100}
+.tab-btn{padding:12px 20px;background:none;border:none;color:#94a3b8;font:inherit;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:.15s}
+.tab-btn:hover{color:#e2e8f0;background:#1e293b}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);background:#1e293b}
+.tab-panel{display:none;padding:20px 24px;max-width:1100px;margin:auto}
+.tab-panel.active{display:block}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:24px;border:3px solid #000;border-radius:18px;margin-bottom:20px;box-shadow:var(--shadow);text-align:center}
+.hero h1{font-size:clamp(22px,4vw,34px)}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:14px}
+
+/* TOPIC */
+.topic{background:var(--card);border:2.5px solid var(--border);border-radius:16px;margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow)}
+.topic-head{padding:14px 18px;border-bottom:2.5px solid #000;cursor:pointer;display:flex;align-items:center;gap:10px;font-weight:900;font-size:17px;transition:.1s}
+.topic-head:hover{filter:brightness(1.1)}
+.topic-head .chev{transition:.2s;font-size:12px}
+.topic.collapsed .topic-body{display:none}
+.topic.collapsed .chev{transform:rotate(-90deg)}
+.topic-body{padding:18px}
+
+/* GRANDMA BOX */
+.grandma{background:linear-gradient(135deg,#fefce8,#fef9c3);border:2.5px solid #ca8a04;border-radius:14px;padding:16px 18px;margin-bottom:14px;font-size:14px;line-height:1.8}
+.grandma-title{font-weight:900;font-size:15px;color:#854d0e;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.grandma-title::before{content:'👵';font-size:20px}
+
+/* COMPARE TABLE */
+.cmp-table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+.cmp-table th{background:#111827;color:var(--gold);padding:8px 10px;text-align:right;font-size:12px}
+.cmp-table td{border:1px solid #e2e8f0;padding:8px 10px;vertical-align:top}
+.cmp-table tr:nth-child(even) td{background:#f8fafc}
+
+/* CODE */
+pre{background:#0f172a;color:#e2e8f0;padding:14px 16px;border-radius:10px;border:2px solid #334155;overflow-x:auto;font-size:13px;line-height:1.6;margin:10px 0;direction:ltr;text-align:left}
+.kw{color:#c084fc}.fn{color:#67e8f9}.str{color:#fde68a}.cm{color:#64748b}.tp{color:#60a5fa}.val{color:#86efac}.prop{color:#f9a8d4}
+
+/* SUB-TOPIC */
+.sub{background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:14px 16px;margin:10px 0}
+.sub-title{font-weight:900;font-size:14px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+
+/* TIP / WARN */
+.tip{background:#f0fdf4;border:2px solid var(--green);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:13px;font-weight:700}
+.tip::before{content:'💡 '}
+.warn{background:#fef2f2;border:2px solid var(--red);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:13px;font-weight:700}
+.warn::before{content:'⚠️ '}
+
+/* IMPL TOGGLE */
+.impl-toggle{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:#111827;color:var(--gold);border:2px solid #000;border-radius:8px;font-size:12px;font-weight:900;cursor:pointer;margin:6px 0}
+.impl-toggle:hover{background:#1e293b}
+.impl-content{display:none;margin-top:8px}
+.impl-content.open{display:block}
+
+/* COLOR HEADS */
+.h-react{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff}
+.h-router{background:linear-gradient(135deg,#0e7490,#06b6d4);color:#fff}
+.h-forms{background:linear-gradient(135deg,#9a3412,#f97316);color:#fff}
+.h-state{background:linear-gradient(135deg,#065f46,#16a34a);color:#fff}
+.h-lifecycle{background:linear-gradient(135deg,#7c2d12,#dc2626);color:#fff}
+
+/* DARK MODE */
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155}
+  .cmp-table td{border-color:#334155}
+  .cmp-table tr:nth-child(even) td{background:#0f172a}
+  .grandma{background:linear-gradient(135deg,#422006,#451a03);border-color:#92400e}
+  .grandma-title{color:#fde68a}
+  .sub{background:#0f172a;border-color:#334155}
+  .tip{background:#052e16;color:#a7f3d0}
+  .warn{background:#450a0a;color:#fca5a5}
+}
+@media(max-width:700px){
+  .tab-btn{padding:10px 14px;font-size:12px}
+  .topic-body{padding:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- TAB BAR -->
+<nav class="tab-bar" id="tab-bar">
+  <button class="tab-btn active" data-tab="react">⚛️ React & Hooks</button>
+  <button class="tab-btn" data-tab="router">🛣 Routing</button>
+  <button class="tab-btn" data-tab="forms">📝 Forms & Events</button>
+  <button class="tab-btn" data-tab="state">🔄 State Management</button>
+  <button class="tab-btn" data-tab="lifecycle">⚡ Lifecycle & Effects</button>
+</nav>
+
+<!-- ==================== TAB 1: REACT & HOOKS ==================== -->
+<div class="tab-panel active" id="panel-react">
+  <div class="hero">
+    <h1>⚛️ React & Hooks — הסבר אסוציאטיבי</h1>
+    <p>כל נקודות החולשה מוסברות ברמה שגם סבתא תבין, עם דוגמאות קוד ומשלים מהחיים</p>
+  </div>
+
+  <!-- REACT INTRO -->
+  <div class="topic">
+    <div class="topic-head h-react" onclick="toggleTopic(this)"><span class="chev">▼</span> ⚛️ React — ספריית UI מודרנית</div>
+    <div class="topic-body">
+      <div class="grandma">
+        <div class="grandma-title">הסבר לסבתא</div>
+        דמיינו שאתם בונים בית מלגו. במקום לבנות קיר אחד ענק — אתם בונים <strong>חדרים נפרדים</strong> (רכיבים). כל חדר יודע מה יש בתוכו (state), ואפשר לשנות ריהוט בחדר אחד בלי להרוס את כל הבית.<br><br>
+        <strong>React = בנייה מחדרים</strong>. כל חדר = Component. כל ריהוט = State. כל דלת בין חדרים = Props.
+      </div>
+
+      <table class="cmp-table">
+        <tr><th>מושג</th><th>משל</th><th>בקוד</th></tr>
+        <tr><td><strong>Component</strong></td><td>חדר בבית</td><td><code>function LoginForm() { return &lt;div&gt;...&lt;/div&gt; }</code></td></tr>
+        <tr><td><strong>Props</strong></td><td>דלת — מעבירים חפצים מחדר לחדר</td><td><code>&lt;Card title="שלום" /&gt;</code></td></tr>
+        <tr><td><strong>State</strong></td><td>ריהוט בחדר — משתנה רק בתוך החדר</td><td><code>const [name, setName] = useState("")</code></td></tr>
+        <tr><td><strong>JSX</strong></td><td>תוכנית הבניין — איך החדר נראה</td><td><code>return &lt;h1&gt;{name}&lt;/h1&gt;</code></td></tr>
+        <tr><td><strong>Re-render</strong></td><td>שיפוץ — React מעדכן רק מה שהשתנה</td><td>כשקוראים ל-setState</td></tr>
+      </table>
+
+      <div class="tip">React = חדרים (Components) + ריהוט (State) + דלתות (Props). זה הכל!</div>
+    </div>
+  </div>
+
+  <!-- HOOKS -->
+  <div class="topic">
+    <div class="topic-head h-react" onclick="toggleTopic(this)"><span class="chev">▼</span> 🪝 Hooks — הכלים של React</div>
+    <div class="topic-body">
+      <div class="grandma">
+        <div class="grandma-title">הסבר לסבתא</div>
+        Hooks זה כמו <strong>כלי עבודה</strong> בארגז כלים. כל כלי עושה משהו אחר:<br>
+        🔨 <strong>useState</strong> = מגירה — שומרים ומוציאים דברים<br>
+        🔌 <strong>useEffect</strong> = שעון מעורר — עושה משהו כשמגיעים או עוזבים<br>
+        🔍 <strong>useRef</strong> = מדבקת סימון — מסמנים דבר מסוים בלי לזוז<br>
+        🧮 <strong>useMemo</strong> = מחשבון עם זיכרון — לא מחשב שוב אם לא השתנה<br>
+        📞 <strong>useCallback</strong> = מספר טלפון קבוע — אותה פונקציה, לא חדשה כל פעם
+      </div>
+
+      <table class="cmp-table">
+        <tr><th>Hook</th><th>משמש ל</th><th>משל</th><th>שימוש נפוץ</th></tr>
+        <tr><td><strong>useState</strong></td><td>state מקומי</td><td>מגירה — שומרים/מוציאים</td><td>שדות טופס, toggle, מצבי UI</td></tr>
+        <tr><td><strong>useEffect</strong></td><td>side effects</td><td>שעון מעורר — כשנכנסים/יוצאים</td><td>fetch בטעינה, listeners, timers</td></tr>
+        <tr><td><strong>useContext</strong></td><td>state גלובלי</td><td>רמקול — כולם שומעים</td><td>theme, auth, language</td></tr>
+        <tr><td><strong>useRef</strong></td><td>גישה ל-DOM</td><td>מדבקה — מסמנים בלי לגעת</td><td>focus, scroll, ערכים שלא מרנדרים</td></tr>
+        <tr><td><strong>useMemo</strong></td><td>חישובים יקרים</td><td>מחשבון עם זיכרון</td><td>סינון/מיון מערכים גדולים</td></tr>
+        <tr><td><strong>useCallback</strong></td><td>memoize functions</td><td>מספר טלפון קבוע</td><td>props לילד שעטוף ב-memo</td></tr>
+      </table>
+
+      <!-- useState deep -->
+      <div class="sub">
+        <div class="sub-title">📦 useState — המגירה</div>
+        <div class="grandma">
+          <div class="grandma-title">הסבר לסבתא</div>
+          יש לכם מגירה בשידה. אפשר <strong>לפתוח ולראות מה בפנים</strong> (לקרוא state), ואפשר <strong>להחליף את מה שבפנים</strong> (setState). כל פעם שמחליפים — React מסתכל מחדש ומעדכן את המסך.
+        </div>
+<pre><span class="cm">// מגירה של מספר (counter)</span>
+<span class="kw">const</span> [<span class="val">count</span>, <span class="fn">setCount</span>] = <span class="fn">useState</span>(<span class="val">0</span>);
+
+<span class="cm">// מגירה של טקסט (שם)</span>
+<span class="kw">const</span> [<span class="val">name</span>, <span class="fn">setName</span>] = <span class="fn">useState</span>(<span class="str">""</span>);
+
+<span class="cm">// מגירה של אובייקט (טופס)</span>
+<span class="kw">const</span> [<span class="val">form</span>, <span class="fn">setForm</span>] = <span class="fn">useState</span>({ <span class="prop">name</span>: <span class="str">""</span>, <span class="prop">email</span>: <span class="str">""</span> });
+
+<span class="cm">// מגירה של מערך (רשימה)</span>
+<span class="kw">const</span> [<span class="val">items</span>, <span class="fn">setItems</span>] = <span class="fn">useState</span>([]);</pre>
+
+        <table class="cmp-table">
+          <tr><th>Pattern</th><th>משל</th><th>קוד</th></tr>
+          <tr><td>Boolean toggle</td><td>מתג חשמל — דולק/כבוי</td><td><code>setOpen(!open)</code></td></tr>
+          <tr><td>Functional update</td><td>קודם תבדוק מה במגירה, אז תוסיף</td><td><code>setCount(prev => prev + 1)</code></td></tr>
+          <tr><td>Reset</td><td>רוקנו את המגירה והחזירו למקור</td><td><code>setForm({ name: "", email: "" })</code></td></tr>
+          <tr><td>Lazy init</td><td>תפתח את המגירה רק כשצריך</td><td><code>useState(() => heavy())</code></td></tr>
+        </table>
+
+        <div class="warn">אסור לגעת ישירות במגירה! <code>items.push(x)</code> = שבור. חייבים <code>setItems([...items, x])</code> — להוציא הכל, להוסיף, ולשים מגירה חדשה.</div>
+      </div>
+
+      <!-- useEffect deep -->
+      <div class="sub">
+        <div class="sub-title">⏰ useEffect — השעון מעורר</div>
+        <div class="grandma">
+          <div class="grandma-title">הסבר לסבתא</div>
+          דמיינו שעון מעורר:<br>
+          • <strong>[] ריק</strong> = מצלצל רק כשמגיעים לבית (mount) — פעם אחת<br>
+          • <strong>[name]</strong> = מצלצל כל פעם שהשם משתנה<br>
+          • <strong>return cleanup</strong> = כשעוזבים את הבית, מכבים את האור<br>
+          בלי <strong>cleanup</strong> זה כמו לשכוח את הגז דלוק — memory leak!
+        </div>
+<pre><span class="cm">// רק בכניסה לבית (mount)</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="fn">fetch</span>(<span class="str">'/api/data'</span>).<span class="fn">then</span>(<span class="val">r</span> => <span class="val">r</span>.<span class="fn">json</span>()).<span class="fn">then</span>(<span class="fn">setData</span>);
+}, []);  <span class="cm">// [] = רק פעם אחת</span>
+
+<span class="cm">// כל פעם שהשם משתנה</span>
+<span class="fn">useEffect</span>(() => {
+  document.<span class="prop">title</span> = <span class="str">`שלום ${</span><span class="val">name</span><span class="str">}`</span>;
+}, [<span class="val">name</span>]);  <span class="cm">// [name] = כשname משתנה</span>
+
+<span class="cm">// עם ניקוי — כיבוי האור כשעוזבים</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">const</span> <span class="val">id</span> = <span class="fn">setInterval</span>(() => <span class="fn">tick</span>(), <span class="val">1000</span>);
+  <span class="kw">return</span> () => <span class="fn">clearInterval</span>(<span class="val">id</span>);  <span class="cm">// 🧹 ניקוי!</span>
+}, []);</pre>
+
+        <div class="warn">שכחתם cleanup ל-setInterval? הוא ימשיך לרוץ גם אחרי שהרכיב נעלם — memory leak! תמיד <code>return () => clearInterval(id)</code></div>
+        <div class="warn">לולאה אינסופית: אם שמתם setState בתוך useEffect בלי deps — הוא ירוץ → ישנה state → ירוץ שוב → ישנה state → 💥</div>
+      </div>
+
+      <!-- useRef deep -->
+      <div class="sub">
+        <div class="sub-title">📌 useRef — המדבקה</div>
+        <div class="grandma">
+          <div class="grandma-title">הסבר לסבתא</div>
+          useRef זה כמו <strong>מדבקת Post-it</strong> שמדביקים על משהו. אפשר לכתוב עליה ולשנות מה כתוב — אבל React לא שם לב (לא מרנדר מחדש). מושלם כשרוצים <strong>לסמן דבר בלי לגרום לשיפוץ</strong>.
+        </div>
+<pre><span class="cm">// מדבקה על input — כדי לעשות focus</span>
+<span class="kw">const</span> <span class="val">inputRef</span> = <span class="fn">useRef</span>(<span class="val">null</span>);
+<span class="val">inputRef</span>.<span class="prop">current</span>.<span class="fn">focus</span>();
+
+<span class="cm">// מדבקה עם ערך — לא גורם לרנדר מחדש</span>
+<span class="kw">const</span> <span class="val">renderCount</span> = <span class="fn">useRef</span>(<span class="val">0</span>);
+<span class="val">renderCount</span>.<span class="prop">current</span> += <span class="val">1</span>; <span class="cm">// לא גורם לרנדר!</span></pre>
+
+        <table class="cmp-table">
+          <tr><th>שימוש</th><th>משל</th><th>למה לא useState?</th></tr>
+          <tr><td>focus על input</td><td>להצביע על שדה</td><td>אין צורך ברנדר</td></tr>
+          <tr><td>ספירת רנדרים</td><td>לספור בלי להפריע</td><td>setState יגרום ללולאה</td></tr>
+          <tr><td>ערך קודם</td><td>לזכור מה היה קודם</td><td>setState ישנה את הנוכחי</td></tr>
+          <tr><td>DOM element</td><td>לתפוס אלמנט</td><td>DOM ≠ state</td></tr>
+        </table>
+      </div>
+
+      <!-- useMemo / useCallback -->
+      <div class="sub">
+        <div class="sub-title">🧮 useMemo & useCallback — חסכנות</div>
+        <div class="grandma">
+          <div class="grandma-title">הסבר לסבתא</div>
+          <strong>useMemo</strong> = מחשבון עם זיכרון. אם חישבתם כבר את 5+3=8, ושואלים שוב 5+3 — הוא אומר "8" מיד בלי לחשב.<br>
+          <strong>useCallback</strong> = מספר טלפון קבוע. במקום לתת לילד מספר חדש כל יום (שיגרום לו לעדכן את אנשי הקשר), נותנים לו את <strong>אותו מספר</strong>.
+        </div>
+<pre><span class="cm">// useMemo — לא מחשב שוב אם items לא השתנה</span>
+<span class="kw">const</span> <span class="val">sorted</span> = <span class="fn">useMemo</span>(() => {
+  <span class="kw">return</span> <span class="val">items</span>.<span class="fn">filter</span>(<span class="val">i</span> => <span class="val">i</span>.<span class="prop">active</span>).<span class="fn">sort</span>((<span class="val">a</span>,<span class="val">b</span>) => <span class="val">a</span>.<span class="prop">name</span>.<span class="fn">localeCompare</span>(<span class="val">b</span>.<span class="prop">name</span>));
+}, [<span class="val">items</span>]);
+
+<span class="cm">// useCallback — אותה פונקציה, לא חדשה כל רנדר</span>
+<span class="kw">const</span> <span class="val">handleDelete</span> = <span class="fn">useCallback</span>((<span class="val">id</span>) => {
+  <span class="fn">setItems</span>(<span class="val">prev</span> => <span class="val">prev</span>.<span class="fn">filter</span>(<span class="val">i</span> => <span class="val">i</span>.<span class="prop">id</span> !== <span class="val">id</span>));
+}, []);</pre>
+        <div class="tip">אל תשתמשו ב-useMemo/useCallback על הכל! רק כשיש חישוב כבד או כשמעבירים פונקציה ל-child שעטוף ב-React.memo.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 2: ROUTING ==================== -->
+<div class="tab-panel" id="panel-router">
+  <div class="hero">
+    <h1>🛣 Routing — ניווט בין דפים</h1>
+    <p>איך עוברים מדף לדף באפליקציית React — בלי לרענן את הדפדפן</p>
+  </div>
+
+  <div class="topic">
+    <div class="topic-head h-router" onclick="toggleTopic(this)"><span class="chev">▼</span> 🛣 React Router — מה זה?</div>
+    <div class="topic-body">
+      <div class="grandma">
+        <div class="grandma-title">הסבר לסבתא</div>
+        דמיינו בניין עם <strong>דלת כניסה אחת</strong> (BrowserRouter) ו<strong>שלטים</strong> שמכוונים לקומות (Routes). כשלוחצים על שלט "קומה 3" — לא יוצאים מהבניין ונכנסים מחדש. פשוט עולים בעליות (Link/Navigate). הכתובת בסרגל משתנה, אבל הדף לא נטען מחדש!
+      </div>
+
+      <table class="cmp-table">
+        <tr><th>רכיב</th><th>משל</th><th>משמש ל</th><th>דוגמה</th></tr>
+        <tr><td><strong>BrowserRouter</strong></td><td>דלת הכניסה לבניין</td><td>עוטף את כל האפליקציה</td><td>אחד בלבד, ב-main.jsx</td></tr>
+        <tr><td><strong>Routes + Route</strong></td><td>שלטים לקומות</td><td>הגדרת כתובת → רכיב</td><td><code>path="/login"</code></td></tr>
+        <tr><td><strong>Link</strong></td><td>כפתור מעלית</td><td>ניווט בלי reload</td><td><code>&lt;Link to="/home"&gt;</code></td></tr>
+        <tr><td><strong>useNavigate</strong></td><td>מעלית אוטומטית</td><td>ניווט מתוך קוד</td><td>אחרי submit מוצלח</td></tr>
+        <tr><td><strong>useParams</strong></td><td>מספר הדירה</td><td>קריאת פרמטרים מ-URL</td><td><code>/users/:id</code> → id</td></tr>
+        <tr><td><strong>useLocation</strong></td><td>GPS — איפה אני עכשיו?</td><td>מידע על הכתובת</td><td>pathname, state</td></tr>
+      </table>
+<pre><span class="cm">// main.jsx — דלת הכניסה</span>
+&lt;<span class="fn">BrowserRouter</span>&gt;
+  &lt;<span class="fn">App</span> /&gt;
+&lt;/<span class="fn">BrowserRouter</span>&gt;
+
+<span class="cm">// App.jsx — השלטים לקומות</span>
+&lt;<span class="fn">Routes</span>&gt;
+  &lt;<span class="fn">Route</span> <span class="prop">path</span>=<span class="str">"/"</span> <span class="prop">element</span>={&lt;<span class="fn">Login</span> /&gt;} /&gt;
+  &lt;<span class="fn">Route</span> <span class="prop">path</span>=<span class="str">"/home"</span> <span class="prop">element</span>={&lt;<span class="fn">Home</span> /&gt;} /&gt;
+  &lt;<span class="fn">Route</span> <span class="prop">path</span>=<span class="str">"/edit/:id"</span> <span class="prop">element</span>={&lt;<span class="fn">Edit</span> /&gt;} /&gt;
+&lt;/<span class="fn">Routes</span>&gt;
+
+<span class="cm">// ניווט עם Link — כפתור מעלית</span>
+&lt;<span class="fn">Link</span> <span class="prop">to</span>=<span class="str">"/home"</span>&gt;עמוד הבית&lt;/<span class="fn">Link</span>&gt;
+
+<span class="cm">// ניווט מקוד — מעלית אוטומטית</span>
+<span class="kw">const</span> <span class="val">navigate</span> = <span class="fn">useNavigate</span>();
+<span class="val">navigate</span>(<span class="str">"/home"</span>);  <span class="cm">// אחרי login מוצלח</span>
+
+<span class="cm">// קריאת מספר דירה מ-URL</span>
+<span class="kw">const</span> { <span class="val">id</span> } = <span class="fn">useParams</span>();  <span class="cm">// /edit/5 → id = "5"</span></pre>
+
+      <div class="warn">useParams מחזיר תמיד string! אם צריך מספר: <code>Number(id)</code> או <code>parseInt(id)</code></div>
+      <div class="tip">Link = למשתמש ללחוץ. useNavigate = הקוד מחליט לנווט (אחרי submit, אחרי login).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 3: FORMS & EVENTS ==================== -->
+<div class="tab-panel" id="panel-forms">
+  <div class="hero">
+    <h1>📝 Forms & Events — טפסים ואירועים</h1>
+    <p>איך React מטפל בקלט מהמשתמש — כל לחיצה, כל הקלדה</p>
+  </div>
+
+  <div class="topic">
+    <div class="topic-head h-forms" onclick="toggleTopic(this)"><span class="chev">▼</span> 📝 Controlled vs Uncontrolled</div>
+    <div class="topic-body">
+      <div class="grandma">
+        <div class="grandma-title">הסבר לסבתא</div>
+        <strong>Controlled</strong> = כמו מזכירה שרושמת כל מילה שאתם אומרים. כל אות שמקלידים — היא כותבת במחברת (state), ואתם רואים מה כתוב (value).<br><br>
+        <strong>Uncontrolled</strong> = כמו תיבת דואר. לא יודעים מה בפנים עד שפותחים (ref.current.value). לא עוקבים בזמן אמת.
+      </div>
+
+      <table class="cmp-table">
+        <tr><th>גישה</th><th>משל</th><th>מתי</th><th>קוד</th></tr>
+        <tr><td><strong>Controlled</strong></td><td>מזכירה — רושמת הכל</td><td>ולידציה real-time, טפסים</td><td><code>value={x} onChange={...}</code></td></tr>
+        <tr><td><strong>Uncontrolled</strong></td><td>תיבת דואר — בודקים בסוף</td><td>קבצים, performance</td><td><code>ref={inputRef}</code></td></tr>
+      </table>
+
+      <div class="sub">
+        <div class="sub-title">✅ Controlled inputs — המזכירה</div>
+<pre><span class="cm">// כל input חייב value + onChange</span>
+<span class="kw">const</span> [<span class="val">name</span>, <span class="fn">setName</span>] = <span class="fn">useState</span>(<span class="str">""</span>);
+
+&lt;<span class="fn">input</span>
+  <span class="prop">type</span>=<span class="str">"text"</span>
+  <span class="prop">value</span>={<span class="val">name</span>}              <span class="cm">// מה רשום במחברת</span>
+  <span class="prop">onChange</span>={(<span class="val">e</span>) => <span class="fn">setName</span>(<span class="val">e</span>.<span class="prop">target</span>.<span class="prop">value</span>)}  <span class="cm">// רושמים כל שינוי</span>
+/&gt;</pre>
+
+        <table class="cmp-table">
+          <tr><th>סוג</th><th>props נדרשים</th><th>משל</th></tr>
+          <tr><td>input text</td><td>value, onChange</td><td>שדה טקסט — כל אות נרשמת</td></tr>
+          <tr><td>input checkbox</td><td>checked, onChange</td><td>מתג — דולק/כבוי</td></tr>
+          <tr><td>input radio</td><td>checked, onChange</td><td>כפתורי רדיו במכונית</td></tr>
+          <tr><td>select</td><td>value, onChange</td><td>תפריט נפתח — בחירה אחת</td></tr>
+          <tr><td>textarea</td><td>value, onChange</td><td>מחברת — טקסט ארוך</td></tr>
+        </table>
+      </div>
+
+      <div class="sub">
+        <div class="sub-title">🎯 Events — אירועים</div>
+        <div class="grandma">
+          <div class="grandma-title">הסבר לסבתא</div>
+          אירוע = <strong>משהו שקרה</strong>. לחצו על כפתור? זה event. הקלידו אות? זה event. React מאפשר לכם לגיד "כשזה קורה — תעשה את זה".
+        </div>
+        <table class="cmp-table">
+          <tr><th>Event</th><th>מתי קורה</th><th>משל</th><th>שימוש</th></tr>
+          <tr><td><strong>onClick</strong></td><td>לחיצה</td><td>לחיצת פעמון</td><td>כפתורים, כרטיסים</td></tr>
+          <tr><td><strong>onChange</strong></td><td>שינוי ערך</td><td>סיבוב כפתור</td><td>inputs, select, checkbox</td></tr>
+          <tr><td><strong>onSubmit</strong></td><td>שליחת טופס</td><td>שליחת מכתב</td><td><code>e.preventDefault()</code>!</td></tr>
+          <tr><td><strong>onKeyDown</strong></td><td>לחיצת מקש</td><td>הקשת אצבע</td><td>Enter לשליחה, Esc לביטול</td></tr>
+          <tr><td><strong>onFocus/onBlur</strong></td><td>כניסה/יציאה משדה</td><td>הדלקת/כיבוי זרקור</td><td>validation בעזיבת שדה</td></tr>
+          <tr><td><strong>onMouseEnter/Leave</strong></td><td>hover</td><td>עכבר מרחף מעל</td><td>tooltips, תפריטים</td></tr>
+        </table>
+<pre><span class="cm">// onSubmit — שליחת טופס</span>
+<span class="kw">const</span> <span class="fn">handleSubmit</span> = (<span class="val">e</span>) => {
+  <span class="val">e</span>.<span class="fn">preventDefault</span>();  <span class="cm">// 🛑 עצור! אל תרענן דף!</span>
+  <span class="cm">// עכשיו אפשר לטפל בנתונים</span>
+};
+
+&lt;<span class="fn">form</span> <span class="prop">onSubmit</span>={<span class="fn">handleSubmit</span>}&gt;
+  &lt;<span class="fn">input</span> ... /&gt;
+  &lt;<span class="fn">button</span> <span class="prop">type</span>=<span class="str">"submit"</span>&gt;שלח&lt;/<span class="fn">button</span>&gt;
+&lt;/<span class="fn">form</span>&gt;</pre>
+        <div class="warn">תמיד <code>e.preventDefault()</code> ב-onSubmit! בלי זה הדפדפן ירענן את הדף וכל ה-state ייעלם.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 4: STATE MANAGEMENT ==================== -->
+<div class="tab-panel" id="panel-state">
+  <div class="hero">
+    <h1>🔄 State Management — ניהול נתונים</h1>
+    <p>איפה לשמור state, איך להעביר בין רכיבים, ואיך לשרוד רענון דף</p>
+  </div>
+
+  <div class="topic">
+    <div class="topic-head h-state" onclick="toggleTopic(this)"><span class="chev">▼</span> 📊 איפה לשמור State?</div>
+    <div class="topic-body">
+      <div class="grandma">
+        <div class="grandma-title">הסבר לסבתא</div>
+        יש 3 מגירות בגדלים שונים:<br>
+        🗄 <strong>useState</strong> = מגירה אישית — רק החדר הזה רואה אותה. נעלמת כשסוגרים את החדר (unmount).<br>
+        🏪 <strong>localStorage</strong> = כספת — שורדת גם כשמכבים את המחשב. צריך לפתוח ולסגור ידנית.<br>
+        📢 <strong>Context</strong> = רמקול — כל הבית שומע. מושלם לדברים שכולם צריכים (מי מחובר? מצב כהה/בהיר?).
+      </div>
+
+      <table class="cmp-table">
+        <tr><th>מקום</th><th>משל</th><th>חיים</th><th>שימוש</th></tr>
+        <tr><td><strong>useState</strong></td><td>מגירה בחדר</td><td>עד שהחדר נסגר</td><td>שדות טופס, toggles</td></tr>
+        <tr><td><strong>localStorage</strong></td><td>כספת</td><td>עד שמוחקים ידנית</td><td>users, token, theme</td></tr>
+        <tr><td><strong>Context</strong></td><td>רמקול</td><td>חיי האפליקציה</td><td>auth, theme, language</td></tr>
+      </table>
+
+      <div class="sub">
+        <div class="sub-title">💾 localStorage — הכספת</div>
+        <div class="grandma">
+          <div class="grandma-title">הסבר לסבתא</div>
+          localStorage = <strong>כספת בקיר</strong>. שמים פנימה (setItem), מוציאים (getItem). הכספת שורדת גם כשהולכים ובאים (רענון דף). אבל — הכספת מקבלת רק <strong>טקסט</strong>! אם רוצים לשמור אובייקט — חייבים להפוך אותו לטקסט (stringify) ולהחזיר (parse).
+        </div>
+<pre><span class="cm">// שמירה לכספת — stringify כי הכספת מקבלת רק טקסט</span>
+localStorage.<span class="fn">setItem</span>(<span class="str">"users"</span>, <span class="fn">JSON.stringify</span>(<span class="val">users</span>));
+
+<span class="cm">// שליפה מהכספת — parse כדי להחזיר לאובייקט</span>
+<span class="kw">const</span> <span class="val">saved</span> = <span class="fn">JSON.parse</span>(localStorage.<span class="fn">getItem</span>(<span class="str">"users"</span>)) || [];
+
+<span class="cm">// ===== THE PATTERN — תמיד ככה =====</span>
+<span class="cm">// 1. טעינה מהכספת כשנכנסים</span>
+<span class="kw">const</span> [<span class="val">users</span>, <span class="fn">setUsers</span>] = <span class="fn">useState</span>(() => {
+  <span class="kw">const</span> <span class="val">saved</span> = localStorage.<span class="fn">getItem</span>(<span class="str">"users"</span>);
+  <span class="kw">return</span> <span class="val">saved</span> ? <span class="fn">JSON.parse</span>(<span class="val">saved</span>) : [];
+});
+
+<span class="cm">// 2. שמירה לכספת כשמשתנה</span>
+<span class="fn">useEffect</span>(() => {
+  localStorage.<span class="fn">setItem</span>(<span class="str">"users"</span>, <span class="fn">JSON.stringify</span>(<span class="val">users</span>));
+}, [<span class="val">users</span>]);</pre>
+
+        <table class="cmp-table">
+          <tr><th>פעולה</th><th>API</th><th>טעות נפוצה</th></tr>
+          <tr><td>שמירה</td><td><code>setItem(key, JSON.stringify(val))</code></td><td>שכחו stringify → [object Object]</td></tr>
+          <tr><td>שליפה</td><td><code>JSON.parse(getItem(key))</code></td><td>null אם לא קיים → צריך || ברירת מחדל</td></tr>
+          <tr><td>מחיקה</td><td><code>removeItem(key)</code></td><td>שכחו ב-logout</td></tr>
+        </table>
+        <div class="warn">stringify ← שמירה. parse ← שליפה. בלי זה הנתונים נשברים!</div>
+      </div>
+
+      <div class="sub">
+        <div class="sub-title">📢 Context — הרמקול</div>
+        <div class="grandma">
+          <div class="grandma-title">הסבר לסבתא</div>
+          בלי Context: צריך לתת מכתב מיד ליד מחדר לחדר (props drilling — מעצבן!).<br>
+          עם Context: שמים רמקול — כולם שומעים ישירות. מושלם ל: מי מחובר? מצב כהה? שפה?
+        </div>
+<pre><span class="cm">// 1. יוצרים רמקול</span>
+<span class="kw">const</span> <span class="val">AuthContext</span> = <span class="fn">createContext</span>();
+
+<span class="cm">// 2. מחברים לחשמל (Provider)</span>
+&lt;<span class="fn">AuthContext.Provider</span> <span class="prop">value</span>={{ <span class="val">user</span>, <span class="fn">login</span>, <span class="fn">logout</span> }}&gt;
+  &lt;<span class="fn">App</span> /&gt;
+&lt;/<span class="fn">AuthContext.Provider</span>&gt;
+
+<span class="cm">// 3. שומעים מכל מקום</span>
+<span class="kw">const</span> { <span class="val">user</span>, <span class="fn">logout</span> } = <span class="fn">useContext</span>(<span class="val">AuthContext</span>);</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 5: LIFECYCLE ==================== -->
+<div class="tab-panel" id="panel-lifecycle">
+  <div class="hero">
+    <h1>⚡ Lifecycle & Effects — שלבי חיים</h1>
+    <p>מתי רכיב נולד, מתי הוא מתעדכן, ומתי הוא מת — ומה לעשות בכל שלב</p>
+  </div>
+
+  <div class="topic">
+    <div class="topic-head h-lifecycle" onclick="toggleTopic(this)"><span class="chev">▼</span> 🔄 שלבי חיים של רכיב React</div>
+    <div class="topic-body">
+      <div class="grandma">
+        <div class="grandma-title">הסבר לסבתא</div>
+        לכל רכיב יש <strong>חיים</strong> — כמו אדם:<br>
+        👶 <strong>Mount</strong> = לידה — הרכיב מופיע על המסך לראשונה. כאן מביאים נתונים מהשרת.<br>
+        🔄 <strong>Update</strong> = גדילה — משהו השתנה (props או state). React מעדכן את המסך.<br>
+        ☠️ <strong>Unmount</strong> = פרידה — הרכיב נעלם מהמסך. <strong>חובה</strong> לנקות: לכבות טיימרים, לנתק listeners.
+      </div>
+
+      <table class="cmp-table">
+        <tr><th>שלב</th><th>משל</th><th>useEffect</th><th>מה לעשות</th></tr>
+        <tr><td><strong>Mount</strong> 👶</td><td>תינוק נולד</td><td><code>useEffect(() => {...}, [])</code></td><td>fetch, listeners, timers</td></tr>
+        <tr><td><strong>Update</strong> 🔄</td><td>ילד גדל</td><td><code>useEffect(() => {...}, [dep])</code></td><td>re-fetch, re-compute</td></tr>
+        <tr><td><strong>Unmount</strong> ☠️</td><td>עוזב את הבית</td><td><code>return () => {...}</code></td><td>cleanup! clear! close!</td></tr>
+      </table>
+
+      <div class="sub">
+        <div class="sub-title">👶 Mount — הלידה</div>
+<pre><span class="fn">useEffect</span>(() => {
+  <span class="cm">// נולדתי! בואו נביא נתונים</span>
+  <span class="fn">fetch</span>(<span class="str">"/api/users"</span>)
+    .<span class="fn">then</span>(<span class="val">r</span> => <span class="val">r</span>.<span class="fn">json</span>())
+    .<span class="fn">then</span>(<span class="val">data</span> => <span class="fn">setUsers</span>(<span class="val">data</span>));
+}, []);  <span class="cm">// [] = רק בלידה, פעם אחת</span></pre>
+      </div>
+
+      <div class="sub">
+        <div class="sub-title">🔄 Update — כשמשהו משתנה</div>
+<pre><span class="cm">// כל פעם ש-userId משתנה — מביאים נתונים חדשים</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="fn">fetch</span>(<span class="str">`/api/users/${</span><span class="val">userId</span><span class="str">}`</span>)
+    .<span class="fn">then</span>(<span class="val">r</span> => <span class="val">r</span>.<span class="fn">json</span>())
+    .<span class="fn">then</span>(<span class="fn">setUser</span>);
+}, [<span class="val">userId</span>]);  <span class="cm">// כשuserId משתנה → רץ שוב</span></pre>
+        <div class="warn">שכחתם לשים dep ב-[] ? useEffect ירוץ על כל רנדר — יכול לגרום לאלפי fetch-ים!</div>
+      </div>
+
+      <div class="sub">
+        <div class="sub-title">☠️ Unmount — הפרידה (Cleanup)</div>
+        <div class="grandma">
+          <div class="grandma-title">הסבר לסבתא</div>
+          כשעוזבים את הבית — <strong>מכבים אור, סוגרים ברז, מכבים גז</strong>. ב-React: <strong>מנקים interval, מסירים listener, סוגרים websocket</strong>. בלי זה — הם ממשיכים לרוץ ברקע ואוכלים זיכרון!
+        </div>
+        <table class="cmp-table">
+          <tr><th>מה צריך ניקוי</th><th>משל</th><th>איך מנקים</th></tr>
+          <tr><td>setInterval</td><td>שעון מתקתק</td><td><code>clearInterval(id)</code></td></tr>
+          <tr><td>setTimeout</td><td>טיימר חד-פעמי</td><td><code>clearTimeout(id)</code></td></tr>
+          <tr><td>addEventListener</td><td>מיקרופון פתוח</td><td><code>removeEventListener</code></td></tr>
+          <tr><td>WebSocket</td><td>טלפון פתוח</td><td><code>ws.close()</code></td></tr>
+          <tr><td>AbortController</td><td>ביטול הזמנה</td><td><code>controller.abort()</code></td></tr>
+        </table>
+<pre><span class="fn">useEffect</span>(() => {
+  <span class="cm">// הדלקנו שעון</span>
+  <span class="kw">const</span> <span class="val">id</span> = <span class="fn">setInterval</span>(() => {
+    <span class="fn">setSeconds</span>(<span class="val">s</span> => <span class="val">s</span> + <span class="val">1</span>);
+  }, <span class="val">1000</span>);
+
+  <span class="cm">// כשעוזבים — מכבים את השעון!</span>
+  <span class="kw">return</span> () => {
+    <span class="fn">clearInterval</span>(<span class="val">id</span>);  <span class="cm">// 🧹 ניקוי</span>
+  };
+}, []);</pre>
+        <div class="warn">אם שכחתם cleanup — useEffect ימשיך לרוץ גם אחרי שהרכיב נעלם. שעון שמתקתק ברקע = בזבוז זיכרון ובאגים!</div>
+      </div>
+
+      <div class="sub">
+        <div class="sub-title">🧠 Memoization — מתי לחסוך</div>
+        <div class="grandma">
+          <div class="grandma-title">הסבר לסבתא</div>
+          דמיינו שכל פעם שמישהו שואל "כמה 573 × 841?" אתם מחשבים מחדש. <strong>useMemo</strong> = רושמים את התשובה על דף, ובפעם הבאה — קוראים ישירות. <strong>useCallback</strong> = נותנים לילד את אותו מספר טלפון (פונקציה) כל פעם, במקום חדש.
+        </div>
+        <table class="cmp-table">
+          <tr><th>Hook</th><th>משל</th><th>מתי כדאי</th><th>מתי מיותר</th></tr>
+          <tr><td><strong>useMemo</strong></td><td>תשובה רשומה על דף</td><td>filter/sort על מערך גדול</td><td>חישוב פשוט כמו 2+3</td></tr>
+          <tr><td><strong>useCallback</strong></td><td>מספר טלפון קבוע</td><td>props לילד עם React.memo</td><td>פונקציה שלא עוברת ל-child</td></tr>
+          <tr><td><strong>React.memo</strong></td><td>ילד שלא צריך לשמוע</td><td>child שמקבל אותם props</td><td>child שמשתנה תדיר</td></tr>
+        </table>
+        <div class="tip">כלל אצבע: אל תשתמשו ב-useMemo/useCallback עד שיש בעיית ביצועים. Premature optimization = שורש כל הרע!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// Topic toggle
+function toggleTopic(head) {
+  head.parentElement.classList.toggle('collapsed');
+}
+
+// Implementation toggle
+function toggleImpl(btn) {
+  const content = btn.nextElementSibling;
+  if (content) content.classList.toggle('open');
+  btn.textContent = content && content.classList.contains('open') ? '💻 הסתר מימוש ‹' : '💻 הצג אפשרויות מימוש ›';
+}
+</script>
+</body>
+</html>
