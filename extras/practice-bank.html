@@ -126,7 +126,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 90 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 100 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
     <span class="stat" id="stat-solved">✅ נפתרו: 0/77</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
@@ -3641,6 +3641,414 @@ function ItemList({ items }) {
     return {ok:true};
   },
   explain:"items.length === 0 → הצג הודעה. אחרת → map. Key prop חובה בכל .map()! אופציה 2 (early return) לרוב קריאה יותר."
+},
+
+// ══════════════════════════════════════════════
+// 91 — react-realtime-search  ⚛ EASY
+// ══════════════════════════════════════════════
+{
+  id:"react-realtime-search",cat:"react",diff:"easy",
+  title:"חיפוש Real-time — filter בזמן הקלדה",
+  desc:"כתוב שדה חיפוש שמסנן רשימה בזמן הקלדה (onChange). החיפוש case-insensitive.",
+  hint:"שמור searchTerm ב-state. חשב filtered על-ידי filter + includes בכל render.",
+  solution:`const [searchTerm, setSearchTerm] = useState('');
+
+// חישוב filtered בכל render — לא useState!
+const filtered = items.filter(item =>
+  item.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
+return (
+  <>
+    <input
+      placeholder="חיפוש..."
+      value={searchTerm}
+      onChange={e => setSearchTerm(e.target.value)}
+    />
+    <ul>
+      {filtered.map(item => <li key={item.id}>{item.name}</li>)}
+    </ul>
+  </>
+);`,
+  customTest(code){
+    const checks=[
+      {re:/useState\s*\(\s*['"]{2}\s*\)/,msg:'חסר searchTerm state (מחרוזת ריקה)'},
+      {re:/\.filter\s*\(/,msg:'חסרת .filter() לסינון'},
+      {re:/\.includes\s*\(/,msg:'חסרת .includes() לחיפוש'},
+      {re:/toLowerCase\s*\(\)/,msg:'חסר toLowerCase() לcase-insensitive'},
+      {re:/onChange/,msg:'חסר onChange handler בinput'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"filtered = computed value, לא state! בכל render חשב מחדש. toLowerCase שמאל+ימין לcase-insensitive. שמור searchTerm ב-state."
+},
+
+// ══════════════════════════════════════════════
+// 92 — express-delete-route  🟢 EASY
+// ══════════════════════════════════════════════
+{
+  id:"express-delete-route",cat:"express",diff:"easy",
+  title:"DELETE /items/:id עם 404",
+  desc:"כתוב route DELETE שמוחק פריט לפי id ממערך. אם לא נמצא — 404.",
+  hint:"מצא את ה-index עם .findIndex(). אם index === -1 — 404. אחרת — splice().",
+  solution:`app.delete('/items/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const index = items.findIndex(i => i.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: 'Item not found' });
+  }
+
+  const deleted = items.splice(index, 1)[0]; // מחיקה + שמירה
+  res.json(deleted); // מחזיר מה שנמחק
+});`,
+  customTest(code){
+    const checks=[
+      {re:/req\.params\.id/,msg:'חסר req.params.id'},
+      {re:/Number\s*\(|parseInt/,msg:'חסר המרה ל-Number'},
+      {re:/findIndex\s*\(/,msg:'חסרת .findIndex()'},
+      {re:/===\s*-1|-1\s*===/,msg:'חסר בדיקת index === -1'},
+      {re:/splice\s*\(/,msg:'חסרת .splice() למחיקה'},
+      {re:/404/,msg:'חסר status 404'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"findIndex מחזיר index או -1. splice(index, 1) מוחק ומחזיר מערך עם הפריט. [0] = הפריט עצמו. return res.status(404) — חובה!"
+},
+
+// ══════════════════════════════════════════════
+// 93 — react-classname-conditional  ⚛ EASY
+// ══════════════════════════════════════════════
+{
+  id:"react-classname-conditional",cat:"react",diff:"easy",
+  title:"className דינמי לפי state",
+  desc:"כתוב component שמציג פריט עם className שמשתנה לפי isActive. active → 'item active', לא active → 'item'.",
+  hint:"השתמש בtemplat string או ternary בתוך className.",
+  solution:`// אופציה 1: Template string
+<div className={\`item \${isActive ? 'active' : ''}\`}>
+  {name}
+</div>
+
+// אופציה 2: ternary מלא
+<div className={isActive ? 'item active' : 'item'}>
+  {name}
+</div>
+
+// אופציה 3: join (לclass מרובות)
+const classes = ['item', isActive && 'active', error && 'error']
+  .filter(Boolean).join(' ');
+<div className={classes}>{name}</div>`,
+  customTest(code){
+    const checks=[
+      {re:/className/,msg:'חסר className (לא class!)'},
+      {re:/isActive.*active|active.*isActive/,msg:'חסרת תנאי לפי isActive'},
+      {re:/\?|&&/,msg:'חסר ternary (?) או && לclassName דינמי'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"ב-React = className לא class! Template string עם ternary: `item ${isActive?'active':''}`. filter(Boolean).join(' ') לclasses מרובות."
+},
+
+// ══════════════════════════════════════════════
+// 94 — mongoose-delete-item  🟢 MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"mongoose-delete-item",cat:"express",diff:"medium",
+  title:"Mongoose DELETE עם findByIdAndDelete",
+  desc:"כתוב route DELETE /items/:id שמוחק מ-MongoDB ומחזיר 404 אם לא קיים.",
+  hint:"findByIdAndDelete מחזיר null אם לא נמצא. בדוק ועצור עם 404.",
+  solution:`app.delete('/items/:id', async (req, res) => {
+  try {
+    const deleted = await Item.findByIdAndDelete(req.params.id);
+
+    if (!deleted) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.json(deleted); // מחזיר מה שנמחק
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});`,
+  customTest(code){
+    const checks=[
+      {re:/findByIdAndDelete/,msg:'חסר findByIdAndDelete'},
+      {re:/req\.params\.id/,msg:'חסר req.params.id'},
+      {re:/if\s*\(!\s*deleted/,msg:'חסר בדיקת !deleted'},
+      {re:/404/,msg:'חסר status 404'},
+      {re:/try.*catch|catch\s*\(/s,msg:'חסר try/catch'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"findByIdAndDelete מחזיר null אם _id לא קיים. בדוק !deleted → 404. החזר deleted ב-200 כדי שהלקוח ידע מה נמחק."
+},
+
+// ══════════════════════════════════════════════
+// 95 — react-two-useeffects  ⚛ MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"react-two-useeffects",cat:"react",diff:"medium",
+  title:"שני useEffects — sync ל-localStorage",
+  desc:"כתוב App.js עם שני useEffects: אחד עבור users[], שני עבור teams{}. כל אחד שומר ב-localStorage.",
+  hint:"שני useEffects נפרדים — כל אחד עם dependency array שלו. הם ריצים בנפרד.",
+  solution:`const [users, setUsers] = useState(
+  () => JSON.parse(localStorage.getItem('users') || '[]')
+);
+const [teams, setTeams] = useState(
+  () => JSON.parse(localStorage.getItem('teams') || '{}')
+);
+
+// Effect 1 — שומר users כשמשתנים
+useEffect(() => {
+  localStorage.setItem('users', JSON.stringify(users));
+}, [users]);
+
+// Effect 2 — שומר teams כשמשתנים
+useEffect(() => {
+  localStorage.setItem('teams', JSON.stringify(teams));
+}, [teams]);`,
+  customTest(code){
+    const checks=[
+      {re:/useEffect[\s\S]*useEffect/,msg:'חסרים שני useEffects נפרדים'},
+      {re:/\[users\]/,msg:'חסר dependency array [users]'},
+      {re:/\[teams\]/,msg:'חסר dependency array [teams]'},
+      {re:/localStorage\.setItem.*users/,msg:'חסר שמירת users ב-localStorage'},
+      {re:/localStorage\.setItem.*teams/,msg:'חסר שמירת teams ב-localStorage'},
+      {re:/\(\s*\)\s*=>/,msg:'חסר useState initializer function (lazy init)'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"שני useEffects עצמאיים = מומלץ. כל אחד מסנכרן state אחד. Initializer function (() => ...) בuseState = קורא מlocalStorage פעם אחת בלבד."
+},
+
+// ══════════════════════════════════════════════
+// 96 — react-logout  ⚛ EASY
+// ══════════════════════════════════════════════
+{
+  id:"react-logout",cat:"react",diff:"easy",
+  title:"Logout — ניקוי state וניווט",
+  desc:"כתוב פונקציה logout() שמנקה currentUser, מוחקת מlocalStorage, ומנווטת ל-/.",
+  hint:"setCurrentUser(null) + localStorage.removeItem + navigate('/').",
+  solution:`const navigate = useNavigate();
+
+function logout() {
+  setCurrentUser(null);
+  localStorage.removeItem('currentUser'); // אם שמרת
+  navigate('/');
+}
+
+// שימוש:
+<button onClick={logout}>🚪 התנתק</button>
+
+// אם שמרת גם ב-localStorage:
+function logout() {
+  setCurrentUser(null);
+  // לא מוחקים users[] — רק currentUser!
+  navigate('/');
+}`,
+  customTest(code){
+    const checks=[
+      {re:/setCurrentUser\s*\(\s*null\s*\)/,msg:'חסר setCurrentUser(null)'},
+      {re:/navigate\s*\(\s*['"]\//,msg:'חסר navigate("/") לחזרה ל-Login'},
+      {re:/function logout|const logout|logout\s*=/,msg:'חסרת פונקציית logout'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"logout = null currentUser + navigate('/'). אל תמחק users[] מlocalStorage — רק currentUser. navigate('/') = חזרה לדף Login."
+},
+
+// ══════════════════════════════════════════════
+// 97 — express-error-middleware  🟢 HARD
+// ══════════════════════════════════════════════
+{
+  id:"express-error-middleware",cat:"express",diff:"hard",
+  title:"Express Error Handling Middleware (4 params)",
+  desc:"כתוב error middleware עם 4 פרמטרים שמטפל בשגיאות שהועברו ב-next(err).",
+  hint:"Error middleware חייב בדיוק 4 פרמטרים: (err, req, res, next). חייב להיות אחרי כל Routes.",
+  solution:`// Error middleware — חייב 4 פרמטרים!
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+
+  const status = err.status || 500;
+  const message = err.message || 'Internal Server Error';
+
+  res.status(status).json({ error: message });
+});
+
+// שימוש ב-handler:
+app.get('/items', async (req, res, next) => {
+  try {
+    const items = await Item.find();
+    res.json(items);
+  } catch (err) {
+    next(err); // ← מעביר לerror middleware
+  }
+});`,
+  customTest(code){
+    const checks=[
+      {re:/\(\s*err\s*,\s*req\s*,\s*res\s*,\s*next\s*\)/,msg:'חסרת 4 פרמטרים (err, req, res, next)'},
+      {re:/app\.use\s*\(\s*\(\s*err/,msg:'חסר app.use() לerror middleware'},
+      {re:/res\.status\s*\(/,msg:'חסר res.status()'},
+      {re:/next\s*\(\s*err\s*\)/,msg:'חסר next(err) בroute handler לשלוח לmiddleware'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"Error middleware = בדיוק 4 פרמטרים. Express מזהה לפי מספר הפרמטרים! חייב אחרי כל routes. next(err) ב-handlers = מעביר לmiddleware."
+},
+
+// ══════════════════════════════════════════════
+// 98 — js-has-duplicates  🟨 EASY
+// ══════════════════════════════════════════════
+{
+  id:"js-has-duplicates",cat:"js",diff:"easy",
+  title:"בדיקת כפילויות עם Set",
+  desc:"כתוב פונקציה hasDuplicates(arr) שמחזירה true אם יש ערכים כפולים ב-array.",
+  hint:"Set שומר ערכים ייחודיים. אם Set.size < arr.length — יש כפילויות.",
+  solution:`function hasDuplicates(arr) {
+  if (!Array.isArray(arr)) throw new Error('Input must be array');
+  return new Set(arr).size !== arr.length;
+}
+
+// דוגמאות:
+hasDuplicates([1,2,3,4]) // false — כולם ייחודיים
+hasDuplicates([1,2,2,3]) // true — יש כפילות (2)
+
+// שימושים נוספים:
+const unique = [...new Set(arr)];          // הסרת כפילויות
+const uniqueCount = new Set(arr).size;     // ספירת ייחודיים`,
+  customTest(code){
+    const checks=[
+      {re:/new Set\s*\(/,msg:'חסר new Set()'},
+      {re:/\.size/,msg:'חסר .size לספירת הSet'},
+      {re:/arr\.length/,msg:'חסר arr.length להשוואה'},
+      {re:/!==|!=\s*arr\.length|arr\.length\s*!=/,msg:'חסרת השוואת size !== length'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"Set מסיר כפילויות. אם new Set(arr).size < arr.length — יש ערכים כפולים. זה הפתרון האלגנטי לבדיקת uniqueness."
+},
+
+// ══════════════════════════════════════════════
+// 99 — react-localstorage-full  ⚛ MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"react-localstorage-full",cat:"react",diff:"medium",
+  title:"localStorage — דפוס מלא (init + sync)",
+  desc:"כתוב useState + useEffect לסנכרון מלא עם localStorage. init = קורא מlocalStorage. sync = שומר בשינוי.",
+  hint:"useState initializer function קורא פעם אחת. useEffect שומר בכל שינוי.",
+  solution:`// 1. useState עם lazy initializer — קורא מlocalStorage פעם אחת
+const [items, setItems] = useState(() => {
+  try {
+    const saved = localStorage.getItem('my-items');
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+});
+
+// 2. useEffect — שומר בכל פעם שitems משתנה
+useEffect(() => {
+  localStorage.setItem('my-items', JSON.stringify(items));
+}, [items]);
+
+// שימוש — ממש כמו state רגיל, localStorage מסונכרן אוטומטית!
+const addItem = (item) => setItems(prev => [...prev, item]);
+const removeItem = (id) => setItems(prev => prev.filter(i => i.id !== id));`,
+  customTest(code){
+    const checks=[
+      {re:/useState\s*\(\s*\(\s*\)\s*=>/,msg:'חסר lazy initializer function ב-useState'},
+      {re:/localStorage\.getItem/,msg:'חסר localStorage.getItem בinit'},
+      {re:/useEffect\s*\(/,msg:'חסר useEffect לsync'},
+      {re:/localStorage\.setItem/,msg:'חסר localStorage.setItem'},
+      {re:/\[items\]/,msg:'חסר [items] כdependency'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"Lazy init = קורא localStorage פעם אחת בMount. useEffect עם [items] = מסנכרן בכל שינוי. try/catch מגן מפני JSON פגום."
+},
+
+// ══════════════════════════════════════════════
+// 100 — react-full-app-parking  ⚛ HARD
+// ══════════════════════════════════════════════
+{
+  id:"react-full-app-parking",cat:"react",diff:"hard",
+  title:"App.jsx מלא — Parking (Q1 pattern)",
+  desc:"כתוב App.jsx לPark: 5 routes, users בlocalStorage, currentUser state, login/signup callbacks.",
+  hint:"Routes: /, /signup, /choose-parking, /active-parking, /history. localStorage לusers ו-parkings.",
+  solution:`function App() {
+  const [users, setUsers] = useState(
+    () => JSON.parse(localStorage.getItem('park-users') || '[]')
+  );
+  const [currentUser, setCurrentUser] = useState(null);
+  const [parkings, setParkings] = useState(
+    () => JSON.parse(localStorage.getItem('park-data') || '[]')
+  );
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.setItem('park-users', JSON.stringify(users));
+  }, [users]);
+
+  useEffect(() => {
+    localStorage.setItem('park-data', JSON.stringify(parkings));
+  }, [parkings]);
+
+  function handleLogin(user) {
+    setCurrentUser(user);
+    navigate('/choose-parking');
+  }
+
+  function handleSignup(user) {
+    setUsers(prev => [...prev, user]);
+    setCurrentUser(user);
+    navigate('/choose-parking');
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={
+        <LoginPage users={users} onLogin={handleLogin} onSignup={() => navigate('/signup')} />
+      } />
+      <Route path="/signup" element={
+        <SignupPage onSignup={handleSignup} />
+      } />
+      <Route path="/choose-parking" element={
+        currentUser ? <ChooseParkingPage user={currentUser} parkings={parkings} setParkings={setParkings} />
+                    : <Navigate to="/" />
+      } />
+      <Route path="/active-parking" element={
+        currentUser ? <ActiveParkingPage user={currentUser} parkings={parkings} setParkings={setParkings} />
+                    : <Navigate to="/" />
+      } />
+      <Route path="/history" element={
+        currentUser ? <HistoryPage user={currentUser} parkings={parkings} />
+                    : <Navigate to="/" />
+      } />
+    </Routes>
+  );
+}`,
+  customTest(code){
+    const checks=[
+      {re:/\/signup/,msg:'חסר Route /signup'},
+      {re:/\/choose-parking/,msg:'חסר Route /choose-parking'},
+      {re:/\/active-parking/,msg:'חסר Route /active-parking'},
+      {re:/\/history/,msg:'חסר Route /history'},
+      {re:/Navigate.*to=["']\//,msg:'חסרות Protected Routes עם Navigate'},
+      {re:/localStorage\.getItem.*park/,msg:'חסרת טעינה מlocalStorage'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"Parking מיוחד: 5 routes + protected routes. handleLogin ו-handleSignup מנווטים ל-/choose-parking. localStorage לusers ו-parkings."
 }
 ];
 
@@ -3654,7 +4062,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/90`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/100`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 
