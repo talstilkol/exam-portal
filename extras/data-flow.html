@@ -898,6 +898,37 @@ const DATA_FLOW = {
       {stage:'200 + new token', file:'server.js', layer:'backend', data:'200 OK\n\n{accessToken: "eyJ...new"}'},
       {stage:'Retry original', file:'apiFetch.js', layer:'frontend', data:'// retry GET /users\n// with new token\nfetch("/api/users", {\n  headers: {Authorization: ...}\n})'}
     ]
+  },
+  upsert: {
+    icon:'🔄', name:'MongoDB Upsert', desc:'findOneAndUpdate עם upsert — הוסף או עדכן',
+    steps:[
+      {stage:'קלט משתמש', file:'דפדפן', layer:'user', data:'workerId: "12345"\nfullName: "Dan Cohen"\nsalary: 6000'},
+      {stage:'JS object', file:'Form.jsx', layer:'frontend', data:'{ id: "12345",\n  name: "Dan Cohen",\n  salary: 6000 }'},
+      {stage:'HTTP Request', file:'fetch', layer:'frontend', data:'POST /employees/add-or-update\nContent-Type: application/json\n\n{"id":"12345","name":"Dan","salary":6000}'},
+      {stage:'req.body', file:'routes.js', layer:'backend', data:'{ id: "12345",\n  name: "Dan Cohen",\n  salary: 6000 }'},
+      {stage:'findOneAndUpdate', file:'handlers.js', layer:'backend', data:'Employee.findOneAndUpdate(\n  { id: "12345" },      // filter\n  { $set: req.body },    // update\n  { new: true,\n    upsert: true,\n    runValidators: true }\n)'},
+      {stage:'MongoDB: search', file:'MongoDB', layer:'database', data:'db.employees.findOne(\n  { id: "12345" }\n)\n// Found? → UPDATE\n// Not found? → INSERT'},
+      {stage:'MongoDB: upsert', file:'MongoDB', layer:'database', data:'// If NOT found → INSERT:\n{\n  _id: ObjectId("new"),\n  id: "12345",\n  name: "Dan Cohen",\n  salary: 6000\n}\n// If found → UPDATE salary/name'},
+      {stage:'Document', file:'MongoDB', layer:'database', data:'// Returns updated/new document:\n{\n  _id: ObjectId("..."),\n  id: "12345",\n  name: "Dan Cohen",\n  salary: 6000,\n  __v: 0\n}'},
+      {stage:'JSON Response', file:'routes.js', layer:'backend', data:'res.json(result)\n// 200 OK — לא 201\n// גם ליצירה וגם לעדכון'},
+      {stage:'הודעה למשתמש', file:'Form.jsx', layer:'frontend', data:'// הצלחה!\nsetMessage("עובד נשמר בהצלחה");'}
+    ]
+  },
+  fileio: {
+    icon:'📁', name:'File I/O — Append + Read', desc:'שמירה לקובץ (appendFile) וקריאה ממנו (Travel Q3)',
+    steps:[
+      {stage:'קלט משתמש', file:'דפדפן', layer:'user', data:'text: "ביקרתי בפריז"\naction: save to file'},
+      {stage:'HTTP Request', file:'fetch', layer:'frontend', data:'POST /api/save\nContent-Type: application/json\n\n{"text": "ביקרתי בפריז"}'},
+      {stage:'req.body', file:'server.js', layer:'backend', data:'{ text: "ביקרתי בפריז" }'},
+      {stage:'path.join', file:'server.js', layer:'backend', data:'const filepath = path.join(\n  __dirname,\n  "travels.txt"\n)\n// → "/app/travels.txt"'},
+      {stage:'appendFile', file:'fs.promises', layer:'backend', data:'await fs.appendFile(\n  filepath,\n  "ביקרתי בפריז\\n", // + newline!\n  "utf8"\n)'},
+      {stage:'File System', file:'travels.txt', layer:'database', data:'// קובץ אחרי שמירה:\n"ביקרתי ברומא\\n\nביקרתי בלונדון\\n\nביקרתי בפריז\\n"'},
+      {stage:'GET /api/read', file:'fetch', layer:'frontend', data:'GET /api/read\n// לקריאת כל השורות'},
+      {stage:'readFile', file:'fs.promises', layer:'backend', data:'const content = await fs.readFile(\n  filepath, "utf8"\n);\n// → "ביקרתי ברומא\\nביקרתי..."'},
+      {stage:'עיבוד', file:'server.js', layer:'backend', data:'const lines = content\n  .trim()\n  .split("\\n")\n  .filter(Boolean);\n// → ["ביקרתי ברומא","ביקרתי בלונדון","..."]'},
+      {stage:'JSON Response', file:'server.js', layer:'backend', data:'res.json(lines)\n// 200 OK\n// ["ביקרתי ברומא", "ביקרתי בלונדון", "ביקרתי בפריז"]'},
+      {stage:'תצוגה', file:'App.jsx', layer:'frontend', data:'setTravels(data)\n// Re-render:\n// <ul>\n//   <li>ביקרתי ברומא</li>\n//   <li>ביקרתי בלונדון</li>\n//   <li>ביקרתי בפריז</li>\n// </ul>'}
+    ]
   }
 };
 

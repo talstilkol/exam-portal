@@ -215,7 +215,7 @@ const TOOLS = [
     link: 'data-flow.html',
     getProgress() {
       const data = _lsGet('df-viewed',[]);
-      const total = 5;
+      const total = 7;
       const done = Array.isArray(data) ? data.length : 0;
       return { done, total, items: null };
     }
