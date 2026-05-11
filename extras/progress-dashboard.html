@@ -228,7 +228,7 @@ const TOOLS = [
     link: 'theory-quiz.html',
     getProgress() {
       const known = _lsGet('tq-known',[]);
-      const total = 72;
+      const total = 80;
       const done = Array.isArray(known) ? known.length : 0;
       return { done, total, items: null };
     }

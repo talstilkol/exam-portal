@@ -117,7 +117,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 <body>
 <div class="hero">
   <h1>🧠 Theory Quiz — שאלות תאוריה</h1>
-  <p>72 פלאש-קארד לחזרה על תאוריה ועל פרטי המבחנות — HTTP, MongoDB, React, JS, Express, Node, מבחנות. לחץ על הכרטיס לגלות תשובה.</p>
+  <p>80 פלאש-קארד לחזרה על תאוריה ועל פרטי המבחנות — HTTP, MongoDB, React, JS, Express, Node, מבחנות. לחץ על הכרטיס לגלות תשובה.</p>
 </div>
 
 <div class="toolbar">
@@ -1090,7 +1090,141 @@ fn?.()              // קריאה בטוחה לfunction</pre>
 // acc = מצבר, 0 = ערך התחלתי</pre>
 <b>find / findIndex</b> — מצא ראשון שמתאים<br>
 <pre>const user = users.find(u => u.id === id);
-const idx = users.findIndex(u => u.id === id);</pre>`}
+const idx = users.findIndex(u => u.id === id);</pre>`},
+
+// ─── 73–80: Practical Patterns ──────────────────────────────────────────────
+
+{id:"tq-useparams-find",cat:"react",q:"איך משתמשים ב-useParams + find() כדי להציג פריט מURL params?",
+ a:`<b>דפוס שכיח במבחן: edit/:id</b>
+<pre>import { useParams } from 'react-router-dom';
+
+function EditPlayer({ players }) {
+  const { id } = useParams();  // id מה-URL
+  const player = players.find(p => p.id === Number(id));
+  // ⚠️ id מה-URL הוא string! המר ל-Number לפני השוואה
+
+  if (!player) return &lt;p&gt;שחקן לא נמצא&lt;/p&gt;;
+
+  const [name, setName] = useState(player.name);  // ערך מראש!
+}</pre>
+<b>טעות נפוצה:</b> השוואת string ל-number: <code>'5' === 5</code> → false!<br>
+פתרון: <code>Number(id)</code> או <code>String(p.id)</code>`},
+
+{id:"tq-controlled-input",cat:"react",q:"מהו Controlled Input ב-React? כתוב דוגמה.",
+ a:`<b>Controlled Input</b> — ה-DOM מנוהל על-ידי React state
+<pre>function Form() {
+  const [name, setName] = useState('');
+
+  return (
+    &lt;input
+      value={name}          // ← controlled ע"י state
+      onChange={e => setName(e.target.value)}
+    /&gt;
+  );
+}</pre>
+<b>vs Uncontrolled</b>: משתמש ב-ref.current.value — לא מומלץ ב-React
+<b>יתרון</b>: state = single source of truth. אפשר לאמת בזמן אמת.<br>
+<b>טעות נפוצה</b>: value ללא onChange → input קפוא (read-only warning)`},
+
+{id:"tq-req-three-sources",cat:"express",q:"מה ההבדל בין req.params, req.query ו-req.body?",
+ a:`<b>3 מקורות נתונים ב-Express:</b>
+<pre>// URL: /users/42?active=true  +  body: {name:"Tal"}
+app.put('/users/:id', (req, res) => {
+  req.params.id    // "42"  ← חלק מנתיב ה-URL
+  req.query.active // "true" ← אחרי ? ב-URL
+  req.body.name    // "Tal"  ← גוף הבקשה (POST/PUT)
+});</pre>
+<b>חשוב:</b>
+<ul>
+  <li>params ← :id בRoute definition</li>
+  <li>query ← ?key=value ב-URL — תמיד string!</li>
+  <li>body ← JSON, צריך express.json() middleware!</li>
+</ul>`},
+
+{id:"tq-js-object-entries",cat:"js",q:"מה עושים Object.keys, Object.values, Object.entries?",
+ a:`<pre>const obj = { a: 1, b: 2, c: 3 };
+
+Object.keys(obj)    // ["a", "b", "c"]  ← מפתחות
+Object.values(obj)  // [1, 2, 3]        ← ערכים
+Object.entries(obj) // [["a",1],["b",2],["c",3]] ← זוגות
+
+// שימושים נפוצים:
+Object.entries(obj).forEach(([key, val]) => {
+  console.log(key, val);
+});
+
+// ספירת ערכים:
+const count = Object.keys(obj).length;  // 3
+
+// React — render כל ערכי אובייקט:
+Object.entries(teams).map(([name, players]) => (
+  &lt;TeamCard key={name} name={name} players={players} /&gt;
+))</pre>`},
+
+{id:"tq-mongoose-create",cat:"mongo",q:"מה ההבדל בין Model.create() ל-new Model().save()?",
+ a:`<b>שתי דרכים ליצור מסמך Mongoose:</b>
+<pre>// 1. Model.create() — קצר יותר, מועדף
+const user = await User.create({ name: 'Tal', age: 25 });
+
+// 2. new Model().save() — מאפשר עיבוד לפני שמירה
+const user = new User({ name: 'Tal', age: 25 });
+user.role = 'admin';  // שינוי לפני שמירה
+await user.save();</pre>
+<b>שניהם:</b> מפעילים Schema validators, מחזירים document עם _id<br>
+<b>במבחן</b>: שתיהן נכונות. Model.create() קצר יותר לכתיבה.`},
+
+{id:"tq-datanow-id",cat:"react",q:"מתי ואיך משתמשים ב-Date.now() כ-id?",
+ a:`<b>Date.now() — מייצר timestamp ייחודי (ms מ-1970)</b>
+<pre>// הוספת פריט ל-state
+function addFlight(flightData) {
+  const newFlight = {
+    id: Date.now(),  // ← ייחודי כל קריאה
+    ...flightData
+  };
+  setFlights(prev => [...prev, newFlight]);
+}
+
+// עריכה/מחיקה לפי id:
+setFlights(prev => prev.filter(f => f.id !== id));
+setFlights(prev => prev.map(f =>
+  f.id === id ? {...f, ...updates} : f
+));</pre>
+<b>חסרון</b>: לא בטוח ל-production (תחרות). למבחן — מתאים!`},
+
+{id:"tq-cors-setup",cat:"express",q:"מה זה CORS ואיך מגדירים אותו ב-Express?",
+ a:`<b>CORS</b> — Cross-Origin Resource Sharing. Browser חוסם בקשות ל-origin שונה.
+<pre>const cors = require('cors');
+const express = require('express');
+const app = express();
+
+// אפשר לכל Origin (dev):
+app.use(cors());
+
+// או ספציפי (prod):
+app.use(cors({ origin: 'http://localhost:3000' }));
+
+// middleware חייב להיות לפני הRoutes!
+app.get('/api/data', ...);</pre>
+<b>למבחן</b>: תמיד <code>app.use(cors())</code> לפני routes.<br>
+<b>+</b> <code>app.use(express.json())</code> לפני routes.`},
+
+{id:"tq-short-circuit",cat:"js",q:"מה זה Short-circuit evaluation? הסבר &&, ||, ?? ב-JavaScript.",
+ a:`<b>Short-circuit</b> — JS עוצר ברגע שהתוצאה ידועה:
+<pre>// && — מחזיר false הראשון, או הערך האחרון
+null && 'hello'   // null  (עצר ב-null)
+true && 'hello'   // 'hello'
+// שימוש ב-React: {user && &lt;Profile user={user} /&gt;}
+
+// || — מחזיר true הראשון, או הערך האחרון
+null || 'default' // 'default'
+'Tal' || 'anon'   // 'Tal'
+// שימוש: const name = user.name || 'אנונימי';
+
+// ?? (Nullish Coalescing) — רק null/undefined
+0 ?? 'default'    // 0  ← שונה מ-||!
+'' ?? 'empty'     // '' ← שונה מ-||!
+null ?? 'default' // 'default'
+// שימוש: const count = data.count ?? 0;</pre>`}
 ];
 
 // ─── State ──────────────────────────────────────────────────────────────────
