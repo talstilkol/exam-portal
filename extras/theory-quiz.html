@@ -28,6 +28,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 .cat-chip[data-cat="js"].active{background:#ca8a04;color:#fff}
 .cat-chip[data-cat="express"].active{background:#059669;color:#fff}
 .cat-chip[data-cat="node"].active{background:#7c3aed;color:#fff}
+.cat-chip[data-cat="exam"].active{background:#dc2626;color:#fff}
 .toolbar-right{margin-right:auto;display:flex;align-items:center;gap:10px}
 .stat-pill{padding:4px 12px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:999px;font-size:12px;font-weight:800}
 .stat-pill b{color:var(--brand)}
@@ -91,6 +92,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 .badge-js{background:#fef9c3;color:#854d0e;border-color:#fde047}
 .badge-express{background:#d1fae5;color:#065f46;border-color:#6ee7b7}
 .badge-node{background:#ede9fe;color:#5b21b6;border-color:#c4b5fd}
+.badge-exam{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e1b4b;color:#fff;padding:10px 22px;border-radius:12px;border:2px solid #000;font-weight:800;font-size:14px;transition:transform .3s;z-index:999;pointer-events:none;box-shadow:3px 3px 0 #000}
@@ -115,7 +117,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 <body>
 <div class="hero">
   <h1>🧠 Theory Quiz — שאלות תאוריה</h1>
-  <p>43 פלאש-קארד לחזרה על תאוריה — HTTP, MongoDB, React, JS, Express, Node. לחץ על הכרטיס לגלות תשובה.</p>
+  <p>58 פלאש-קארד לחזרה על תאוריה ועל פרטי המבחנות — HTTP, MongoDB, React, JS, Express, Node, מבחנות. לחץ על הכרטיס לגלות תשובה.</p>
 </div>
 
 <div class="toolbar">
@@ -126,6 +128,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
   <span class="cat-chip" data-cat="js">🟨 JS</span>
   <span class="cat-chip" data-cat="express">🟢 Express</span>
   <span class="cat-chip" data-cat="node">💜 Node</span>
+  <span class="cat-chip" data-cat="exam">📝 מבחנות</span>
   <div class="toolbar-right">
     <span class="stat-pill">✅ ידוע: <b id="known-count">0</b></span>
     <span class="stat-pill">❌ לא ידוע: <b id="dnk-count">0</b></span>
@@ -584,7 +587,7 @@ class TextFilePackage {<br>
 </ul>
 <b>React = SPA</b>. React Router מחקה ניווט בין "דפים".`},
 
-// ─── 5 NEW — Exam-specific patterns ──────────────────────────────────────────
+// ─── 5 NEW — Exam-specific patterns ─────────────────────────────────────────
 {id:"js-set-data",cat:"js",q:"מה זה Set ב-JavaScript? מה ההבדל מ-Array? איך סופרים ייחודיים?",
  a:`<b>Set</b> = אוסף ערכים <b>ייחודיים</b> (אין כפילויות אוטומטית).<br><br>
 <pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">const s = new Set([1,2,2,3,3,3]);
@@ -654,7 +657,7 @@ const minPrice = req.query.min ? Number(req.query.min) : 0;</pre>
 <b>req.params</b> — גם String (מ-URL path).<br>
 <b>req.body</b> — כבר parsed ע"י express.json() (לפי מה שנשלח).`},
 
-{id:"react-spread-state",cat:"react",q:"מה pattern הוספה לרשימה ב-React state? למה לא .push()?",
+{id:"react-spread-state",cat:"react",q:"מה pattern הוספה/עדכון/מחיקה מ-React state array? למה לא .push()?",
  a:`<b>אסור לשנות state ישירות</b> (mutation). React לא מזהה שינויים!<br><br>
 <pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">// ❌ שגוי — mutation:
 users.push(newUser);        // React לא מרנדר
@@ -670,7 +673,239 @@ setUsers(prev => prev.map(u =>
 
 // ✅ מחיקה:
 setUsers(prev => prev.filter(u => u.id !== id));</pre>
-<b>כלל:</b> state → תמיד <b>ערך חדש</b> (לא mutation). Spread + map + filter יוצרים ערך חדש.`}
+<b>כלל:</b> state → תמיד <b>ערך חדש</b> (לא mutation). Spread + map + filter יוצרים ערך חדש.`},
+
+// ─── 15 EXAM-SPECIFIC RECALL CARDS ──────────────────────────────────────────
+{id:"exam-football-routes",cat:"exam",q:"⚽ Football Club — מהם ה-Routes הנדרשים ב-Q1?",
+ a:`<b>Football Club — Routes (Q1):</b><br><br>
+<table style="width:100%;border-collapse:collapse">
+<tr><th style="text-align:right;padding:4px 8px;background:rgba(255,255,255,.15)">Path</th><th style="text-align:right;padding:4px 8px;background:rgba(255,255,255,.15)">תיאור</th></tr>
+<tr><td style="padding:4px 8px;border-top:1px solid rgba(255,255,255,.1)"><code>/</code></td><td style="padding:4px 8px;border-top:1px solid rgba(255,255,255,.1)">Login + Register</td></tr>
+<tr><td style="padding:4px 8px;border-top:1px solid rgba(255,255,255,.1)"><code>/team/:teamName</code></td><td style="padding:4px 8px;border-top:1px solid rgba(255,255,255,.1)">רשימת שחקנים + חיפוש</td></tr>
+<tr><td style="padding:4px 8px;border-top:1px solid rgba(255,255,255,.1)"><code>/team/:name/edit/:id</code></td><td style="padding:4px 8px;border-top:1px solid rgba(255,255,255,.1)">עריכת שחקן</td></tr>
+</table><br>
+<b>State ראשי ב-App:</b> users[], currentUser, teams{}, errors{}`},
+
+{id:"exam-parking-validation",cat:"exam",q:"🅿️ Parking — מה ולידציית carNumber? מה הבאג הנפוץ ב-setInterval?",
+ a:`<b>Parking Q1 — ולידציות קריטיות:</b><br><br>
+carNumber: <code>/^\\d{7}$/</code> — <b>בדיוק 7 ספרות</b><br>
+password: <code>/^.{6,}$/</code> — מינימום 6 תווים<br><br>
+<b>⚠ הבאג הנפוץ ב-setInterval (ActiveParking):</b><br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">// ❌ שגוי (stale closure):
+setSeconds(seconds + 1);
+
+// ✅ נכון (functional update):
+setSeconds(prev => prev + 1);
+
+// חובה: cleanup ב-useEffect!
+return () => clearInterval(timer);</pre>`},
+
+{id:"exam-flights-password",cat:"exam",q:"✈️ Flights — מה פרטי הכניסה? מה הודעת שגיאה?",
+ a:`<b>Flights Q1 — Login קבוע:</b><br><br>
+• <b>שדה יחיד</b>: password בלבד (אין username)<br>
+• <b>ערך קבוע</b>: <code>password === '12345'</code><br>
+• אם שגוי → הצג שגיאה<br>
+• אם נכון → setIsLoggedIn(true) + navigate('/control-panel')<br><br>
+<b>הגנה על routes (protected):</b><br>
+<code>/add-flight</code> נגיש רק אם isLoggedIn === true<br><br>
+<b>State:</b> isLoggedIn (boolean), flights[] (localStorage), sortOrder`},
+
+{id:"exam-bank-bubble",cat:"exam",q:"🏦 Bank Q2 — איך ממיינים ספרות ב-Bubble Sort? מה אסור?",
+ a:`<b>Bank Q2 — מיון ספרות ללא .sort()!</b><br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">function sortDigits(n) {
+  // 1. המרה לarray ספרות
+  let digits = String(n).split('').map(Number);
+
+  // 2. Bubble Sort (אסור .sort()!)
+  for(let i = 0; i < digits.length; i++) {
+    for(let j = 0; j < digits.length - i - 1; j++) {
+      if(digits[j] > digits[j+1]) {
+        [digits[j], digits[j+1]] =
+        [digits[j+1], digits[j]]; // swap
+      }
+    }
+  }
+  // 3. החזר כמספר
+  return parseInt(digits.join(''));
+}</pre>
+⚠ <b>אסור</b>: <code>digits.sort()</code> — הבוחן יוריד נקודות!`},
+
+{id:"exam-logistics-binary",cat:"exam",q:"🚚 Logistics Q2 — איך ממירים בינארי לעשרוני? מה לבדוק אחרי?",
+ a:`<b>Logistics Q2 — בינארי לעשרוני + פלינדרום:</b><br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">function binaryToDecimal(binaryStr) {
+  // parseInt עם radix 2 = בינארי!
+  const decimal = parseInt(binaryStr, 2);
+
+  // פלינדרום: האם decimal קריא הפוך?
+  const str = String(decimal);
+  const isPalindrome = str === str.split('').reverse().join('');
+
+  return { decimal, isPalindrome };
+}
+// '1010' → { decimal: 10, isPalindrome: false }
+// '1001' → { decimal: 9, isPalindrome: true }</pre>
+⚠ <b>parseInt(str, 2)</b> ולא parseInt(str) — ב-2 לבינארי!`},
+
+{id:"exam-willing-unique",cat:"exam",q:"🤝 Willing Q2 — איך סופרים ייחודיים זוגיים ואי-זוגיים?",
+ a:`<b>Willing Q2 — ספירת ייחודיים עם Set:</b><br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">function countUniqueEvenOdd(arr) {
+  const evens = new Set();
+  const odds = new Set();
+
+  for(const n of arr) {
+    if(n % 2 === 0) evens.add(n);
+    else odds.add(n);
+  }
+
+  return {
+    evens: evens.size,  // .size לא .length!
+    odds: odds.size
+  };
+}
+// [1,2,2,3,3,3,4] → {evens:2, odds:2}</pre>
+⚠ <b>Set.size</b> ולא Set.length (undefined)!`},
+
+{id:"exam-travel-credentials",cat:"exam",q:"✈ Travel — מה פרטי הכניסה הקבועים? מה מיוחד ב-nav?",
+ a:`<b>Travel Q1 — Login קבוע:</b><br><br>
+• username: <code>'svcollege'</code><br>
+• password: <code>'abcde'</code><br>
+• השוואה מדויקת: <code>username === 'svcollege' && password === 'abcde'</code><br><br>
+<b>מיוחד ב-Travel: nav disabled עד Login!</b><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">&lt;nav style={{
+  pointerEvents: isLoggedIn ? 'auto' : 'none',
+  opacity: isLoggedIn ? 1 : 0.4
+}}&gt;</pre>
+<b>State:</b> isLoggedIn, travels[] (localStorage), navDisabled`},
+
+{id:"exam-bank-appendfile",cat:"exam",q:"🏦 Bank Q3 — למה appendFile ולא writeFile לשמירה לקובץ?",
+ a:`<b>Bank Q3 — שמירה לקובץ טקסט:</b><br><br>
+<b>writeFile</b> → מוחק הכל ומחדש! ❌ לא מתאים להוספה<br>
+<b>appendFile</b> → מוסיף בסוף הקובץ ✅<br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">// POST /save
+app.post('/save', (req, res) => {
+  const { text } = req.body;
+  fs.appendFile('file.txt', text + '\\n', (err) => {
+    if(err) return res.status(500).json({error: err});
+    res.status(201).json({message: 'saved'});
+  });
+});
+
+// GET /read
+app.get('/read', (req, res) => {
+  fs.readFile('file.txt', 'utf8', (err, data) => {
+    if(err) return res.status(500).json({error: err});
+    res.json({content: data});
+  });
+});</pre>`},
+
+{id:"exam-helpme-phone",cat:"exam",q:"🚨 HelpMe — מה ולידציית פלאפון? מה מיוחד ב-Q1 בנקודות?",
+ a:`<b>HelpMe Q1 — ולידציות:</b><br><br>
+phone: <code>/^05\\d{8}$/</code> — מתחיל ב-05, אחר כך 8 ספרות (סה"כ 10)<br>
+name: <code>/^.{2,}$/</code> — מינימום 2 תווים<br>
+password: <code>/^.{6,}$/</code> — מינימום 6 תווים<br><br>
+<b>⚠ Q1 של HelpMe שווה 75 נקודות (לא 50)!</b><br>
+זה המבחן היחיד שQ1 שווה 75.<br><br>
+<b>Routes:</b> /, /home, /centers<br>
+<b>State:</b> user{}, selectedCenter, centersList[], isActive`},
+
+{id:"exam-parking-upsert",cat:"exam",q:"🅿️ Parking Q3 — מה זה upsert ב-MongoDB? מה השאלה דורשת?",
+ a:`<b>Parking Q3 — Express + MongoDB (upsert):</b><br><br>
+<b>Routes:</b> POST /add, GET /low-salary (&lt;8000), POST /add-or-update<br><br>
+<b>Upsert</b> = "הוסף או עדכן" — אם קיים → עדכן, אחרת → הוסף:<br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">Employee.findOneAndUpdate(
+  { _id: req.body._id },      // תנאי חיפוש
+  { $set: req.body },         // מה לעדכן
+  {
+    upsert: true,             // הוסף אם לא קיים
+    new: true,                // החזר המסמך החדש
+    runValidators: true
+  }
+);</pre>
+⚠ בלי <code>upsert: true</code> → לא יוסיף אם לא קיים!<br>
+⚠ בלי <code>new: true</code> → מחזיר הישן!`},
+
+{id:"exam-football-filter",cat:"exam",q:"⚽ Football Q3 — AND vs OR בfilter? איך מחילים פילטר אופציונלי?",
+ a:`<b>Football Q3 — POST /games/filter:</b><br><br>
+<b>כלל:</b> כל פילטר שנשלח = AND (כולם חייבים להתקיים).<br>
+<b>כלל:</b> פילטר שלא נשלח = מתעלמים ממנו.<br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">const { name, yearMin, priceMax } = req.body;
+let result = [...games];
+
+// כל if רק אם הפרמטר נשלח:
+if(name !== undefined)
+  result = result.filter(g =>
+    g.name.toLowerCase().includes(name.toLowerCase()));
+if(yearMin !== undefined)
+  result = result.filter(g => g.year >= yearMin);
+if(priceMax !== undefined)
+  result = result.filter(g => g.price <= priceMax);</pre>
+⚠ כל .filter() מצמצם → AND אוטומטית. אסור if(name||yearMin||priceMax)!`},
+
+{id:"exam-helpme-series",cat:"exam",q:"🚨 HelpMe Q2 — איך מזהים סדרה חשבונית / הנדסית?",
+ a:`<b>HelpMe Q2 — זיהוי סוג סדרה:</b><br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">function detectSeries(arr) {
+  if(arr.length < 2) return "none";
+
+  // חשבונית: הפרש קבוע
+  const diff = arr[1] - arr[0];
+  const isArithmetic = arr.every((_,i) =>
+    i===0 || arr[i]-arr[i-1]===diff);
+
+  // הנדסית: יחס קבוע
+  const ratio = arr[1] / arr[0];
+  const isGeometric = arr.every((_,i) =>
+    i===0 || arr[i]/arr[i-1]===ratio);
+
+  if(isArithmetic) return "arithmetic";
+  if(isGeometric) return "geometric";
+  return "none";
+}</pre>
+⚠ floating point: <code>Math.abs(a-b) &lt; 0.001</code> במקום <code>===</code>!`},
+
+{id:"exam-travel-subarray",cat:"exam",q:"✈ Travel Q2 — כיצד בודקים אם תת-מערך מופיע בסדר?",
+ a:`<b>Travel Q2 — isSubArrayInOrder:</b><br><br>
+<b>הרעיון:</b> pointer שמצביע על האיבר הנוכחי ב-subArr.<br>
+עוברים על arr — כל פעם שנמצא subArr[pointer] → מתקדמים.<br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">function isSubArrayInOrder(arr, subArr) {
+  let pointer = 0;
+  for(const item of arr) {
+    if(item === subArr[pointer]) pointer++;
+    if(pointer === subArr.length) return true;
+  }
+  return false;
+}
+// [1,5,3,8,2], [5,8] → true (5 לפני 8)
+// [1,5,3,8,2], [8,5] → false</pre>
+לא חייב רציף! רק בסדר הנכון.`},
+
+{id:"exam-currency-routes",cat:"exam",q:"💱 Currency Exchange — מה ה-Routes? מה מיוחד ב-Q2?",
+ a:`<b>Currency Q1 — Routes:</b><br><br>
+<code>/</code> — Calculator (המר מטבע)<br>
+<code>/list</code> — Exchange List (היסטוריה)<br>
+<code>/update</code> — Update Currency (admin)<br><br>
+<b>State:</b> currencies[] {type, value}, exchanges[] (היסטוריה)<br><br>
+<b>Currency Q2 — מיקום בסדרת פיבונאצ'י שינויים:</b><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">function fibPosition(n) {
+  let a=1, b=1, pos=2;
+  while(b < n) {
+    let s = a + b;
+    a = b; b = s; pos++;
+  }
+  return b === n ? pos : -1; // -1 אם לא בסדרה
+}</pre>`},
+
+{id:"exam-logistics-workerId",cat:"exam",q:"🚚 Logistics Q1 — מה ולידציית workerId? מה הlogic של כניסה?",
+ a:`<b>Logistics Q1 — Auth:</b><br><br>
+<b>ולידציה:</b><br>
+workerId: <code>/^\\d{5}$/</code> — בדיוק 5 ספרות<br>
+fullName: <code>/^.{4,}$/</code> — מינימום 4 תווים<br><br>
+<b>Logic כניסה (שני מצבים):</b><br>
+• workerId <b>קיים</b> ב-workers[] → Login (בדוק fullName תואם)<br>
+• workerId <b>לא קיים</b> → Register (הוסף לworkers[])<br><br>
+<b>Routes:</b> /, /welcome/:workerId, /products<br>
+<b>State:</b> workers[], products[], currentWorker<br>
+<b>Storage:</b> workers + products ← localStorage<br>
+<b>⚠ products</b> שייכים לכל העובדים (לא per-worker)`}
 ];
 
 // ─── State ──────────────────────────────────────────────────────────────────
