@@ -126,9 +126,9 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 38 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 40 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
-    <span class="stat" id="stat-solved">✅ נפתרו: 0/12</span>
+    <span class="stat" id="stat-solved">✅ נפתרו: 0/40</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
   </div>
 </header>
@@ -986,6 +986,76 @@ const EXERCISES = [
   hint:"while (b < n) { [a, b] = [b, a+b]; pos++; }\nif (b === n) return pos; else return -1;",
   solution:"function fibPosition(n) {\n  if (n === 0) return 0;\n  let a = 0, b = 1, pos = 1;\n  while (b < n) {\n    [a, b] = [b, a + b];\n    pos++;\n  }\n  return b === n ? pos : -1;\n}",
   explain:"מתקדמים בסדרה עד שb >= n. אם b === n — מצאנו! אם b > n — המספר לא בסדרה. destructuring assignment מעדכן שני ערכים בשורה אחת."
+},
+{
+  id:"express-enum-validation",cat:"express",diff:"medium",title:"Express — Enum Validation + Route Order",
+  desc:'השלימו שני routes:\n1. <code>GET /shipments/heavy?min=X</code> — מחזיר משלוחים עם weight >= min. <b>חייב לפני /:id!</b>\n2. <code>PUT /shipments/:id/status</code> — מעדכן status, אבל רק לערכים: <code>pending, shipped, delivered</code>.\n\n<b>באג נפוץ:</b> <code>req.query.min</code> הוא string — חובה <code>Number()</code>.',
+  starter:"const shipments = [\n  { id: 1, weight: 5, status: 'pending' },\n  { id: 2, weight: 15, status: 'shipped' },\n  { id: 3, weight: 8, status: 'pending' }\n];\n\n// GET /shipments/heavy?min=X — filter by weight >= min\n// חשוב: לפני GET /shipments/:id\napp.get('/shipments/heavy', (req, res) => {\n  // המירו req.query.min למספר (Number()!)\n  // סננו לפי weight >= min\n});\n\n// PUT /shipments/:id/status — update status with enum check\napp.put('/shipments/:id/status', (req, res) => {\n  const shipment = shipments.find(s => s.id === Number(req.params.id));\n  if (!shipment) return res.status(404).json({ error: 'Not found' });\n  // בדקו שה-status חוקי (pending/shipped/delivered)\n  // אם לא — החזירו 400\n  // אם כן — עדכנו ת-status\n});",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"uses Number(req.query.min) for weight comparison"},
+    {input:["__custom__"],expected:"__custom__",label:"GET /heavy route is defined before /:id"},
+    {input:["__custom__"],expected:"__custom__",label:"has enum array with 3 statuses"},
+    {input:["__custom__"],expected:"__custom__",label:"returns 400 if status is invalid"},
+    {input:["__custom__"],expected:"__custom__",label:"updates shipment.status and returns updated object"}
+  ],
+  customTest(code) {
+    const results = [];
+    // Test 1: uses Number() on req.query.min
+    const hasNumber = /Number\s*\(\s*req\.query\.min\s*\)/.test(code);
+    results.push({pass: hasNumber, message: hasNumber ? "uses Number(req.query.min) for weight comparison" : "req.query.min is a string — use Number(req.query.min) before comparing to weight"});
+    // Test 2: /heavy defined before /:id
+    const heavyPos = code.indexOf("'/shipments/heavy'") !== -1 ? code.indexOf("'/shipments/heavy'") : code.indexOf('"/shipments/heavy"');
+    const paramPos = code.indexOf("'/shipments/:id'") !== -1 ? code.indexOf("'/shipments/:id'") : code.indexOf('"/shipments/:id"');
+    const routeOrder = heavyPos !== -1 && (paramPos === -1 || heavyPos < paramPos);
+    results.push({pass: routeOrder, message: routeOrder ? "GET /heavy route is defined before /:id" : "CRITICAL: /shipments/heavy MUST come before /shipments/:id — otherwise Express matches :id first!"});
+    // Test 3: has enum array
+    const hasEnum = /(pending.*shipped.*delivered|allowed|validStatuses)/.test(code) && /\[/.test(code);
+    results.push({pass: hasEnum, message: hasEnum ? "has enum array with 3 statuses" : "define an array: const allowed = ['pending','shipped','delivered']"});
+    // Test 4: returns 400 for invalid
+    const has400 = /status\s*\(\s*400\s*\)/.test(code) && /includes\s*\(/.test(code);
+    results.push({pass: has400, message: has400 ? "returns 400 if status is invalid" : "if (!allowed.includes(status)) return res.status(400).json(...)"});
+    // Test 5: updates shipment.status
+    const hasUpdate = /shipment\.status\s*=\s*(?:req\.body\.status|status)/.test(code) && /\.json\s*\(/.test(code);
+    results.push({pass: hasUpdate, message: hasUpdate ? "updates shipment.status and returns updated object" : "shipment.status = status; then res.json(shipment)"});
+    return results;
+  },
+  hint:"const min = Number(req.query.min) || 0;\nconst allowed = ['pending','shipped','delivered'];\nif (!allowed.includes(req.body.status)) return res.status(400).json({error:'Invalid'});",
+  solution:"// GET /shipments/heavy — MUST be before /:id!\napp.get('/shipments/heavy', (req, res) => {\n  const min = Number(req.query.min) || 0;\n  const heavy = shipments.filter(s => s.weight >= min);\n  res.json(heavy);\n});\n\napp.put('/shipments/:id/status', (req, res) => {\n  const shipment = shipments.find(s => s.id === Number(req.params.id));\n  if (!shipment) return res.status(404).json({ error: 'Not found' });\n  const { status } = req.body;\n  const allowed = ['pending', 'shipped', 'delivered'];\n  if (!allowed.includes(status))\n    return res.status(400).json({ error: 'status must be: pending, shipped, or delivered' });\n  shipment.status = status;\n  res.json(shipment);\n});",
+  explain:"שני עקרונות קריטיים: (1) route ספציפי (/heavy) חייב לפני route פרמטרי (/:id) — אחרת Express תתאים :id='heavy'. (2) req.query.min הוא תמיד string — Number() הכרחי. enum validation: בדקו שהערך נמצא ברשימה המותרת."
+},
+{
+  id:"express-multi-query-convert",cat:"express",diff:"medium",title:"Express — Multi-param Query String + חישוב",
+  desc:'השלימו את ה-endpoint <code>GET /convert?from=X&to=Y&amount=Z</code> שממיר סכום בין מטבעות.\n\n<b>נוסחה:</b> result = (amount × fromRate.value) / toRate.value\n\n<b>שלושה חוקים חשובים:</b>\n<ol><li>כל query params הם strings — חובה <code>Number(amount)</code></li><li>בדקו שה-from ≠ to</li><li>בדקו חלוקה באפס (toRate.value === 0)</li></ol>',
+  starter:"const rates = [\n  { type: 'USD', value: 3.7 },\n  { type: 'EUR', value: 4.0 },\n  { type: 'GBP', value: 4.7 }\n];\n\napp.get('/convert', (req, res) => {\n  const { from, to, amount } = req.query;\n  \n  // 1. מצאו fromRate ו-toRate\n  // 2. החזירו 404 אם אחד מהם לא קיים\n  // 3. בדקו from !== to (400 אם שווים)\n  // 4. בדקו toRate.value !== 0 (400 אם שווה לאפס)\n  // 5. חשבו: result = Number(amount) * fromRate.value / toRate.value\n  // 6. החזירו: { from, to, amount: Number(amount), result }\n  \n});",
+  tests:[
+    {input:["__custom__"],expected:"__custom__",label:"uses Number(amount) to convert query string"},
+    {input:["__custom__"],expected:"__custom__",label:"finds fromRate and toRate from rates array"},
+    {input:["__custom__"],expected:"__custom__",label:"returns 404 if from or to currency not found"},
+    {input:["__custom__"],expected:"__custom__",label:"checks from !== to (400 for same currency)"},
+    {input:["__custom__"],expected:"__custom__",label:"correct conversion formula: amount * from.value / to.value"}
+  ],
+  customTest(code) {
+    const results = [];
+    // Test 1: uses Number(amount)
+    const hasNumber = /Number\s*\(\s*amount\s*\)/.test(code) || /Number\s*\(\s*req\.query\.amount\s*\)/.test(code) || /parseFloat\s*\(\s*amount\s*\)/.test(code);
+    results.push({pass: hasNumber, message: hasNumber ? "uses Number(amount) to convert query string" : "req.query.amount is a string — use Number(amount) or parseFloat(amount) before arithmetic"});
+    // Test 2: finds fromRate and toRate
+    const hasFindRates = /rates\.find/.test(code) || /find\s*\(r\s*=>\s*r\.type/.test(code);
+    results.push({pass: hasFindRates, message: hasFindRates ? "finds fromRate and toRate from rates array" : "use rates.find(r => r.type === from) to locate each rate"});
+    // Test 3: returns 404
+    const has404 = /status\s*\(\s*404\s*\)/.test(code);
+    results.push({pass: has404, message: has404 ? "returns 404 if from or to currency not found" : "if (!fromRate || !toRate) return res.status(404).json(...)"});
+    // Test 4: checks from !== to
+    const hasSameCheck = /from.*===.*to|to.*===.*from|from.*!==.*to/.test(code) || /toUpperCase/.test(code) && /from/.test(code);
+    results.push({pass: hasSameCheck, message: hasSameCheck ? "checks from !== to (400 for same currency)" : "if (from === to) return res.status(400).json(...) — can't convert a currency to itself"});
+    // Test 5: correct formula with division
+    const hasFormula = /\*\s*fromRate\.value\s*\)\s*\/\s*toRate\.value|\*\s*fromRate\.value\s*\/\s*toRate\.value/.test(code);
+    results.push({pass: hasFormula, message: hasFormula ? "correct conversion formula: amount * from.value / to.value" : "result = (Number(amount) * fromRate.value) / toRate.value"});
+    return results;
+  },
+  hint:"const fromRate = rates.find(r => r.type === from.toUpperCase());\nconst toRate = rates.find(r => r.type === to.toUpperCase());\nconst result = (Number(amount) * fromRate.value) / toRate.value;",
+  solution:"app.get('/convert', (req, res) => {\n  const { from, to, amount } = req.query;\n  // Find rates (case-insensitive)\n  const fromRate = rates.find(r => r.type === from.toUpperCase());\n  const toRate = rates.find(r => r.type === to.toUpperCase());\n  // 404 if currency not found\n  if (!fromRate || !toRate)\n    return res.status(404).json({ error: 'Currency not found' });\n  // 400 if same currency\n  if (from.toUpperCase() === to.toUpperCase())\n    return res.status(400).json({ error: 'from and to must differ' });\n  // 400 if divide by zero\n  if (toRate.value === 0)\n    return res.status(400).json({ error: 'Cannot divide by zero' });\n  // Convert\n  const numAmount = Number(amount);\n  const result = (numAmount * fromRate.value) / toRate.value;\n  res.json({ from, to, amount: numAmount, result });\n});",
+  explain:"שלושה כללים לעבודה עם query params: (1) תמיד Number() — req.query הוא תמיד string. (2) בדקו from !== to — לא הגיוני להמיר מטבע לעצמו. (3) בדקו חלוקה באפס לפני החישוב. toUpperCase() מבטיח אחידות ללא תלות ב-case."
 }
 ];
 
@@ -999,7 +1069,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/38`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/40`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 
