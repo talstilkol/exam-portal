@@ -126,7 +126,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 77 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 85 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
     <span class="stat" id="stat-solved">✅ נפתרו: 0/77</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
@@ -3131,6 +3131,311 @@ function App() {
     return {ok:true};
   },
   explain:"Bank מיוחד: יש role-based routing (manager vs client). Protected routes עם Navigate redirect. handleLogin מנווט לנתיב נכון לפי role."
+},
+
+// ══════════════════════════════════════════════
+// 78 — react-multi-filter  ⚛ MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"react-multi-filter",cat:"react",diff:"medium",
+  title:"סינון לפי מספר קריטריונים",
+  desc:"כתוב פונקציה שמסננת מערך טיסות לפי yearMin, name ו-priceMax. כל הפילטרים AND.",
+  hint:"צור משתנה `filtered` ע\"י שרשרת תנאים. אם הפילטר ריק — תנאי זה מתקיים תמיד.",
+  solution:`// state
+const [yearMin, setYearMin] = useState('');
+const [nameFilter, setNameFilter] = useState('');
+const [priceMax, setPriceMax] = useState('');
+
+// פילטר — AND בין כל הקריטריונים
+const filtered = flights.filter(f => {
+  const yearOk  = yearMin  === '' || f.year >= Number(yearMin);
+  const nameOk  = nameFilter === '' || f.name.toLowerCase().includes(nameFilter.toLowerCase());
+  const priceOk = priceMax  === '' || f.price <= Number(priceMax);
+  return yearOk && nameOk && priceOk;
+});`,
+  customTest(code){
+    const checks=[
+      {re:/\.filter\s*\(/,msg:'חסרה קריאה ל-.filter()'},
+      {re:/yearOk|year.*>=|>=.*year/,msg:'חסרה בדיקת yearMin'},
+      {re:/includes|toLowerCase/,msg:'חסרת חיפוש טקסט (includes)'},
+      {re:/priceOk|price.*<=|<=.*price/,msg:'חסרת בדיקת priceMax'},
+      {re:/&&/,msg:'חסר AND (&&) בין הקריטריונים'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"פילטר AND: כל תנאי בדוק בנפרד. אם הפילטר ריק ('') — מחזירים true (לא מסננים). כל הכרטיסים חייבים לעבור."
+},
+
+// ══════════════════════════════════════════════
+// 79 — express-query-params-filter  🟢 MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"express-query-params-filter",cat:"express",diff:"medium",
+  title:"GET עם query parameters לסינון",
+  desc:"כתוב route: GET /games?yearMin=2020&name=mario&priceMax=100 שמסנן מערך games.",
+  hint:"req.query מחזיר strings. המר למספר עם Number(). בדוק שהפרמטר קיים לפני סינון.",
+  solution:`// GET /games?yearMin=2020&name=mario&priceMax=100
+app.get('/games', (req, res) => {
+  const { yearMin, name, priceMax } = req.query;
+
+  let result = games;
+
+  if (yearMin !== undefined) {
+    result = result.filter(g => g.year >= Number(yearMin));
+  }
+  if (name !== undefined) {
+    result = result.filter(g => g.name.toLowerCase().includes(name.toLowerCase()));
+  }
+  if (priceMax !== undefined) {
+    result = result.filter(g => g.price <= Number(priceMax));
+  }
+
+  res.json(result);
+});`,
+  customTest(code){
+    const checks=[
+      {re:/req\.query/,msg:'חסר req.query'},
+      {re:/Number\(|parseInt\(/,msg:'חסר המרה למספר (Number() / parseInt())'},
+      {re:/\.filter\s*\(/,msg:'חסרה קריאה ל-.filter()'},
+      {re:/includes|toLowerCase/,msg:'חסרת חיפוש שם (includes)'},
+      {re:/res\.json/,msg:'חסר res.json()'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"req.query תמיד string. בדוק !==undefined לפני שימוש. המר ל-Number לפני השוואות מספריות."
+},
+
+// ══════════════════════════════════════════════
+// 80 — mongoose-findbyid-update  🟢 MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"mongoose-findbyid-update",cat:"express",diff:"medium",
+  title:"Mongoose findByIdAndUpdate",
+  desc:"כתוב route PUT /items/:id שמעדכן מסמך. החזר את המסמך המעודכן, הפעל ולידציות.",
+  hint:"העבר { new: true, runValidators: true } כאופציות.",
+  solution:`app.put('/items/:id', async (req, res) => {
+  try {
+    const updated = await Item.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },       // רק שדות שנשלחו
+      { new: true, runValidators: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});`,
+  customTest(code){
+    const checks=[
+      {re:/findByIdAndUpdate/,msg:'חסר findByIdAndUpdate'},
+      {re:/req\.params\.id/,msg:'חסר req.params.id'},
+      {re:/new\s*:\s*true/,msg:'חסר { new: true }'},
+      {re:/runValidators\s*:\s*true/,msg:'חסר { runValidators: true }'},
+      {re:/404/,msg:'חסר 404 כשהפריט לא נמצא'},
+      {re:/try.*catch|catch\s*\(/s,msg:'חסר try/catch'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"{ new: true } — מחזיר את המסמך אחרי העדכון. { runValidators: true } — מפעיל Schema validators. בלי זה Schema לא נבדק ב-update!"
+},
+
+// ══════════════════════════════════════════════
+// 81 — react-useeffect-fetch  ⚛ MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"react-useeffect-fetch",cat:"react",diff:"medium",
+  title:"useEffect עם fetch בטעינת component",
+  desc:"כתוב useEffect שמביא נתונים מ-/api/items בעת טעינת הcomponent. נהל loading ו-error.",
+  hint:"מערך dependencies ריק [] = רץ פעם אחת בלבד. שמור state לdata, loading, error.",
+  solution:`const [items, setItems] = useState([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+
+useEffect(() => {
+  fetch('/api/items')
+    .then(res => {
+      if (!res.ok) throw new Error('Server error');
+      return res.json();
+    })
+    .then(data => {
+      setItems(data);
+      setLoading(false);
+    })
+    .catch(err => {
+      setError(err.message);
+      setLoading(false);
+    });
+}, []); // [] = רק בטעינה
+
+if (loading) return <p>טוען...</p>;
+if (error)   return <p>שגיאה: {error}</p>;`,
+  customTest(code){
+    const checks=[
+      {re:/useEffect\s*\(/,msg:'חסר useEffect'},
+      {re:/fetch\s*\(/,msg:'חסר fetch()'},
+      {re:/\[\s*\]/,msg:'חסר dependency array ריק []'},
+      {re:/setLoading|loading/,msg:'חסרת ניהול loading state'},
+      {re:/setError|error/,msg:'חסרת ניהול error state'},
+      {re:/\.catch|try.*catch/s,msg:'חסר טיפול בשגיאות (catch)'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"[] = רץ פעם אחת בMount. תמיד נהל loading + error. res.ok בודק status < 400, לא רק network error."
+},
+
+// ══════════════════════════════════════════════
+// 82 — react-add-to-nested-state  ⚛ MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"react-add-to-nested-state",cat:"react",diff:"medium",
+  title:"הוספת פריט ל-state מקוננת",
+  desc:"state הוא אובייקט teams{}. כתוב פונקציה addPlayer(teamName, player) שמוסיפה שחקן לקבוצה.",
+  hint:"השתמש ב-spread כדי לא לשנות ישירות את state. שמור על שאר הקבוצות.",
+  solution:`// State: { "Arsenal": [{name, position},...], "Chelsea": [...] }
+const [teams, setTeams] = useState(
+  () => JSON.parse(localStorage.getItem('teams') || '{}')
+);
+
+function addPlayer(teamName, player) {
+  setTeams(prev => ({
+    ...prev,                    // שמור שאר קבוצות
+    [teamName]: [
+      ...(prev[teamName] || []),  // שמור שחקנים קיימים
+      player                      // הוסף שחקן חדש
+    ]
+  }));
+}`,
+  customTest(code){
+    const checks=[
+      {re:/setTeams\s*\(/,msg:'חסר setTeams'},
+      {re:/\.\.\.\s*prev/,msg:'חסר spread (...prev) לשמירת שאר הקבוצות'},
+      {re:/\[teamName\]/,msg:'חסר [teamName] כ-computed property key'},
+      {re:/prev\[teamName\]\s*\|\|\s*\[\]/,msg:'חסר fallback לקבוצה חדשה (prev[teamName] || [])'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"Computed property key: [teamName] = שם דינמי. תמיד spread prev כדי לא לאבד קבוצות אחרות. || [] לקבוצה חדשה."
+},
+
+// ══════════════════════════════════════════════
+// 83 — express-post-validation  🟢 MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"express-post-validation",cat:"express",diff:"medium",
+  title:"POST עם ולידציה ו-400 על שגיאה",
+  desc:"כתוב POST /flights שמאמת שכל השדות קיימים ושflightNumber הוא מספר חיובי. החזר 400 על שגיאה.",
+  hint:"בדוק קיום שדות ב-req.body לפני הוספה. return מוקדם עם status(400).",
+  solution:`app.post('/flights', (req, res) => {
+  const { flightNumber, destination, departureTime } = req.body;
+
+  // ולידציה
+  if (!flightNumber || !destination || !departureTime) {
+    return res.status(400).json({ error: 'כל השדות חובה' });
+  }
+  if (isNaN(flightNumber) || Number(flightNumber) <= 0) {
+    return res.status(400).json({ error: 'flightNumber חייב להיות מספר חיובי' });
+  }
+
+  const newFlight = {
+    id: Date.now(),
+    flightNumber: Number(flightNumber),
+    destination,
+    departureTime
+  };
+  flights.push(newFlight);
+  res.status(201).json(newFlight);
+});`,
+  customTest(code){
+    const checks=[
+      {re:/req\.body/,msg:'חסר req.body'},
+      {re:/status\(400\)/,msg:'חסר status 400 על ולידציה נכשלת'},
+      {re:/status\(201\)/,msg:'חסר status 201 על יצירה מוצלחת'},
+      {re:/isNaN|Number\s*\(/,msg:'חסר בדיקת flightNumber כמספר (isNaN / Number)'},
+      {re:/return.*res\.status\(400\)/,msg:'חסר return לפני res.status(400)'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"return לפני res.status(400) כדי לעצור execution. 201 Created לPOST מוצלח. תמיד המר flightNumber ל-Number לפני שמירה."
+},
+
+// ══════════════════════════════════════════════
+// 84 — js-set-unique  🟨 EASY
+// ══════════════════════════════════════════════
+{
+  id:"js-set-unique",cat:"js",diff:"easy",
+  title:"ספירת ערכים ייחודיים עם Set",
+  desc:"כתוב פונקציה שמקבלת מערך מספרים ומחזירה { evens: count, odds: count } של ערכים ייחודיים.",
+  hint:"השתמש ב-Set כדי לשמור ערכים ייחודיים. לפני הוספה, בדוק זוגי/אי-זוגי.",
+  solution:`function countUniqueEvenOdd(arr) {
+  if (!Array.isArray(arr)) throw new Error('Input must be an array');
+
+  const evens = new Set();
+  const odds  = new Set();
+
+  for (const n of arr) {
+    if (typeof n !== 'number') continue;
+    if (n % 2 === 0) evens.add(n);
+    else             odds.add(n);
+  }
+
+  return { evens: evens.size, odds: odds.size };
+}
+
+// דוגמה: [1,2,2,3,3,4] → { evens: 2, odds: 2 }`,
+  customTest(code){
+    const checks=[
+      {re:/new Set\s*\(\)/,msg:'חסר new Set()'},
+      {re:/\.add\s*\(/,msg:'חסר .add() ל-Set'},
+      {re:/\.size/,msg:'חסר .size לספירת הSet'},
+      {re:/%\s*2\s*===?\s*0/,msg:'חסרת בדיקת זוגיות (% 2 === 0)'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"Set מאחסן ערכים ייחודיים בלבד — .add() מתעלם מערכים כפולים. .size = מספר הערכים. מושלם לספירה ייחודית."
+},
+
+// ══════════════════════════════════════════════
+// 85 — react-confirm-delete  ⚛ MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"react-confirm-delete",cat:"react",diff:"medium",
+  title:"מחיקה עם אישור — window.confirm",
+  desc:"כתוב פונקציה deleteItem(id) שמציגה הודעת אישור ומוחקת פריט מה-state רק אם המשתמש אישר.",
+  hint:"window.confirm() מחזיר true/false. השתמש ב-.filter() כדי להסיר פריט לפי id.",
+  solution:`function deleteItem(id) {
+  const confirmed = window.confirm('האם למחוק פריט זה?');
+  if (!confirmed) return;
+
+  setItems(prev => prev.filter(item => item.id !== id));
+}
+
+// בתצוגה:
+<button onClick={() => deleteItem(item.id)}>
+  🗑 מחק
+</button>`,
+  customTest(code){
+    const checks=[
+      {re:/window\.confirm\s*\(/,msg:'חסר window.confirm()'},
+      {re:/if\s*\(!confirmed\)\s*return|if\s*\(!.*confirm/,msg:'חסרת בדיקה אם המשתמש ביטל'},
+      {re:/\.filter\s*\(/,msg:'חסרת .filter() לסינון הפריט'},
+      {re:/item\.id\s*!==\s*id|id\s*!==\s*item\.id/,msg:'חסרת השוואת id במחיקה'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"window.confirm() חוסמת עד לתשובה. false = ביטל, צא מהפונקציה. .filter(item => item.id !== id) = מחזיר כל הפריטים חוץ מהנמחק."
 }
 ];
 
@@ -3144,7 +3449,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/77`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/85`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 
