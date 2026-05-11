@@ -2,6 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8" />
+<meta name="description" content="פורטל מבחן 2 — איחוד + פתרונות 100 — פורטל הכנה למבחן Fullstack">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>פורטל מבחן 2 — איחוד + פתרונות 100</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,6 +56,7 @@
     font-family:inherit; font-size:13px; line-height:1; white-space:nowrap;
   }
   nav.tabs button:hover{transform:translate(-1px,-1px); box-shadow:4px 4px 0 #000}
+  nav.tabs button:focus-visible{outline:3px solid #facc15;outline-offset:2px}
   nav.tabs button.active{background:linear-gradient(135deg,#facc15,#fb923c); transform:translate(-1px,-1px); color:#000}
   nav.tabs .sep{width:1px; height:22px; background:#cbd5e1; margin:0 4px}
   main.workspace{position:relative; min-height:0; overflow:hidden}
@@ -143,7 +145,7 @@
   body.dark .sc-exam,
   body.dark .sc-stat,
   body.dark .sc-legend, body.dark .sc-shortcuts{background:#1e293b; color:#e2e8f0}
-  body.dark .home-card p, body.dark .sc-stat-lbl, body.dark .sc-intro{color:#94a3b8}
+  body.dark .home-card p, body.dark .sc-stat-lbl, body.dark .sc-intro{color:#cbd5e1}
   body.dark .sc-exam-q{border-top-color:#1e293b}
   body.dark .sc-exam-q:hover{background:#312e81}
 
@@ -234,7 +236,7 @@
   body.dark .roadmap-step{background:linear-gradient(135deg,#312e81,#3b0764); color:#e2e8f0}
   body.dark .roadmap-step .rs-num{color:#fcd34d}
   body.dark .roadmap-step .rs-title{color:#e2e8f0}
-  .roadmap-arrow{flex:0 0 auto; font-size:22px; #64748b; padding:0 4px;
+  .roadmap-arrow{flex:0 0 auto; font-size:22px; color:#64748b; padding:0 4px;
     align-self:center; transform:rotate(180deg)}
   body.dark .roadmap-arrow{color:#cbd5e1}
   .roadmap-step.r-grandma{background:linear-gradient(135deg,#fce7f3,#fbcfe8)}
@@ -312,7 +314,7 @@
   body.dark .donut-card{background:#1e293b; color:#e2e8f0}
   .donut-card .dc-name{font-size:15px; font-weight:900; margin-bottom:4px; text-align:center}
   .donut-card .dc-meta{font-size:11px; color:#475569; margin-bottom:8px}
-  body.dark .donut-card .dc-meta{color:#94a3b8}
+  body.dark .donut-card .dc-meta{color:#cbd5e1}
   .donut-svg{width:170px; height:170px}
   .donut-track{fill:none; stroke:#e5e7eb; stroke-width:18}
   body.dark .donut-track{stroke:#334155}
@@ -383,7 +385,7 @@
   .extras-viewer iframe{flex:1; width:100%; border:0}
   body.dark .ex-card,
   body.dark .extras-foot{background:#1e293b; color:#e2e8f0}
-  body.dark .ex-card p, body.dark .extras-hero p{color:#94a3b8}
+  body.dark .ex-card p, body.dark .extras-hero p{color:#cbd5e1}
   body.dark .extras-viewer{background:#0f172a}
   body.dark .extras-viewer-bar{background:#1e293b; color:#e2e8f0}
 
@@ -405,6 +407,7 @@
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">דלג לתוכן</a>
 <div class="shell">
   <header class="hero">
     <div class="badge">📦 פורטל מאוחד</div>
@@ -466,7 +469,7 @@
           <h2>📚 חומרים נוספים</h2>
           <p>כל החומרים המשלימים שאספת — מאוחדים כאן. לחיצה על כרטיס פותחת את התוכן בצד וטוענת את המקור המלא.</p>
           <div class="extras-search-wrap">
-            <input type="search" id="extras-search" class="extras-search" placeholder="🔍 חפש חומר..." autocomplete="off">
+            <input type="search" id="extras-search" class="extras-search" placeholder="🔍 חפש חומר..." autocomplete="off" aria-label="חיפוש חומרי לימוד">
           </div>
         </div>
         <div class="extras-grid">

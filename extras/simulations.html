@@ -2,6 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta name="description" content="🎮 סימולציות — בנה צעד אחר צעד — פורטל הכנה למבחן Fullstack">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🎮 סימולציות — בנה צעד אחר צעד</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -66,6 +67,12 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
   .sim-back:hover{background:#334155}
   .sim-tip{background:#064e3b;border-color:#059669;color:#a7f3d0}
   .sim-warn{background:#422006;border-color:var(--orange);color:#fde68a}
+  .filter-chip{background:#334155;color:#e2e8f0;border-color:#475569}
+  .filter-chip:hover{background:#475569}
+  .filter-chip.active{background:var(--brand);color:#fff;border-color:#000}
+  .sim-card .diff-tag.easy{background:#064e3b;color:#a7f3d0;border-color:#059669}
+  .sim-card .diff-tag.medium{background:#422006;color:#fde68a;border-color:#92400e}
+  .sim-card .diff-tag.hard{background:#450a0a;color:#fca5a5;border-color:#991b1b}
 }
 .filter-chip{padding:6px 14px;border:2.5px solid #000;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;background:#f1f5f9;transition:.15s;font-family:inherit;box-shadow:2px 2px 0 #000}
 .filter-chip:hover{transform:translateY(-1px);box-shadow:3px 3px 0 #000}
@@ -86,9 +93,12 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
   .app{grid-template-columns:1fr!important}
   main{max-height:none!important;overflow:visible!important}
 }
+button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2px}
+.skip-link{position:absolute;top:-40px;left:0;background:#facc15;color:#000;padding:8px 16px;z-index:9999;font-weight:900;border-radius:0 0 8px 0;transition:.2s}.skip-link:focus{top:0}
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🎮 סימולציות — בנה צעד אחר צעד</h1>
   <p>סימולציות אינטראקטיביות: כל שלב מוסיף קוד ומסביר למה. כמו לבנות את הפרויקט מאפס.</p>
@@ -96,7 +106,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 </header>
 
 <div id="filter-bar" style="max-width:1200px;margin:0 auto;padding:16px 24px 0;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-  <input id="sim-search" type="text" placeholder="🔎 חיפוש סימולציה..." oninput="filterCards()" style="flex:1;min-width:200px;padding:8px 14px;border:3px solid #000;border-radius:10px;font-size:14px;font-weight:700;font-family:inherit;box-shadow:3px 3px 0 #000">
+  <input id="sim-search" aria-label="חיפוש סימולציות" type="text" placeholder="🔎 חיפוש סימולציה..." oninput="filterCards()" style="flex:1;min-width:200px;padding:8px 14px;border:3px solid #000;border-radius:10px;font-size:14px;font-weight:700;font-family:inherit;box-shadow:3px 3px 0 #000">
   <button class="filter-chip active" data-filter="all" onclick="setFilter('all')">📋 הכל</button>
   <button class="filter-chip" data-filter="react" onclick="setFilter('react')">⚛️ React</button>
   <button class="filter-chip" data-filter="express" onclick="setFilter('express')">🟢 Express</button>

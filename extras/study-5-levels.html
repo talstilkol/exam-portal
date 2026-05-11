@@ -2,6 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="description" content="סיכום פיתוח אתרים - 5 רמות — פורטל הכנה למבחן Fullstack">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>סיכום פיתוח אתרים - 5 רמות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1888,9 +1889,7 @@ code:[
  x:{'<div':'מיכל גנרי — כמו ארגז ריק שאפשר לשים בו דברים','id':'מזהה ייחודי — תעודת זהות לאלמנט','"app"':'שם המזהה — נשתמש בו ב־JS','</div>':'סגירת המיכל'}},
 {c:'  <script src="app.js"><\/script>',e:'🔗 טוען את app.js',
  x:{'<script':'תגית של קוד JavaScript','src':'מאיפה לטעון — Source','"app.js"':'שם הקובץ שיש בו את הקוד','<\/script>':'סגירת תגית ה־script'}},
-{c:'<script src="nav-tree.js"></script>
 </body>',e:'סוגר את הגוף',
- x:{'<script src="nav-tree.js"></script>
 </body>':'סגירת גוף הדף'}},
 {c:'</html>',e:'סוגר את התגית הראשית',
  x:{'</html>':'סגירת המסמך כולו'}}
@@ -5891,7 +5890,6 @@ topics:[
       {num:1,topic:'יצירת קובץ HTML',
        action:'קובץ נפרד <code>public/index.html</code>',
        verify:'נפתח ידנית — תקין',
-       code:'<!DOCTYPE html>\n<html>\n<body>\n  <h1>הוספת קורס</h1>\n  <input id="name" placeholder="שם קורס" />\n  <input id="students" type="number" placeholder="מספר תלמידים" />\n  <input id="year" type="number" placeholder="שנת התחלה" />\n  \n  <button id="addBtn">הוסף קורס</button>\n  <button id="showBtn">הצג כל הקורסים</button>\n  \n  <div id="result"></div>\n  <script src="client.js"><\/script>\n<script src="nav-tree.js"></script>
 </body>\n</html>'},
       {num:2,topic:'GET /addnewcourse',
        action:'<code>res.sendFile</code> עם נתיב מוחלט',
@@ -6758,7 +6756,6 @@ topics:[
       {num:1,topic:'HTML',
        action:'מבנה פשוט',
        verify:'maxlength עובד ב־input',
-       code:'<!DOCTYPE html>\n<html dir="rtl">\n<body>\n  <h1>שמור טקסט לקובץ</h1>\n  <input id="text" type="text" maxlength="10" placeholder="עד 10 תווים" />\n  <button id="save">שמור</button>\n  \n  <script>\n  document.getElementById("save").onclick = async () => {\n    const text = document.getElementById("text").value;\n    if (!text) {\n      alert("יש להזין טקסט");\n      return;\n    }\n    const res = await fetch("http://localhost:3000/save", {\n      method: "POST",\n      headers: { "Content-Type": "application/json" },\n      body: JSON.stringify({ text })\n    });\n    if (res.ok) {\n      alert("נשמר בהצלחה!");\n      document.getElementById("text").value = "";\n    } else {\n      alert("שגיאה");\n    }\n  };\n  <\/script>\n<script src="nav-tree.js"></script>
 </body>\n</html>'}
      ],
      mistakes:[

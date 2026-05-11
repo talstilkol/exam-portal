@@ -4,3 +4,4 @@ node_modules/
 *.pyc
 __pycache__/
 .vercel
+extras/course-portal/materials/source-assets/
