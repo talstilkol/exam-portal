@@ -19,7 +19,7 @@ const SITE_MAP = {
         { id: "practice-bank", label: "בנק תרגול", icon: "💪", href: "practice-bank.html", meta: "38 תרגילים" },
         { id: "simulations", label: "סימולציות", icon: "🎮", href: "simulations.html", meta: "9 סימולציות" },
         { id: "flow-canvas", label: "מפת זרימה", icon: "🗺", href: "flow-canvas.html", meta: "27 שאלות" },
-        { id: "exam-master", label: "Exam Master", icon: "🏆", href: "exam-master-v3.html", meta: "25 שאלות" },
+        { id: "exam-master", label: "Exam Master", icon: "🏆", href: "exam-master-v3.html", meta: "20 פרקים" },
         { id: "code-browser", label: "דפדפן קוד", icon: "💻", href: "code-browser.html", meta: "27 פרויקטים" },
         { id: "file-graph", label: "File Graph", icon: "📂", href: "file-graph.html", meta: "9 מערכות" },
         { id: "sequence-diagrams", label: "Sequence Diagrams", icon: "🔄", href: "sequence-diagrams.html", meta: "12 תרשימים" }
@@ -55,7 +55,7 @@ const SITE_MAP = {
       icon: "✅",
       children: [
         { id: "solutions100", label: "פתרונות 100/100", icon: "🏆", href: "solutions100/index.html", meta: "27 פתרונות" },
-        { id: "qa-bundle", label: "QA Bundle — ROUND3", icon: "📘", href: "qa-bundle-r3/index.html", meta: "25 שאלות" },
+        { id: "qa-bundle", label: "QA Bundle — ROUND3", icon: "📘", href: "qa-bundle-r3/index.html", meta: "27 שאלות" },
         {
           id: "sol-by-exam",
           label: "לפי מבחן",
