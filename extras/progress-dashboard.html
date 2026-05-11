@@ -248,6 +248,22 @@ const TOOLS = [
       }).length;
       return { done, total, items: null };
     }
+  },
+  {
+    id: 'last-day',
+    name: 'יום לפני המבחן',
+    icon: '📅',
+    color: '#f59e0b',
+    link: 'last-day.html',
+    getProgress() {
+      // ביטחון ממוצע = מספר כוכבים / (27 נושאים × 5 כוכבים מקסימום)
+      const conf = _lsGet('ld-conf', {});
+      const total = 27; // 9 exams × 3 questions
+      const maxScore = total * 5;
+      const actual = Object.values(conf).reduce((a, b) => a + b, 0);
+      const done = Math.round(actual / maxScore * total);
+      return { done, total, items: null };
+    }
   }
 ];
 
@@ -311,7 +327,8 @@ function resetAll() {
   if (!confirm('האם אתה בטוח? כל ההתקדמות תימחק.')) return;
   ['cm-checked', 'pb-solved', 'sim-progress', 'fc-visited', 'cb-viewed', 'fg-visited', 'sd-viewed', 'es-checklist', 'ek-viewed', 'dw-completed', 'df-viewed', 'tq-known', 'tq-dnk',
    'mock-checked-football','mock-checked-parking','mock-checked-flights','mock-checked-helpme','mock-checked-bank','mock-checked-logistics','mock-checked-currency','mock-checked-willing','mock-checked-travel',
-   'mock-note-football','mock-note-parking','mock-note-flights','mock-note-helpme','mock-note-bank','mock-note-logistics','mock-note-currency','mock-note-willing','mock-note-travel'
+   'mock-note-football','mock-note-parking','mock-note-flights','mock-note-helpme','mock-note-bank','mock-note-logistics','mock-note-currency','mock-note-willing','mock-note-travel',
+   'ld-conf','ld-bugs'
   ].forEach(k => localStorage.removeItem(k));
   render();
 }
