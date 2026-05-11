@@ -432,6 +432,133 @@ app.get('/read', async (req, res) => {
   res.json(result);  // רק מה שעבר את כל הפילטרים
 });`,
     tip:"AND לא OR — רק אם המשתנה !== undefined מוסיפים את הפילטר. כך ניתן לשלוח חלק מהפרמטרים."
+  },
+  {
+    num:11, title:"React — Protected Route עם Navigate",
+    exam:"Bank, Logistics, Parking Q1", icon:"🔒",
+    code:`// App.jsx — Protected routes לפי role
+<Route path="/client/:id" element={
+  currentUser && currentUser.role !== 'manager'
+    ? <ClientPage user={currentUser} />
+    : <Navigate to="/" />
+} />
+<Route path="/manager" element={
+  currentUser?.role === 'manager'
+    ? <ManagerPage />
+    : <Navigate to="/" />
+} />
+
+// handleLogin מנווט לRoute הנכון:
+function handleLogin(user) {
+  setCurrentUser(user);
+  if (user.role === 'manager') navigate('/manager');
+  else navigate('/client/' + user.id);
+}`,
+    tip:"Navigate = redirect מיידי. currentUser?.role מונע crash אם null. handleLogin מגדיר role ואז מנווט."
+  },
+  {
+    num:12, title:"Mongoose — Schema מלא עם Validators",
+    exam:"Parking, Flights, Willing Q3", icon:"🍃",
+    code:`const flightSchema = new mongoose.Schema({
+  flightNumber: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+  destination: {
+    type: String,
+    required: true,
+    minlength: 2
+  },
+  type: {
+    type: String,
+    enum: ['domestic', 'international'],
+    required: true
+  },
+  departureTime: {
+    type: String,
+    required: true,
+    match: /^\d{2}:\d{2}$/  // HH:MM
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now  // ⚠ בלי ()!
+  }
+});`,
+    tip:"default: Date.now — ללא () כי אנחנו מעבירים reference לפונקציה. Date.now() עם () = ערך קבוע בזמן הגדרת Schema!"
+  },
+  {
+    num:13, title:"React — Multi-Criteria Filter",
+    exam:"Football, Bank, Willing Q1", icon:"🔍",
+    code:`// state — פילטרים נפרדים
+const [searchName, setSearchName] = useState('');
+const [minYear, setMinYear] = useState('');
+const [maxPrice, setMaxPrice] = useState('');
+
+// חישוב — כל קריטריון AND
+const filtered = items.filter(item => {
+  const nameOk  = !searchName || item.name
+    .toLowerCase().includes(searchName.toLowerCase());
+  const yearOk  = !minYear || item.year >= Number(minYear);
+  const priceOk = !maxPrice || item.price <= Number(priceMax);
+  return nameOk && yearOk && priceOk;
+});
+
+// תצוגה
+return filtered.map(item => <ItemCard key={item.id} item={item} />);`,
+    tip:"!searchName = ריק? עבור. אחרת בדוק תנאי. המר ל-Number לפני השוואה מספרית. כל הפילטרים AND."
+  },
+  {
+    num:14, title:"Node.js — Class עם fs.promises",
+    exam:"Travel Q3", icon:"📁",
+    code:`const fs = require('fs').promises;
+const path = require('path');
+
+class TextFilePackage {
+  constructor(filename) {
+    this.filepath = path.join(__dirname, filename);
+  }
+
+  async appendToFile(text) {
+    await fs.appendFile(this.filepath, text + '\\n', 'utf8');
+  }
+
+  async readFromFile() {
+    try {
+      const content = await fs.readFile(this.filepath, 'utf8');
+      return content.trim().split('\\n').filter(Boolean);
+    } catch {
+      return [];  // קובץ לא קיים עדיין
+    }
+  }
+
+  async deleteFile() {
+    try { await fs.unlink(this.filepath); } catch {}
+  }
+}
+
+module.exports = TextFilePackage;`,
+    tip:"appendFile — מוסיף שורה. readFile → trim → split('\\n') → filter(Boolean) = מסיר שורות ריקות. catch ריק = קובץ לא קיים זה OK."
+  },
+  {
+    num:15, title:"JavaScript — Binary לDecimal + Palindrome",
+    exam:"Logistics Q2", icon:"💻",
+    code:`function binaryToDecimalPalindrome(binStr) {
+  // 1. המרה לDecimal
+  const decimal = parseInt(binStr, 2);
+  // ⚠ parseInt(str, 2) — בסיס 2
+
+  // 2. בדיקת palindrome
+  const str = String(decimal);
+  const reversed = str.split('').reverse().join('');
+  const isPalindrome = str === reversed;
+
+  return { decimal, isPalindrome };
+}
+
+// דוגמה: "1001" → { decimal: 9, isPalindrome: true }
+// "1001" base2 = 9 base10, "9" הפוך = "9" → palindrome`,
+    tip:"parseInt(str, 2) — הbase (2) חובה! ללא 2 → עלול להפוך octal. palindrome: compare string to reversed string."
   }
 ];
 
@@ -621,7 +748,17 @@ const DRILL_QS = [
   {q:'מה הסיסמה ב-Flights Q1?',a:'const CORRECT_PASSWORD = "12345";\n// קבועה בקוד, לא במשתמשים',cat:'react'},
   {q:'איך שולחים 400 Bad Request עם Mongoose?',a:'try { await Item.create(req.body); }\ncatch(err) {\n  res.status(400).json({ error: err.message });\n}',cat:'mongo'},
   {q:'regex לשם קבוצה (כל מילה מתחילה בגדולה, רק אנגלית)?',a:'^[A-Z][a-z]*(\\s[A-Z][a-z]*)*$\n// מילה = A-Z ואח"כ a-z*',cat:'regex'},
-  {q:'איך מוחקים document ב-Mongoose?',a:'const deleted = await Item.findByIdAndDelete(id);\nif (!deleted) return res.status(404).json({error:"Not found"});\nres.json(deleted);',cat:'mongo'}
+  {q:'איך מוחקים document ב-Mongoose?',a:'const deleted = await Item.findByIdAndDelete(id);\nif (!deleted) return res.status(404).json({error:"Not found"});\nres.json(deleted);',cat:'mongo'},
+  {q:'מה ההבדל בין findOneAndUpdate ל-upsert?',a:'const result = await Employee.findOneAndUpdate(\n  { id: req.body.id },      // filter\n  { $set: req.body },        // update\n  { new: true, upsert: true } // upsert=true → יוצר אם לא קיים\n);\n// upsert: insert if not found, update if found',cat:'mongo'},
+  {q:'מה ה-pattern ל-Protected Route עם Navigate?',a:'<Route path="/manager" element={\n  currentUser?.role === "manager"\n    ? <ManagerPage />\n    : <Navigate to="/" />\n} />\n// Navigate = redirect, לא Link!',cat:'react'},
+  {q:'איך קוראים קובץ וחוזרים עם תוכנו ב-Express?',a:'app.get("/read", async (req, res) => {\n  const content = await fs.readFile(filepath, "utf8");\n  const lines = content.trim().split("\\n").filter(Boolean);\n  res.json(lines);\n});',cat:'express'},
+  {q:'איך ממיינים רשימה ב-React לפי קריטריון?',a:'const sorted = [...flights].sort((a, b) => {\n  if (sortBy === "number") return a.flightNumber - b.flightNumber;\n  if (sortBy === "dest")   return a.dest.localeCompare(b.dest);\n  return 0;\n});\n// [...flights] — spread כדי לא לשנות state ישירות',cat:'react'},
+  {q:'מה ההבדל בין === ל-== ב-JavaScript?',a:'=== — בדיקה קפדנית (ערך + טיפוס)\n"5" === 5 → false\n\n== — המרה אוטומטית (coercion)\n"5" == 5 → true ⚠\n\n// במבחן: תמיד === ולא ==\n// בעיה נפוצה: useParams מחזיר string, id ב-state הוא number',cat:'js'},
+  {q:'מה path.join ו-__dirname?',a:'const path = require("path");\nconst fs = require("fs").promises;\n\nconst filepath = path.join(__dirname, "data.txt");\n// __dirname = תיקייה של הקובץ הנוכחי\n// path.join = בונה נתיב נכון לOS (/ או \\)',cat:'express'},
+  {q:'איך מעדכנים שדה אחד ב-useState object?',a:'const [form, setForm] = useState({ name: "", email: "" });\n\n// עדכון שדה אחד בלבד:\nsetForm(prev => ({ ...prev, name: "Tal" }));\n// spread prev + override שדה ספציפי',cat:'react'},
+  {q:'מה ה-schema ל-workerId (5 ספרות) ב-Mongoose?',a:'workerId: {\n  type: String,\n  required: true,\n  match: /^\\d{5}$/  // בדיוק 5 ספרות\n  // או validate: v => /^\\d{5}$/.test(v)\n}',cat:'mongo'},
+  {q:'מה Fibonacci position algorithm?',a:'function fibPosition(target) {\n  let a=1, b=1, pos=1;\n  while (a <= target) {\n    if (a === target) return pos;\n    [a, b, pos] = [b, a+b, pos+1]; // או next = a+b\n  }\n  return -1; // לא ב-Fibonacci\n}',cat:'js'},
+  {q:'איך מגדירים enum ב-Mongoose Schema?',a:'type: {\n  type: String,\n  required: true,\n  enum: ["USD","EUR","GBP","ILS"] // ערכים חוקיים בלבד\n}\n// שמירה עם ערך לא ברשימה → ValidationError 400',cat:'mongo'}
 ];
 
 let _drillFilter='all', _drillQueue=[], _drillIdx=0, _drillYes=0, _drillNo=0, _drillShown=false;
