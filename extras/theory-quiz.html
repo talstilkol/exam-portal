@@ -117,7 +117,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 <body>
 <div class="hero">
   <h1>🧠 Theory Quiz — שאלות תאוריה</h1>
-  <p>68 פלאש-קארד לחזרה על תאוריה ועל פרטי המבחנות — HTTP, MongoDB, React, JS, Express, Node, מבחנות. לחץ על הכרטיס לגלות תשובה.</p>
+  <p>72 פלאש-קארד לחזרה על תאוריה ועל פרטי המבחנות — HTTP, MongoDB, React, JS, Express, Node, מבחנות. לחץ על הכרטיס לגלות תשובה.</p>
 </div>
 
 <div class="toolbar">
@@ -1036,7 +1036,61 @@ const arr2 = Array.from(s);</pre>
 <tr><td style="padding:3px 6px;font-weight:700;color:#991b1b">404 Not Found</td><td>דוקומנט לא נמצא</td></tr>
 <tr style="background:#f8fafc"><td style="padding:3px 6px;font-weight:700;color:#991b1b">500 Server Error</td><td>שגיאה בשרת (catch כללי)</td></tr>
 </table><br>
-<b>⚠ שגיאה נפוצה:</b> 200 במקום 201 ל-POST`}
+<b>⚠ שגיאה נפוצה:</b> 200 במקום 201 ל-POST`},
+
+{id:"tq-spread-operator",cat:"js",q:"מה זה Spread Operator (...)? תן 3 שימושים ב-React",
+ a:`<b>Spread ...</b> — פורש מערך/object לרכיבים נפרדים<br><br>
+<b>1. העתקת מערך (לא mutation):</b>
+<pre>const newArr = [...arr, newItem];</pre>
+<b>2. העתקת object + שינוי שדה:</b>
+<pre>const updated = { ...obj, name: 'Dan' };</pre>
+<b>3. Merge arrays:</b>
+<pre>const all = [...arr1, ...arr2];</pre>
+<b>4. Props forwarding:</b>
+<pre>&lt;Component {...props} extra="val" /&gt;</pre>
+<b>⚠ ב-React:</b> תמיד spread לפני mutation כדי לא לשנות state ישירות`},
+
+{id:"tq-destructuring",cat:"js",q:"מה זה Destructuring? תן דוגמאות לObject ול-Array",
+ a:`<b>Destructuring</b> — חילוץ ערכים ממבני נתונים<br><br>
+<b>Object:</b>
+<pre>const { name, age } = user;
+const { id: userId } = user;  // rename
+const { role = 'guest' } = user;  // default</pre>
+<b>Array:</b>
+<pre>const [first, second] = arr;
+const [a, , c] = arr;  // skip element
+const [head, ...rest] = arr;  // rest</pre>
+<b>Function params:</b>
+<pre>function greet({ name, age }) { ... }
+// = greet(user)</pre>
+<b>useState:</b>
+<pre>const [count, setCount] = useState(0);</pre>`},
+
+{id:"tq-optional-chaining",cat:"js",q:"מה זה Optional Chaining (?.) ו-Nullish Coalescing (??)? מתי כל אחד?",
+ a:`<b>?. (Optional Chaining)</b> — גישה בטוחה לnested properties<br>
+<pre>user?.address?.city  // לא זורק error אם user/address = null
+arr?.[0]            // גישה בטוחה לindex
+fn?.()              // קריאה בטוחה לfunction</pre>
+<b>?? (Nullish Coalescing)</b> — ברירת מחדל רק אם null/undefined<br>
+<pre>const name = user?.name ?? 'אנונימי';
+// שימו לב: || מחליף גם '' ו-0, ?? רק null/undefined</pre>
+<b>שימוש נפוץ ב-React:</b>
+<pre>const role = user?.role ?? 'guest';
+{user?.isActive && &lt;ActiveBadge /&gt;}</pre>`},
+
+{id:"tq-array-methods",cat:"js",q:"הסבר map, filter, reduce ב-JavaScript עם דוגמאות",
+ a:`<b>map</b> — ממיר כל element → array חדש באותו גודל<br>
+<pre>const doubled = [1,2,3].map(n => n * 2);  // [2,4,6]
+// React: {items.map(item => &lt;Item key={item.id} /&gt;)}</pre>
+<b>filter</b> — מסנן elements → array קטן יותר<br>
+<pre>const evens = [1,2,3,4].filter(n => n % 2 === 0);  // [2,4]
+// React: {items.filter(i => i.active).map(...)}</pre>
+<b>reduce</b> — מצמצם לערך יחיד<br>
+<pre>const sum = [1,2,3].reduce((acc, n) => acc + n, 0);  // 6
+// acc = מצבר, 0 = ערך התחלתי</pre>
+<b>find / findIndex</b> — מצא ראשון שמתאים<br>
+<pre>const user = users.find(u => u.id === id);
+const idx = users.findIndex(u => u.id === id);</pre>`}
 ];
 
 // ─── State ──────────────────────────────────────────────────────────────────
