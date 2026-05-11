@@ -2272,6 +2272,55 @@ const TOPICS = {
       }
     ],
     lineAlternatives: []
+  },
+  'mongoose': {
+    cat: 'backend',
+    icon: '🍃',
+    name: 'MongoDB & Mongoose',
+    mustKnow: [
+      'Schema מגדיר מבנה — type, required, min, max, enum, default, match (regex)',
+      'default: Date.now — ללא סוגריים! עם () = ערך קבוע',
+      'Model.create(data) — יוצר + שומר. new Model(data); model.save() — דרך ארוכה',
+      'findByIdAndUpdate(id, data, {new:true, runValidators:true}) — חזר מעודכן + אמת',
+      'findOneAndUpdate({filter}, {$set:data}, {upsert:true}) — הוסף אם לא קיים',
+      'findByIdAndDelete(id) — מחזיר document שנמחק (לבדיקת 404)',
+      'try/catch חובה סביב כל DB call. catch → res.status(400/500)',
+      'mongoose.connect() ב-server.js לפני app.listen()',
+      '$set ב-update — לא דורס שאר שדות. בלי $set = מחליף כל document!'
+    ],
+    allowed: [
+      'Schema validators: min, max, enum, match, required',
+      'findByIdAndUpdate + {new:true, runValidators:true}',
+      'findOneAndUpdate + {upsert:true}',
+      'try/catch סביב DB operations',
+      'Model.create() קצר'
+    ],
+    forbidden: [
+      'default: Date.now() — עם סוגריים!',
+      'בלי {new:true} — מחזיר document ישן',
+      'בלי {runValidators:true} — validation לא רץ ב-update',
+      'חסר try/catch — שגיאת DB קורסת שרת',
+      'בלי mongoose.connect() — כל DB call נכשל'
+    ],
+    questions: [
+      {
+        q: 'מה ההבדל בין $set לבלי $set ב-update?',
+        a: '$set: {field: val} — מעדכן רק שדות שצוינו. בלי $set: {field:val} — מחליף document כולו! תמיד $set ב-update.'
+      },
+      {
+        q: 'מתי משתמשים ב-upsert?',
+        a: 'כשצריך "insert if not exists, update if exists". findOneAndUpdate({filter}, {$set:data}, {upsert:true}). Parking Q3: add-or-update.'
+      },
+      {
+        q: 'מה ה-Schema validator לסיסמה 6+ ספרות?',
+        a: "password: { type: String, required: true, minlength: 6 } — או match: /^\\d{6,}$/ לספרות בלבד"
+      },
+      {
+        q: 'איך מחברים ל-MongoDB?',
+        a: "mongoose.connect('mongodb://localhost:27017/mydb').then(() => app.listen(3000))"
+      }
+    ],
+    lineAlternatives: []
   }
 };
 
