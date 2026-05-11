@@ -163,7 +163,7 @@ const TOOLS = [
     link: 'sequence-diagrams.html',
     getProgress() {
       const data = _lsGet('sd-viewed',[]);
-      const total = 12;
+      const total = 15;
       const done = Array.isArray(data) ? data.length : 0;
       return { done, total, items: null };
     }

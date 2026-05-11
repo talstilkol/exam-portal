@@ -469,6 +469,91 @@ const SCENARIOS = [
      detail:"כשcomponent מוסר מה-DOM — cleanup אחרון רץ. בלי זה — memory leak!",
      tip:"כל setInterval, addEventListener, subscription חייב cleanup. בלי זה = memory leak."},
   ]
+},
+{
+  id:"mongodb-upsert", title:"MongoDB Upsert — Add or Update", type:"full", icon:"🔄",
+  desc:"findOneAndUpdate עם upsert:true — הוסף אם לא קיים, עדכן אם קיים (Parking Q3)",
+  lifelines:[
+    {id:"client",label:"Client",icon:"🌐"},
+    {id:"route",label:"Express Route",icon:"🟢"},
+    {id:"mongoose",label:"Mongoose",icon:"🍃"},
+    {id:"db",label:"MongoDB",icon:"🗄"}
+  ],
+  messages:[
+    {from:0,to:1,label:"POST /add-or-update { id, name, salary }",type:"req",
+     detail:"הלקוח שולח נתוני עובד. אם קיים (לפי id) — עדכן. אם לא — הוסף.",
+     code:"// body: { id: '12345', name: 'Dan', salary: 6000 }"},
+    {from:1,to:2,label:"findOneAndUpdate({ id }, $set, { upsert:true })",type:"req",
+     detail:"Mongoose מקבל filter, update ו-options. upsert:true = create if not found.",
+     code:"const result = await Employee.findOneAndUpdate(\n  { id: req.body.id },       // filter: חיפוש לפי id\n  { $set: req.body },          // update: עדכן שדות\n  {\n    new: true,               // החזר document מעודכן\n    upsert: true,            // צור אם לא קיים!\n    runValidators: true       // הפעל Schema validators\n  }\n);",
+     tip:"$set עם upsert לא ימחק שדות קיימים. { new: true } = מחזיר אחרי עדכון, לא לפני."},
+    {from:2,to:3,label:"findOne({ id }) → check existence",type:"req",
+     detail:"MongoDB מחפש document עם id תואם. אם קיים — UPDATE. אם לא — INSERT."},
+    {from:3,to:2,label:"document (existing or new)",type:"res",
+     detail:"MongoDB מחזיר document. אם upsert יצר document חדש — __v:0 ו-_id חדש."},
+    {from:2,to:1,label:"updated/created document",type:"res",
+     detail:"Mongoose מחזיר document המעודכן (בגלל { new: true }). אם לא קיים היה — new document."},
+    {from:1,to:0,label:"200 OK { document }",type:"res",
+     detail:"השרת מחזיר 200. לא 201 כי זה upsert — לא בהכרח נוצר.",
+     code:"res.json(result); // 200 OK — לא 201!",
+     tip:"upsert מחזיר 200 גם ליצירה וגם לעדכון. לדעת מה קרה — בדוק result.__v === 0 ו-_id."},
+  ]
+},
+{
+  id:"role-based-routing", title:"Role-Based Routing — Client vs Manager", type:"react", icon:"👥",
+  desc:"ניתוב לפי role: manager ל-/manager, client ל-/client/:id (Bank Q1)",
+  lifelines:[
+    {id:"user",label:"User",icon:"👤"},
+    {id:"login",label:"LoginPage",icon:"🔐"},
+    {id:"app",label:"App (Router)",icon:"⚛️"},
+    {id:"state",label:"State",icon:"📦"}
+  ],
+  messages:[
+    {from:0,to:1,label:"מזין username + password",type:"req",
+     detail:"המשתמש ממלא username וpassword. הכניסה יכולה להיות manager או client.",
+     code:"<input value={username} onChange={e=>setUsername(e.target.value)} />\n<input type='password' value={password} onChange={e=>setPassword(e.target.value)} />\n<button onClick={handleLogin}>כניסה</button>"},
+    {from:1,to:3,label:"find user, check password",type:"req",
+     detail:"LoginPage מחפשת ב-users array. אם נמצא ו-password תואם — onLogin(user).",
+     code:"function handleLogin() {\n  const user = users.find(u =>\n    u.username === username && u.password === password\n  );\n  if (!user) return setError('פרטים שגויים');\n  onLogin(user); // ← callback ל-App\n}"},
+    {from:3,to:2,label:"setCurrentUser(user)",type:"res",
+     detail:"App מקבל user ב-handleLogin callback, שומר ב-state, ומנווט לפי role.",
+     code:"function handleLogin(user) {\n  setCurrentUser(user);\n  // ניתוב לפי role:\n  if (user.role === 'manager') navigate('/manager');\n  else navigate('/client/' + user.id);\n}",
+     tip:"navigate() מופעל אחרי setCurrentUser. state מתעדכן בrender הבא."},
+    {from:2,to:2,label:"Routes: check currentUser.role",type:"req",
+     detail:"כל Route מגן על עצמו — בודק role ומנתב ל-Navigate אם לא מורשה.",
+     code:'<Route path="/manager" element={\n  currentUser?.role === "manager"\n    ? <ManagerPage />\n    : <Navigate to="/" />\n} />\n<Route path="/client/:id" element={\n  currentUser && currentUser.role !== "manager"\n    ? <ClientPage />\n    : <Navigate to="/" />\n} />'},
+    {from:2,to:0,label:"renders Manager/Client page",type:"res",
+     detail:"manager → ManagerPage. client → ClientPage. אחרים → redirect ל-/ (Login).",
+     tip:"currentUser?.role — optional chaining מונע crash אם null. תמיד בדוק null לפני role."},
+  ]
+},
+{
+  id:"react-navigation-state", title:"React: Login → Navigate → Protected", type:"react", icon:"🧭",
+  desc:"זרימת ניווט מלאה: login → navigate → בדיקת protect → render",
+  lifelines:[
+    {id:"user",label:"User",icon:"👤"},
+    {id:"form",label:"LoginForm",icon:"🔐"},
+    {id:"router",label:"BrowserRouter",icon:"🛣"},
+    {id:"state",label:"App State",icon:"📦"}
+  ],
+  messages:[
+    {from:0,to:1,label:"submit login form",type:"req",
+     detail:"המשתמש לוחץ כניסה. הטופס קורא ל-onLogin callback שהועבר מ-App.",
+     code:"<form onSubmit={handleSubmit}>\n  <input value={username} onChange={e=>setUsername(e.target.value)} />\n  <input type='password' value={password} onChange={e=>setPassword(e.target.value)} />\n  <button type='submit'>כניסה</button>\n</form>"},
+    {from:1,to:3,label:"onLogin(user) → setCurrentUser",type:"req",
+     detail:"LoginForm קורא ל-onLogin callback. App שומר currentUser ב-state.",
+     code:"// App.jsx:\nfunction handleLogin(user) {\n  setCurrentUser(user);\n  navigate('/home'); // ← מנווט\n}\n// LoginForm.jsx:\nonSubmit={user => props.onLogin(user)}"},
+    {from:3,to:2,label:"navigate('/home')",type:"req",
+     detail:"navigate() מבקש מהRouter לעבור לנתיב חדש. State כבר מעודכן.",
+     tip:"navigate() ב-handleLogin — לא ב-useEffect. יש שמשתמשים ב-useEffect עם navigate אבל זה מסורבל."},
+    {from:2,to:3,label:"check Route /home element",type:"req",
+     detail:"Router בודק איזה component לרנדר עבור /home. הRoute בודק currentUser.",
+     code:"<Route path='/home' element={\n  currentUser\n    ? <HomePage user={currentUser} />\n    : <Navigate to='/' />\n} />"},
+    {from:2,to:0,label:"renders HomePage",type:"res",
+     detail:"currentUser קיים → HomePage מרונדר. המשתמש רואה את דף הבית.",
+     code:"// HomePage מקבל props:\nfunction HomePage({ user }) {\n  return <h1>שלום, {user.username}!</h1>;\n}",
+     tip:"Navigate ב-Route element = declarative redirect. אין צורך ב-useEffect לבדיקת auth."},
+  ]
 }
 ];
 

@@ -22,7 +22,7 @@ const SITE_MAP = {
         { id: "exam-master", label: "Exam Master", icon: "🏆", href: "exam-master-v3.html", meta: "20 פרקים" },
         { id: "code-browser", label: "דפדפן קוד", icon: "💻", href: "code-browser.html", meta: "27 פרויקטים" },
         { id: "file-graph", label: "File Graph", icon: "📂", href: "file-graph.html", meta: "9 מערכות" },
-        { id: "sequence-diagrams", label: "Sequence Diagrams", icon: "🔄", href: "sequence-diagrams.html", meta: "12 תרשימים" }
+        { id: "sequence-diagrams", label: "Sequence Diagrams", icon: "🔄", href: "sequence-diagrams.html", meta: "15 תרשימים" }
       ]
     },
     {
