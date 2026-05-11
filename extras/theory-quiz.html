@@ -117,7 +117,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 <body>
 <div class="hero">
   <h1>🧠 Theory Quiz — שאלות תאוריה</h1>
-  <p>90 פלאש-קארד לחזרה על תאוריה ועל פרטי המבחנות — HTTP, MongoDB, React, JS, Express, Node, מבחנות. לחץ על הכרטיס לגלות תשובה.</p>
+  <p>100 פלאש-קארד לחזרה על תאוריה ועל פרטי המבחנות — HTTP, MongoDB, React, JS, Express, Node, מבחנות. לחץ על הכרטיס לגלות תשובה.</p>
 </div>
 
 <div class="toolbar">
@@ -1439,7 +1439,242 @@ res.sendStatus(204); // "No Content"
 res.json(data);                           // 200 OK
 res.status(201).json(newItem);            // 201 Created
 res.status(404).json({ error: '...' });   // 404 Not Found
-return res.status(400).json({ error: '' }); // עם return לעצירה</pre>`}
+return res.status(400).json({ error: '' }); // עם return לעצירה</pre>`},
+
+// ─── 91–100: Exam-Specific Patterns ────────────────────────────────────────
+
+{id:"exam-currency-calc",cat:"exam",q:"מה נוסחת החישוב במחשבון המרת מטבע (Currency Q1)?",
+ a:`<pre>// currencies = [{ type: "USD", value: 3.7 }, { type: "EUR", value: 4.1 }]
+// value = שער ביחס לשקל (כמה ₪ = 1 יחידה)
+
+function calculate(from, to, amount, currencies) {
+  const fromCur = currencies.find(c => c.type === from);
+  const toCur   = currencies.find(c => c.type === to);
+
+  // המרה דרך השקל:
+  const shekelAmount = Number(amount) * fromCur.value;
+  const result = shekelAmount / toCur.value;
+
+  return result.toFixed(2); // 2 ספרות אחרי נקודה
+}
+// USD → EUR: amount * (fromValue / toValue)</pre>
+<b>⚠️ toFixed(2)</b> — מחזיר string, לא number. להשוואות: Number(result.toFixed(2))`},
+
+{id:"exam-willing-toggle-react",cat:"exam",q:"איך מממשים Toggle של isActive ב-Willing Q1?",
+ a:`<pre>// state: volunteerings = [{ id, city, isActive, ... }]
+
+function toggleActive(id) {
+  setVolunteerings(prev => prev.map(v =>
+    v.id === id
+      ? { ...v, isActive: !v.isActive }
+      : v
+  ));
+}
+
+// בתצוגה:
+&lt;button onClick={() => toggleActive(v.id)}&gt;
+  {v.isActive ? '✅ פעיל' : '⭕ לא פעיל'}
+&lt;/button&gt;
+
+// className לפי state:
+&lt;div className={v.isActive ? 'active-card' : 'inactive-card'}&gt;`},
+
+{id:"exam-travel-nav-disabled",cat:"exam",q:"איך משביתים Nav Links לפני Login ב-Travel Q1?",
+ a:`<pre>// App.jsx — navDisabled = !currentUser
+const [navDisabled, setNavDisabled] = useState(true);
+
+function handleLogin(username, password) {
+  if (username === 'svcollege' && password === 'abcde') {
+    setNavDisabled(false);
+    navigate('/home');
+  }
+}
+
+// Nav:
+&lt;nav&gt;
+  &lt;Link
+    to="/home"
+    style={{
+      pointerEvents: navDisabled ? 'none' : 'auto',
+      opacity: navDisabled ? 0.4 : 1
+    }}
+  &gt;בית&lt;/Link&gt;
+&lt;/nav&gt;</pre>
+<b>pointerEvents: 'none'</b> — מבטל clicks. opacity 0.4 — מראה שהLink disabled.`},
+
+{id:"exam-flights-sort-react",cat:"exam",q:"איך ממיינים טיסות לפי 3 קריטריונים שונים ב-Flights Q1?",
+ a:`<pre>const [sortBy, setSortBy] = useState('flightNumber');
+
+// חישוב sorted — לא state!
+const sorted = [...flights].sort((a, b) => {
+  if (sortBy === 'flightNumber')
+    return a.flightNumber - b.flightNumber;
+  if (sortBy === 'destination')
+    return a.destination.localeCompare(b.destination, 'he');
+  if (sortBy === 'departureTime')
+    return a.departureTime.localeCompare(b.departureTime);
+  return 0;
+});
+
+// בחירת מיון:
+&lt;select value={sortBy} onChange={e => setSortBy(e.target.value)}&gt;
+  &lt;option value="flightNumber"&gt;לפי מספר&lt;/option&gt;
+  &lt;option value="destination"&gt;לפי יעד&lt;/option&gt;
+  &lt;option value="departureTime"&gt;לפי שעה&lt;/option&gt;
+&lt;/select&gt;</pre>`},
+
+{id:"exam-bank-role-routing",cat:"exam",q:"מה דפוס Role-Based Routing ב-Bank Q1?",
+ a:`<pre>// handleLogin ב-App.jsx:
+function handleLogin(user) {
+  setCurrentUser(user);
+  if (user.role === 'manager') navigate('/manager');
+  else navigate('/client/' + user.id);
+}
+
+// Routes עם Protected:
+&lt;Route path="/manager" element={
+  currentUser?.role === 'manager'
+    ? &lt;ManagerPage users={users} accounts={accounts} /&gt;
+    : &lt;Navigate to="/" /&gt;
+} /&gt;
+&lt;Route path="/client/:id" element={
+  currentUser && currentUser.role !== 'manager'
+    ? &lt;ClientPage user={currentUser} accounts={accounts} /&gt;
+    : &lt;Navigate to="/" /&gt;
+} /&gt;</pre>
+<b>Manager</b> — רואה כל הלקוחות. <b>Client</b> — רואה רק החשבון שלו.`},
+
+{id:"exam-logistics-dual-auth",cat:"exam",q:"מה הדפוס של Dual-Mode Auth ב-Logistics Q1?",
+ a:`<pre>// Form אחד — Login + Register
+function handleSubmit() {
+  const existing = workers.find(
+    w => w.id === workerId
+  );
+
+  if (existing) {
+    // Login — עובד קיים
+    if (existing.name !== fullName) {
+      setError('שם לא תואם');
+      return;
+    }
+    setCurrentWorker(existing);
+    navigate('/welcome/' + existing.id);
+  } else {
+    // Register — עובד חדש
+    if (!licenseValid) { setError('רישיון לא תקין'); return; }
+    const newWorker = { id: workerId, name: fullName };
+    setWorkers(prev => [...prev, newWorker]);
+    setCurrentWorker(newWorker);
+    navigate('/welcome/' + workerId);
+  }
+}
+// workerId חייב להיות 5 ספרות (regex: /^\d{5}$/)</pre>`},
+
+{id:"exam-helpme-centers",cat:"exam",q:"איך מממשים HelpMe Q1 — בחירת מרכז עזרה?",
+ a:`<pre>// App state:
+const [user, setUser] = useState(null);
+const [selectedCenter, setSelectedCenter] = useState(null);
+
+// Register → navigate('/home'):
+function handleRegister(userData) {
+  setUser(userData);
+  navigate('/home');
+}
+
+// Home → navigate('/centers'):
+// Centers page:
+function CentersPage({ centers, onSelect }) {
+  return (
+    &lt;ul&gt;
+      {centers.map(c => (
+        &lt;li key={c.id}
+            className={selectedCenter?.id === c.id ? 'selected' : ''}
+            onClick={() => setSelectedCenter(c)}&gt;
+          {c.name}
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}
+// ולידציה: name (2+), phone (/^05\d{8}$/), password (6+)</pre>`},
+
+{id:"exam-willing-city-filter",cat:"exam",q:"איך ממשים סינון לפי עיר ב-Willing Q1?",
+ a:`<pre>// state:
+const [selectedCity, setSelectedCity] = useState('');
+const [volunteerings, setVolunteerings] = useState([]);
+
+// Computed — filter by city:
+const filtered = selectedCity === ''
+  ? volunteerings  // כל הערים
+  : volunteerings.filter(v => v.city === selectedCity);
+
+// רשימת ערים ייחודיות:
+const cities = [...new Set(volunteerings.map(v => v.city))];
+
+// בחירה:
+&lt;select value={selectedCity} onChange={e => setSelectedCity(e.target.value)}&gt;
+  &lt;option value=""&gt;כל הערים&lt;/option&gt;
+  {cities.map(city => &lt;option key={city} value={city}&gt;{city}&lt;/option&gt;)}
+&lt;/select&gt;</pre>
+<b>Set</b> לעריים ייחודיות. ריק = כל הערים.`},
+
+{id:"exam-parking-active",cat:"exam",q:"מה ה-pattern לחנייה פעילה ב-Parking Q1?",
+ a:`<pre>// parking object:
+const parking = {
+  id: Date.now(),
+  userId: currentUser.carNumber,
+  city,
+  spot,
+  startTime: new Date().toISOString(), // ← זמן התחלה
+  endTime: null,   // null = פעילה עדיין
+  cost: null
+};
+
+// Active check:
+const activeParking = parkings.find(
+  p => p.userId === currentUser.carNumber && !p.endTime
+);
+
+// End parking:
+function endParking(id) {
+  const end = new Date();
+  setParkings(prev => prev.map(p =>
+    p.id === id
+      ? { ...p, endTime: end.toISOString(), cost: calcCost(p) }
+      : p
+  ));
+}
+
+// History = parkings where endTime !== null:
+const history = parkings.filter(
+  p => p.userId === currentUser.carNumber && p.endTime
+);</pre>`},
+
+{id:"exam-travel-edit",cat:"exam",q:"מה דפוס עריכת נסיעה ב-Travel Q1?",
+ a:`<pre>// Navigate לEdit עם id:
+navigate('/update?id=' + travel.id); // או state/params
+
+// Update page — form prefilled:
+function UpdatePage({ travels, setTravels }) {
+  const [searchParams] = useSearchParams();
+  const id = Number(searchParams.get('id'));
+  const travel = travels.find(t => t.id === id);
+
+  const [destination, setDestination] = useState(
+    travel?.destination || ''
+  );
+
+  function handleSave() {
+    setTravels(prev => prev.map(t =>
+      t.id === id
+        ? { ...t, destination, /* other fields */ }
+        : t
+    ));
+    navigate('/home');
+  }
+}
+// הfrm מאוכלס עם ערכים קיימים!
+// setTravels + map + spread = update pattern</pre>`}
 ];
 
 // ─── State ──────────────────────────────────────────────────────────────────
