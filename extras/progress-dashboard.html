@@ -219,6 +219,19 @@ const TOOLS = [
       const done = Array.isArray(data) ? data.length : 0;
       return { done, total, items: null };
     }
+  },
+  {
+    id: 'theory-quiz',
+    name: 'Theory Quiz',
+    icon: '🧠',
+    color: '#7c3aed',
+    link: 'theory-quiz.html',
+    getProgress() {
+      const known = _lsGet('tq-known',[]);
+      const total = 38;
+      const done = Array.isArray(known) ? known.length : 0;
+      return { done, total, items: null };
+    }
   }
 ];
 
@@ -280,7 +293,7 @@ function render() {
 
 function resetAll() {
   if (!confirm('האם אתה בטוח? כל ההתקדמות תימחק.')) return;
-  ['cm-checked', 'pb-solved', 'sim-progress', 'fc-visited', 'cb-viewed', 'fg-visited', 'sd-viewed', 'es-checklist', 'ek-viewed', 'dw-completed', 'df-viewed'].forEach(k => localStorage.removeItem(k));
+  ['cm-checked', 'pb-solved', 'sim-progress', 'fc-visited', 'cb-viewed', 'fg-visited', 'sd-viewed', 'es-checklist', 'ek-viewed', 'dw-completed', 'df-viewed', 'tq-known', 'tq-dnk'].forEach(k => localStorage.removeItem(k));
   render();
 }
 

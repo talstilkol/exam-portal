@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="🧠 Theory Quiz — שאלות תאוריה — פורטל הכנה למבחן Fullstack">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🧠 Theory Quiz — שאלות תאוריה</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--brand:#7c3aed;--gold:#facc15;--green:#16a34a;--red:#dc2626;--blue:#2563eb;--orange:#f97316;--shadow:5px 5px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(22px,4vw,34px);margin:0}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:14px}
+
+/* TOOLBAR */
+.toolbar{background:#fff;border-bottom:3px solid #000;padding:12px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:50}
+.cat-chip{padding:6px 14px;border:2px solid #000;border-radius:999px;font-size:12px;font-weight:800;cursor:pointer;background:#f8fafc;transition:.15s}
+.cat-chip:hover{transform:translateY(-1px)}
+.cat-chip.active{box-shadow:2px 2px 0 #000}
+.cat-chip[data-cat="all"].active{background:var(--brand);color:#fff}
+.cat-chip[data-cat="http"].active{background:#2563eb;color:#fff}
+.cat-chip[data-cat="mongodb"].active{background:#16a34a;color:#fff}
+.cat-chip[data-cat="react"].active{background:#06b6d4;color:#fff}
+.cat-chip[data-cat="js"].active{background:#ca8a04;color:#fff}
+.cat-chip[data-cat="express"].active{background:#059669;color:#fff}
+.cat-chip[data-cat="node"].active{background:#7c3aed;color:#fff}
+.toolbar-right{margin-right:auto;display:flex;align-items:center;gap:10px}
+.stat-pill{padding:4px 12px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:999px;font-size:12px;font-weight:800}
+.stat-pill b{color:var(--brand)}
+.btn-reset{padding:6px 14px;background:#fee2e2;color:#991b1b;border:2px solid #000;border-radius:8px;font-weight:800;font-size:12px;cursor:pointer}
+.btn-reset:hover{background:#fecaca}
+
+/* MAIN */
+.main{max-width:780px;margin:0 auto;padding:28px 16px}
+
+/* CARD */
+.card-wrap{perspective:1200px;margin-bottom:20px}
+.flashcard{background:transparent;width:100%;min-height:220px;border:3px solid #000;border-radius:20px;box-shadow:var(--shadow);cursor:pointer;transition:transform .5s;transform-style:preserve-3d;position:relative}
+.flashcard.flipped{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:22px 24px;border-radius:17px;display:flex;flex-direction:column}
+.fc-front{background:#fff}
+.fc-back{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;transform:rotateY(180deg)}
+.fc-cat{font-size:11px;font-weight:900;padding:3px 9px;border:2px solid #000;border-radius:999px;width:fit-content;margin-bottom:10px;box-shadow:1px 1px 0 #000}
+.fc-q{font-size:18px;font-weight:900;flex:1;display:flex;align-items:center}
+.fc-hint{font-size:12px;color:#94a3b8;margin-top:10px;font-weight:700}
+.fc-a{font-size:14px;flex:1;overflow-y:auto;line-height:1.7}
+.fc-a b{color:var(--gold)}
+.fc-a code{background:rgba(255,255,255,.15);padding:1px 6px;border-radius:4px;font-size:13px;font-family:monospace}
+.fc-a ul{padding-right:18px;margin:6px 0}
+.fc-a li{margin-bottom:4px}
+.fc-a table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+.fc-a th{background:rgba(255,255,255,.15);padding:5px 8px;text-align:right}
+.fc-a td{border-top:1px solid rgba(255,255,255,.1);padding:5px 8px}
+.fc-a .yes{color:#86efac}
+.fc-a .no{color:#fca5a5}
+
+/* ACTIONS */
+.actions{display:flex;gap:10px;margin-top:14px;justify-content:center;flex-wrap:wrap}
+.action-btn{padding:10px 22px;border:2.5px solid #000;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer;transition:.15s;box-shadow:2px 2px 0 #000}
+.action-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 #000}
+.btn-know{background:#d1fae5;color:#065f46}
+.btn-dnk{background:#fee2e2;color:#991b1b}
+.btn-skip{background:#f1f5f9;color:#475569}
+.btn-flip{background:var(--gold);color:#000}
+
+/* QUEUE */
+.queue-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:13px;font-weight:700;color:#64748b}
+.queue-prog{flex:1;height:8px;background:#e2e8f0;border-radius:4px;border:2px solid #000;overflow:hidden}
+.queue-fill{height:100%;background:var(--brand);border-radius:2px;transition:width .3s}
+.queue-num{min-width:60px;text-align:center;font-weight:900}
+
+/* COMPLETE */
+.complete{text-align:center;padding:40px 20px;background:#fff;border:3px solid #000;border-radius:20px;box-shadow:var(--shadow)}
+.complete h2{font-size:28px;margin-bottom:8px}
+.complete p{color:#475569;margin-bottom:20px}
+.complete-stats{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin:16px 0}
+.cs{text-align:center}
+.cs-num{font-size:32px;font-weight:900}
+.cs-lbl{font-size:12px;color:#64748b;font-weight:700}
+.btn-restart{padding:12px 28px;background:var(--brand);color:#fff;border:2.5px solid #000;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;box-shadow:3px 3px 0 #000;transition:.15s}
+.btn-restart:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 #000}
+
+/* CATEGORY COLOR BADGES */
+.badge-http{background:#dbeafe;color:#1e40af;border-color:#93c5fd}
+.badge-mongodb{background:#dcfce7;color:#065f46;border-color:#86efac}
+.badge-react{background:#cffafe;color:#164e63;border-color:#67e8f9}
+.badge-js{background:#fef9c3;color:#854d0e;border-color:#fde047}
+.badge-express{background:#d1fae5;color:#065f46;border-color:#6ee7b7}
+.badge-node{background:#ede9fe;color:#5b21b6;border-color:#c4b5fd}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e1b4b;color:#fff;padding:10px 22px;border-radius:12px;border:2px solid #000;font-weight:800;font-size:14px;transition:transform .3s;z-index:999;pointer-events:none;box-shadow:3px 3px 0 #000}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(prefers-color-scheme:dark){
+  body{background:#0f172a;color:#e2e8f0}
+  .toolbar{background:#1e293b;border-color:#334155}
+  .cat-chip{background:#0f172a;border-color:#475569;color:#e2e8f0}
+  .fc-front{background:#1e293b;color:#e2e8f0}
+  .complete{background:#1e293b;color:#e2e8f0}
+  .complete p{color:#94a3b8}
+}
+@media(max-width:600px){
+  .flashcard{min-height:280px}
+  .fc-q{font-size:16px}
+  .actions{gap:8px}
+  .action-btn{padding:8px 14px;font-size:13px}
+}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>🧠 Theory Quiz — שאלות תאוריה</h1>
+  <p>38 פלאש-קארד לחזרה על תאוריה — HTTP, MongoDB, React, JS, Express, Node. לחץ על הכרטיס לגלות תשובה.</p>
+</div>
+
+<div class="toolbar">
+  <span class="cat-chip active" data-cat="all">הכל</span>
+  <span class="cat-chip" data-cat="http">🌐 HTTP</span>
+  <span class="cat-chip" data-cat="mongodb">🍃 MongoDB</span>
+  <span class="cat-chip" data-cat="react">⚛️ React</span>
+  <span class="cat-chip" data-cat="js">🟨 JS</span>
+  <span class="cat-chip" data-cat="express">🟢 Express</span>
+  <span class="cat-chip" data-cat="node">💜 Node</span>
+  <div class="toolbar-right">
+    <span class="stat-pill">✅ ידוע: <b id="known-count">0</b></span>
+    <span class="stat-pill">❌ לא ידוע: <b id="dnk-count">0</b></span>
+    <button class="btn-reset" onclick="resetProgress()">🗑 אפס</button>
+  </div>
+</div>
+
+<div class="main" id="main"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const CARDS = [
+// ── HTTP ──────────────────────────────────────────────────────────────────
+{id:"http-methods",cat:"http",q:"מה ההבדל בין GET / POST / PUT / DELETE?",
+ a:`<table><tr><th>מתודה</th><th>מטרה</th><th>Idempotent?</th><th>Body?</th></tr>
+<tr><td><b>GET</b></td><td>קריאה ללא שינוי</td><td class="yes">✅</td><td class="no">❌</td></tr>
+<tr><td><b>POST</b></td><td>יצירה / פעולה</td><td class="no">❌</td><td class="yes">✅</td></tr>
+<tr><td><b>PUT</b></td><td>החלפה מלאה</td><td class="yes">✅</td><td class="yes">✅</td></tr>
+<tr><td><b>DELETE</b></td><td>מחיקה</td><td class="yes">✅</td><td class="no">❌ (לרוב)</td></tr>
+</table>
+<b>Idempotent</b> = אותן קריאות → אותה תוצאה. POST לא idempotent כי כל קריאה יוצרת משאב חדש.`},
+
+{id:"status-codes",cat:"http",q:"מה המשמעות של קודי סטטוס 200/201/400/401/403/404/500?",
+ a:`<ul>
+<li><b>200 OK</b> — הצליח, מחזיר נתונים</li>
+<li><b>201 Created</b> — נוצר משאב חדש (POST מוצלח)</li>
+<li><b>400 Bad Request</b> — קלט לא תקין (שגיאת client)</li>
+<li><b>401 Unauthorized</b> — לא מזוהה (צריך להתחבר)</li>
+<li><b>403 Forbidden</b> — מזוהה אבל אסור לו</li>
+<li><b>404 Not Found</b> — המשאב לא קיים</li>
+<li><b>500 Internal Server Error</b> — שגיאה בשרת</li>
+</ul>`},
+
+{id:"http-idempotent",cat:"http",q:"מה זה Idempotent? איזו מתודה היא לא?",
+ a:`<b>Idempotent</b> = קריאה מרובה עם אותם פרמטרים → אותה תוצאה.<br><br>
+<b>POST</b> היא <b>לא</b> idempotent — כל קריאה יוצרת משאב חדש.<br>
+<b>GET / PUT / DELETE</b> — כן idempotent.<br><br>
+דוגמה: DELETE /users/42 — אחרי המחיקה הראשונה, כל קריאה נוספת מחזירה 404. התוצאה (המשתמש לא קיים) זהה.`},
+
+{id:"rest-principles",cat:"http",q:"מהם עקרונות REST API? (3 לפחות)",
+ a:`<ul>
+<li><b>Stateless</b> — כל בקשה עצמאית, אין session בשרת</li>
+<li><b>Resource-based URLs</b> — /users/42 ולא /getUser?id=42</li>
+<li><b>HTTP Verbs</b> — GET=קרא, POST=צור, PUT=עדכן, DELETE=מחק</li>
+<li><b>JSON responses</b> — פורמט נתונים אחיד</li>
+<li><b>Status codes</b> — 200/201/400/404/500 לפי תוצאה</li>
+</ul>`},
+
+{id:"cors",cat:"http",q:"מה זה CORS ולמה צריך אותו בExpress?",
+ a:`<b>CORS</b> (Cross-Origin Resource Sharing) — מנגנון שמאפשר ל-browser לבצע requests לדומיין אחר.<br><br>
+<b>ללא CORS</b>: browser חוסם requests מ-localhost:3000 לשרת localhost:5000.<br><br>
+<b>פתרון ב-Express</b>: <code>npm install cors</code><br>
+<code>app.use(require('cors')())</code><br><br>
+⚠️ חובה כשReact ו-Express רצים על ports שונים!`},
+
+// ── MongoDB ────────────────────────────────────────────────────────────────
+{id:"mongo-vs-sql",cat:"mongodb",q:"3 יתרונות ו-2 חסרונות של MongoDB לעומת SQL",
+ a:`<b>יתרונות:</b>
+<ul>
+<li><b>Schemaless</b> — אין צורך להגדיר מבנה מראש, גמיש לשינויים</li>
+<li><b>JSON-native</b> — נתונים ב-BSON, זורם טבעי עם Node.js/JavaScript</li>
+<li><b>Horizontal scaling</b> — sharding קל לפיזור בין שרתים</li>
+</ul>
+<b>חסרונות:</b>
+<ul>
+<li><b>חסר ACID מלא</b> — transactions multi-document מוגבלות</li>
+<li><b>אין JOIN חזק</b> — $lookup קיים אבל מסורבל לעומת SQL JOIN</li>
+</ul>`},
+
+{id:"mongoose-crud",cat:"mongodb",q:"כתוב את 4 פעולות CRUD ב-Mongoose",
+ a:`<code>
+// CREATE<br>
+const doc = await Model.create({ name, age });<br>
+// READ<br>
+const all = await Model.find({ age: { $gt: 18 } });<br>
+const one = await Model.findById(id);<br>
+// UPDATE<br>
+await Model.findByIdAndUpdate(id,<br>
+  { $set: { name } },<br>
+  { new: true, runValidators: true });<br>
+// DELETE<br>
+await Model.findByIdAndDelete(id);
+</code>`},
+
+{id:"mongoose-upsert",cat:"mongodb",q:"מה זה upsert ב-Mongoose? איך כותבים את זה?",
+ a:`<b>Upsert</b> = Update + Insert — אם קיים עדכן, אם לא קיים צור חדש.<br><br>
+<code>
+await Model.findOneAndUpdate(<br>
+  { employeeId },              // filter<br>
+  { $set: { name, salary } }, // update<br>
+  { upsert: true, new: true } // options<br>
+);
+</code><br>
+<b>upsert: true</b> — יוצר אם לא נמצא<br>
+<b>new: true</b> — מחזיר גרסה חדשה (לא ישנה)`},
+
+{id:"mongoose-schema",cat:"mongodb",q:"כיצד מגדירים Schema + Model ב-Mongoose?",
+ a:`<code>
+const mongoose = require('mongoose');<br><br>
+const userSchema = new mongoose.Schema({<br>
+  name: { type: String, required: true },<br>
+  age:  { type: Number, min: 0 },<br>
+  email: { type: String, unique: true }<br>
+});<br><br>
+const User = mongoose.model('User', userSchema);<br>
+// 'User' → collection 'users' (אוטומטי)
+</code>`},
+
+{id:"mongo-operators",cat:"mongodb",q:"מה עושים $gt, $lt, $in, $set, $push?",
+ a:`<ul>
+<li><b>$gt / $lt</b> — גדול מ / קטן מ: <code>{ age: { $gt: 18 } }</code></li>
+<li><b>$gte / $lte</b> — גדול-שווה / קטן-שווה</li>
+<li><b>$in</b> — ערך ברשימה: <code>{ city: { $in: ['TLV','HFA'] } }</code></li>
+<li><b>$set</b> — עדכון שדות ספציפיים (לא מוחק שאר): <code>{ $set: { name } }</code></li>
+<li><b>$push</b> — הוספה למערך: <code>{ $push: { tags: 'new' } }</code></li>
+</ul>`},
+
+{id:"mongo-connect",cat:"mongodb",q:"מה שלושת השלבים לחיבור MongoDB ב-Express?",
+ a:`<code>
+// 1. Install<br>
+npm install mongoose<br><br>
+// 2. Connect<br>
+mongoose.connect('mongodb://localhost:27017/mydb')<br>
+  .then(() => console.log('MongoDB connected'))<br>
+  .catch(err => console.error(err));<br><br>
+// 3. Use models after connection<br>
+app.listen(3000);
+</code>
+⚠️ <b>לא להפעיל app.listen לפני connect!</b>`},
+
+// ── React ──────────────────────────────────────────────────────────────────
+{id:"react-vs-vanilla",cat:"react",q:"למה React ולא HTML/JS פשוט? 3 יתרונות + 1 חיסרון",
+ a:`<b>יתרונות:</b>
+<ul>
+<li><b>Components</b> — קוד לחתיכות עצמאיות, DRY</li>
+<li><b>Reactivity</b> — useState → רינדור אוטומטי, אין צורך לעדכן DOM ידנית</li>
+<li><b>Virtual DOM</b> — מחשב הפרשים ומעדכן רק את שצריך, מהיר יותר</li>
+</ul>
+<b>חיסרון:</b>
+<ul>
+<li><b>Bundle size גדול</b> — יש לטעון את ספריית React (overhead לאפליקציות קטנות)</li>
+</ul>`},
+
+{id:"usestate-pattern",cat:"react",q:"מה זה controlled component? מה ההבדל מ-uncontrolled?",
+ a:`<b>Controlled</b> — ה-value של input מגיע מ-state:<br>
+<code>&lt;input value={name} onChange={e => setName(e.target.value)} /&gt;</code><br><br>
+<b>Uncontrolled</b> — DOM מנהל את הערך, React לא:<br>
+<code>&lt;input ref={inputRef} /&gt;</code><br><br>
+<b>במבחן</b> — תמיד Controlled! כי אנחנו רוצים לקרוא, לולידציה, ולהגיב לשינויים.`},
+
+{id:"useeffect-rules",cat:"react",q:"מה 3 הצורות של useEffect? מה עושה כל אחת?",
+ a:`<code>
+// 1. כל render<br>
+useEffect(() => { ... });<br><br>
+// 2. רק פעם אחת (mount)<br>
+useEffect(() => { ... }, []);<br><br>
+// 3. כשמשתנה תלות<br>
+useEffect(() => { ... }, [dep1, dep2]);
+</code><br>
+<b>Cleanup:</b> <code>return () => clearInterval(id)</code> — חובה לsetInterval, subscriptions, timers.`},
+
+{id:"localstorage-react",cat:"react",q:"כיצד מאתחלים state מ-localStorage ושומרים אוטומטית?",
+ a:`<code>
+// אתחול מ-localStorage<br>
+const [users, setUsers] = useState(<br>
+  () => JSON.parse(localStorage.getItem('users')) || []<br>
+);<br><br>
+// שמירה אוטומטית בכל שינוי<br>
+useEffect(() => {<br>
+  localStorage.setItem('users', JSON.stringify(users));<br>
+}, [users]);
+</code><br>
+⚠️ <b>חובה JSON.parse/JSON.stringify</b> — localStorage שומר רק strings!`},
+
+{id:"react-router-basics",cat:"react",q:"מהו ה-pattern הבסיסי של React Router? Routes, Link, useNavigate",
+ a:`<code>
+// App.jsx<br>
+&lt;BrowserRouter&gt;<br>
+  &lt;Routes&gt;<br>
+    &lt;Route path="/" element={&lt;Login /&gt;} /&gt;<br>
+    &lt;Route path="/home" element={&lt;Home /&gt;} /&gt;<br>
+    &lt;Route path="/user/:id" element={&lt;Profile /&gt;} /&gt;<br>
+  &lt;/Routes&gt;<br>
+&lt;/BrowserRouter&gt;<br><br>
+// ניווט תוכנתי<br>
+const navigate = useNavigate();<br>
+navigate('/home');<br><br>
+// ניווט מפרמטר<br>
+const { id } = useParams();
+</code>`},
+
+{id:"react-validation",cat:"react",q:"מה הpattern הנכון לולידציה ב-React form?",
+ a:`<code>
+const [errors, setErrors] = useState({});<br><br>
+function validate() {<br>
+  const errs = {};<br>
+  if (!name) errs.name = 'שם חובה';<br>
+  if (password.length < 6) errs.pwd = 'מינימום 6';<br>
+  setErrors(errs);<br>
+  return Object.keys(errs).length === 0;<br>
+}<br><br>
+function handleSubmit(e) {<br>
+  e.preventDefault();<br>
+  if (!validate()) return;<br>
+  // proceed...<br>
+}
+</code>`},
+
+{id:"react-key-prop",cat:"react",q:"למה חובה key ב-map? מה קורה בלי?",
+ a:`<b>Key</b> עוזר ל-React לזהות איזה element השתנה בעת רינדור מחדש.<br><br>
+<b>בלי key</b> → React לא מדויק בעדכונים, באגים ב-inputs, state שלא מתאפס.<br><br>
+<code>
+// ❌ שגוי<br>
+items.map((item, i) => &lt;Item key={i} /&gt;)<br><br>
+// ✅ נכון<br>
+items.map(item => &lt;Item key={item.id} /&gt;)
+</code><br>
+⚠️ אל תשתמש ב-index כ-key כשהסדר יכול להשתנות!`},
+
+{id:"react-stale-closure",cat:"react",q:"מה זה stale closure ב-setInterval? איך נמנעים?",
+ a:`<b>Stale closure</b> — setInterval תופס גרסה ישנה של state.<br><br>
+<code>
+// ❌ בעיה — seconds תמיד 0<br>
+setInterval(() => setSeconds(seconds + 1), 1000)<br><br>
+// ✅ פתרון — prev תמיד עדכני<br>
+setInterval(() => setSeconds(prev => prev + 1), 1000)
+</code><br>
+כלל: בתוך setInterval/setTimeout → תמיד <b>functional update</b> (<code>prev => prev + 1</code>).`},
+
+// ── JavaScript ─────────────────────────────────────────────────────────────
+{id:"arrow-vs-function",cat:"js",q:"מה ההבדל בין function declaration לarrow function?",
+ a:`<table><tr><th></th><th>function</th><th>arrow</th></tr>
+<tr><td><b>this</b></td><td>דינמי (context)</td><td>לקסיקלי (מחוץ)</td></tr>
+<tr><td><b>arguments</b></td><td>קיים</td><td>לא קיים</td></tr>
+<tr><td><b>constructor</b></td><td>ניתן new</td><td>לא ניתן</td></tr>
+<tr><td><b>hoisting</b></td><td>כן</td><td>לא (כvar)</td></tr>
+</table><br>
+<b>מתי arrow?</b> — callbacks, methods שלא צריכים this משלהם.<br>
+<b>מתי function?</b> — constructors, method עם this.`},
+
+{id:"closure",cat:"js",q:"מה זה closure ותן דוגמה פשוטה",
+ a:`<b>Closure</b> — פונקציה שזוכרת את המשתנים מהscope שבו נוצרה, גם אחרי שה-scope סגר.<br><br>
+<code>
+function counter() {<br>
+  let count = 0;<br>
+  return () => ++count; // closure!<br>
+}<br>
+const inc = counter();<br>
+inc(); // 1<br>
+inc(); // 2 — זוכר count!
+</code><br>
+<b>שימוש נפוץ:</b> useState ב-React הוא closure.`},
+
+{id:"event-loop",cat:"js",q:"מה זה Event Loop? מה ההסבר לasync ב-JavaScript?",
+ a:`JS היא <b>single-threaded</b> — קוד אחד בכל פעם.<br><br>
+<b>Event Loop</b> מאפשר async:
+<ul>
+<li>Call Stack — קוד סינכרוני מבוצע</li>
+<li>Web APIs — setTimeout/fetch רצים בצד (browser)</li>
+<li>Callback Queue — callbacks ממתינים</li>
+<li>Event Loop — כשStack ריק, מעביר מQueue</li>
+</ul>
+<b>לכן:</b> setTimeout(fn, 0) רץ <b>אחרי</b> כל הקוד הסינכרוני.`},
+
+{id:"promise-async",cat:"js",q:"מה ההבדל בין Promise, async/await, ו-callback?",
+ a:`<code>
+// Callback (ישן, callback hell)<br>
+getData(id, (err, data) => { ... })<br><br>
+// Promise<br>
+getData(id)<br>
+  .then(data => ...)<br>
+  .catch(err => ...)<br><br>
+// async/await (מודרני, נקי)<br>
+async function load() {<br>
+  try {<br>
+    const data = await getData(id);<br>
+  } catch(err) { ... }<br>
+}
+</code><br>
+<b>במבחן</b> — תמיד async/await.`},
+
+{id:"recursion",cat:"js",q:"מה זה recursion? Base case + Recursive case + דוגמה",
+ a:`<b>Recursion</b> — פונקציה שקוראת לעצמה.<br><br>
+<b>חובה שני חלקים:</b>
+<ul>
+<li><b>Base case</b> — תנאי עצירה (אחרת: stack overflow)</li>
+<li><b>Recursive case</b> — קריאה לעצמה עם קלט קטן יותר</li>
+</ul>
+<code>
+function factorial(n) {<br>
+  if (n <= 1) return 1;        // base<br>
+  return n * factorial(n - 1); // recursive<br>
+}
+</code><br>
+<b>מתי כדאי?</b> עצים, תיקיות, JSON מקונן. לא מתאים לrplacing לולאה פשוטה.`},
+
+{id:"var-let-const",cat:"js",q:"מה ההבדל בין var, let, const?",
+ a:`<table><tr><th></th><th>var</th><th>let</th><th>const</th></tr>
+<tr><td><b>Scope</b></td><td>function</td><td>block</td><td>block</td></tr>
+<tr><td><b>Hoisting</b></td><td>כן (undefined)</td><td>כן (TDZ)</td><td>כן (TDZ)</td></tr>
+<tr><td><b>Re-assign</b></td><td>✅</td><td>✅</td><td>❌</td></tr>
+<tr><td><b>Re-declare</b></td><td>✅</td><td>❌</td><td>❌</td></tr>
+</table><br>
+<b>במבחן:</b> const לכל דבר, let כשצריך שינוי, var — לעולם לא.`},
+
+// ── Express ────────────────────────────────────────────────────────────────
+{id:"express-setup",cat:"express",q:"מה 5 השורות הראשונות בכל server.js?",
+ a:`<code>
+const express = require('express');<br>
+const app = express();<br><br>
+app.use(express.json());     // ← חובה! בלי זה req.body=undefined<br>
+app.use(require('cors')());  // ← לReact + Express ב-ports שונים<br><br>
+app.listen(3000, () => console.log('Server on 3000'));
+</code><br>
+⚠️ <b>express.json()</b> חובה לפני כל route שמקבל body.`},
+
+{id:"express-route-order",cat:"express",q:"למה סדר routes חשוב? מה קורה אם /:id לפני /special?",
+ a:`Express מתאים routes <b>בסדר ההגדרה</b> — ראשון שמתאים מנצח.<br><br>
+<code>
+// ❌ שגוי — /special תמיד יתפס כ-/:id<br>
+app.get('/users/:id', handler)<br>
+app.get('/users/special', handler)<br><br>
+// ✅ נכון — ספציפי לפני פרמטרי<br>
+app.get('/users/special', handler)<br>
+app.get('/users/:id', handler)
+</code>`},
+
+{id:"express-query-params",cat:"express",q:"מה ההבדל בין req.params, req.query, req.body?",
+ a:`<ul>
+<li><b>req.params</b> — URL path params: <code>/users/:id</code> → <code>req.params.id</code></li>
+<li><b>req.query</b> — Query string: <code>/users?age=25</code> → <code>req.query.age</code> (תמיד string!)</li>
+<li><b>req.body</b> — Request body (POST/PUT, JSON): <code>req.body.name</code></li>
+</ul>
+⚠️ <b>req.query תמיד string!</b> השתמש ב-Number(req.query.age) לפני חישוב.`},
+
+{id:"express-middleware",cat:"express",q:"מה זה middleware ב-Express? כיצד כותבים אחד?",
+ a:`<b>Middleware</b> — פונקציה שרצה בין קבלת request להחזרת response.<br><br>
+<code>
+function logger(req, res, next) {<br>
+  console.log(req.method, req.url);<br>
+  next(); // ← חובה! בלי next, request תקוע<br>
+}<br>
+app.use(logger);
+</code><br>
+<b>גלובלי:</b> app.use() — לכל route.<br>
+<b>ספציפי:</b> app.get('/path', logger, handler).`},
+
+{id:"express-error-handling",cat:"express",q:"כיצד מטפלים בשגיאות ב-Express async routes?",
+ a:`<code>
+app.get('/users/:id', async (req, res) => {<br>
+  try {<br>
+    const user = await User.findById(req.params.id);<br>
+    if (!user) return res.status(404).json({ error: 'Not found' });<br>
+    res.json(user);<br>
+  } catch (err) {<br>
+    res.status(500).json({ error: err.message });<br>
+  }<br>
+});
+</code><br>
+⚠️ בלי try/catch — שגיאת async תקרוס את השרת ללא תגובה.`},
+
+// ── Node.js ────────────────────────────────────────────────────────────────
+{id:"node-fs",cat:"node",q:"מה ההבדל בין fs.writeFile לfs.appendFile?",
+ a:`<ul>
+<li><b>writeFile</b> — כותב קובץ חדש / <b>מוחק הכל</b> ומחליף</li>
+<li><b>appendFile</b> — <b>מוסיף לסוף</b> הקובץ הקיים</li>
+</ul>
+<code>
+// שמור לוג — appendFile (לא writeFile!)<br>
+await fs.promises.appendFile('log.txt', line + '\\n', 'utf8');
+</code><br>
+⚠️ <b>מלכודת המבחן:</b> writeFile מוחק היסטוריה. תמיד appendFile לlog/transactions.`},
+
+{id:"node-require",cat:"node",q:"מה ההבדל בין require (CommonJS) לimport (ES Modules)?",
+ a:`<table><tr><th></th><th>require (CJS)</th><th>import (ESM)</th></tr>
+<tr><td><b>סביבה</b></td><td>Node.js ישן</td><td>מודרני (Node 14+)</td></tr>
+<tr><td><b>loading</b></td><td>סינכרוני</td><td>async</td></tr>
+<tr><td><b>קובץ</b></td><td>.js</td><td>.mjs / "type":"module"</td></tr>
+</table><br>
+<b>במבחן</b> — תמיד <code>require()</code> ב-Express/Node.<br>
+<b>ב-React</b> — תמיד <code>import</code>.`},
+
+{id:"node-class",cat:"node",q:"כיצד כותבים class ב-Node.js עם fs.promises?",
+ a:`<code>
+const fs = require('fs').promises;<br><br>
+class TextFilePackage {<br>
+  constructor(filename) {<br>
+    this.filename = filename;<br>
+  }<br>
+  async read() {<br>
+    return await fs.readFile(this.filename, 'utf8');<br>
+  }<br>
+  async append(line) {<br>
+    await fs.appendFile(this.filename, line + '\\n', 'utf8');<br>
+  }<br>
+}
+</code><br>
+זה בדיוק travel-q3 במבחן!`},
+
+{id:"package-json",cat:"node",q:"מה scripts.start ו-scripts.dev ב-package.json? מה npm install?",
+ a:`<code>
+{<br>
+  "scripts": {<br>
+    "start": "node server.js",<br>
+    "dev": "nodemon server.js"<br>
+  },<br>
+  "dependencies": {<br>
+    "express": "^4.18.2",<br>
+    "mongoose": "^7.0.0"<br>
+  }<br>
+}
+</code><br>
+<b>npm install</b> — מוריד כל החבילות מ-package.json.<br>
+<b>nodemon</b> — מפעיל מחדש אוטומטי כשקוד משתנה.`},
+
+// ── Mixed Theory ────────────────────────────────────────────────────────────
+{id:"http-vs-https",cat:"http",q:"מה ההבדל בין HTTP לHTTPS?",
+ a:`<ul>
+<li><b>HTTP</b> — plain text, לא מוצפן, ניתן ליירוט</li>
+<li><b>HTTPS</b> — מוצפן עם TLS/SSL, URL מאומת</li>
+</ul>
+<b>Browser מראה 🔒</b> כשיש HTTPS.<br>
+<b>לא לשלוח סיסמאות ב-HTTP!</b><br><br>
+בפיתוח מקומי (localhost) — HTTP בסדר.<br>
+בproduction — חובה HTTPS.`},
+
+{id:"jwt-basics",cat:"node",q:"מה זה JWT? מה 3 החלקים שלו?",
+ a:`<b>JWT</b> (JSON Web Token) — token לאימות זהות.<br><br>
+<b>מבנה:</b> <code>header.payload.signature</code><br>
+<ul>
+<li><b>Header</b> — אלגוריתם (HS256)</li>
+<li><b>Payload</b> — נתונים (userId, role, exp)</li>
+<li><b>Signature</b> — חתימה עם secret key</li>
+</ul>
+<b>זרימה:</b> Login → Server מחזיר JWT → Client שומר ב-localStorage → שולח ב-Authorization header.`},
+
+{id:"sql-vs-nosql",cat:"mongodb",q:"SQL vs NoSQL — מתי להשתמש בכל אחד?",
+ a:`<table><tr><th></th><th>SQL</th><th>NoSQL (MongoDB)</th></tr>
+<tr><td><b>מבנה</b></td><td>טבלאות קבועות</td><td>documents גמישים</td></tr>
+<tr><td><b>relationships</b></td><td>JOIN חזק</td><td>$lookup מוגבל</td></tr>
+<tr><td><b>scaling</b></td><td>vertical</td><td>horizontal</td></tr>
+<tr><td><b>מתי?</b></td><td>בנקים, transactions</td><td>apps גמישות, JSON</td></tr>
+</table>`},
+
+{id:"spa-vs-ssr",cat:"react",q:"מה זה SPA? מה היתרון לעומת Multi-page?",
+ a:`<b>SPA</b> (Single Page Application) — דף HTML אחד, JavaScript מעדכן את ה-UI.<br><br>
+<b>יתרונות:</b>
+<ul>
+<li>מהיר — אין reload של עמוד שלם</li>
+<li>UX חלק — כמו אפליקציה native</li>
+</ul>
+<b>חסרונות:</b>
+<ul>
+<li>SEO חלש (אין HTML לbots)</li>
+<li>טעינה ראשונית איטית</li>
+</ul>
+<b>React = SPA</b>. React Router מחקה ניווט בין "דפים".`}
+];
+
+// ─── State ──────────────────────────────────────────────────────────────────
+function _lsGet(k,fb){try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch(e){return fb}}
+function _lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+
+let known = _lsGet('tq-known',[]);
+let dnk   = _lsGet('tq-dnk',[]);
+let currentCat = 'all';
+let queue = [];
+let qIdx  = 0;
+let flipped = false;
+
+// ─── Filter ─────────────────────────────────────────────────────────────────
+function buildQueue() {
+  const base = currentCat === 'all' ? CARDS : CARDS.filter(c => c.cat === currentCat);
+  // Prioritize unknown cards
+  const unknownFirst = base.filter(c => !known.includes(c.id));
+  const knownCards   = base.filter(c =>  known.includes(c.id));
+  queue = [...unknownFirst, ...knownCards];
+  qIdx = 0;
+  flipped = false;
+  render();
+}
+
+// ─── Render ─────────────────────────────────────────────────────────────────
+function render() {
+  const main = document.getElementById('main');
+  updateStats();
+
+  if (queue.length === 0) {
+    main.innerHTML = `<div class="complete"><h2>✅ אין כרטיסים בקטגוריה זו</h2><p>בחר קטגוריה אחרת</p></div>`;
+    return;
+  }
+
+  if (qIdx >= queue.length) {
+    const k = queue.filter(c => known.includes(c.id)).length;
+    const d = queue.filter(c => dnk.includes(c.id)).length;
+    const pct = Math.round(k / queue.length * 100);
+    main.innerHTML = `<div class="complete">
+      <div style="font-size:48px;margin-bottom:8px">${pct >= 80 ? '🏆' : pct >= 50 ? '💪' : '📚'}</div>
+      <h2>סיימת ${queue.length} כרטיסים!</h2>
+      <p>ציון: ${pct}% ידוע</p>
+      <div class="complete-stats">
+        <div class="cs"><div class="cs-num" style="color:var(--green)">${k}</div><div class="cs-lbl">ידוע ✅</div></div>
+        <div class="cs"><div class="cs-num" style="color:var(--red)">${d}</div><div class="cs-lbl">לא ידוע ❌</div></div>
+        <div class="cs"><div class="cs-num" style="color:var(--brand)">${queue.length - k - d}</div><div class="cs-lbl">דלגתי</div></div>
+      </div>
+      ${d > 0 ? '<button class="btn-restart" onclick="reviewDnk()">🔄 חזור על לא-ידוע</button>' : ''}
+      <button class="btn-restart" onclick="buildQueue()" style="margin-right:10px;background:#1e1b4b">↩️ הכל מחדש</button>
+    </div>`;
+    return;
+  }
+
+  const card = queue[qIdx];
+  const total = queue.length;
+  const pct = Math.round(qIdx / total * 100);
+  const isKnown = known.includes(card.id);
+  const isDnk   = dnk.includes(card.id);
+
+  main.innerHTML = `
+    <div class="queue-bar">
+      <div class="queue-prog"><div class="queue-fill" style="width:${pct}%"></div></div>
+      <div class="queue-num">${qIdx + 1} / ${total}</div>
+    </div>
+    <div class="card-wrap">
+      <div class="flashcard${flipped ? ' flipped' : ''}" id="fc" onclick="flipCard()">
+        <div class="fc-front">
+          <span class="fc-cat badge-${card.cat}">${catLabel(card.cat)}</span>
+          <div class="fc-q">${card.q}</div>
+          <div class="fc-hint">👆 לחץ לגילוי התשובה</div>
+        </div>
+        <div class="fc-back">
+          <span class="fc-cat badge-${card.cat}" style="border-color:rgba(255,255,255,.3)">${catLabel(card.cat)}</span>
+          <div class="fc-a">${card.a}</div>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="action-btn btn-flip" onclick="flipCard()">🔄 הפוך</button>
+      <button class="action-btn btn-know" onclick="markKnow()">✅ ידוע</button>
+      <button class="action-btn btn-dnk"  onclick="markDnk()">❌ לא ידוע</button>
+      <button class="action-btn btn-skip" onclick="skip()">⏭ דלג</button>
+    </div>
+  `;
+}
+
+function catLabel(cat) {
+  const m = {all:'הכל',http:'🌐 HTTP',mongodb:'🍃 MongoDB',react:'⚛️ React',js:'🟨 JS',express:'🟢 Express',node:'💜 Node'};
+  return m[cat] || cat;
+}
+
+function updateStats() {
+  document.getElementById('known-count').textContent = known.length;
+  document.getElementById('dnk-count').textContent = dnk.length;
+}
+
+function flipCard() {
+  flipped = !flipped;
+  const fc = document.getElementById('fc');
+  if (fc) fc.classList.toggle('flipped', flipped);
+}
+
+function markKnow() {
+  const id = queue[qIdx]?.id;
+  if (!id) return;
+  known = [...new Set([...known, id])];
+  dnk = dnk.filter(x => x !== id);
+  _lsSet('tq-known', known);
+  _lsSet('tq-dnk', dnk);
+  showToast('✅ ידוע!');
+  qIdx++; flipped = false; render();
+}
+
+function markDnk() {
+  const id = queue[qIdx]?.id;
+  if (!id) return;
+  dnk = [...new Set([...dnk, id])];
+  known = known.filter(x => x !== id);
+  _lsSet('tq-known', known);
+  _lsSet('tq-dnk', dnk);
+  showToast('📌 נסמן לחזרה');
+  qIdx++; flipped = false; render();
+}
+
+function skip() { qIdx++; flipped = false; render(); }
+
+function reviewDnk() {
+  queue = CARDS.filter(c => dnk.includes(c.id));
+  if (currentCat !== 'all') queue = queue.filter(c => c.cat === currentCat);
+  qIdx = 0; flipped = false; render();
+}
+
+function resetProgress() {
+  if (!confirm('לאפס את כל ההתקדמות?')) return;
+  known = []; dnk = [];
+  _lsSet('tq-known', []); _lsSet('tq-dnk', []);
+  buildQueue();
+  showToast('🗑 אופס');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1400);
+}
+
+// ─── Category chips ─────────────────────────────────────────────────────────
+document.querySelectorAll('.cat-chip').forEach(chip => {
+  chip.onclick = () => {
+    document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentCat = chip.dataset.cat;
+    buildQueue();
+  };
+});
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+buildQueue();
+</script>
+<script src="nav-tree.js"></script>
+</body>
+</html>
