@@ -610,7 +610,12 @@ const BUGS = [
   {id:'b12',sev:'medium',title:'חסר runValidators ב-findByIdAndUpdate',fix:'{new:true, runValidators:true} — בלי runValidators, Schema validation לא רץ על update'},
   {id:'b13',sev:'medium',title:'OR במקום AND בסינון (filter)',fix:'כל if נפרד מצמצם את result. if(!== undefined) לפני כל filter'},
   {id:'b14',sev:'medium',title:'useEffect ללא cleanup — memory leak',fix:'return () => clearTimeout/clearInterval/unsubscribe בסוף useEffect'},
-  {id:'b15',sev:'medium',title:'navigate() מחוץ ל-Router context',fix:'useNavigate רק בתוך component שבתוך <BrowserRouter>. App.js יכול להיות מעטפת'}
+  {id:'b15',sev:'medium',title:'navigate() מחוץ ל-Router context',fix:'useNavigate רק בתוך component שבתוך <BrowserRouter>. App.js יכול להיות מעטפת'},
+  {id:'b16',sev:'high',title:'useParams מחזיר string — השוואה עם id Number נכשלת',fix:'const {id} = useParams(); const item = items.find(i => i.id === Number(id)); // המר ל-Number!'},
+  {id:'b17',sev:'critical',title:'async Express handler ללא try/catch',fix:'app.get("/", async (req,res) => { try { ... } catch(err) { res.status(500).json({error:err.message}); } })'},
+  {id:'b18',sev:'high',title:'mutation ישירה של state ב-React',fix:'❌ state.push(item) — מנוע! ✅ setState(prev => [...prev, item]) — spread תמיד!'},
+  {id:'b19',sev:'critical',title:'חסר cors() middleware (CORS error בbrowser)',fix:'app.use(require("cors")()) — לפני כל routes, אחרת browser חוסם בקשות cross-origin'},
+  {id:'b20',sev:'high',title:'שליחת response כפולה (headers already sent)',fix:'תמיד return לפני res.json/res.status: if(!item) return res.status(404).json(...); res.json(item);'}
 ];
 
 function renderBugs(){
