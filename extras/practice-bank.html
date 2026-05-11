@@ -126,9 +126,9 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 50 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 55 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
-    <span class="stat" id="stat-solved">✅ נפתרו: 0/50</span>
+    <span class="stat" id="stat-solved">✅ נפתרו: 0/55</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
   </div>
 </header>
@@ -1530,6 +1530,290 @@ function renderApp(currentUser) {
   }
 />`,
   explain:"שני patterns בשאלה אחת: (1) conditional rendering — if/else לפי currentUser ו-role. (2) protected route — ב-element prop בודקים role, ואם לא manager → Navigate to='/'. זה בדיוק bank-q1 במבחן."
+},
+
+// ─── EXERCISE 51 ────────────────────────────────────────────────────────────
+{
+  id:"js-sum-by-digit-count",cat:"js",diff:"medium",
+  title:"סכום לפי מספר ספרות — Football Q2",
+  prompt:`כתבו פונקציה <b>sumByDigitCount(arr)</b> שמקבלת מערך מספרים ומחזירה אובייקט:
+<ul>
+  <li>המפתח = מספר הספרות (כמה ספרות במספר)</li>
+  <li>הערך = סכום כל המספרים עם אותו מספר ספרות</li>
+  <li>מספרים שליליים: השתמשו ב-<code>Math.abs()</code> לחישוב האורך, אבל הוסיפו את המספר כמות שהוא לסכום</li>
+</ul>
+<b>דוגמה:</b><br>
+<code>sumByDigitCount([12, -5, 100, 7, 23, -45]) // {2:12+(-5)+23+(-45)=-15, 3:100, 1:7}</code>`,
+  tests:[
+    {label:"מספרים בני 1 ספרה נסכמים ביחד", fn:c=>/Math\.abs/.test(c)},
+    {label:"שימוש ב-Math.abs לחישוב אורך",   fn:c=>/Math\.abs/.test(c)},
+    {label:"חישוב אורך כ-String",            fn:c=>/String\(|\.toString\(/.test(c)},
+    {label:"צבירה עם || 0",                  fn:c=>/\|\|\s*0/.test(c)}
+  ],
+  customTest:code=>{
+    const hasAbs=/Math\.abs/.test(code);
+    const hasLen=/String\s*\([\s\S]{1,30}\.length|\.toString\s*\(\)\.length/.test(code);
+    const hasAccum=/\[\s*len\s*\]|\[key\]|\[digits\]|\[count\]|\[k\]/i.test(code)&&/\|\|\s*0/.test(code);
+    if(!hasAbs)return{ok:false,msg:"חסר Math.abs() — מספרים שליליים יפגעו בחישוב האורך"};
+    if(!hasLen)return{ok:false,msg:"חסר String(Math.abs(n)).length — כך מחשבים מספר ספרות"};
+    if(!hasAccum)return{ok:false,msg:"חסר pattern של result[len]=(result[len]||0)+n"};
+    return{ok:true,msg:"✅ Math.abs + String length + צבירה עם ||0"};
+  },
+  hint:"const len=String(Math.abs(n)).length; result[len]=(result[len]||0)+n;",
+  solution:`function sumByDigitCount(arr) {
+  if (!Array.isArray(arr)) throw new Error('Input must be an array');
+  const result = {};
+  for (const n of arr) {
+    if (typeof n !== 'number') continue;
+    const len = String(Math.abs(n)).length;  // ← Math.abs לשליליים!
+    result[len] = (result[len] || 0) + n;     // ← צבירה עם ||0
+  }
+  return result;
+}
+// [12, -5, 100, 7, 23, -45]
+// n=12 → len=2, n=-5 → Math.abs(-5)=5 → len=1
+// n=100 → len=3, n=7 → len=1, n=23 → len=2, n=-45 → len=2`,
+  explain:"זה בדיוק football-q2. הנקודה הקריטית: Math.abs() לפני String() כדי שמספרים שליליים כמו -5 יספרו כ-1 ספרה (לא 2). הצבירה result[len]=(result[len]||0)+n מוסיפה את המספר המקורי (שלילי!) לסכום."
+},
+
+// ─── EXERCISE 52 ────────────────────────────────────────────────────────────
+{
+  id:"js-subarray-in-order",cat:"js",diff:"hard",
+  title:"בדיקה אם תת-מערך מופיע בסדר — Travel Q2",
+  prompt:`כתבו פונקציה <b>isSubArrayInOrder(arr, subArr)</b> שמחזירה <code>true</code> אם כל אלמנטי <code>subArr</code> מופיעים ב-<code>arr</code> בסדר הנכון (לא בהכרח רציפים).
+<b>דוגמאות:</b>
+<pre>isSubArrayInOrder([1,5,3,8,2], [5,8])   // true  (5 מופיע לפני 8)
+isSubArrayInOrder([1,5,3,8,2], [8,5])   // false (8 מופיע אחרי 5, לא לפניו)
+isSubArrayInOrder([1,2,3,4,5], [1,3,5]) // true
+isSubArrayInOrder([1,2,3], [4])         // false</pre>`,
+  tests:[
+    {label:"[5,8] בתוך [1,5,3,8,2] → true",  fn:c=>/indexOf|findIndex|pointer|idx/.test(c)},
+    {label:"[8,5] בתוך [1,5,3,8,2] → false", fn:c=>/false/.test(c)},
+    {label:"מנגנון pointer/index מתקדם",      fn:c=>/pointer|idx\s*\+\+|i\+\+|j\+\+/.test(c)},
+    {label:"קלט ריק מטופל",                   fn:c=>/length\s*===?\s*0|!arr|!subArr/.test(c)}
+  ],
+  customTest:code=>{
+    const hasPointer=/\bpointer\b|\bidx\b|\bi\b.*\+\+|\bj\b.*\+\+/.test(code);
+    const hasFalse=/return\s+false/.test(code);
+    const hasTrue=/return\s+pointer|return\s+true|===\s+subArr\.length/.test(code);
+    if(!hasPointer&&!/indexOf/.test(code)&&!/findIndex/.test(code))
+      return{ok:false,msg:"השתמשו ב-pointer/index שמתקדם ב-arr בזמן שמחפשים כל איבר של subArr"};
+    if(!hasFalse)return{ok:false,msg:"חסרה החזרת false כשאיבר לא נמצא"};
+    if(!hasTrue)return{ok:false,msg:"חסרה החזרת true בסוף (כאשר כל האיברים נמצאו)"};
+    return{ok:true,msg:"✅ pointer pattern + true/false החזרה"};
+  },
+  hint:`function isSubArrayInOrder(arr, subArr) {
+  let pointer = 0;
+  for (const item of arr) {
+    if (item === subArr[pointer]) pointer++;
+    if (pointer === subArr.length) return true;
+  }
+  return false;
+}`,
+  solution:`function isSubArrayInOrder(arr, subArr) {
+  if (!Array.isArray(arr) || !Array.isArray(subArr)) return false;
+  if (subArr.length === 0) return true;
+  let pointer = 0;  // מצביע על האיבר הנוכחי שאנחנו מחפשים ב-subArr
+  for (const item of arr) {
+    if (item === subArr[pointer]) {
+      pointer++;              // נמצא! נתקדם ל-subArr הבא
+    }
+    if (pointer === subArr.length) return true; // כולם נמצאו!
+  }
+  return false; // לא מצאנו את כולם
+}`,
+  explain:"זה travel-q2. הtrick: pointer שמצביע על האיבר הנוכחי ב-subArr. עוברים על arr — כל פעם שהאיבר הנוכחי ב-arr שווה ל-subArr[pointer], מתקדמים את pointer. אם pointer הגיע לאורך subArr — הצלחנו."
+},
+
+// ─── EXERCISE 53 ────────────────────────────────────────────────────────────
+{
+  id:"react-fixed-credentials",cat:"react",diff:"easy",
+  title:"בדיקת פרטי כניסה קבועים — Flights / Travel",
+  prompt:`<b>Flights</b> ו-<b>Travel</b> משתמשות בפרטי כניסה קבועים (ולא מה-DB). כתבו component <b>LoginFixed</b> עם:
+<ul>
+  <li>שדות <code>username</code> ו-<code>password</code> ב-state</li>
+  <li>פרטים קבועים: <code>VALID_USER = 'svcollege'</code>, <code>VALID_PASS = 'abcde'</code></li>
+  <li>בSubmit: בדיקה שווה <b>בדיוק</b> (<code>===</code>) — לא substring, לא includes</li>
+  <li>אם שגוי: הצג הודעת שגיאה</li>
+  <li>אם נכון: קרא ל-<code>onLogin()</code></li>
+</ul>
+<b>הערה:</b> flights משתמש בסיסמה קבועה <code>'12345'</code> בלבד (בלי username).`,
+  tests:[
+    {label:"state לשדות username + password", fn:c=>/useState/.test(c)},
+    {label:"השוואה מדויקת עם ===",           fn:c=>/===/.test(c)&&/svcollege|12345/.test(c)},
+    {label:"הצגת שגיאה אם אינם נכונים",     fn:c=>/error|שגיאה|שגוי|incorrect/i.test(c)},
+    {label:"קריאה ל-onLogin בהצלחה",        fn:c=>/onLogin\s*\(/.test(c)}
+  ],
+  customTest:code=>{
+    const hasState=/useState/.test(code);
+    const hasExactCompare=/===\s*['"]svcollege|===\s*['"]12345|===\s*['"]abcde/.test(code)||(/'svcollege'|"svcollege"/.test(code)&&/===/.test(code));
+    const hasError=/error|שגיאה|שגוי/i.test(code);
+    const hasCallback=/onLogin\s*\(/.test(code);
+    if(!hasState)return{ok:false,msg:"חסר useState לשדות הקלט"};
+    if(!hasExactCompare)return{ok:false,msg:"חסרה השוואה מדויקת === לסיסמה / שם המשתמש הקבוע"};
+    if(!hasError)return{ok:false,msg:"חסרה הצגת הודעת שגיאה בכניסה שגויה"};
+    if(!hasCallback)return{ok:false,msg:"חסרה קריאה ל-onLogin() בהצלחה"};
+    return{ok:true,msg:"✅ state + === exact compare + error + onLogin callback"};
+  },
+  hint:"const VALID_USER='svcollege', VALID_PASS='abcde'; if(username===VALID_USER && password===VALID_PASS) { onLogin(); } else { setError('פרטים שגויים'); }",
+  solution:`const VALID_USER = 'svcollege';
+const VALID_PASS = 'abcde';
+
+function LoginFixed({ onLogin }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (username === VALID_USER && password === VALID_PASS) {
+      setError('');
+      onLogin();
+    } else {
+      setError('שם משתמש או סיסמה שגויים');
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={username} onChange={e=>setUsername(e.target.value)} placeholder="שם משתמש"/>
+      <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="סיסמה"/>
+      {error && <p style={{color:'red'}}>{error}</p>}
+      <button type="submit">כניסה</button>
+    </form>
+  );
+}`,
+  explain:"flights-q1 ו-travel-q1 משתמשים בפרטים קבועים (לא DB). הנקודה: === ולא includes/indexOf. flights: password==='12345' בלבד. travel: username==='svcollege' && password==='abcde'. המשתנים הקבועים נכתבים כ-const מחוץ ל-component."
+},
+
+// ─── EXERCISE 54 ────────────────────────────────────────────────────────────
+{
+  id:"express-optional-filter",cat:"express",diff:"medium",
+  title:"Express — סינון אופציונלי עם AND Logic — Football Q3",
+  prompt:`כתבו route <b>POST /games/filter</b> שמקבל JSON עם שדות <b>אופציונליים</b>:
+<ul>
+  <li><code>name</code> — סינון לפי שם (includes, לא case sensitive)</li>
+  <li><code>yearMin</code> — רק משחקים משנה זו ומעלה</li>
+  <li><code>priceMax</code> — רק משחקים עד מחיר זה</li>
+</ul>
+<b>כללי:</b>
+<ul>
+  <li>שדה שלא נשלח = לא מסנן (אם <code>yearMin</code> לא קיים, לא מסננים לפי שנה)</li>
+  <li>כל הפילטרים הקיימים עובדים ב-AND (כולם חייבים להתקיים)</li>
+  <li>החזירו מערך מסונן עם status 200</li>
+</ul>`,
+  tests:[
+    {label:"POST /games/filter",              fn:c=>/post.*filter|router\.post/i.test(c)},
+    {label:"שימוש ב-req.body",               fn:c=>/req\.body/.test(c)},
+    {label:"בדיקה קיום לפני סינון",          fn:c=>/!==\s*undefined|if\s*\(\s*name|if\s*\(\s*year|if\s*\(\s*price/.test(c)},
+    {label:"filter עם AND logic",            fn:c=>/\.filter\s*\(/.test(c)}
+  ],
+  customTest:code=>{
+    const hasBody=/req\.body/.test(code);
+    const hasFilter=/\.filter\s*\(/.test(code);
+    const hasUndefinedCheck=/!==\s*undefined|\bif\b.*\bname\b|\bif\b.*\byear|\bif\b.*\bprice/.test(code);
+    const hasReturn=/res\.(json|send)\s*\(/.test(code);
+    if(!hasBody)return{ok:false,msg:"חסר req.body לקריאת הפילטרים"};
+    if(!hasFilter)return{ok:false,msg:"חסר .filter() לסינון המשחקים"};
+    if(!hasUndefinedCheck)return{ok:false,msg:"חסרה בדיקה אם הפילטר קיים לפני שמסננים (undefined check)"};
+    if(!hasReturn)return{ok:false,msg:"חסרה החזרת התוצאות עם res.json()"};
+    return{ok:true,msg:"✅ req.body + undefined check + filter + AND logic"};
+  },
+  hint:`app.post('/games/filter', (req,res) => {
+  const { name, yearMin, priceMax } = req.body;
+  let result = [...games];
+  if (name !== undefined) result = result.filter(g=>g.name.toLowerCase().includes(name.toLowerCase()));
+  if (yearMin !== undefined) result = result.filter(g=>g.year >= yearMin);
+  if (priceMax !== undefined) result = result.filter(g=>g.price <= priceMax);
+  res.json(result);
+});`,
+  solution:`app.post('/games/filter', (req, res) => {
+  const { name, yearMin, priceMax } = req.body;
+  let result = [...games];   // ← עותק כדי לא לשנות המקור
+
+  // כל פילטר מופעל רק אם נשלח:
+  if (name !== undefined) {
+    result = result.filter(g =>
+      g.name.toLowerCase().includes(name.toLowerCase())
+    );
+  }
+  if (yearMin !== undefined) {
+    result = result.filter(g => g.year >= yearMin);
+  }
+  if (priceMax !== undefined) {
+    result = result.filter(g => g.price <= priceMax);
+  }
+
+  res.json(result); // AND logic: כל .filter() מצמצם את result
+});`,
+  explain:"זה football-q3. הnuance החשוב: בדיקה if (name !== undefined) לפני כל filter — כך שדה שלא נשלח לא מסנן. AND logic מושג אוטומטית כי כל .filter() עובד על result המצומצם מהסינון הקודם. אסור להשתמש ב-OR (||) בין הפילטרים."
+},
+
+// ─── EXERCISE 55 ────────────────────────────────────────────────────────────
+{
+  id:"react-clear-errors-onchange",cat:"react",diff:"medium",
+  title:"ולידציה: ניקוי שגיאות onChange — פריט קריטי",
+  prompt:`<b>באג נפוץ:</b> שגיאות ולידציה נשארות על המסך גם אחרי שהמשתמש מתחיל לתקן. כתבו component <b>SmartForm</b> עם:
+<ul>
+  <li>שדות: <code>username</code> (3+ תווים), <code>password</code> (6+ תווים)</li>
+  <li>state: <code>errors</code> כאובייקט <code>{username:'', password:''}</code></li>
+  <li>onChange לכל שדה: מנקה את השגיאה של <b>אותו שדה בלבד</b> מיד עם ההקלדה</li>
+  <li>onSubmit: מאמת, ואם יש שגיאות — מציג אותן; אחרת — מוציא alert הצלחה</li>
+</ul>
+<b>המפתח:</b> onChange → <code>setErrors(prev => ({...prev, [field]: ''}))</code>`,
+  tests:[
+    {label:"errors state כאובייקט",          fn:c=>/useState\s*\(\s*\{/.test(c)},
+    {label:"ניקוי שגיאה ב-onChange",        fn:c=>/setErrors\s*\(|errors.*''|errors.*\"\"|prev.*spread/i.test(c)},
+    {label:"spread + computed key [field]",  fn:c=>/\.\.\.prev|\.\.\.\s*errors|\[.*\]\s*:/.test(c)},
+    {label:"ולידציה ב-onSubmit",            fn:c=>/onSubmit|handleSubmit/.test(c)&&/length/.test(c)}
+  ],
+  customTest:code=>{
+    const hasErrState=/useState\s*\(\s*\{/.test(code)||/errors.*\{/.test(code);
+    const hasSpread=/\.\.\.\s*prev|\.\.\.\s*errors/.test(code);
+    const hasComputedKey=/\[.*field.*\]|\[.*name.*\]|\[.*key.*\]/.test(code)||(hasSpread&&/:\s*''|:\s*""/.test(code));
+    const hasClearOnChange=/onChange[\s\S]{1,80}setErrors|setErrors[\s\S]{1,80}onChange/.test(code);
+    if(!hasErrState)return{ok:false,msg:"errors צריך להיות אובייקט ({username:'', password:''}), לא מחרוזת"};
+    if(!hasSpread)return{ok:false,msg:"חסר spread operator: setErrors(prev=>({...prev, [field]:''}))"};
+    if(!hasComputedKey)return{ok:false,msg:"חסר computed property key [fieldName]:'' לניקוי שגיאה ספציפית"};
+    if(!hasClearOnChange)return{ok:false,msg:"ניקוי השגיאה חייב להיות ב-onChange, לא רק ב-submit"};
+    return{ok:true,msg:"✅ errors אובייקט + spread + computed key + ניקוי ב-onChange"};
+  },
+  hint:"onChange={(e)=>{ setField(e.target.value); setErrors(prev=>({...prev, username:''})); }}  — או יותר כללי עם [name] computed key",
+  solution:`function SmartForm() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({ username: '', password: '' });
+
+  // ניקוי שגיאה מיד עם הקלדה — critical!
+  function handleChange(field, value) {
+    if (field === 'username') setUsername(value);
+    if (field === 'password') setPassword(value);
+    setErrors(prev => ({ ...prev, [field]: '' }));  // ← spread + computed key
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const newErrors = { username: '', password: '' };
+    if (username.length < 3) newErrors.username = 'שם משתמש: מינימום 3 תווים';
+    if (password.length < 6) newErrors.password = 'סיסמה: מינימום 6 תווים';
+    if (newErrors.username || newErrors.password) {
+      setErrors(newErrors);
+      return;
+    }
+    alert('✅ הצלחה!');
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={username} onChange={e=>handleChange('username',e.target.value)}/>
+      {errors.username && <p style={{color:'red'}}>{errors.username}</p>}
+      <input type="password" value={password} onChange={e=>handleChange('password',e.target.value)}/>
+      {errors.password && <p style={{color:'red'}}>{errors.password}</p>}
+      <button>שלח</button>
+    </form>
+  );
+}`,
+  explain:"פריט קריטי שנמצא כבאג בכמה מבחנות: שגיאות שלא נמחקות בזמן הקלדה. הפתרון: setErrors(prev=>({...prev,[field]:''})) ב-onChange. ה-spread ...prev שומר שגיאות של שדות אחרים, ו-[field] (computed key) מנקה רק את השדה שהשתנה."
 }
 ];
 
@@ -1543,7 +1827,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/50`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/55`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 
