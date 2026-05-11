@@ -38,6 +38,7 @@ const SITE_MAP = {
         { id: "regex-tester", label: "Regex Tester", icon: "🔬", href: "regex-tester.html", meta: "16 presets" },
         { id: "exam-cheatsheet", label: "דף רמז מבחן", icon: "📋", href: "exam-cheatsheet.html", meta: "9 מבחנים" },
         { id: "exam-mock", label: "מדמה מבחן", icon: "🎯", href: "exam-mock.html", meta: "9 מבחנים" },
+        { id: "last-day", label: "יום לפני המבחן", icon: "📅", href: "last-day.html", meta: "10+15+20+30" },
         { id: "data-flow", label: "Data Flow", icon: "📦", href: "data-flow.html", meta: "5 תרחישים" },
         { id: "course-map", label: "מפת קורס", icon: "🗂", href: "course-map.html", meta: "16 נושאים" },
         { id: "weakness-explainer", label: "נקודות חולשה", icon: "⚡", href: "weakness-explainer.html" }

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="📅 יום לפני המבחן — Fullstack — חזרה אחרונה, דפוסים קריטיים, רשימת באגים, Regex, ספרינט שאלות">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📅 יום לפני המבחן — Fullstack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF9F0;--ink:#0f172a;--card:#fff;--border:#0f172a;--brand:#7c3aed;--gold:#facc15;--blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--shadow:5px 5px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 55%,#7c3aed);color:#fff;padding:28px 24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(24px,4.5vw,40px);font-weight:900;margin:0;letter-spacing:-1px}
+.hero p{color:#c7d2fe;margin:6px 0 0;font-size:15px}
+.hero-badges{display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.hero-badge{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:4px 12px;font-size:12px;font-weight:700;color:#e0e7ff}
+.nav-tabs{display:flex;gap:6px;padding:12px 18px;overflow-x:auto;background:#fff;border-bottom:3px solid #000;position:sticky;top:0;z-index:100}
+.nav-tab{padding:7px 14px;border:2.5px solid #000;border-radius:8px;background:#f8fafc;font:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.12s;box-shadow:2px 2px 0 #000}
+.nav-tab:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 #000}
+.nav-tab.active{background:var(--gold);transform:translate(-1px,-1px);box-shadow:3px 3px 0 #000}
+.section{display:none;padding:20px;max-width:1100px;margin:0 auto}
+.section.visible{display:block}
+.section-title{font-size:22px;font-weight:900;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+/* ====== PATTERNS ====== */
+.pattern-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(480px,1fr));gap:16px}
+.pattern-card{background:var(--card);border:3px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.pattern-head{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:8px}
+.pattern-num{background:var(--gold);color:#000;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;flex-shrink:0}
+.pattern-title{font-weight:900;font-size:14px;flex:1}
+.pattern-exam{font-size:11px;color:#a5b4fc;font-weight:700}
+.pattern-body{padding:12px}
+.pattern-code{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:12px;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.7;overflow-x:auto;position:relative}
+.pattern-copy{position:absolute;top:6px;left:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:5px;color:#94a3b8;font-size:11px;font-weight:700;cursor:pointer;padding:3px 8px;transition:.15s}
+.pattern-copy:hover{background:rgba(255,255,255,.2);color:#fff}
+.pattern-copy.copied{background:#16a34a;color:#fff;border-color:#16a34a}
+.pattern-tip{margin-top:8px;font-size:12.5px;color:#475569;padding:6px 10px;background:#f0fdf4;border-right:3px solid #16a34a;border-radius:0 6px 6px 0}
+.kw{color:#93c5fd}.str{color:#86efac}.cmt{color:#64748b;font-style:italic}.fn{color:#fde68a}.num{color:#fca5a5}.op{color:#f9a8d4}
+
+/* ====== BUGS ====== */
+.bugs-intro{background:#fee2e2;border:2.5px solid #dc2626;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13.5px;font-weight:700;color:#991b1b}
+.bug-list{display:flex;flex-direction:column;gap:8px}
+.bug-item{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:2.5px solid var(--border);border-radius:12px;padding:12px 14px;box-shadow:3px 3px 0 #0f172a;cursor:pointer;transition:.12s}
+.bug-item:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #000}
+.bug-item.checked{border-color:#16a34a;background:#f0fdf4;box-shadow:3px 3px 0 #16a34a}
+.bug-item.checked .bug-cb{background:#16a34a;border-color:#16a34a;color:#fff}
+.bug-cb{width:22px;height:22px;border:2.5px solid #000;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px;transition:.12s}
+.bug-content{flex:1}
+.bug-title{font-weight:900;font-size:13.5px;margin-bottom:2px}
+.bug-fix{font-size:12px;color:#475569}
+.bug-fix code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:0 4px;font-family:'Courier New',monospace;font-size:11.5px;color:#1e40af}
+.bug-severity{font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;border:1.5px solid;margin-right:auto;white-space:nowrap;flex-shrink:0}
+.sev-critical{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+.sev-high{background:#fff7ed;color:#9a3412;border-color:#fdba74}
+.sev-medium{background:#fef9c3;color:#854d0e;border-color:#fde047}
+.bugs-score{background:#111827;color:#fff;border-radius:12px;padding:12px 16px;margin-top:12px;display:flex;align-items:center;gap:12px}
+.bugs-score-bar{flex:1;background:#374151;height:10px;border-radius:99px;overflow:hidden}
+.bugs-score-fill{background:linear-gradient(90deg,#dc2626,#f97316,#16a34a);height:100%;transition:width .4s}
+.bugs-score-txt{font-weight:900;font-size:14px;white-space:nowrap}
+
+/* ====== REGEX ====== */
+.regex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.regex-card{background:var(--card);border:2.5px solid var(--border);border-radius:12px;padding:14px;box-shadow:3px 3px 0 #0f172a}
+.regex-name{font-weight:900;font-size:13px;margin-bottom:4px;color:#1e40af}
+.regex-pattern{background:#0f172a;color:#93c5fd;border-radius:8px;padding:8px 12px;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;position:relative;word-break:break-all;border:2px solid #1e293b;transition:.12s}
+.regex-pattern:hover{border-color:#3b82f6}
+.regex-pattern.copied{border-color:#16a34a;color:#86efac}
+.regex-desc{font-size:11.5px;color:#64748b;margin-top:5px}
+.regex-test-row{display:flex;gap:6px;margin-top:6px}
+.regex-test-inp{flex:1;border:2px solid #000;border-radius:6px;padding:4px 8px;font:inherit;font-size:12px}
+.regex-test-inp.pass{border-color:#16a34a;background:#f0fdf4}
+.regex-test-inp.fail{border-color:#dc2626;background:#fff1f2}
+.regex-test-res{font-size:11px;font-weight:900;padding:4px 10px;border-radius:6px;align-self:center}
+.regex-test-res.pass{background:#dcfce7;color:#166534}
+.regex-test-res.fail{background:#fee2e2;color:#991b1b}
+.regex-copy-hint{font-size:10.5px;color:#94a3b8;margin-top:4px}
+
+/* ====== DRILL ====== */
+.drill-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.drill-btn{padding:8px 16px;border:2.5px solid #000;border-radius:8px;background:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;box-shadow:2px 2px 0 #000;transition:.12s}
+.drill-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 #000}
+.drill-btn.active{background:var(--gold)}
+.drill-btn.green{background:#dcfce7;color:#166534;border-color:#16a34a}
+.drill-score{background:#111827;color:#fff;border-radius:10px;padding:8px 14px;font-weight:900;font-size:13px;margin-right:auto}
+.drill-progress{background:#f1f5f9;border-radius:99px;height:8px;margin-bottom:12px;overflow:hidden;border:2px solid #000}
+.drill-progress-fill{background:var(--brand);height:100%;transition:width .3s}
+.drill-card{background:var(--card);border:3px solid var(--border);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow);min-height:140px;display:flex;flex-direction:column;gap:12px}
+.drill-q{font-weight:900;font-size:16px;line-height:1.5}
+.drill-q-meta{display:flex;gap:6px;align-items:center}
+.drill-cat{font-size:11px;font-weight:900;padding:2px 8px;border-radius:999px;border:1.5px solid}
+.cat-react{background:#dbeafe;color:#1e40af;border-color:#93c5fd}
+.cat-js{background:#fef9c3;color:#854d0e;border-color:#fde047}
+.cat-express{background:#d1fae5;color:#065f46;border-color:#6ee7b7}
+.cat-regex{background:#ede9fe;color:#5b21b6;border-color:#c4b5fd}
+.cat-mongo{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+.drill-answer{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:12px 14px;font-family:'Courier New',monospace;font-size:13px;line-height:1.7;display:none}
+.drill-answer.visible{display:block}
+.drill-actions{display:flex;gap:8px;flex-wrap:wrap}
+.drill-show-btn{padding:8px 18px;border:2.5px solid #000;border-radius:8px;background:var(--gold);font:inherit;font-size:14px;font-weight:700;cursor:pointer;box-shadow:2px 2px 0 #000;transition:.12s}
+.drill-show-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 #000}
+.drill-vote{padding:7px 15px;border:2.5px solid;border-radius:8px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.12s}
+.drill-vote.yes{background:#dcfce7;color:#166534;border-color:#16a34a}
+.drill-vote.no{background:#fee2e2;color:#991b1b;border-color:#dc2626;box-shadow:2px 2px 0 #dc2626}
+.drill-vote:hover{transform:translate(-1px,-1px)}
+.drill-empty{text-align:center;padding:40px;font-size:16px;color:#64748b;font-weight:700}
+.drill-summary{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;border-radius:16px;padding:24px;text-align:center;display:none}
+.drill-summary.visible{display:block}
+.drill-summary h2{font-size:28px;margin-bottom:8px}
+.drill-summary p{color:#a5b4fc;font-size:15px}
+.drill-summary .score-big{font-size:56px;font-weight:900;color:var(--gold);display:block;margin:12px 0}
+
+/* ====== CONFIDENCE ====== */
+.conf-intro{background:#ede9fe;border:2.5px solid var(--brand);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13.5px;color:#4c1d95;font-weight:700}
+.conf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.conf-exam{background:var(--card);border:3px solid var(--border);border-radius:14px;padding:14px;box-shadow:3px 3px 0 #0f172a}
+.conf-exam-title{font-weight:900;font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.conf-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f1f5f9}
+.conf-row:last-child{border-bottom:none}
+.conf-label{flex:1;font-size:13px;font-weight:700}
+.conf-stars{display:flex;gap:3px}
+.conf-star{font-size:18px;cursor:pointer;transition:.1s;opacity:.3;user-select:none}
+.conf-star.lit{opacity:1}
+.conf-star:hover{transform:scale(1.2)}
+.conf-overall{background:#111827;color:#fff;border-radius:12px;padding:14px 18px;margin-top:16px;display:flex;align-items:center;gap:14px}
+.conf-overall-label{font-weight:900;font-size:14px}
+.conf-overall-score{font-size:28px;font-weight:900;color:var(--gold)}
+.conf-overall-bar{flex:1;background:#374151;height:12px;border-radius:99px;overflow:hidden}
+.conf-overall-fill{height:100%;background:linear-gradient(90deg,#dc2626,#f97316,#facc15,#16a34a);transition:width .4s}
+.conf-reset{padding:6px 12px;border:2px solid #475569;border-radius:6px;background:none;color:#94a3b8;font:inherit;font-size:12px;cursor:pointer;margin-right:8px}
+
+/* Dark mode */
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--border:#334155;--shadow:5px 5px 0 #334155}
+  .nav-tabs{background:#1e293b;border-color:#334155}
+  .nav-tab{background:#0f172a;border-color:#334155;color:#e2e8f0}
+  .nav-tab.active{background:var(--gold);color:#0f172a;border-color:#000}
+  .pattern-tip{background:#0f2d1f;color:#86efac;border-color:#16a34a}
+  .bug-item{background:#1e293b;border-color:#334155}
+  .bug-item.checked{background:#052e16;border-color:#16a34a}
+  .regex-card{background:#1e293b;border-color:#334155}
+  .regex-test-inp{background:#0f172a;color:#e2e8f0;border-color:#334155}
+  .drill-card{background:#1e293b;border-color:#334155}
+  .drill-btn{background:#1e293b;color:#e2e8f0;border-color:#334155}
+  .conf-exam{background:#1e293b;border-color:#334155}
+  .conf-row{border-color:#334155}
+  .bugs-intro{background:#450a0a}
+  .conf-intro{background:#2e1065}
+  .hero-badge{background:rgba(255,255,255,.08)}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>📅 יום לפני המבחן — Fullstack</h1>
+  <p>חזרה אחרונה · דפוסים קריטיים · מלכודות · Regex · ספרינט שאלות · מפת ביטחון</p>
+  <div class="hero-badges">
+    <span class="hero-badge">🎯 10 דפוסים קריטיים</span>
+    <span class="hero-badge">🐛 15 באגים נפוצים</span>
+    <span class="hero-badge">🔬 20 Regex</span>
+    <span class="hero-badge">⚡ 30 שאלות מהירות</span>
+    <span class="hero-badge">💪 27 נושאים — מפת ביטחון</span>
+  </div>
+</header>
+
+<nav class="nav-tabs" id="nav-tabs">
+  <button class="nav-tab active" data-tab="patterns" onclick="switchTab('patterns')">🎯 דפוסים</button>
+  <button class="nav-tab" data-tab="bugs" onclick="switchTab('bugs')">🐛 באגים</button>
+  <button class="nav-tab" data-tab="regex" onclick="switchTab('regex')">🔬 Regex</button>
+  <button class="nav-tab" data-tab="drill" onclick="switchTab('drill')">⚡ ספרינט</button>
+  <button class="nav-tab" data-tab="confidence" onclick="switchTab('confidence')">💪 ביטחון</button>
+</nav>
+
+<!-- ======== TAB 1: PATTERNS ======== -->
+<section class="section visible" id="tab-patterns">
+  <div class="section-title">🎯 10 דפוסים קריטיים — חייבים לדעת בעל פה</div>
+  <div class="pattern-grid" id="pattern-grid"></div>
+</section>
+
+<!-- ======== TAB 2: BUGS ======== -->
+<section class="section" id="tab-bugs">
+  <div class="section-title">🐛 15 באגים נפוצים — סמן כל אחד שאתה יודע להימנע ממנו</div>
+  <div class="bugs-intro">⚠️ רוב האבדות בניקוד מגיעות מאותם באגים קטנים שחוזרים על עצמם. עברו אחד אחד, ודאו שאתם יודעים את הפתרון!</div>
+  <div class="bug-list" id="bug-list"></div>
+  <div class="bugs-score">
+    <span>ידועים:</span>
+    <div class="bugs-score-bar"><div class="bugs-score-fill" id="bugs-fill" style="width:0%"></div></div>
+    <span class="bugs-score-txt" id="bugs-txt">0/15</span>
+    <button class="conf-reset" onclick="resetBugs()">איפוס</button>
+  </div>
+</section>
+
+<!-- ======== TAB 3: REGEX ======== -->
+<section class="section" id="tab-regex">
+  <div class="section-title">🔬 20 ביטויים רגולריים — לחץ לעתק</div>
+  <div class="regex-grid" id="regex-grid"></div>
+</section>
+
+<!-- ======== TAB 4: DRILL ======== -->
+<section class="section" id="tab-drill">
+  <div class="section-title">⚡ ספרינט שאלות — 30 שאלות מהירות</div>
+  <div class="drill-controls">
+    <button class="drill-btn active" id="filter-all" onclick="setDrillFilter('all')">🎯 הכל</button>
+    <button class="drill-btn" id="filter-react" onclick="setDrillFilter('react')">⚛ React</button>
+    <button class="drill-btn" id="filter-js" onclick="setDrillFilter('js')">🟨 JS</button>
+    <button class="drill-btn" id="filter-express" onclick="setDrillFilter('express')">🟢 Express</button>
+    <button class="drill-btn" id="filter-regex" onclick="setDrillFilter('regex')">🔬 Regex</button>
+    <button class="drill-btn" id="filter-mongo" onclick="setDrillFilter('mongo')">🍃 Mongo</button>
+    <span class="drill-score" id="drill-score-txt">✅ 0 | ❌ 0</span>
+    <button class="drill-btn green" onclick="resetDrill()">🔄 מחדש</button>
+  </div>
+  <div class="drill-progress"><div class="drill-progress-fill" id="drill-prog-fill" style="width:0%"></div></div>
+  <div id="drill-area"></div>
+</section>
+
+<!-- ======== TAB 5: CONFIDENCE ======== -->
+<section class="section" id="tab-confidence">
+  <div class="section-title">💪 מפת ביטחון — דרג את עצמך לפי נושא</div>
+  <div class="conf-intro">כוכבים = רמת ביטחון שלך: ⭐ = בכלל לא יודע · ⭐⭐⭐ = בינוני · ⭐⭐⭐⭐⭐ = שולט מלא</div>
+  <div class="conf-grid" id="conf-grid"></div>
+  <div class="conf-overall">
+    <span class="conf-overall-label">ביטחון כללי:</span>
+    <span class="conf-overall-score" id="conf-score-big">0%</span>
+    <div class="conf-overall-bar"><div class="conf-overall-fill" id="conf-fill" style="width:0%"></div></div>
+    <button class="conf-reset" onclick="resetConf()">איפוס</button>
+  </div>
+</section>
+
+<script>
+// ======= UTILS =======
+function _lsGet(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}}
+function _lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function copyText(txt){navigator.clipboard.writeText(txt).catch(()=>{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();});}
+
+// ======= TAB SWITCHING =======
+function switchTab(name){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('visible'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('visible');
+  document.querySelector('[data-tab="'+name+'"]').classList.add('active');
+}
+
+// ======= PATTERNS DATA =======
+const PATTERNS = [
+  {
+    num:1, title:"useState + localStorage — טעינה + שמירה",
+    exam:"כל מבחן React (Q1)", icon:"💾",
+    code:`// טעינה ראשונית מ-localStorage
+const [users, setUsers] = useState(
+  () => JSON.parse(localStorage.getItem('users') || '[]')
+);
+
+// שמירה בכל שינוי
+useEffect(() => {
+  localStorage.setItem('users', JSON.stringify(users));
+}, [users]);`,
+    tip:"תמיד השתמשו ב-initializer function (() => ...) ב-useState כדי לקרוא localStorage פעם אחת בלבד."
+  },
+  {
+    num:2, title:"Protected Route — הגנה בניווט",
+    exam:"כל מבחן React עם Login (Q1)", icon:"🔐",
+    code:`// בתוך Component שדורש כניסה
+const navigate = useNavigate();
+
+useEffect(() => {
+  if (!currentUser) {
+    navigate('/');  // חזרה לדף הראשי / login
+  }
+}, [currentUser]);
+
+// או ב-Route ישירות (אם מוגדר ב-App):
+if (!currentUser) return <Navigate to="/" />;`,
+    tip:"שימו לב: useNavigate עובד רק בתוך component שנמצא בתוך <Router>."
+  },
+  {
+    num:3, title:"ניקוי שגיאות ב-onChange",
+    exam:"Football, HelpMe, Bank, Logistics (Q1)", icon:"🛡",
+    code:`// State לשגיאות
+const [errors, setErrors] = useState({});
+
+// ב-onChange של כל שדה
+const handleChange = (field, value) => {
+  setFormData(prev => ({ ...prev, [field]: value }));
+  // ניקוי השגיאה של אותו שדה
+  setErrors(prev => ({ ...prev, [field]: '' }));
+};
+
+// הצגת שגיאה (בJSX)
+{errors.email && <p className="error">{errors.email}</p>}`,
+    tip:"אל תנקו את כל השגיאות — ניקוי שדה אחד בלבד שומר על חוויה נכונה."
+  },
+  {
+    num:4, title:"Dual Mode Login/Register — שדה ID אחד",
+    exam:"Logistics Q1", icon:"👤",
+    code:`const handleSubmit = () => {
+  // חיפוש worker קיים לפי workerId
+  const existing = workers.find(w => w.id === workerId);
+
+  if (existing) {
+    // === מצב כניסה ===
+    setCurrentWorker(existing);
+    navigate('/welcome/' + existing.id);
+  } else {
+    // === מצב הרשמה ===
+    const newWorker = { id: workerId, name, license };
+    setWorkers(prev => [...prev, newWorker]);
+    setCurrentWorker(newWorker);
+    navigate('/welcome/' + workerId);
+  }
+};`,
+    tip:"המפתח: workers.find() — אם מחזיר undefined → הרשמה. אחרת → כניסה."
+  },
+  {
+    num:5, title:"Toggle Active עם Spread Operator",
+    exam:"Willing Q1", icon:"🔀",
+    code:`// הפיכת isActive בלי לפגוע בשאר השדות
+const toggleActive = (id) => {
+  const updated = volunteerings.map(v =>
+    v.id === id
+      ? { ...v, isActive: !v.isActive }  // ✅ spread + שינוי שדה אחד
+      : v
+  );
+  setVolunteerings(updated);
+  localStorage.setItem('volunteerings', JSON.stringify(updated));
+};`,
+    tip:"Spread operator ({...v}) יוצר object חדש — חשוב לאי-mutability ב-React."
+  },
+  {
+    num:6, title:"Express — Setup מלא + Router",
+    exam:"כל מבחן Express (Q3)", icon:"🟢",
+    code:`const express = require('express');
+const cors = require('cors');
+const app = express();
+
+// Middleware חובה — חייב לפני ה-routes!
+app.use(express.json());
+app.use(cors());
+
+// Routes
+app.get('/items', (req, res) => {
+  res.json(items);
+});
+app.post('/items', (req, res) => {
+  const newItem = req.body;
+  items.push(newItem);
+  res.status(201).json(newItem);  // ✅ 201 ל-POST
+});
+
+app.listen(3001, () => console.log('Server on 3001'));`,
+    tip:"express.json() חובה לפני routes! בלעדיו req.body יהיה undefined."
+  },
+  {
+    num:7, title:"Mongoose Schema + Model",
+    exam:"Flights, Parking, Willing Q3", icon:"🍃",
+    code:`const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/mydb');
+
+const itemSchema = new mongoose.Schema({
+  name:  { type: String,  required: true },
+  price: { type: Number,  min: 0 },
+  type:  { type: String,  enum: ['A','B','C'] },
+  date:  { type: Date,    default: Date.now }  // ⚠ לא Date.now()
+});
+
+const Item = mongoose.model('Item', itemSchema);
+
+// שימוש
+const all = await Item.find();
+const one = await Item.findById(id);
+const added = await Item.create(req.body);
+const updated = await Item.findByIdAndUpdate(
+  id, req.body, { new: true, runValidators: true }
+);
+await Item.findByIdAndDelete(id);`,
+    tip:"default: Date.now (ללא סוגריים!). עם סוגריים — כל הrecords יקבלו את הזמן של הגדרת הschema."
+  },
+  {
+    num:8, title:"fs — appendFile vs writeFile",
+    exam:"Bank Q3", icon:"📁",
+    code:`const fs = require('fs').promises;
+
+// POST /save — הוספה לקובץ (לא דריסה!)
+app.post('/save', async (req, res) => {
+  const line = req.body.data + '\\n';
+  await fs.appendFile('data.txt', line, 'utf8');  // ✅ appendFile
+  res.status(201).json({ message: 'Saved' });
+});
+
+// GET /read — קריאה
+app.get('/read', async (req, res) => {
+  const content = await fs.readFile('data.txt', 'utf8');
+  const lines = content.trim().split('\\n').filter(Boolean);
+  res.json(lines);
+});`,
+    tip:"writeFile מחליף את כל הקובץ! appendFile מוסיף לסוף. בשאלה שצריך 'הוספה' — תמיד appendFile."
+  },
+  {
+    num:9, title:"JS — ספירת ספרות + צבירה לפי קבוצה",
+    exam:"Football Q2", icon:"🧮",
+    code:`function sumByDigitCount(arr) {
+  if (!Array.isArray(arr)) throw new Error('Not an array');
+
+  const result = {};
+  for (const n of arr) {
+    if (typeof n !== 'number') continue;
+    const len = String(Math.abs(n)).length;  // ⚠ Math.abs למספרים שליליים
+    result[len] = (result[len] || 0) + n;    // ⚠ || 0 כדי לא להתחיל undefined
+  }
+  return result;
+}
+// [1, 22, 333, -5] → { 1: -4, 2: 22, 3: 333 }`,
+    tip:"Math.abs חשוב! -5 יש 1 ספרה, לא 2. בלי Math.abs — \"-5\" אורכו 2."
+  },
+  {
+    num:10, title:"Express — Filter עם AND Logic",
+    exam:"Football, Travel, Currency Q3", icon:"🔍",
+    code:`app.post('/games/filter', (req, res) => {
+  const { yearMin, name, priceMax } = req.body;
+  let result = [...games];
+
+  // כל פילטר מצמצם את result בנפרד (AND logic)
+  if (yearMin !== undefined)
+    result = result.filter(g => g.year >= yearMin);
+  if (name !== undefined)
+    result = result.filter(g => g.name.toLowerCase()
+      .includes(name.toLowerCase()));
+  if (priceMax !== undefined)
+    result = result.filter(g => g.price <= priceMax);
+
+  res.json(result);  // רק מה שעבר את כל הפילטרים
+});`,
+    tip:"AND לא OR — רק אם המשתנה !== undefined מוסיפים את הפילטר. כך ניתן לשלוח חלק מהפרמטרים."
+  }
+];
+
+// ======= RENDER PATTERNS =======
+(function renderPatterns(){
+  const grid = document.getElementById('pattern-grid');
+  PATTERNS.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'pattern-card';
+    div.innerHTML = `
+      <div class="pattern-head">
+        <span class="pattern-num">${p.num}</span>
+        <div>
+          <div class="pattern-title">${p.icon} ${p.title}</div>
+          <div class="pattern-exam">${p.exam}</div>
+        </div>
+      </div>
+      <div class="pattern-body">
+        <div class="pattern-code" style="position:relative">
+          <button class="pattern-copy" onclick="copyPattern(this,${p.num-1})">📋 העתק</button>
+          <pre style="margin:0;padding-top:4px">${esc(p.code)}</pre>
+        </div>
+        <div class="pattern-tip">💡 ${p.tip}</div>
+      </div>`;
+    grid.appendChild(div);
+  });
+})();
+
+function copyPattern(btn, idx) {
+  copyText(PATTERNS[idx].code);
+  btn.textContent = '✅ הועתק!';
+  btn.classList.add('copied');
+  setTimeout(()=>{btn.textContent='📋 העתק';btn.classList.remove('copied');},1800);
+}
+
+// ======= BUGS DATA =======
+const BUGS = [
+  {id:'b1',sev:'critical',title:'חסר express.json() לפני Routes',fix:'app.use(express.json()) — חובה לפני כל route! בלעדיו: req.body = undefined'},
+  {id:'b2',sev:'critical',title:'default: Date.now() עם סוגריים ב-Schema',fix:'צריך: default: Date.now — בלי סוגריים! עם סוגריים כולם מקבלים אותו תאריך'},
+  {id:'b3',sev:'high',title:'fs.writeFile במקום appendFile',fix:'writeFile דורס את כל הקובץ! הוספה לקובץ = appendFile'},
+  {id:'b4',sev:'high',title:'חסר status(201) ב-POST',fix:'res.status(201).json({...}) — POST מוצלח חייב status 201, לא 200'},
+  {id:'b5',sev:'high',title:'req.query מגיע כ-string, לא number',fix:'const year = Number(req.query.year) — תמיד המרה מפורשת!'},
+  {id:'b6',sev:'high',title:'ולידציה לא מנקה שגיאות בזמן הקלדה',fix:'ב-onChange: setErrors(prev => ({...prev, [field]: ""}))'},
+  {id:'b7',sev:'high',title:'Route order שגוי — /:id לפני /filter',fix:'ספציפי לפני כללי: /games/filter חייב להיות לפני /games/:id'},
+  {id:'b8',sev:'high',title:'חסר {new: true} ב-findByIdAndUpdate',fix:'findByIdAndUpdate(id, data, {new:true}) — בלעדיו מחזיר את הישן'},
+  {id:'b9',sev:'medium',title:'חסר key prop ב-map() ב-React',fix:'<Item key={item.id} ... /> — כל element ב-map צריך key ייחודי'},
+  {id:'b10',sev:'medium',title:'localStorage.setItem ללא JSON.stringify',fix:'localStorage.setItem("key", JSON.stringify(data)) — לא ניתן לשמור object ישירות'},
+  {id:'b11',sev:'medium',title:'regex לא עם ^ ו-$ (partial match)',fix:'^\\\\d{7}$ — ^ = תחילה, $ = סוף. בלעדיהם "123456789" יעבור ולידציה של 7 ספרות'},
+  {id:'b12',sev:'medium',title:'חסר runValidators ב-findByIdAndUpdate',fix:'{new:true, runValidators:true} — בלי runValidators, Schema validation לא רץ על update'},
+  {id:'b13',sev:'medium',title:'OR במקום AND בסינון (filter)',fix:'כל if נפרד מצמצם את result. if(!== undefined) לפני כל filter'},
+  {id:'b14',sev:'medium',title:'useEffect ללא cleanup — memory leak',fix:'return () => clearTimeout/clearInterval/unsubscribe בסוף useEffect'},
+  {id:'b15',sev:'medium',title:'navigate() מחוץ ל-Router context',fix:'useNavigate רק בתוך component שבתוך <BrowserRouter>. App.js יכול להיות מעטפת'}
+];
+
+function renderBugs(){
+  const saved = _lsGet('ld-bugs',{});
+  const list = document.getElementById('bug-list');
+  list.innerHTML = '';
+  BUGS.forEach(b => {
+    const checked = !!saved[b.id];
+    const div = document.createElement('div');
+    div.className = 'bug-item' + (checked?' checked':'');
+    div.onclick = () => toggleBug(b.id);
+    div.innerHTML = `
+      <div class="bug-cb">${checked?'✓':''}</div>
+      <div class="bug-content">
+        <div class="bug-title">${esc(b.title)}</div>
+        <div class="bug-fix">✅ פתרון: ${esc(b.fix).replace(/`([^`]+)`/g,'<code>$1</code>')}</div>
+      </div>
+      <span class="bug-severity sev-${b.sev}">${{critical:'קריטי',high:'גבוה',medium:'בינוני'}[b.sev]}</span>`;
+    list.appendChild(div);
+  });
+  updateBugsScore();
+}
+
+function toggleBug(id){
+  const saved = _lsGet('ld-bugs',{});
+  if(saved[id]) delete saved[id]; else saved[id]=1;
+  _lsSet('ld-bugs',saved);
+  renderBugs();
+}
+function resetBugs(){_lsSet('ld-bugs',{});renderBugs();}
+function updateBugsScore(){
+  const saved=_lsGet('ld-bugs',{});
+  const count=Object.keys(saved).length;
+  const pct=Math.round(count/BUGS.length*100);
+  document.getElementById('bugs-fill').style.width=pct+'%';
+  document.getElementById('bugs-txt').textContent=count+'/'+BUGS.length;
+}
+renderBugs();
+
+// ======= REGEX DATA =======
+const REGEXES = [
+  {name:'מספר רכב (7 ספרות)',pattern:'^\\d{7}$',desc:'Football, Parking Q1 — carNumber',test:'1234567'},
+  {name:'טלפון ישראלי (05xxxxxxxx)',pattern:'^05\\d{8}$',desc:'HelpMe Q1 — phoneNumber',test:'0512345678'},
+  {name:'סיסמה מורכבת (Football)',pattern:'^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,20}$',desc:'Football Q1 — 8-20 תווים, גדולה+קטנה+ספרה+מיוחד',test:'Hello123!'},
+  {name:'שם קבוצה (אנגלית, Capitalize)',pattern:'^[A-Z][a-z]*(\\s[A-Z][a-z]*)*$',desc:'Football Q1 — teamName, כל מילה מתחילה בגדולה',test:'Tel Aviv'},
+  {name:'WorkerID (5 ספרות)',pattern:'^\\d{5}$',desc:'Logistics Q1 — workerId',test:'12345'},
+  {name:'סיסמה Parking (6+ ספרות)',pattern:'^\\d{6,}$',desc:'Parking Q1 — רק ספרות, לפחות 6',test:'123456'},
+  {name:'שם מלא (4+ תווים)',pattern:'^[\\u05D0-\\u05FA A-Za-z\\s]{4,}$',desc:'Logistics Q1 — fullName, עברית או אנגלית',test:'ישראל ישראלי'},
+  {name:'Email',pattern:'^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$',desc:'כללי — תבנית email',test:'user@example.com'},
+  {name:'אותיות אנגלית בלבד',pattern:'^[A-Za-z\\s]+$',desc:'שמות, ערים — אנגלית בלבד',test:'Hello World'},
+  {name:'אותיות עברית בלבד',pattern:'^[\\u05D0-\\u05FA\\s]+$',desc:'שמות בעברית',test:'שלום'},
+  {name:'מספרים בלבד',pattern:'^\\d+$',desc:'רק ספרות, אורך כלשהו',test:'42'},
+  {name:'מספר חיובי',pattern:'^[1-9]\\d*$',desc:'מספר שלם חיובי (ללא אפס)',test:'5'},
+  {name:'Contains uppercase',pattern:'(?=.*[A-Z])',desc:'lookahead — יש לפחות אות גדולה אחת',test:'Hello'},
+  {name:'Contains digit',pattern:'(?=.*\\d)',desc:'lookahead — יש לפחות ספרה אחת',test:'abc5'},
+  {name:'Contains special char',pattern:'(?=.*[!@#$%^&*])',desc:'lookahead — יש לפחות תו מיוחד אחד',test:'hi!'},
+  {name:'Min 8 chars',pattern:'.{8,}',desc:'לפחות 8 תווים (בשימוש כחלק מregex מורכב)',test:'12345678'},
+  {name:'URL פשוט',pattern:'^https?:\\/\\/.+',desc:'כתובת URL עם http/https',test:'https://example.com'},
+  {name:'Date YYYY-MM-DD',pattern:'^\\d{4}-\\d{2}-\\d{2}$',desc:'תאריך בפורמט ISO',test:'2024-05-15'},
+  {name:'ת.ז. ישראלית (9 ספרות)',pattern:'^\\d{9}$',desc:'מספר תעודת זהות',test:'123456789'},
+  {name:'שם קורס (עברית/אנגלית + מספרים)',pattern:'^[\\u05D0-\\u05FA A-Za-z0-9\\s]{3,}$',desc:'Willing Q1 — שם קורס',test:'React 101'}
+];
+
+(function renderRegex(){
+  const grid = document.getElementById('regex-grid');
+  REGEXES.forEach((r,i) => {
+    const div = document.createElement('div');
+    div.className = 'regex-card';
+    div.innerHTML = `
+      <div class="regex-name">${r.name}</div>
+      <div class="regex-pattern" id="rp-${i}" onclick="copyRegex(this,'${r.pattern.replace(/'/g,"\\'")}',${i})" title="לחץ להעתיק">
+        ${esc(r.pattern)}
+        <div class="regex-copy-hint">👆 לחץ להעתיק</div>
+      </div>
+      <div class="regex-desc">${r.desc}</div>
+      <div class="regex-test-row">
+        <input class="regex-test-inp" id="rt-${i}" value="${esc(r.test)}" placeholder="בדוק..." oninput="testRegex(${i})">
+        <span class="regex-test-res" id="rr-${i}"></span>
+      </div>`;
+    grid.appendChild(div);
+    // Run initial test
+    setTimeout(()=>testRegex(i),50);
+  });
+})();
+
+function copyRegex(el, pattern, idx){
+  copyText(pattern);
+  el.classList.add('copied');
+  setTimeout(()=>el.classList.remove('copied'),1500);
+}
+function testRegex(idx){
+  const r=REGEXES[idx];
+  const inp=document.getElementById('rt-'+idx);
+  const res=document.getElementById('rr-'+idx);
+  if(!inp||!res)return;
+  try{
+    const re=new RegExp(r.pattern);
+    const pass=re.test(inp.value);
+    inp.className='regex-test-inp '+(pass?'pass':'fail');
+    res.className='regex-test-res '+(pass?'pass':'fail');
+    res.textContent=pass?'✅ תואם':'❌ לא תואם';
+  }catch(e){
+    res.className='regex-test-res fail';res.textContent='⚠ שגיאה';
+  }
+}
+
+// ======= DRILL DATA =======
+const DRILL_QS = [
+  {q:'איזה middleware חובה ב-Express לפני Routes?',a:'app.use(express.json())\n// בלעדיו req.body = undefined',cat:'express'},
+  {q:'איזה status code ל-POST מוצלח ב-Express?',a:'res.status(201).json(newItem)\n// 201 = Created (לא 200)',cat:'express'},
+  {q:'איך מחזירים document מעודכן מ-findByIdAndUpdate?',a:'Model.findByIdAndUpdate(id, data, { new: true, runValidators: true })',cat:'mongo'},
+  {q:'מה ההבדל בין fs.appendFile ל-fs.writeFile?',a:'appendFile — מוסיף לסוף הקובץ\nwriteFile — דורס את כל הקובץ!',cat:'express'},
+  {q:'איך סופרים כמה ספרות יש במספר?',a:'const len = String(Math.abs(n)).length;\n// Math.abs חשוב למספרים שליליים',cat:'js'},
+  {q:'איך מנקים שגיאה בשדה אחד בלבד ב-React?',a:'setErrors(prev => ({ ...prev, [field]: "" }))',cat:'react'},
+  {q:'כיצד מגדירים default של תאריך נוכחי ב-Mongoose Schema?',a:'date: { type: Date, default: Date.now }\n// ⚠ לא Date.now() — בלי סוגריים!',cat:'mongo'},
+  {q:'איך מנווטים פרוגרמטית ב-React (לא Link)?',a:'const navigate = useNavigate();\nnavigate("/path");\n// או navigate(-1) לחזרה',cat:'react'},
+  {q:'איך שומרים מערך ב-localStorage?',a:'localStorage.setItem("key", JSON.stringify(arr));\n// קריאה: JSON.parse(localStorage.getItem("key") || "[]")',cat:'react'},
+  {q:'מה regex לcarNumber (7 ספרות בדיוק)?',a:'^\\d{7}$\n// ^ = תחילה, $ = סוף, \\d = ספרה, {7} = בדיוק 7',cat:'regex'},
+  {q:'מה regex לטלפון ישראלי שמתחיל ב-05?',a:'^05\\d{8}$\n// 05 + 8 ספרות = 10 תווים סה"כ',cat:'regex'},
+  {q:'מה regex לסיסמה מורכבת (8-20, גדולה+קטנה+ספרה+מיוחד)?',a:'^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,20}$\n// 4 lookaheads + אורך',cat:'regex'},
+  {q:'איך משביתים Nav Links לפני Login ב-React?',a:'style={{ pointerEvents: isLoggedIn ? "auto" : "none",\n         opacity: isLoggedIn ? 1 : 0.4 }}',cat:'react'},
+  {q:'איך מפעילים toggle על שדה boolean ברשימה?',a:'list.map(item =>\n  item.id === id ? { ...item, isActive: !item.isActive } : item\n)',cat:'react'},
+  {q:'מה status code ל-404 Not Found?',a:'res.status(404).json({ error: "Not found" })\n// משאב לא קיים',cat:'express'},
+  {q:'איך מסדרים route order ב-Express (/:id vs /filter)?',a:'// ✅ ספציפי לפני כללי:\napp.get("/games/filter", ...)  // לפני!\napp.get("/games/:id", ...)',cat:'express'},
+  {q:'מה הformat לחיבור ל-MongoDB?',a:'mongoose.connect("mongodb://localhost:27017/dbname");\n// ב-cloud: "mongodb+srv://user:pass@cluster/db"',cat:'mongo'},
+  {q:'איך מבצעים filter עם AND logic ב-Express?',a:'let result = [...items];\nif (name !== undefined)\n  result = result.filter(i => i.name.includes(name));\nif (minPrice !== undefined)\n  result = result.filter(i => i.price >= minPrice);',cat:'express'},
+  {q:'מה pattern ה-Dual Mode Login/Register ב-Logistics?',a:'const existing = workers.find(w => w.id === workerId);\nif (existing) { /* login */ setCurrentWorker(existing); }\nelse { /* register */ setWorkers([...workers, newWorker]); }',cat:'react'},
+  {q:'איך מגדירים useState עם initializer function?',a:'const [data, setData] = useState(\n  () => JSON.parse(localStorage.getItem("key") || "[]")\n);\n// הfunc רצה רק פעם אחת',cat:'react'},
+  {q:'מה זה CORS ולמה צריך אותו ב-Express?',a:'Cross-Origin Resource Sharing — מאפשר לbrowser לגשת\nל-API מdomain אחר.\napp.use(require("cors")())',cat:'express'},
+  {q:'איך בודקים תנאי ב-Mongoose Schema?',a:'field: { type: Number, min: 0, max: 100 }\nfield: { type: String, enum: ["A","B","C"] }\nfield: { type: String, required: true }',cat:'mongo'},
+  {q:'מה זה useEffect cleanup?',a:'useEffect(() => {\n  const timer = setInterval(fn, 1000);\n  return () => clearInterval(timer); // cleanup\n}, [dep]);',cat:'react'},
+  {q:'איך ממירים req.query.year ל-number?',a:'const year = Number(req.query.year);\n// או parseInt(req.query.year, 10)\n// req.query תמיד מגיע כstring!',cat:'express'},
+  {q:'מה ה-routes ב-Football Q1?',a:'"/" — Login + Register\n"/team/:teamName" — דף קבוצה\n"/team/:name/edit/:id" — עריכת שחקן',cat:'react'},
+  {q:'מה האלגוריתם לספירת subsequences עם sum=target?',a:'// שני pointers + sliding window / nested loops\nfor (let i=0; i<arr.length; i++) {\n  let sum=0;\n  for (let j=i; j<arr.length; j++) {\n    sum += arr[j];\n    if (sum === target) count++;\n  }\n}',cat:'js'},
+  {q:'מה הסיסמה ב-Flights Q1?',a:'const CORRECT_PASSWORD = "12345";\n// קבועה בקוד, לא במשתמשים',cat:'react'},
+  {q:'איך שולחים 400 Bad Request עם Mongoose?',a:'try { await Item.create(req.body); }\ncatch(err) {\n  res.status(400).json({ error: err.message });\n}',cat:'mongo'},
+  {q:'regex לשם קבוצה (כל מילה מתחילה בגדולה, רק אנגלית)?',a:'^[A-Z][a-z]*(\\s[A-Z][a-z]*)*$\n// מילה = A-Z ואח"כ a-z*',cat:'regex'},
+  {q:'איך מוחקים document ב-Mongoose?',a:'const deleted = await Item.findByIdAndDelete(id);\nif (!deleted) return res.status(404).json({error:"Not found"});\nres.json(deleted);',cat:'mongo'}
+];
+
+let _drillFilter='all', _drillQueue=[], _drillIdx=0, _drillYes=0, _drillNo=0, _drillShown=false;
+
+function setDrillFilter(f){
+  _drillFilter=f;
+  document.querySelectorAll('[id^="filter-"]').forEach(b=>b.classList.remove('active'));
+  document.getElementById('filter-'+f).classList.add('active');
+  resetDrill();
+}
+
+function resetDrill(){
+  const pool = _drillFilter==='all' ? DRILL_QS : DRILL_QS.filter(q=>q.cat===_drillFilter);
+  _drillQueue = [...pool].sort(()=>Math.random()-.5);
+  _drillIdx=0; _drillYes=0; _drillNo=0; _drillShown=false;
+  renderDrill();
+}
+
+function renderDrill(){
+  const area=document.getElementById('drill-area');
+  const total=_drillQueue.length;
+  document.getElementById('drill-score-txt').textContent=`✅ ${_drillYes} | ❌ ${_drillNo}`;
+  const pct=total?Math.round(_drillIdx/total*100):0;
+  document.getElementById('drill-prog-fill').style.width=pct+'%';
+
+  if(_drillIdx>=_drillQueue.length){
+    const pctScore=total?Math.round(_drillYes/total*100):0;
+    area.innerHTML=`<div class="drill-summary visible">
+      <h2>🎉 סיימת!</h2>
+      <span class="score-big">${pctScore}%</span>
+      <p>✅ ידעת ${_drillYes} מתוך ${total}</p>
+      <p style="margin-top:12px;color:#86efac">${pctScore>=80?'מוכן למבחן! 💪':pctScore>=60?'כמעט שם, עוד קצת חזרה 📚':'עוד עבודה נדרשת 💡'}</p>
+      <button class="drill-show-btn" onclick="resetDrill()" style="margin-top:16px">🔄 שוב</button>
+    </div>`;
+    return;
+  }
+  const q=_drillQueue[_drillIdx];
+  _drillShown=false;
+  area.innerHTML=`<div class="drill-card">
+    <div class="drill-q-meta">
+      <span class="drill-cat cat-${q.cat}">${{react:'⚛ React',js:'🟨 JS',express:'🟢 Express',regex:'🔬 Regex',mongo:'🍃 Mongo'}[q.cat]}</span>
+      <span style="font-size:12px;color:#94a3b8;margin-right:8px">שאלה ${_drillIdx+1}/${total}</span>
+    </div>
+    <div class="drill-q">${esc(q.q)}</div>
+    <div class="drill-answer" id="drill-ans"><pre style="white-space:pre-wrap;font-size:12.5px;margin:0">${esc(q.a)}</pre></div>
+    <div class="drill-actions" id="drill-acts">
+      <button class="drill-show-btn" onclick="showDrillAnswer()">👁 הצג תשובה</button>
+    </div>
+  </div>`;
+}
+
+function showDrillAnswer(){
+  document.getElementById('drill-ans').classList.add('visible');
+  document.getElementById('drill-acts').innerHTML=`
+    <button class="drill-vote yes" onclick="voteDrill(true)">✅ ידעתי</button>
+    <button class="drill-vote no" onclick="voteDrill(false)">❌ לא ידעתי</button>`;
+}
+function voteDrill(yes){
+  if(yes) _drillYes++; else _drillNo++;
+  _drillIdx++;
+  renderDrill();
+}
+resetDrill();
+
+// ======= CONFIDENCE DATA =======
+const CONF_EXAMS = [
+  {id:'football',name:'⚽ Football Club',q1:'React — Login/Register/Team/Edit',q2:'JS — Sum by Digit Count',q3:'Express — Games Filter API'},
+  {id:'parking',name:'🚗 Parking',q1:'React — Login/Signup/Active/History',q2:'JS — Contiguous Subarray Sum',q3:'MongoDB — Upsert Pattern'},
+  {id:'flights',name:'✈️ Flights',q1:'React — Control Panel / All Flights',q2:'JS — Count in Matrix',q3:'MongoDB — Full CRUD'},
+  {id:'helpme',name:'🆘 HelpMe',q1:'React — Register / Centers',q2:'JS — Arithmetic or Geometric Series',q3:'Theory — HTTP, MongoDB, React'},
+  {id:'bank',name:'🏦 Bank',q1:'React — Client/Manager Pages',q2:'JS — Sort Digits (no .sort())',q3:'Node.js fs — appendFile/readFile'},
+  {id:'logistics',name:'📦 Logistics',q1:'React — Dual-Mode Auth',q2:'JS — Binary to Decimal + Palindrome',q3:'MongoDB — Products CRUD'},
+  {id:'currency',name:'💱 Currency',q1:'React — Exchange Calculator',q2:'JS — Position in Modified Fibonacci',q3:'Express — Currencies Filter'},
+  {id:'willing',name:'🤝 Willing',q1:'React — Toggle isActive',q2:'JS — Count Unique Evens/Odds',q3:'MongoDB — Courses CRUD'},
+  {id:'travel',name:'✈ Travel',q1:'React — Nav Disabled until Login',q2:'JS — SubArray in Order Check',q3:'Node.js — TextFilePackage Class'}
+];
+
+function renderConf(){
+  const saved=_lsGet('ld-conf',{});
+  const grid=document.getElementById('conf-grid');
+  grid.innerHTML='';
+  CONF_EXAMS.forEach(exam=>{
+    const div=document.createElement('div');
+    div.className='conf-exam';
+    let rows='';
+    ['q1','q2','q3'].forEach(q=>{
+      const key=exam.id+'-'+q;
+      const val=saved[key]||0;
+      let stars='';
+      for(let i=1;i<=5;i++){
+        stars+=`<span class="conf-star${i<=val?' lit':''}" onclick="setConf('${key}',${i})">⭐</span>`;
+      }
+      rows+=`<div class="conf-row">
+        <span class="conf-label">${{q1:'Q1 React',q2:'Q2 JS',q3:'Q3 Server'}[q]}: ${exam[q]}</span>
+        <div class="conf-stars">${stars}</div>
+      </div>`;
+    });
+    div.innerHTML=`<div class="conf-exam-title"><span>${exam.name}</span></div>${rows}`;
+    grid.appendChild(div);
+  });
+  updateConfOverall();
+}
+
+function setConf(key,val){
+  const saved=_lsGet('ld-conf',{});
+  saved[key]=val;
+  _lsSet('ld-conf',saved);
+  renderConf();
+}
+function resetConf(){_lsSet('ld-conf',{});renderConf();}
+function updateConfOverall(){
+  const saved=_lsGet('ld-conf',{});
+  const total=CONF_EXAMS.length*3;
+  const maxScore=total*5;
+  const actual=Object.values(saved).reduce((a,b)=>a+b,0);
+  const pct=Math.round(actual/maxScore*100);
+  document.getElementById('conf-score-big').textContent=pct+'%';
+  document.getElementById('conf-fill').style.width=pct+'%';
+}
+renderConf();
+</script>
+<script src="nav-tree.js"></script>
+</body>
+</html>
