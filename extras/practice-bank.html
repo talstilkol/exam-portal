@@ -126,9 +126,9 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 45 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 50 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
-    <span class="stat" id="stat-solved">✅ נפתרו: 0/45</span>
+    <span class="stat" id="stat-solved">✅ נפתרו: 0/50</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
   </div>
 </header>
@@ -1308,6 +1308,228 @@ countInMatrix(m, [1,2,5])
   }
 });`,
   explain:"findOneAndUpdate עם שלוש אופציות: upsert:true יוצר מסמך חדש אם לא נמצא, new:true מחזיר את הגרסה החדשה (לא הישנה), runValidators מפעיל ולידציות ב-update. $set מעדכן רק את השדות המצוינים בלי למחוק שאר השדות."
+},
+// ── Exercise 46 ────────────────────────────────────────────────────────────
+{
+  id:"js-contiguous-subseq",cat:"js",diff:"hard",
+  title:"ספירת תת-רצפים עוקבים עם סכום מטרה",
+  prompt:`כתבו פונקציה <b>countSubsequences(arr, target)</b> שמחזירה כמה תת-רצפים <strong>עוקבים</strong> (contiguous) של arr מסתכמים ל-target.
+<pre>countSubsequences([1,2,3,2,1], 3) → 3
+// [1,2], [3], [2,1]
+countSubsequences([1,1,1],    2) → 2
+// [1,1] (מיקום 0-1) + [1,1] (מיקום 1-2)
+countSubsequences([5],        5) → 1</pre>
+⚠️ <b>מלכודת:</b> תת-רצף חייב להיות <em>עוקב</em> במערך — לא ניתן לדלג על איברים. גישה נאיבית (O(n²)) מקובלת.`,
+  tests:[
+    {label:"[1,2,3,2,1] target=3 → 3", fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn([1,2,3,2,1],3)===3}catch(e){return false}}},
+    {label:"[1,1,1] target=2 → 2",     fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn([1,1,1],2)===2}catch(e){return false}}},
+    {label:"[5] target=5 → 1",          fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn([5],5)===1}catch(e){return false}}},
+    {label:"[1,2] target=10 → 0",       fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn([1,2],10)===0}catch(e){return false}}}
+  ],
+  customTest:code=>{
+    const hasNestedLoop=/for[\s\S]{1,300}for/.test(code);
+    const hasSum=/sum|acc|total/.test(code);
+    const hasCount=/count|result/.test(code);
+    if(!hasNestedLoop)return{ok:false,msg:"חסרות לולאות מקוננות — לכל התחלה (i) עובר על כל סיום (j)"};
+    if(!hasSum)return{ok:false,msg:"חסרה משתנה סכום מצטבר (sum/acc/total)"};
+    if(!hasCount)return{ok:false,msg:"חסרה ספירת תת-רצפים תקינים"};
+    return{ok:true,msg:"✅ לולאות מקוננות + סכום + ספירה"};
+  },
+  hint:"לולאה חיצונית i (נקודת התחלה). לולאה פנימית j מ-i, צובר sum. אם sum===target → count++. אם sum>target → break (אופטימיזציה).",
+  solution:`function countSubsequences(arr, target) {
+  let count = 0;
+  for (let i = 0; i < arr.length; i++) {
+    let sum = 0;
+    for (let j = i; j < arr.length; j++) {
+      sum += arr[j];
+      if (sum === target) count++;
+      if (sum > target && arr.every(n => n >= 0)) break; // optimization for positive arrays
+    }
+  }
+  return count;
+}`,
+  explain:"O(n²): לכל נקודת התחלה i, מצבר סכום וסופר כמה פעמים הגענו ל-target. break כשעוברים את ה-target (רק אם כל המספרים חיוביים). זה בדיוק ה-pattern של parking-q2 במבחן."
+},
+// ── Exercise 47 ────────────────────────────────────────────────────────────
+{
+  id:"js-binary-decimal",cat:"js",diff:"medium",
+  title:"בינארי לעשרוני + בדיקת פלינדרום",
+  prompt:`כתבו פונקציה <b>binaryAnalysis(binaryStr)</b> שמקבלת מחרוזת בינארית ומחזירה אובייקט:
+<pre>binaryAnalysis('1010')
+// → { decimal: 10, isPalindrome: false }
+binaryAnalysis('1001')
+// → { decimal: 9, isPalindrome: true }
+binaryAnalysis('0')
+// → { decimal: 0, isPalindrome: true }</pre>
+<b>דרישות:</b>
+<ul>
+  <li>המרה <strong>ידנית</strong> — ללא parseInt(str, 2)</li>
+  <li>בדיקת פלינדרום על המחרוזת המקורית (לא על הeשרוני)</li>
+</ul>`,
+  tests:[
+    {label:"'1010' → {decimal:10, isPalindrome:false}", fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();const r=fn('1010');return r.decimal===10&&r.isPalindrome===false}catch(e){return false}}},
+    {label:"'1001' → {decimal:9, isPalindrome:true}",  fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();const r=fn('1001');return r.decimal===9&&r.isPalindrome===true}catch(e){return false}}},
+    {label:"'0' → {decimal:0, isPalindrome:true}",     fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();const r=fn('0');return r.decimal===0&&r.isPalindrome===true}catch(e){return false}}},
+    {label:"'11' → {decimal:3, isPalindrome:true}",    fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();const r=fn('11');return r.decimal===3&&r.isPalindrome===true}catch(e){return false}}}
+  ],
+  customTest:code=>{
+    if(/parseInt\s*\(/.test(code))return{ok:false,msg:"⛔ parseInt אסור — המרה ידנית בלבד"};
+    const hasDecimal=/decimal/.test(code);
+    const hasPalin=/isPalindrome|palindrome/.test(code);
+    const hasPow=/\*\*\s*|Math\.pow|<<|pow/.test(code)||/\*\s*2|\+\s*parseInt/.test(code)||/reduce|forEach|for/.test(code);
+    if(!hasDecimal)return{ok:false,msg:"חסר שדה decimal באובייקט המוחזר"};
+    if(!hasPalin)return{ok:false,msg:"חסר שדה isPalindrome באובייקט המוחזר"};
+    if(!hasPow)return{ok:false,msg:"חסרת חישוב הבינארי ידנית (לולאה + כפל ב-2 / חזקות)"};
+    return{ok:true,msg:"✅ המרה ידנית + isPalindrome + מבנה נכון"};
+  },
+  hint:"המרה: reduce מימין לשמאל עם חזקות 2, או לולאה: decimal = decimal*2 + Number(bit). פלינדרום: binaryStr === binaryStr.split('').reverse().join('')",
+  solution:`function binaryAnalysis(binaryStr) {
+  // Manual binary → decimal conversion
+  let decimal = 0;
+  for (let i = 0; i < binaryStr.length; i++) {
+    decimal = decimal * 2 + Number(binaryStr[i]);
+  }
+
+  // Palindrome check on the original string
+  const isPalindrome = binaryStr === binaryStr.split('').reverse().join('');
+
+  return { decimal, isPalindrome };
+}`,
+  explain:"שני חלקים עצמאיים: (1) המרה ידנית — כל ספרה בינארית מוכפלת ב-2 ומצטברת (כמו הזזה שמאלה). (2) פלינדרום — השוואת המחרוזת לhיפוך שלה. זה בדיוק logistics-q2 במבחן."
+},
+// ── Exercise 48 ────────────────────────────────────────────────────────────
+{
+  id:"js-unique-even-odd",cat:"js",diff:"medium",
+  title:"ספירת ייחודיים — זוגיים ואי-זוגיים",
+  prompt:`כתבו פונקציה <b>countUniqueEvenOdd(arr)</b> שמקבלת מערך מספרים ומחזירה אובייקט עם:
+<ul>
+  <li><b>evens</b> — כמה ערכים <em>ייחודיים</em> זוגיים יש במערך</li>
+  <li><b>odds</b> — כמה ערכים <em>ייחודיים</em> אי-זוגיים יש במערך</li>
+</ul>
+<pre>countUniqueEvenOdd([1,2,2,3,3,4]) → { evens: 2, odds: 2 }
+// ייחודיים: {1,2,3,4} → זוגיים:{2,4}, אי-זוגיים:{1,3}
+countUniqueEvenOdd([1,1,1])       → { evens: 0, odds: 1 }
+countUniqueEvenOdd([])            → { evens: 0, odds: 0 }</pre>`,
+  tests:[
+    {label:"{evens:2,odds:2}", fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();const r=fn([1,2,2,3,3,4]);return r.evens===2&&r.odds===2}catch(e){return false}}},
+    {label:"{evens:0,odds:1}", fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();const r=fn([1,1,1]);return r.evens===0&&r.odds===1}catch(e){return false}}},
+    {label:"מערך ריק → {0,0}", fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();const r=fn([]);return r.evens===0&&r.odds===0}catch(e){return false}}},
+    {label:"{evens:3,odds:0}", fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();const r=fn([2,4,6,2,4]);return r.evens===3&&r.odds===0}catch(e){return false}}}
+  ],
+  customTest:code=>{
+    const hasSet=/new Set|Set\(/.test(code)||/unique|uniq/.test(code);
+    const hasEven=/% 2|%2/.test(code);
+    const hasReturn=/evens.*odds|odds.*evens/.test(code);
+    if(!hasEven)return{ok:false,msg:"חסרת בדיקת זוגיות (% 2)"};
+    if(!hasReturn)return{ok:false,msg:"חסר החזרת אובייקט עם evens ו-odds"};
+    return{ok:true,msg:"✅ ספירת ייחודיים עם % 2"};
+  },
+  hint:"const unique = [...new Set(arr)]. אחר-כך: unique.filter(n => n % 2 === 0).length לזוגיים, ו-!== 0 לאי-זוגיים.",
+  solution:`function countUniqueEvenOdd(arr) {
+  const unique = [...new Set(arr)];
+  const evens = unique.filter(n => n % 2 === 0).length;
+  const odds  = unique.filter(n => n % 2 !== 0).length;
+  return { evens, odds };
+}`,
+  explain:"שני שלבים: (1) הסרת כפילויות ב-new Set → spread לarray. (2) filter לפי זוגיות. new Set מסיר כפילויות אוטומטית — זה ה-pattern ל-willing-q2 במבחן."
+},
+// ── Exercise 49 ────────────────────────────────────────────────────────────
+{
+  id:"express-appendfile",cat:"express",diff:"medium",
+  title:"Express + fs — שמירת נתונים לקובץ",
+  prompt:`כתבו שני routes ב-Express לניהול לוג עסקאות בקובץ טקסט:
+<pre>POST /save   → מוסיף שורה לקובץ transactions.txt
+GET  /read   → מחזיר את תוכן הקובץ כ-text</pre>
+<b>body של POST:</b> <code>{ amount, type }</code> — שומר כ: <code>"[amount] [type]\\n"</code>
+<b>דרישות:</b>
+<ul>
+  <li><strong>appendFile</strong> — לא writeFile! (writeFile מוחק הכל)</li>
+  <li>השתמש ב-<code>fs.promises</code> עם async/await</li>
+  <li>POST מחזיר <code>201</code> עם הודעת אישור</li>
+</ul>
+⚠️ <b>מלכודת קלאסית:</b> writeFile() ← מוחק את כל הקובץ בכל שמירה!`,
+  tests:[
+    {label:"appendFile (לא writeFile)", fn:c=>/appendFile/.test(c)&&!/writeFile/.test(c)},
+    {label:"fs.promises קיים",          fn:c=>/fs\.promises|require\('fs'\)|require\(\"fs\"\)/.test(c)},
+    {label:"async/await",               fn:c=>/async/.test(c)&&/await/.test(c)},
+    {label:"status 201 ב-POST",         fn:c=>/status\s*\(\s*201\s*\)/.test(c)},
+    {label:"GET /read קיים",            fn:c=>/get\s*\(\s*['"]\/read/.test(c)}
+  ],
+  customTest:code=>{
+    if(/writeFile/.test(code))return{ok:false,msg:"⛔ writeFile מוחק את כל הקובץ! השתמש ב-appendFile"};
+    if(!/appendFile/.test(code))return{ok:false,msg:"חסר appendFile — זה ה-route לשמירה"};
+    if(!/status\s*\(\s*201\s*\)/.test(code))return{ok:false,msg:"חסר status(201) — POST שיצר משאב חדש מחזיר 201"};
+    if(!/async/.test(code))return{ok:false,msg:"חסר async/await — fs.promises דורש await"};
+    return{ok:true,msg:"✅ appendFile + 201 + async/await"};
+  },
+  hint:"const fs = require('fs').promises; app.post('/save', async(req,res) => { await fs.appendFile('transactions.txt', amount+' '+type+'\\n'); res.status(201).json({ok:true}); })",
+  solution:`const express = require('express');
+const fs = require('fs').promises;
+const app = express();
+app.use(express.json());
+
+app.post('/save', async (req, res) => {
+  const { amount, type } = req.body;
+  const line = \`\${amount} \${type}\\n\`;
+  await fs.appendFile('transactions.txt', line, 'utf8');
+  // ✅ appendFile — adds to end, does NOT erase existing content
+  res.status(201).json({ message: 'Transaction saved', amount, type });
+});
+
+app.get('/read', async (req, res) => {
+  const content = await fs.readFile('transactions.txt', 'utf8');
+  res.send(content);
+});`,
+  explain:"appendFile מוסיף לסוף הקובץ. writeFile מוחק ומחליף — טעות קלאסית במבחן. require('fs').promises מאפשר async/await נקי. POST מחזיר 201 (יצירה), GET מחזיר 200 (ברירת מחדל)."
+},
+// ── Exercise 50 ────────────────────────────────────────────────────────────
+{
+  id:"react-role-routing",cat:"react",diff:"hard",
+  title:"React Router — ניתוב לפי תפקיד (Manager / Client)",
+  prompt:`כתבו פונקציית <b>renderApp(currentUser)</b> שמחזירה JSX לפי תפקיד המשתמש:
+<ul>
+  <li>אם <code>currentUser === null</code> → הצג <code>&lt;LoginPage /&gt;</code></li>
+  <li>אם <code>currentUser.role === 'manager'</code> → הצג <code>&lt;ManagerPage /&gt;</code></li>
+  <li>אחרת → הצג <code>&lt;ClientPage userId={currentUser.id} /&gt;</code></li>
+</ul>
+<b>גם:</b> כתבו את ה-Route ב-React Router שמגן על מסלול מנהל:
+<pre>&lt;Route path="/manager" element={...} /&gt;</pre>
+צריך להציג <code>&lt;ManagerPage /&gt;</code> רק אם המשתמש הוא manager, אחרת redirect ל-<code>/</code>.`,
+  tests:[
+    {label:"null → LoginPage",           fn:c=>/LoginPage/.test(c)&&/null/.test(c)},
+    {label:"manager → ManagerPage",      fn:c=>/ManagerPage/.test(c)&&/manager/.test(c)},
+    {label:"ClientPage עם userId prop",  fn:c=>/ClientPage[\s\S]{1,50}userId/.test(c)},
+    {label:"Navigate to / redirect",    fn:c=>/Navigate|redirect|navigate/.test(c)}
+  ],
+  customTest:code=>{
+    const hasNull=/currentUser\s*===?\s*null|!currentUser/.test(code);
+    const hasRole=/\.role\s*===?\s*['"]manager/.test(code);
+    const hasClient=/ClientPage/.test(code)&&/userId/.test(code);
+    const hasRedirect=/Navigate|navigate|redirect/i.test(code);
+    if(!hasNull)return{ok:false,msg:"חסרה בדיקה אם currentUser===null"};
+    if(!hasRole)return{ok:false,msg:"חסרת בדיקת role === 'manager'"};
+    if(!hasClient)return{ok:false,msg:"חסר <ClientPage userId={...} />"};
+    if(!hasRedirect)return{ok:false,msg:"חסר Navigate/redirect למסלול מוגן"};
+    return{ok:true,msg:"✅ null check + role check + ClientPage + redirect"};
+  },
+  hint:"function renderApp(u) { if(!u) return <LoginPage/>; if(u.role==='manager') return <ManagerPage/>; return <ClientPage userId={u.id}/>; } ולRoute: element={user?.role==='manager' ? <ManagerPage/> : <Navigate to='/'/>}",
+  solution:`// 1. Conditional rendering by role
+function renderApp(currentUser) {
+  if (currentUser === null) return <LoginPage />;
+  if (currentUser.role === 'manager') return <ManagerPage />;
+  return <ClientPage userId={currentUser.id} />;
+}
+
+// 2. Protected Route in React Router
+<Route
+  path="/manager"
+  element={
+    currentUser?.role === 'manager'
+      ? <ManagerPage />
+      : <Navigate to="/" replace />
+  }
+/>`,
+  explain:"שני patterns בשאלה אחת: (1) conditional rendering — if/else לפי currentUser ו-role. (2) protected route — ב-element prop בודקים role, ואם לא manager → Navigate to='/'. זה בדיוק bank-q1 במבחן."
 }
 ];
 
@@ -1321,7 +1543,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/45`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/50`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 
