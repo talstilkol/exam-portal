@@ -126,9 +126,9 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 71 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 74 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
-    <span class="stat" id="stat-solved">✅ נפתרו: 0/71</span>
+    <span class="stat" id="stat-solved">✅ נפתרו: 0/74</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
   </div>
 </header>
@@ -2698,6 +2698,183 @@ app.post('/employees/add-or-update', async (req, res) => {
     return {ok:true};
   },
   explain:"החישוב: amount × (toRate / fromRate). find() למציאת הRate. toFixed(2) לדיוק 2 ספרות. בדיקת null לפני הצגה."
+},
+
+// ===== EXERCISE 72 =====
+{
+  id:"express-fs-save-read",cat:"express",diff:"medium",
+  title:"Express + fs — שמירה וקריאה מקובץ TXT — Bank Q3",
+  prompt:`כתבו שני routes:
+<ul style="margin:8px 0;padding-right:18px">
+<li><code>POST /save</code> — מוסיף שורה לקובץ <code>data.txt</code> (לא דורס!)</li>
+<li><code>GET /read</code> — קורא את כל השורות ומחזיר כמערך</li>
+</ul>
+השתמשו ב-<code>fs.promises</code>`,
+  starterCode:`const express = require('express');
+const fs = require('fs').promises;
+const app = express();
+app.use(express.json());
+
+// POST /save
+app.post('/save', async (req, res) => {
+  // כתבו כאן
+});
+
+// GET /read
+app.get('/read', async (req, res) => {
+  // כתבו כאן
+});`,
+  solution:`const express = require('express');
+const fs = require('fs').promises;
+const app = express();
+app.use(express.json());
+
+app.post('/save', async (req, res) => {
+  try {
+    const line = req.body.data + '\\n';
+    await fs.appendFile('data.txt', line, 'utf8');  // ✅ appendFile!
+    res.status(201).json({ message: 'Saved' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/read', async (req, res) => {
+  try {
+    const content = await fs.readFile('data.txt', 'utf8');
+    const lines = content.trim().split('\\n').filter(Boolean);
+    res.json(lines);
+  } catch (err) {
+    // קובץ לא קיים — מחזירים מערך ריק
+    res.json([]);
+  }
+});`,
+  customTest(code){
+    const checks=[
+      {re:/appendFile/,msg:'חסר fs.appendFile — writeFile ידרוס את הנתונים!'},
+      {re:/readFile/,msg:'חסר fs.readFile'},
+      {re:/status\(201\)/,msg:'חסר res.status(201) ב-POST'},
+      {re:/split\(['"`]\\n['"`]\)/,msg:'חסר .split("\\n") לחלוקה לשורות'},
+      {re:/filter\(Boolean\)|\.filter\(.*=>\s*.*\)/,msg:'מומלץ: filter(Boolean) לסינון שורות ריקות'},
+      {re:/try.*catch|catch.*err/s,msg:'חסר try/catch'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"appendFile מוסיף שורות לסוף. readFile מחזיר string. split('\\n') + filter(Boolean) לפיצול למערך. אם הקובץ לא קיים → catch מחזיר []."
+},
+
+// ===== EXERCISE 73 =====
+{
+  id:"react-use-params",cat:"react",diff:"easy",
+  title:"useParams — קריאת פרמטרים מה-URL — כמה מבחנות",
+  prompt:`כתבו component <code>PlayerEdit</code> שקורא את פרמטרי ה-URL ומציג את השחקן לעריכה.
+<br><br>
+Route: <code>/team/:teamName/edit/:playerId</code><br>
+השתמשו ב-<code>useParams()</code> לקבל <code>teamName</code> ו-<code>playerId</code>.`,
+  starterCode:`// Route: /team/:teamName/edit/:playerId
+function PlayerEdit({ teams }) {
+  // כתבו כאן — קבלו פרמטרים מה-URL
+
+  // מצאו את השחקן ב-teams
+
+  return <div>...</div>;
+}`,
+  solution:`function PlayerEdit({ teams }) {
+  const { teamName, playerId } = useParams();
+  const navigate = useNavigate();
+
+  // מציאת השחקן לפי teamName ו-playerId
+  const team = teams[teamName] || [];
+  const player = team.find(p => String(p.id) === playerId);
+
+  if (!player) return <p>שחקן לא נמצא</p>;
+
+  return (
+    <div>
+      <h2>עריכת שחקן: {player.name}</h2>
+      <p>קבוצה: {teamName}</p>
+      {/* Form לעריכה */}
+    </div>
+  );
+}`,
+  customTest(code){
+    const checks=[
+      {re:/useParams\(\)/,msg:'חסר useParams()'},
+      {re:/const\s*\{.*teamName.*\}|const\s*\{.*playerId.*\}/,msg:'חסר destructuring של פרמטרי URL'},
+      {re:/\.find\(/,msg:'חסר .find() למציאת השחקן'},
+      {re:/if.*!player|player.*null|player.*undefined/,msg:'מומלץ: בדיקה אם player קיים לפני הצגה'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"useParams() מחזיר object עם כל פרמטרי ה-URL. String(p.id) === playerId — חשוב! playerId מה-URL הוא string, id בobject יכול להיות number."
+},
+
+// ===== EXERCISE 74 =====
+{
+  id:"react-edit-prefill",cat:"react",diff:"medium",
+  title:"Form עם ערכים ממולאים מראש — Edit Player — Football Q1",
+  prompt:`כתבו component EditPlayer שטוען את נתוני השחקן הקיים לתוך הForm.
+<br><br>
+השתמשו ב-<code>useParams()</code>, מצאו את השחקן ב-teams, ואתחלו את ה-state עם ערכיו.`,
+  starterCode:`function EditPlayer({ teams, onSave }) {
+  const { teamName, playerId } = useParams();
+
+  // מצאו את השחקן ואתחלו state עם ערכיו
+  const [formData, setFormData] = useState({ name: '', age: '', position: '' });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // כתבו כאן
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* Form fields */}
+    </form>
+  );
+}`,
+  solution:`function EditPlayer({ teams, onSave }) {
+  const { teamName, playerId } = useParams();
+  const navigate = useNavigate();
+
+  const team = teams[teamName] || [];
+  const existing = team.find(p => String(p.id) === playerId);
+
+  // אתחול state עם נתוני השחקן הקיים
+  const [formData, setFormData] = useState({
+    name: existing?.name || '',
+    age: existing?.age || '',
+    position: existing?.position || ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(teamName, playerId, formData);  // עדכן ב-App
+    navigate('/team/' + teamName);         // חזור לדף הקבוצה
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={formData.name} onChange={e => setFormData(p => ({...p, name: e.target.value}))} />
+      <input value={formData.age} onChange={e => setFormData(p => ({...p, age: e.target.value}))} />
+      <button type="submit">שמור</button>
+    </form>
+  );
+}`,
+  customTest(code){
+    const checks=[
+      {re:/useParams\(\)/,msg:'חסר useParams()'},
+      {re:/existing.*find|find.*existing|player.*find/,msg:'חסר find() לטעינת הנתונים הקיימים'},
+      {re:/existing\?\.|existing &&|existing\s*\?/,msg:'חסר optional chaining (existing?.name) לבטיחות'},
+      {re:/navigate\(/,msg:'חסר navigate() לחזרה לאחר שמירה'},
+      {re:/e\.preventDefault\(\)/,msg:'חסר e.preventDefault() ב-submit'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"Pre-fill: useState מאותחל עם existing?.name || ''. הסימן ? (optional chaining) בטוח אם existing הוא null. navigate לאחר שמירה = UX טוב."
 }
 ];
 
@@ -2711,7 +2888,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/71`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/74`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 
