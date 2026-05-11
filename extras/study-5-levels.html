@@ -892,6 +892,7 @@ body{padding:20px;background-image:radial-gradient(circle at 10% 20%, rgba(255,7
 .concept-card.has-code::before{content:'</> ';position:absolute;top:8px;right:8px;font-family:Consolas,monospace;font-size:11px;font-weight:900;color:#000;background:#FFD700;padding:2px 6px;border-radius:5px;border:1.5px solid #000}
 .tree-item.has-code .ti-desc::after{content:' </>';color:#FFD700;background:#000;padding:1px 4px;border-radius:3px;font-family:Consolas,monospace;font-size:9px;margin-right:4px;font-weight:900}
 
+(prefers-color-scheme:dark){body{background:#0f172a;color:#e2e8f0}h1,h2,h3,h4{color:#f1f5f9}.card,.box,.panel,.section,.wrap,.container,.topic-section,.concept-section{background:#1e293b;border-color:#334155;color:#e2e8f0}pre,code{background:#0a0f1c;color:#a5f3fc}.tag,.badge,.chip,.label{border-color:#334155}table{border-color:#334155}td,th{border-color:#334155;background:#1e293b;color:#e2e8f0}tr:nth-child(even) td{background:#0f172a}a{color:#93c5fd}}
 </style>
 </head>
 <body>
@@ -2553,7 +2554,8 @@ const EXAM_DATA = {
     5:{title:'<link rel="stylesheet" href="styles.css">',tag:'טעינת CSS',
       rows:[
         {opt:'<link rel="stylesheet" href="styles.css">',when:'קובץ חיצוני',pros:'caching, DRY, ניתן לשיתוף',cons:'—',recommended:true},
-        {opt:'<style>...</style>',when:'inline בעמוד',pros:'מהיר ל־דף יחיד',cons:'אין caching, לא DRY'},
+        {opt:'<style>...(prefers-color-scheme:dark){body{background:#0f172a;color:#e2e8f0}h1,h2,h3,h4{color:#f1f5f9}.card,.box,.panel,.section,.wrap,.container,.topic-section,.concept-section{background:#1e293b;border-color:#334155;color:#e2e8f0}pre,code{background:#0a0f1c;color:#a5f3fc}.tag,.badge,.chip,.label{border-color:#334155}table{border-color:#334155}td,th{border-color:#334155;background:#1e293b;color:#e2e8f0}tr:nth-child(even) td{background:#0f172a}a{color:#93c5fd}}
+</style>',when:'inline בעמוד',pros:'מהיר ל־דף יחיד',cons:'אין caching, לא DRY'},
         {opt:'style="..."',when:'inline על element',pros:'specificity הכי גבוה',cons:'❌ לא DRY, קשה לעדכן'}
       ]},
     9:{title:'<script src="app.js"><\/script>',tag:'טעינת JS',

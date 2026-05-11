@@ -977,7 +977,9 @@
   }
   if (darkBtn) darkBtn.addEventListener('click', toggleDark);
   try {
-    if (localStorage.getItem('portal-dark') === '1') toggleDark();
+    const saved = localStorage.getItem('portal-dark');
+    if (saved === '1') toggleDark();
+    else if (saved === null && window.matchMedia('(prefers-color-scheme:dark)').matches) toggleDark();
   } catch(e) {}
 
   // ============= Score Card =============
