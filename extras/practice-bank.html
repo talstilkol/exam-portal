@@ -126,9 +126,9 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 40 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 45 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
-    <span class="stat" id="stat-solved">✅ נפתרו: 0/40</span>
+    <span class="stat" id="stat-solved">✅ נפתרו: 0/45</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
   </div>
 </header>
@@ -1056,6 +1056,258 @@ const EXERCISES = [
   hint:"const fromRate = rates.find(r => r.type === from.toUpperCase());\nconst toRate = rates.find(r => r.type === to.toUpperCase());\nconst result = (Number(amount) * fromRate.value) / toRate.value;",
   solution:"app.get('/convert', (req, res) => {\n  const { from, to, amount } = req.query;\n  // Find rates (case-insensitive)\n  const fromRate = rates.find(r => r.type === from.toUpperCase());\n  const toRate = rates.find(r => r.type === to.toUpperCase());\n  // 404 if currency not found\n  if (!fromRate || !toRate)\n    return res.status(404).json({ error: 'Currency not found' });\n  // 400 if same currency\n  if (from.toUpperCase() === to.toUpperCase())\n    return res.status(400).json({ error: 'from and to must differ' });\n  // 400 if divide by zero\n  if (toRate.value === 0)\n    return res.status(400).json({ error: 'Cannot divide by zero' });\n  // Convert\n  const numAmount = Number(amount);\n  const result = (numAmount * fromRate.value) / toRate.value;\n  res.json({ from, to, amount: numAmount, result });\n});",
   explain:"שלושה כללים לעבודה עם query params: (1) תמיד Number() — req.query הוא תמיד string. (2) בדקו from !== to — לא הגיוני להמיר מטבע לעצמו. (3) בדקו חלוקה באפס לפני החישוב. toUpperCase() מבטיח אחידות ללא תלות ב-case."
+},
+// ── Exercise 41 ────────────────────────────────────────────────────────────
+{
+  id:"js-series-type",cat:"js",diff:"medium",
+  title:"זיהוי סוג סדרה — חשבונית / הנדסית",
+  prompt:`כתבו פונקציה <b>detectSeries(arr)</b> שמקבלת מערך מספרים ומחזירה:
+<ul>
+  <li><code>'arithmetic'</code> — אם ההפרש בין כל שני איברים עוקבים קבוע (סדרה חשבונית)</li>
+  <li><code>'geometric'</code> — אם המנה בין כל שני איברים עוקבים קבועה (סדרה הנדסית)</li>
+  <li><code>'none'</code> — אחרת (כולל קלט לא תקין)</li>
+</ul>
+<b>דוגמאות:</b>
+<pre>[2, 5, 8, 11]   → 'arithmetic'  (הפרש=3)
+[3, 9, 27, 81]  → 'geometric'   (מנה=3)
+[1, 2, 4, 9]    → 'none'
+[5]             → 'none'        (פחות מ-2 איברים)</pre>
+⚠️ <b>מלכודת:</b> אם arr[0]===0 אי-אפשר לחלק — בדוק חשבונית <em>לפני</em> הנדסית.`,
+  tests:[
+    {label:"[2,5,8,11] → arithmetic", fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn([2,5,8,11])==='arithmetic'}catch(e){return false}}},
+    {label:"[3,9,27,81] → geometric", fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn([3,9,27,81])==='geometric'}catch(e){return false}}},
+    {label:"[1,2,4,9] → none",        fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn([1,2,4,9])==='none'}catch(e){return false}}},
+    {label:"[0,0,0] → arithmetic",    fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn([0,0,0])==='arithmetic'}catch(e){return false}}},
+    {label:"[5] → none",              fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn([5])==='none'}catch(e){return false}}}
+  ],
+  customTest:code=>{
+    const hasArith=/arithmetic/.test(code);
+    const hasGeo=/geometric/.test(code);
+    const hasNone=/none/.test(code);
+    const hasDiff=/\[\s*[ij]\s*\]\s*-\s*\w+\[\s*[ij]\s*-\s*1\s*\]|diff|difference/.test(code);
+    const hasRatio=/ratio|\/\s*\w+\[\s*[ij]/.test(code);
+    if(!hasArith)return{ok:false,msg:"חסרה החזרת 'arithmetic'"};
+    if(!hasGeo)return{ok:false,msg:"חסרה החזרת 'geometric'"};
+    if(!hasNone)return{ok:false,msg:"חסרה החזרת 'none'"};
+    if(!hasDiff&&!hasRatio)return{ok:false,msg:"חסר חישוב הפרש או מנה"};
+    return{ok:true,msg:"✅ מבנה תקין — כולל arithmetic + geometric + none"};
+  },
+  hint:"חשבונית: בדוק שכל arr[i]-arr[i-1] שווה לhפרש הראשון. הנדסית: בדוק שכל arr[i]/arr[i-1] שווה למנה הראשונה (רק אם arr[0]!==0).",
+  solution:`function detectSeries(arr) {
+  if (!Array.isArray(arr) || arr.length < 2) return 'none';
+
+  // Check arithmetic: constant difference
+  const diff = arr[1] - arr[0];
+  const isArithmetic = arr.every((n, i) => i === 0 || n - arr[i - 1] === diff);
+  if (isArithmetic) return 'arithmetic';
+
+  // Check geometric: constant ratio (only if first element != 0)
+  if (arr[0] === 0) return 'none';
+  const ratio = arr[1] / arr[0];
+  const isGeometric = arr.every((n, i) => i === 0 || n / arr[i - 1] === ratio);
+  if (isGeometric) return 'geometric';
+
+  return 'none';
+}`,
+  explain:"שתי הבדיקות רצות בנפרד. חשבונית: .every שבודק שהפרש קבוע. הנדסית: .every שבודק שמנה קבועה. חשוב לבדוק חשבונית <em>לפני</em> הנדסית ולדאוג שarr[0]!==0 לפני חלוקה."
+},
+// ── Exercise 42 ────────────────────────────────────────────────────────────
+{
+  id:"js-sort-digits",cat:"js",diff:"hard",
+  title:"מיון ספרות — ללא .sort()",
+  prompt:`כתבו פונקציה <b>sortDigits(n)</b> שמקבלת מספר שלם ומחזירה אותו עם ספרותיו ממוינות מהקטנה לגדולה — <strong>ללא שימוש ב-.sort()</strong>.
+<pre>sortDigits(3219)  → 1239
+sortDigits(9871)  → 1789
+sortDigits(-452)  → 245   (עבוד על Math.abs)
+sortDigits(5)     → 5</pre>
+⚠️ <b>מלכודת:</b> .sort() אסור — ממיינים ידנית (Bubble Sort / Selection Sort / ספירה).`,
+  tests:[
+    {label:"sortDigits(3219)=1239", fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn(3219)===1239}catch(e){return false}}},
+    {label:"sortDigits(9871)=1789", fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn(9871)===1789}catch(e){return false}}},
+    {label:"sortDigits(-452)=245",  fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn(-452)===245}catch(e){return false}}},
+    {label:"sortDigits(5)=5",       fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();return fn(5)===5}catch(e){return false}}}
+  ],
+  customTest:code=>{
+    if(/\.sort\(/.test(code))return{ok:false,msg:"⛔ שימוש ב-.sort() אסור! ממיין ידנית."};
+    const hasAbs=/Math\.abs/.test(code);
+    const hasLoop=/for\s*\(/.test(code);
+    const hasSwap=/\[\s*\w+\s*,\s*\w+\s*\]\s*=\s*\[|temp/.test(code);
+    if(!hasAbs)return{ok:false,msg:"חסר Math.abs — יש לטפל במספרים שליליים"};
+    if(!hasLoop)return{ok:false,msg:"חסרה לולאה לאלגוריתם המיון"};
+    return{ok:true,msg:"✅ ללא .sort(), עם Math.abs ולולאה"};
+  },
+  hint:"השתמש ב-String(Math.abs(n)).split('').map(Number) לחילוץ הספרות, ממיין ב-Bubble Sort (שתי לולאות מקוננות), ואז join+Number.",
+  solution:`function sortDigits(n) {
+  const digits = String(Math.abs(n)).split('').map(Number);
+
+  // Bubble sort (no .sort() allowed)
+  for (let i = 0; i < digits.length; i++) {
+    for (let j = 0; j < digits.length - i - 1; j++) {
+      if (digits[j] > digits[j + 1]) {
+        [digits[j], digits[j + 1]] = [digits[j + 1], digits[j]];
+      }
+    }
+  }
+  return Number(digits.join(''));
+}`,
+  explain:"Bubble Sort ידני: שתי לולאות מקוננות, swap בין שכנים אם הם לא בסדר. Math.abs מטפל במספרים שליליים. String→split→map→join→Number הוא pattern חיוני לעבודה עם ספרות."
+},
+// ── Exercise 43 ────────────────────────────────────────────────────────────
+{
+  id:"js-matrix-count",cat:"js",diff:"medium",
+  title:"ספירת ערכים במטריצה",
+  prompt:`כתבו פונקציה <b>countInMatrix(matrix, numbers)</b> שמקבלת:
+<ul>
+  <li><b>matrix</b> — מערך דו-ממדי של מספרים</li>
+  <li><b>numbers</b> — מערך של מספרים לחיפוש</li>
+</ul>
+ומחזירה אובייקט שבו לכל מספר ב-numbers — כמה פעמים הוא מופיע ב-matrix.
+<pre>const m = [[1,2,3],[2,2,4],[1,5,2]];
+countInMatrix(m, [1,2,5])
+// → { 1:2, 2:4, 5:1 }</pre>
+⚠️ <b>מלכודת:</b> אתחל את הספירה ל-0 לכל מספר ב-numbers — גם אם הוא לא מופיע כלל.`,
+  tests:[
+    {label:"{1:2,2:4,5:1}",fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();const r=fn([[1,2,3],[2,2,4],[1,5,2]],[1,2,5]);return r[1]===2&&r[2]===4&&r[5]===1}catch(e){return false}}},
+    {label:"מספר שלא מופיע=0",fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();const r=fn([[1,2],[3,4]],[9]);return r[9]===0}catch(e){return false}}},
+    {label:"מטריצה ריקה",fn:c=>{try{const f=new Function('return ('+c+')');const fn=f();const r=fn([],[1,2]);return r[1]===0&&r[2]===0}catch(e){return false}}}
+  ],
+  customTest:code=>{
+    const hasInit=/\[n\]\s*=\s*0|\[num\]\s*=\s*0|forEach.*result|numbers\.forEach/.test(code);
+    const hasNested=/forEach[\s\S]{1,200}forEach|for[\s\S]{1,200}for/.test(code);
+    if(!hasNested)return{ok:false,msg:"חסרה לולאה מקוננת לעבור על שורות ותאים"};
+    return{ok:true,msg:"✅ לולאה מקוננת + אתחול ספירה"};
+  },
+  hint:"אתחל: numbers.forEach(n => result[n] = 0). אחר-כך: matrix.forEach(row => row.forEach(cell => { if(result[cell] !== undefined) result[cell]++ })).",
+  solution:`function countInMatrix(matrix, numbers) {
+  const result = {};
+  // Init all counts to 0
+  numbers.forEach(n => result[n] = 0);
+
+  // Traverse matrix
+  matrix.forEach(row => {
+    row.forEach(cell => {
+      if (result[cell] !== undefined) {
+        result[cell]++;
+      }
+    });
+  });
+  return result;
+}`,
+  explain:"שלושה שלבים: (1) אתחול — forEach על numbers ל-0. (2) מעבר — forEach מקוננת על שורות ותאים. (3) ספירה — if result[cell] !== undefined כדי לא לספור ערכים שלא ביקשנו."
+},
+// ── Exercise 44 ────────────────────────────────────────────────────────────
+{
+  id:"react-timer-interval",cat:"react",diff:"hard",
+  title:"Timer — setInterval + useEffect cleanup",
+  prompt:`כתבו קומפוננטת React <b>ParkingTimer</b> שמציגה:
+<ul>
+  <li>שעון עצר שסופר שניות מאז שהחנייה החלה</li>
+  <li>כפתור Stop שעוצר את הטיימר</li>
+  <li>כפתור Start שמפעיל טיימר חדש</li>
+</ul>
+<b>דרישות:</b>
+<ul>
+  <li>שימוש ב-<code>setInterval</code> בתוך useEffect</li>
+  <li><strong>חובה:</strong> <code>return () => clearInterval(interval)</code> — cleanup!</li>
+  <li>State: <code>seconds</code> (number), <code>running</code> (boolean)</li>
+  <li>שימוש ב-<code>prev => prev + 1</code> בתוך setInterval (לא <code>seconds + 1</code>!)</li>
+</ul>
+⚠️ <b>מלכודת נפוצה:</b> שימוש ב-<code>seconds + 1</code> בתוך setInterval יגרום ל-stale closure — תמיד השתמש ב-<code>prev => prev + 1</code>.`,
+  tests:[
+    {label:"setInterval קיים",       fn:c=>/setInterval/.test(c)},
+    {label:"clearInterval קיים",     fn:c=>/clearInterval/.test(c)},
+    {label:"useEffect קיים",         fn:c=>/useEffect/.test(c)},
+    {label:"return cleanup קיים",    fn:c=>/return\s*\(\s*\)\s*=>.*clearInterval/.test(c)},
+    {label:"prev => prev + 1",       fn:c=>/prev\s*=>\s*prev\s*\+\s*1/.test(c)}
+  ],
+  customTest:code=>{
+    if(!/setInterval/.test(code))return{ok:false,msg:"חסר setInterval"};
+    if(!/clearInterval/.test(code))return{ok:false,msg:"⛔ חסר clearInterval — memory leak!"};
+    if(!/return\s*\(\s*\)\s*=>\s*clearInterval/.test(code))return{ok:false,msg:"חסרה פונקציית cleanup ב-return של useEffect"};
+    if(!/prev\s*=>\s*prev\s*\+\s*1/.test(code))return{ok:false,msg:"⚠️ השתמש ב-prev => prev + 1 במקום seconds + 1 (stale closure!)"};
+    return{ok:true,msg:"✅ setInterval + clearInterval cleanup + prev => prev+1"};
+  },
+  hint:"useEffect עם [running] כ-dependency. אם running===true: const id = setInterval(() => setSeconds(prev=>prev+1), 1000). תמיד: return () => clearInterval(id).",
+  solution:`function ParkingTimer() {
+  const [seconds, setSeconds] = useState(0);
+  const [running, setRunning] = useState(false);
+
+  useEffect(() => {
+    if (!running) return; // do nothing if stopped
+
+    const interval = setInterval(() => {
+      setSeconds(prev => prev + 1); // ✅ prev form — no stale closure
+    }, 1000);
+
+    return () => clearInterval(interval); // ✅ cleanup on unmount or re-run
+  }, [running]);
+
+  const stop  = () => setRunning(false);
+  const start = () => { setSeconds(0); setRunning(true); };
+
+  return (
+    <div>
+      <h2>⏱ {seconds} שניות</h2>
+      <button onClick={start}>Start</button>
+      <button onClick={stop}>Stop</button>
+    </div>
+  );
+}`,
+  explain:"שלושה כללים לטיימר ב-React: (1) setInterval בתוך useEffect עם [running]. (2) תמיד return () => clearInterval() — בלי זה יש memory leak ו-multiple timers. (3) setSeconds(prev => prev + 1) ולא setSeconds(seconds + 1) — stale closure גורם לספירה תקועה."
+},
+// ── Exercise 45 ────────────────────────────────────────────────────────────
+{
+  id:"express-mongoose-upsert",cat:"express",diff:"hard",
+  title:"Mongoose — Upsert (הוסף או עדכן)",
+  prompt:`כתבו route ב-Express + Mongoose שמממש <b>upsert</b>:
+<pre>POST /employees/upsert</pre>
+<b>body:</b> <code>{ employeeId, name, salary }</code>
+<ul>
+  <li>אם עובד עם <code>employeeId</code> זה <strong>קיים</strong> — עדכן את <code>name</code> ו-<code>salary</code></li>
+  <li>אם <strong>לא קיים</strong> — צור רשומה חדשה</li>
+  <li>החזר תמיד <code>200</code> + המסמך המעודכן/חדש</li>
+</ul>
+<b>Schema לדוגמה:</b>
+<pre>const Employee = mongoose.model('Employee', new Schema({
+  employeeId: String,
+  name: String,
+  salary: Number
+}));</pre>
+⚠️ <b>שלוש אופציות חובה:</b> <code>upsert: true</code>, <code>new: true</code>, <code>runValidators: true</code>`,
+  tests:[
+    {label:"findOneAndUpdate קיים",  fn:c=>/findOneAndUpdate/.test(c)},
+    {label:"upsert: true",           fn:c=>/upsert\s*:\s*true/.test(c)},
+    {label:"new: true",              fn:c=>/new\s*:\s*true/.test(c)},
+    {label:"\\$set קיים",           fn:c=>/\$set/.test(c)},
+    {label:"async/await",            fn:c=>/async/.test(c)&&/await/.test(c)}
+  ],
+  customTest:code=>{
+    if(!/findOneAndUpdate/.test(code))return{ok:false,msg:"חסר findOneAndUpdate — זה הפונקציה לupsert ב-Mongoose"};
+    if(!/upsert\s*:\s*true/.test(code))return{ok:false,msg:"חסר upsert: true — בלי זה לא ייצור רשומה חדשה"};
+    if(!/new\s*:\s*true/.test(code))return{ok:false,msg:"חסר new: true — בלי זה מחזיר את המסמך הישן (לפני עדכון)"};
+    if(!/\$set/.test(code))return{ok:false,msg:"חסר $set — לעדכן שדות ספציפיים בלבד"};
+    return{ok:true,msg:"✅ findOneAndUpdate + upsert:true + new:true + $set"};
+  },
+  hint:"Employee.findOneAndUpdate({ employeeId }, { $set: { name, salary } }, { upsert: true, new: true, runValidators: true })",
+  solution:`app.post('/employees/upsert', async (req, res) => {
+  try {
+    const { employeeId, name, salary } = req.body;
+
+    const result = await Employee.findOneAndUpdate(
+      { employeeId },                        // filter — find by employeeId
+      { $set: { name, salary } },            // update — set name + salary
+      { upsert: true, new: true, runValidators: true }
+      // upsert: true  → create if not found
+      // new: true     → return updated document (not old)
+      // runValidators → validate schema on update too
+    );
+
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});`,
+  explain:"findOneAndUpdate עם שלוש אופציות: upsert:true יוצר מסמך חדש אם לא נמצא, new:true מחזיר את הגרסה החדשה (לא הישנה), runValidators מפעיל ולידציות ב-update. $set מעדכן רק את השדות המצוינים בלי למחוק שאר השדות."
 }
 ];
 
@@ -1069,7 +1321,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/40`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/45`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 
