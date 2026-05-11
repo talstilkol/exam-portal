@@ -33,7 +33,7 @@ const SITE_MAP = {
         { id: "exam-knowledge", label: "מרכז ידע", icon: "📚", href: "exam-knowledge.html", meta: "10 נושאים" },
         { id: "exam-strategy", label: "אסטרטגיית מבחן", icon: "🎯", href: "exam-strategy.html", meta: "18 טיפים" },
         { id: "debug-walkthrough", label: "Debug צעד-אחר-צעד", icon: "🔍", href: "debug-walkthrough.html", meta: "6 שאלות" },
-        { id: "theory-quiz", label: "Theory Quiz", icon: "🧠", href: "theory-quiz.html", meta: "58 כרטיסים" },
+        { id: "theory-quiz", label: "Theory Quiz", icon: "🧠", href: "theory-quiz.html", meta: "68 כרטיסים" },
         { id: "validation-atlas", label: "אטלס ולידציות", icon: "🛡", href: "validation-atlas.html", meta: "9 מבחנים" },
         { id: "regex-tester", label: "Regex Tester", icon: "🔬", href: "regex-tester.html", meta: "16 presets" },
         { id: "exam-cheatsheet", label: "דף רמז מבחן", icon: "📋", href: "exam-cheatsheet.html", meta: "9 מבחנים" },
