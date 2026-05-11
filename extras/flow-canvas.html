@@ -795,6 +795,8 @@ body.dark-forced .tree-panel{background:#1e293b;border-color:#334155}
 <button class="fullscreen-btn" id="fs-btn" onclick="toggleFullscreen()">⛶ מסך מלא</button>
 <div class="fs-minimap" id="fs-minimap"><div class="fs-minimap-viewport" id="fs-minimap-vp"></div></div>
 <script>
+function _lsGet(k,fb){try{var v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch(e){return fb}}
+
 const FLOWS={
 "football-q1":{title:"Football Club",type:"react",points:50,exam:"Football Club",
 question:"בנו אפליקציית React לניהול קבוצת כדורגל.\n• דף כניסה — username ו-password, אם לא נמצא → alert\n• דף הרשמה — username, teamName (אנגלית, אות גדולה), password (8-20, upper+lower+digit+special), confirmPassword\n• דף קבוצה — navbar עם שם הקבוצה, רשימת שחקנים (cards), חיפוש, Show All\n• עריכת שחקן — form עם ערכים מראש מ-URL params\n• שמירה ב-localStorage לכל state",

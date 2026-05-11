@@ -989,6 +989,10 @@ const EXERCISES = [
 }
 ];
 
+// Safe localStorage helper
+function _lsGet(k,fb){try{var v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch(e){return fb}}
+function _lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+
 // Track solved
 let solved = _lsGet('pb-solved',{});
 let streak = 0;

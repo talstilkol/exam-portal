@@ -124,6 +124,8 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
   </main>
 </div>
 <script>
+function _lsGet(k,fb){try{var v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch(e){return fb}}
+
 const SCENARIOS = [
 {
   id:"login", title:"User Login Flow", type:"full", icon:"🔐",

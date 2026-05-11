@@ -126,6 +126,8 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 </div>
 
 <script>
+function _lsGet(k,fb){try{var v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch(e){return fb}}
+
 const TOPICS = [
   {id:"js-basics",name:"JavaScript Basics",icon:"🟨",sub:"variables, types, operators, control flow",weight:5,
    concepts:["let / const / var","primitive types: string, number, boolean, null, undefined","operators: ===, !==, &&, ||, ??","if/else, switch, ternary","for, while, for...of, for...in"],
