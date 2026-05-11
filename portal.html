@@ -401,8 +401,15 @@
     body{overflow:auto}
     .shell{height:auto; min-height:100vh}
     main.workspace{height:75vh; min-height:600px}
-    nav.tabs{padding:8px 10px}
-    nav.tabs button{font-size:12px; padding:6px 9px}
+    nav.tabs{padding:8px 10px; gap:4px}
+    nav.tabs button{font-size:12px; padding:8px 10px; min-height:40px}
+    .hero h1{font-size:18px}
+    .hero p{font-size:12px}
+    .hero{padding:10px 14px; gap:8px}
+  }
+  @media (max-width:480px){
+    nav.tabs button{font-size:11px; padding:7px 8px}
+    .badge{font-size:11px; padding:4px 8px}
   }
 </style>
 </head>
