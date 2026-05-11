@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="🛡 אטלס ולידציות — כל דרישות האימות של 9 מבחני React — פורטל מבחן Fullstack">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🛡 אטלס ולידציות — React Exams</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--brand:#7c3aed;--gold:#facc15;--green:#16a34a;--red:#dc2626;--blue:#2563eb;--orange:#f97316;--shadow:4px 4px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(20px,4vw,32px);margin:0}
+.hero p{color:#dbeafe;margin:6px 0 0;font-size:14px}
+
+/* TOOLBAR */
+.toolbar{background:#fff;border-bottom:3px solid #000;padding:10px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:50}
+.filter-chip{padding:5px 12px;border:2px solid #000;border-radius:999px;font-size:12px;font-weight:800;cursor:pointer;background:#f8fafc;transition:.15s;white-space:nowrap}
+.filter-chip:hover{transform:translateY(-1px)}
+.filter-chip.active{background:var(--brand);color:#fff;box-shadow:2px 2px 0 #000}
+.search-box{padding:6px 12px;border:2.5px solid #000;border-radius:10px;font:inherit;font-size:13px;background:#f8fafc;min-width:200px;margin-right:auto}
+.search-box:focus{outline:none;border-color:var(--brand)}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:24px 16px}
+
+/* EXAM BLOCK */
+.exam-block{background:var(--card);border:3px solid #000;border-radius:18px;margin-bottom:20px;overflow:hidden;box-shadow:var(--shadow)}
+.exam-head{padding:14px 20px;border-bottom:3px solid #000;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.1s}
+.exam-head:hover{filter:brightness(.97)}
+.exam-icon{font-size:22px}
+.exam-title{font-weight:900;font-size:18px;flex:1}
+.exam-pts{font-size:12px;font-weight:800;padding:3px 10px;border:2px solid rgba(0,0,0,.3);border-radius:999px;background:rgba(255,255,255,.25)}
+.exam-chev{font-size:12px;transition:.2s;color:rgba(255,255,255,.7)}
+.exam-block.collapsed .exam-body{display:none}
+.exam-block.collapsed .exam-chev{transform:rotate(-90deg)}
+.exam-body{padding:18px 20px}
+
+/* COMPONENT GROUP */
+.comp-group{margin-bottom:16px}
+.comp-title{font-size:13px;font-weight:900;color:#475569;margin-bottom:8px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.5px}
+.comp-title::before{content:'';display:inline-block;width:3px;height:14px;border-radius:2px;background:var(--brand)}
+
+/* VALIDATION ROWS */
+.val-table{width:100%;border-collapse:collapse;font-size:13px}
+.val-table th{background:#f1f5f9;padding:7px 10px;text-align:right;font-size:11px;font-weight:900;color:#64748b;border-bottom:2px solid #e2e8f0;text-transform:uppercase}
+.val-table td{padding:8px 10px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+.val-table tr:last-child td{border-bottom:none}
+.val-table tr:hover td{background:#f8fafc}
+.field-name{font-weight:900;color:var(--ink)}
+.val-rule{color:#334155}
+.val-regex{font-family:monospace;font-size:12px;background:#0f172a;color:#86efac;padding:3px 8px;border-radius:5px;cursor:pointer;display:inline-block;transition:.15s;user-select:all}
+.val-regex:hover{background:#1e293b}
+.val-err{font-size:12px;color:#dc2626;font-weight:700}
+.badge{display:inline-block;padding:2px 7px;border-radius:999px;font-size:11px;font-weight:800;border:1.5px solid transparent}
+.badge-format{background:#dbeafe;color:#1e40af;border-color:#93c5fd}
+.badge-length{background:#fef9c3;color:#854d0e;border-color:#fde047}
+.badge-match{background:#ede9fe;color:#5b21b6;border-color:#c4b5fd}
+.badge-required{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+.badge-range{background:#d1fae5;color:#065f46;border-color:#86efac}
+.badge-unique{background:#fce7f3;color:#9d174d;border-color:#f9a8d4}
+.badge-fixed{background:#ffedd5;color:#c2410c;border-color:#fed7aa}
+
+/* COPIED TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#1e1b4b;color:#fff;padding:8px 20px;border-radius:10px;font-weight:800;font-size:13px;transition:.25s;z-index:999;pointer-events:none;box-shadow:3px 3px 0 #000}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* SEARCH HIGHLIGHT */
+.hl{background:#fef08a;border-radius:2px}
+
+@media(prefers-color-scheme:dark){
+  body{background:#0f172a;color:#e2e8f0}
+  .toolbar{background:#1e293b;border-color:#334155}
+  .filter-chip{background:#0f172a;border-color:#475569;color:#e2e8f0}
+  .exam-block{background:#1e293b}
+  .val-table th{background:#0f172a;color:#94a3b8;border-color:#334155}
+  .val-table td{border-color:#1e293b}
+  .val-table tr:hover td{background:#0f172a}
+  .search-box{background:#0f172a;color:#e2e8f0;border-color:#475569}
+}
+@media print{
+  .toolbar,.toast{display:none}
+  .exam-block.collapsed .exam-body{display:block!important}
+  body{background:#fff;color:#000}
+}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>🛡 אטלס ולידציות — כל 9 מבחני React</h1>
+  <p>כל דרישות האימות ב-React Q1, מאורגנות לפי מבחן, קומפוננטה ושדה. לחץ על regex לעתיקה מיידית.</p>
+</div>
+
+<div class="toolbar">
+  <span class="filter-chip active" data-filter="all">הכל</span>
+  <span class="filter-chip" data-filter="format">🔤 פורמט</span>
+  <span class="filter-chip" data-filter="length">📏 אורך</span>
+  <span class="filter-chip" data-filter="match">🔗 התאמה</span>
+  <span class="filter-chip" data-filter="range">🔢 טווח</span>
+  <span class="filter-chip" data-filter="unique">✨ ייחודי</span>
+  <span class="filter-chip" data-filter="fixed">🔑 קבוע</span>
+  <input class="search-box" id="search" placeholder="🔍 חיפוש — שם שדה, regex, הודעת שגיאה..." />
+</div>
+
+<div class="main" id="main"></div>
+<div class="toast" id="toast">📋 הועתק!</div>
+
+<script>
+const EXAMS = [
+{
+  id:"football", title:"Football Club", icon:"⚽", pts:50,
+  color:"#2563eb",
+  components:[
+    {name:"RegisterForm",fields:[
+      {field:"teamName",rule:"אנגלית בלבד, אות גדולה בתחילת כל מילה (Title Case)",type:"format",
+       regex:"/^[A-Z][a-z]*(\\s[A-Z][a-z]*)*$/",
+       err:"שם קבוצה חייב להיות באנגלית, כל מילה מתחילה באות גדולה"},
+      {field:"password",rule:"8-20 תווים, אות גדולה, אות קטנה, ספרה, תו מיוחד",type:"length",
+       regex:"/^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,20}$/",
+       err:"סיסמה חייבת להיות 8-20 תווים עם uppercase, lowercase, ספרה ותו מיוחד"},
+      {field:"confirmPassword",rule:"חייב להיות זהה ל-password",type:"match",
+       regex:"password === confirmPassword",
+       err:"הסיסמאות אינן תואמות"}
+    ]}
+  ]
+},
+{
+  id:"parking", title:"SV Parking", icon:"🅿️", pts:50,
+  color:"#7c3aed",
+  components:[
+    {name:"Signup",fields:[
+      {field:"username",rule:"חובה, לא ריק",type:"required",
+       regex:"username.trim().length > 0",
+       err:"שם משתמש חובה"},
+      {field:"carNumber",rule:"בדיוק 7 ספרות",type:"format",
+       regex:"/^\\d{7}$/",
+       err:"מספר רכב חייב להיות בדיוק 7 ספרות"},
+      {field:"password",rule:"לפחות 6 תווים",type:"length",
+       regex:"password.length >= 6",
+       err:"סיסמה חייבת להיות לפחות 6 תווים"},
+      {field:"confirmPassword",rule:"זהה ל-password",type:"match",
+       regex:"password === confirmPassword",
+       err:"הסיסמאות אינן תואמות"}
+    ]},
+    {name:"ChooseParking",fields:[
+      {field:"city",rule:"עיר חייבת להיות נבחרת (לא 'בחר עיר')",type:"required",
+       regex:"city !== '' && city !== 'בחר עיר'",
+       err:"יש לבחור עיר"},
+      {field:"carNumber",rule:"מספר הרכב של המשתמש (נטען אוטומטית)",type:"fixed",
+       regex:"currentUser.carNumber",
+       err:"—"}
+    ]}
+  ]
+},
+{
+  id:"flights", title:"בקרת טיסות", icon:"✈️", pts:50,
+  color:"#0891b2",
+  components:[
+    {name:"LoginForm",fields:[
+      {field:"password",rule:"חייב להיות בדיוק '12345' (ללא בדיקת username)",type:"fixed",
+       regex:"password === '12345'",
+       err:"סיסמה שגויה"},
+    ]},
+    {name:"AddFlight",fields:[
+      {field:"flightNumber",rule:"חובה, לא ריק",type:"required",
+       regex:"flightNumber.trim().length > 0",
+       err:"מספר טיסה חובה"},
+      {field:"origin",rule:"חובה",type:"required",
+       regex:"origin.trim().length > 0",
+       err:"מוצא חובה"},
+      {field:"destination",rule:"חובה, שונה מorigin",type:"required",
+       regex:"destination !== origin",
+       err:"יעד חייב להיות שונה ממוצא"},
+      {field:"date",rule:"חובה",type:"required",
+       regex:"date.length > 0",
+       err:"תאריך חובה"}
+    ]}
+  ]
+},
+{
+  id:"helpme", title:"HelpMe", icon:"🚨", pts:75,
+  color:"#dc2626",
+  components:[
+    {name:"Register",fields:[
+      {field:"name",rule:"לפחות 2 תווים",type:"length",
+       regex:"name.trim().length >= 2",
+       err:"שם חייב להיות לפחות 2 תווים"},
+      {field:"phone",rule:"בדיוק 10 ספרות (מתחיל ב-05)",type:"format",
+       regex:"/^05\\d{8}$/",
+       err:"מספר טלפון חייב להיות 10 ספרות ולהתחיל ב-05"},
+      {field:"password",rule:"לפחות 6 תווים",type:"length",
+       regex:"password.length >= 6",
+       err:"סיסמה חייבת להיות לפחות 6 תווים"},
+      {field:"confirmPassword",rule:"זהה ל-password",type:"match",
+       regex:"password === confirmPassword",
+       err:"הסיסמאות אינן תואמות"}
+    ]},
+    {name:"Home — Center Selection",fields:[
+      {field:"center",rule:"חייב לבחור מרכז עזרה (toggle selection)",type:"required",
+       regex:"selectedCenter !== null",
+       err:"יש לבחור מרכז עזרה"}
+    ]}
+  ]
+},
+{
+  id:"bank", title:"SV Bank", icon:"🏦", pts:65,
+  color:"#b45309",
+  components:[
+    {name:"Login (Admin)",fields:[
+      {field:"adminPassword",rule:"קוד מנהל קבוע (למשל 'admin123')",type:"fixed",
+       regex:"password === ADMIN_PASSWORD",
+       err:"קוד מנהל שגוי"}
+    ]},
+    {name:"Register (Client)",fields:[
+      {field:"username",rule:"חובה, ייחודי (לא קיים כבר)",type:"unique",
+       regex:"!users.find(u => u.username === username)",
+       err:"שם משתמש כבר קיים"},
+      {field:"password",rule:"חובה, לפחות 6 תווים",type:"length",
+       regex:"password.length >= 6",
+       err:"סיסמה חובה (מינימום 6 תווים)"}
+    ]},
+    {name:"ClientPage — Deposit/Withdraw",fields:[
+      {field:"amount",rule:"מספר חיובי גדול מ-0",type:"range",
+       regex:"Number(amount) > 0",
+       err:"סכום חייב להיות חיובי"},
+      {field:"withdraw",rule:"לא לעלות על יתרה קיימת",type:"range",
+       regex:"amount <= account.balance",
+       err:"אין מספיק יתרה"}
+    ]}
+  ]
+},
+{
+  id:"logistics", title:"מחסן לוגיסטי", icon:"📦", pts:75,
+  color:"#059669",
+  components:[
+    {name:"Auth (Login/Register)",fields:[
+      {field:"workerId",rule:"בדיוק 5 ספרות",type:"format",
+       regex:"/^\\d{5}$/",
+       err:"מזהה עובד חייב להיות בדיוק 5 ספרות"},
+      {field:"fullName",rule:"לפחות 4 תווים (כולל רווח)",type:"length",
+       regex:"fullName.trim().length >= 4",
+       err:"שם מלא חייב להיות לפחות 4 תווים"},
+      {field:"licenseType",rule:"חייב להיות אחד מהסוגים המותרים (A/B/C/D)",type:"format",
+       regex:"['A','B','C','D'].includes(licenseType)",
+       err:"סוג רישיון לא תקין"},
+      {field:"password",rule:"לפחות 6 תווים",type:"length",
+       regex:"password.length >= 6",
+       err:"סיסמה חובה"}
+    ]},
+    {name:"Auth — Login Check",fields:[
+      {field:"workerId + password",rule:"workerId קיים AND password תואמת",type:"match",
+       regex:"workers.find(w => w.workerId===workerId && w.password===password)",
+       err:"מזהה עובד או סיסמה שגויים"}
+    ]}
+  ]
+},
+{
+  id:"currency", title:"מחשבון המרה", icon:"💱", pts:80,
+  color:"#7c3aed",
+  components:[
+    {name:"UpdateCurrency",fields:[
+      {field:"type",rule:"אנגלית בלבד (USD, EUR וכו') — uppercase",type:"format",
+       regex:"/^[A-Z]{2,5}$/",
+       err:"סוג מטבע חייב להיות אותיות אנגליות גדולות בלבד (2-5 תווים)"},
+      {field:"value",rule:"מספר חיובי גדול מ-0",type:"range",
+       regex:"Number(value) > 0",
+       err:"ערך חייב להיות מספר חיובי"},
+      {field:"allFields",rule:"כל השדות חייבים להיות מלאים",type:"required",
+       regex:"type && value",
+       err:"כל השדות חובה"}
+    ]},
+    {name:"Calculator",fields:[
+      {field:"amount",rule:"מספר חיובי",type:"range",
+       regex:"Number(amount) > 0",
+       err:"סכום חייב להיות חיובי"},
+      {field:"from !== to",rule:"לא ניתן להמיר מטבע לעצמו",type:"match",
+       regex:"from !== to",
+       err:"בחר מטבעות שונים"}
+    ]}
+  ]
+},
+{
+  id:"willing", title:"Willing (התנדבות)", icon:"🤝", pts:40,
+  color:"#16a34a",
+  components:[
+    {name:"Add (הוספת התנדבות)",fields:[
+      {field:"title",rule:"חובה, לא ריק",type:"required",
+       regex:"title.trim().length > 0",
+       err:"כותרת חובה"},
+      {field:"city",rule:"עיר חייבת להיות נבחרת מרשימה (לא ברירת מחדל)",type:"required",
+       regex:"city !== '' && city !== 'בחר עיר'",
+       err:"יש לבחור עיר"},
+      {field:"description",rule:"חובה",type:"required",
+       regex:"description.trim().length > 0",
+       err:"תיאור חובה"}
+    ]},
+    {name:"Find — סינון",fields:[
+      {field:"city filter",rule:"select עיר — כל הערים / עיר ספציפית",type:"required",
+       regex:"city === 'all' || volunteerings.filter(v => v.city === city)",
+       err:"—"}
+    ]}
+  ]
+},
+{
+  id:"travel", title:"Travel-SV", icon:"🧳", pts:50,
+  color:"#0891b2",
+  components:[
+    {name:"SignIn",fields:[
+      {field:"username",rule:"חייב להיות בדיוק 'svcollege'",type:"fixed",
+       regex:"username === 'svcollege'",
+       err:"שם משתמש שגוי"},
+      {field:"password",rule:"חייב להיות בדיוק 'abcde'",type:"fixed",
+       regex:"password === 'abcde'",
+       err:"סיסמה שגויה"}
+    ]},
+    {name:"Add / Update Travel",fields:[
+      {field:"destination",rule:"חובה, לא ריק",type:"required",
+       regex:"destination.trim().length > 0",
+       err:"יעד חובה"},
+      {field:"startDate",rule:"חובה",type:"required",
+       regex:"startDate.length > 0",
+       err:"תאריך התחלה חובה"},
+      {field:"endDate",rule:"חובה, לאחר startDate",type:"range",
+       regex:"endDate >= startDate",
+       err:"תאריך סיום חייב להיות לאחר תאריך ההתחלה"},
+      {field:"Navigation guard",rule:"ניווט לדפים פנימיים אסור לפני login",type:"fixed",
+       regex:"!currentUser && navigate('/')",
+       err:"יש להתחבר תחילה"}
+    ]}
+  ]
+}
+];
+
+// ─── State ────────────────────────────────────────────────────────────────
+let activeFilter = 'all';
+let searchQuery = '';
+
+const BADGE = {
+  format:   {label:'פורמט',   cls:'badge-format'},
+  length:   {label:'אורך',    cls:'badge-length'},
+  match:    {label:'התאמה',   cls:'badge-match'},
+  required: {label:'חובה',    cls:'badge-required'},
+  range:    {label:'טווח',    cls:'badge-range'},
+  unique:   {label:'ייחודי',  cls:'badge-unique'},
+  fixed:    {label:'קבוע',    cls:'badge-fixed'},
+};
+
+function hl(str, q) {
+  if (!q) return str;
+  const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+  return str.replace(re, '<span class="hl">$1</span>');
+}
+
+function copyRegex(text) {
+  navigator.clipboard?.writeText(text).catch(()=>{});
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1600);
+}
+
+function render() {
+  const main = document.getElementById('main');
+  const q = searchQuery.toLowerCase();
+
+  let html = '';
+  EXAMS.forEach(exam => {
+    // Check if any field matches filter+search
+    const allFields = exam.components.flatMap(c => c.fields);
+    const visible = allFields.filter(f => {
+      const matchFilter = activeFilter === 'all' || f.type === activeFilter;
+      const matchSearch = !q || f.field.toLowerCase().includes(q) ||
+        f.rule.toLowerCase().includes(q) || f.regex.toLowerCase().includes(q) ||
+        f.err.toLowerCase().includes(q);
+      return matchFilter && matchSearch;
+    });
+    if (visible.length === 0) return;
+
+    html += `<div class="exam-block" id="exam-${exam.id}">
+      <div class="exam-head" style="background:${exam.color}" onclick="toggleExam('${exam.id}')">
+        <span class="exam-icon">${exam.icon}</span>
+        <span class="exam-title" style="color:#fff">${exam.title}</span>
+        <span class="exam-pts" style="color:#fff">React Q1 · ${exam.pts}נק׳</span>
+        <span class="exam-chev">▼</span>
+      </div>
+      <div class="exam-body">`;
+
+    exam.components.forEach(comp => {
+      const compFields = comp.fields.filter(f => {
+        const mf = activeFilter === 'all' || f.type === activeFilter;
+        const ms = !q || f.field.toLowerCase().includes(q) || f.rule.toLowerCase().includes(q) ||
+          f.regex.toLowerCase().includes(q) || f.err.toLowerCase().includes(q);
+        return mf && ms;
+      });
+      if (compFields.length === 0) return;
+
+      html += `<div class="comp-group">
+        <div class="comp-title">⚛️ ${hl(comp.name, q)}</div>
+        <table class="val-table">
+          <thead><tr><th>שדה</th><th>כלל</th><th>סוג</th><th>Regex / בדיקה</th><th>הודעת שגיאה</th></tr></thead>
+          <tbody>`;
+
+      compFields.forEach(f => {
+        const b = BADGE[f.type] || {label:f.type,cls:'badge-format'};
+        html += `<tr>
+          <td><span class="field-name">${hl(f.field, q)}</span></td>
+          <td><span class="val-rule">${hl(f.rule, q)}</span></td>
+          <td><span class="badge ${b.cls}">${b.label}</span></td>
+          <td><span class="val-regex" onclick="copyRegex('${f.regex.replace(/'/g,"\\'")}')${''}" title="לחץ להעתקה">${hl(f.regex, q)}</span></td>
+          <td><span class="val-err">${hl(f.err, q)}</span></td>
+        </tr>`;
+      });
+
+      html += `</tbody></table></div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  main.innerHTML = html || `<div style="text-align:center;padding:60px;color:#64748b;font-weight:700">אין תוצאות לחיפוש "${searchQuery}"</div>`;
+}
+
+function toggleExam(id) {
+  document.getElementById('exam-'+id)?.classList.toggle('collapsed');
+}
+
+// ─── Filter chips ─────────────────────────────────────────────────────────
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.onclick = () => {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    activeFilter = chip.dataset.filter;
+    render();
+  };
+});
+
+// ─── Search ───────────────────────────────────────────────────────────────
+document.getElementById('search').addEventListener('input', e => {
+  searchQuery = e.target.value.trim();
+  render();
+});
+
+// ─── Init ─────────────────────────────────────────────────────────────────
+render();
+</script>
+<script src="nav-tree.js"></script>
+</body>
+</html>

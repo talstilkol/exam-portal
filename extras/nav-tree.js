@@ -34,6 +34,7 @@ const SITE_MAP = {
         { id: "exam-strategy", label: "אסטרטגיית מבחן", icon: "🎯", href: "exam-strategy.html", meta: "18 טיפים" },
         { id: "debug-walkthrough", label: "Debug צעד-אחר-צעד", icon: "🔍", href: "debug-walkthrough.html", meta: "6 שאלות" },
         { id: "theory-quiz", label: "Theory Quiz", icon: "🧠", href: "theory-quiz.html", meta: "38 כרטיסים" },
+        { id: "validation-atlas", label: "אטלס ולידציות", icon: "🛡", href: "validation-atlas.html", meta: "9 מבחנים" },
         { id: "data-flow", label: "Data Flow", icon: "📦", href: "data-flow.html", meta: "5 תרחישים" },
         { id: "course-map", label: "מפת קורס", icon: "🗂", href: "course-map.html", meta: "16 נושאים" },
         { id: "weakness-explainer", label: "נקודות חולשה", icon: "⚡", href: "weakness-explainer.html" }
