@@ -705,7 +705,7 @@ body {
     <p class="subtitle">בנייה מלאה של שאלות מבחן עם הסבר על כל שורה, טעויות נפוצות, ומה לבדוק</p>
     <div class="hero-stats">
       <div class="hero-stat">
-        <div class="stat-num" id="stat-total">5</div>
+        <div class="stat-num" id="stat-total">6</div>
         <div class="stat-label">שאלות</div>
       </div>
       <div class="hero-stat">
@@ -713,11 +713,11 @@ body {
         <div class="stat-label">הושלמו</div>
       </div>
       <div class="hero-stat">
-        <div class="stat-num" id="stat-sections">14</div>
+        <div class="stat-num" id="stat-sections">17</div>
         <div class="stat-label">סעיפים</div>
       </div>
       <div class="hero-stat">
-        <div class="stat-num" id="stat-steps">56</div>
+        <div class="stat-num" id="stat-steps">65</div>
         <div class="stat-label">צעדים</div>
       </div>
     </div>
@@ -937,6 +937,41 @@ const QUESTIONS = {
           {num:3, topic:'verify', action:'try { req.user = jwt.verify(token, SECRET); next(); }', verify:'תקין → ממשיך', code:'try {\n  req.user = jwt.verify(token, SECRET);\n  next();\n} catch (err) {\n  res.status(401).json({error: "Invalid token"});\n}'}
          ],
          mistakes:['שכחת next() — תיתקע', 'jwt.decode במקום verify — לא בודק חתימה!', 'בלי try/catch — verify זורק, middleware קורס']
+        }
+       ]
+      },
+      {id:'be-q3', number:6, title:'Express Array API — Route Order + Query Convert',
+       desc:'שרת Express מבוסס מערך בזיכרון. שלושה מלכודות: סדר routes, המרת query ל-number, enum validation.',
+       sections:[
+        {id:'6a', num:'6.א', title:'סדר Routes — ספציפי לפני פרמטרי',
+         whatToDo:'הגדירו GET /items/special לפני GET /items/:id. בדקו שהסדר נכון.',
+         why:'Express מתאים routes מלמעלה. /items/:id מתאים כל URL, כולל /items/special — id="special"!',
+         steps:[
+          {num:1, topic:'הבעיה', action:'app.get("/items/:id") → matches /items/special!', verify:'id = "special" במקום not-found', code:'// ❌ שגוי — /:id יתפוס קודם:\napp.get("/items/:id", ...)   // matches /items/special\napp.get("/items/special", ...) // DEAD CODE — לא יגיע לכאן'},
+          {num:2, topic:'הפתרון', action:'הגדירו /items/special לפני /items/:id', verify:'/items/special → handler נכון', code:'// ✅ נכון — ספציפי קודם:\napp.get("/items/special", (req, res) => {\n  const special = items.filter(i => i.featured);\n  res.json(special);\n});\napp.get("/items/:id", (req, res) => {\n  const item = items.find(i => i.id === Number(req.params.id));\n  if (!item) return res.status(404).json({error:"Not found"});\n  res.json(item);\n});'},
+          {num:3, topic:'כלל אצבע', action:'ספציפי → פרמטרי → wildcard', verify:'כל URL מתאים נכון', code:'// סדר מומלץ:\n// 1. /items/heavy    ← ספציפי\n// 2. /items/:id      ← פרמטרי\n// 3. /items/*        ← wildcard (אם נדרש)'}
+         ],
+         mistakes:['/:id מוגדר לפני /special → 404 לנצח', 'שכחת Number(req.params.id) → id כ-string', '"special" נתפס כ-id → Handler לא רץ']
+        },
+        {id:'6b', num:'6.ב', title:'Query String — תמיד String! חובה Number()',
+         whatToDo:'GET /items?minPrice=50. req.query.minPrice = "50" (string!). חשבו עם Number().',
+         why:'HTTP query params הם תמיד טקסט. "50" > 30 = true (...), אבל "50" >= 30 = true בדרך לא-ינטואיטיבית. חובה Number() לחישוב אמין.',
+         steps:[
+          {num:1, topic:'הבעיה', action:'req.query.min = "10" (string). s.weight >= "10" = unexpected!', verify:'"10" >= 5 = true, "10" >= 10 = true, "10" >= 15 = false — לא כמצופה תמיד', code:'// ❌ שגוי:\napp.get("/items", (req, res) => {\n  const min = req.query.minWeight;  // "5" (string!)\n  const heavy = items.filter(i => i.weight >= min); // type coercion!\n  res.json(heavy);\n});'},
+          {num:2, topic:'הפתרון', action:'Number(req.query.minWeight) — תמיד!', verify:'"10" → 10 (number)', code:'// ✅ נכון:\napp.get("/items", (req, res) => {\n  const min = Number(req.query.minWeight) || 0;\n  const heavy = items.filter(i => i.weight >= min);\n  res.json(heavy);\n});'},
+          {num:3, topic:'multi-param', action:'/convert?from=USD&to=EUR&amount=100', verify:'כל שלושת הפרמטרים strings', code:'app.get("/convert", (req, res) => {\n  const { from, to, amount } = req.query;\n  // כולם strings! חובה המרה:\n  const numAmount = Number(amount);\n  if (isNaN(numAmount)) return res.status(400).json({error:"amount must be a number"});\n  // ...rest of logic\n});'}
+         ],
+         mistakes:['שכחת Number() — חישוב עם string', 'חלוקה באפס: toRate.value === 0', 'from === to — לא הגיוני להמיר לאותו מטבע', 'שכחת || 0 כ-fallback כשאין param']
+        },
+        {id:'6c', num:'6.ג', title:'Enum Validation — סט ערכים מותרים',
+         whatToDo:'PUT /shipments/:id/status. בדקו שה-status הוא אחד מ: pending, shipped, delivered.',
+         why:'בלי enum check — כל string יתקבל (גם "banana"). מוביל לנתונים לא עקביים ב-DB.',
+         steps:[
+          {num:1, topic:'הגדרת enum', action:'const allowed = ["pending","shipped","delivered"]', verify:'מערך קבוע מחוץ ל-handler', code:'const VALID_STATUSES = ["pending", "shipped", "delivered"];'},
+          {num:2, topic:'בדיקה', action:'if (!allowed.includes(status)) → 400', verify:'status לא חוקי → 400, לא 200', code:'app.put("/shipments/:id/status", (req, res) => {\n  const { status } = req.body;\n  if (!VALID_STATUSES.includes(status))\n    return res.status(400).json({\n      error: `status must be: ${VALID_STATUSES.join(", ")}`\n    });\n  // ...update logic\n});'},
+          {num:3, topic:'סדר הבדיקות', action:'1) מצא פריט (404), 2) בדוק enum (400), 3) עדכן', verify:'404 לפני 400 — שאלה של UX', code:'app.put("/shipments/:id/status", (req, res) => {\n  const ship = shipments.find(s => s.id === Number(req.params.id));\n  if (!ship) return res.status(404).json({error:"Not found"});\n\n  const { status } = req.body;\n  if (!VALID_STATUSES.includes(status))\n    return res.status(400).json({error:"Invalid status"});\n\n  ship.status = status;\n  res.json(ship);\n});'}
+         ],
+         mistakes:['אין enum check — כל string מתקבל', 'מחזיר 200 גם לסטטוס לא חוקי', 'שכחת 404 check לפני enum check', 'שכחת Number(req.params.id) — string vs number comparison']
         }
        ]
       }
