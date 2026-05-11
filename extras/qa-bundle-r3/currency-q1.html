@@ -156,7 +156,7 @@
 <span class="source-badge">עמוד 18 מתוך 25 · עותק של מבחן מחשבון המרה.docx — Currency Exchange</span>
 <h1>שאלה 1: React — Currency Exchange</h1>
 <p>מבחן מחשבון המרה — כל השאלה מוצגת כאן בעמוד עצמאי: קודם נוסח מלא, אחר כך פירוק סעיפים, ואז פתרון בקוד עם הערות מרחפות.</p>
-<div class="single-actions"><a href="index.html">🏠 אינדקס כל השאלות</a><a href="logistics-q2.html">← שאלה קודמת</a><a href="currency-q2.html">שאלה הבאה →</a><button onclick="window.print()">🖨 הדפס/שמור PDF</button><a class="report-link" href="qa-report.html">📊 דוח QA</a></div>
+<div class="single-actions"><a href="index.html">🏠 אינדקס כל השאלות</a><a href="logistics-q3.html">← שאלה קודמת</a><a href="currency-q2.html">שאלה הבאה →</a><button onclick="window.print()">🖨 הדפס/שמור PDF</button><a class="report-link" href="qa-report.html">📊 דוח QA</a></div>
 </header><div class="qa-banner"><b>גרסת QA מתוקנת:</b> פירוק הסעיפים עודכן כך שכל סעיף אומר מה עושים, למה עושים ומה בודקים. שורות הקוד נעטפות ונגישות גם במקלדת.</div><div class="round2-banner" id="qa-round2"><b>סבב בדיקות 2:</b><ul><li>נבדקו שוב קישורים, עוגנים, CSS, ניווט בין 25 השאלות ומבנה HTML.</li><li>נוספו כפתורי העתקה לבלוקי קוד, קישור דילוג לנגישות, והסברי שורות גלויים גם בהדפסה/PDF.</li><li>נבדק שכל עמוד מכיל נוסח שאלה, פירוק סעיפים, ניתוח, פתרון מלא וטעויות נפוצות.</li></ul></div>
 <div class="round3-banner"><b>סבב בדיקות 3:</b> נבדק תוכן מול חומרי המבחן, נוספה טבלת כיסוי סעיף־סעיף, ונוסף סדר פתרון לפי קבצים: בלוקים קטנים → קובץ מלא → מעבר לקובץ הבא.</div>
 <div class="page-grid" id="main-content">
@@ -179,8 +179,10 @@
 <a class="rail-link" href="bank-q3.html"><b>מועד ב Frontend — SV Bank — שאלה 3</b><small>Express — שמירת טקסט לקובץ</small></a>
 <a class="rail-link" href="logistics-q1.html"><b>מבחן מחסן לוגיסטי — שאלה 1</b><small>React — Logistics Management</small></a>
 <a class="rail-link" href="logistics-q2.html"><b>מבחן מחסן לוגיסטי — שאלה 2</b><small>JavaScript — בינארי לדצימלי ואז פלינדרום</small></a>
+<a class="rail-link" href="logistics-q3.html"><b>מבחן מחסן לוגיסטי — שאלה 3</b><small>Express — API הזמנות משלוח</small></a>
 <a class="rail-link current" href="currency-q1.html"><b>מבחן מחשבון המרה — שאלה 1</b><small>React — Currency Exchange</small></a>
 <a class="rail-link" href="currency-q2.html"><b>מבחן מחשבון המרה — שאלה 2</b><small>JavaScript — מיקום ערך בסדרת פיבונאצ׳י מותאמת</small></a>
+<a class="rail-link" href="currency-q3.html"><b>מבחן מחשבון המרה — שאלה 3</b><small>Express — שרת תעריפי מטבע</small></a>
 <a class="rail-link" href="willing-q1.html"><b>פולסטאק מועד ב 2022 — Willing App — שאלה 1</b><small>React — Willing App</small></a>
 <a class="rail-link" href="willing-q2.html"><b>פולסטאק מועד ב 2022 — Willing App — שאלה 2</b><small>JavaScript — ספירת זוגיים/אי זוגיים ייחודיים</small></a>
 <a class="rail-link" href="willing-q3.html"><b>פולסטאק מועד ב 2022 — Willing App — שאלה 3</b><small>Server — קורסים ב-MongoDB</small></a>
@@ -347,7 +349,7 @@ UPDATE
 <h3>⚠️ טעויות מורחבות שלא ליפול בהן</h3>
 <ul><li>Start לא לחיץ עד שיש From, To וסכום.</li><li>עדכון מטבע קיים לא יוצר כפילות אלא מחליף ערך.</li><li>המרה נשמרת ברשימה ומחיקה מעדכנת את המספור.</li><li>לא לשנות מערך/אובייקט state ישירות. תמיד ליצור עותק עם spread או map/filter.</li><li>לא לשכוח value/onChange בכל input אם הוא controlled component.</li><li>checkbox צריך checked ולא value; select צריך value מתאים.</li><li>מספרים שמגיעים מ-input הם מחרוזות — להמיר עם Number לפני חישוב/בדיקה.</li><li>לא לנווט לפני שהוולידציות עברו; navigate רק בסוף פעולה תקינה.</li><li>ב-map חייבים key יציב לכל כרטיס/שורה.</li><li>לא להציג כפתורי ניווט למשתמש לא מחובר אם הדרישה אומרת לחסום.</li><li>לא לשכוח להחזיר JSX אחד עוטף בכל קומפוננטה.</li><li>לא לשכוח להתאים route/path בדיוק לדרישה: /add, /edit, /history וכו׳.</li><li>אם יש חיפוש חלקי — להשתמש ב-includes על lowercase כדי לא להיכשל בגלל אותיות גדולות/קטנות.</li><li>כשיש עריכה — לוודא שהטופס נטען מהאובייקט הנבחר ולא נשאר ריק.</li><li>בעיצוב: קודם פונקציונליות, אחר כך CSS; לא לאבד נקודות על לוגיקה בגלל עיצוב מוקדם.</li></ul>
 </section>
-<div class="single-actions" style="justify-content:center;margin-top:24px"><a href="index.html">🏠 חזרה לאינדקס</a><a href="logistics-q2.html">← שאלה קודמת</a><a href="currency-q2.html">שאלה הבאה →</a></div>
+<div class="single-actions" style="justify-content:center;margin-top:24px"><a href="index.html">🏠 חזרה לאינדקס</a><a href="logistics-q3.html">← שאלה קודמת</a><a href="currency-q2.html">שאלה הבאה →</a></div>
 </main>
 </div>
 </div>
