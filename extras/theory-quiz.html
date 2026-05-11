@@ -115,7 +115,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 <body>
 <div class="hero">
   <h1>🧠 Theory Quiz — שאלות תאוריה</h1>
-  <p>38 פלאש-קארד לחזרה על תאוריה — HTTP, MongoDB, React, JS, Express, Node. לחץ על הכרטיס לגלות תשובה.</p>
+  <p>43 פלאש-קארד לחזרה על תאוריה — HTTP, MongoDB, React, JS, Express, Node. לחץ על הכרטיס לגלות תשובה.</p>
 </div>
 
 <div class="toolbar">
@@ -582,7 +582,95 @@ class TextFilePackage {<br>
 <li>SEO חלש (אין HTML לbots)</li>
 <li>טעינה ראשונית איטית</li>
 </ul>
-<b>React = SPA</b>. React Router מחקה ניווט בין "דפים".`}
+<b>React = SPA</b>. React Router מחקה ניווט בין "דפים".`},
+
+// ─── 5 NEW — Exam-specific patterns ──────────────────────────────────────────
+{id:"js-set-data",cat:"js",q:"מה זה Set ב-JavaScript? מה ההבדל מ-Array? איך סופרים ייחודיים?",
+ a:`<b>Set</b> = אוסף ערכים <b>ייחודיים</b> (אין כפילויות אוטומטית).<br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">const s = new Set([1,2,2,3,3,3]);
+s.size;           // 3 ← לא .length!
+s.has(2);         // true
+s.add(4);         // מוסיף
+s.delete(1);      // מוחק
+[...s];           // [2,3,4] ← המרה ל-Array</pre>
+<b>ספירת ייחודיים (willing-q2):</b>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">const evens = new Set(), odds = new Set();
+for(const n of arr){
+  if(n%2===0) evens.add(n);
+  else odds.add(n);
+}
+return {evens:evens.size, odds:odds.size};</pre>
+⚠ <b>Set.size</b> ולא Set.length (length = undefined)!`},
+
+{id:"react-useNavigate",cat:"react",q:"איך ניווט תכנותי ב-React Router? מה useNavigate?",
+ a:`<b>useNavigate</b> — hook לניווט מקוד (לא קישור).<br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">import { useNavigate } from 'react-router-dom';
+
+function LoginForm({ onLogin }) {
+  const navigate = useNavigate();
+
+  function handleSubmit() {
+    // ... בדיקת פרטים ...
+    onLogin(user);
+    navigate('/dashboard');   // ← ניווט
+    navigate(-1);             // ← חזרה
+    navigate('/page', { replace: true }); // ← replace history
+  }
+}</pre>
+<b>vs Link:</b> Link = לחיצת משתמש. navigate = קוד אחרי אירוע (login, submit, delete).<br>
+שתיהן ב-<code>react-router-dom</code>.`},
+
+{id:"js-bubble-sort",cat:"js",q:"כיצד ממיינים מספרים ב-Bubble Sort (ללא .sort())? — bank-q2",
+ a:`<b>Bubble Sort</b> — ב-bank-q2 אסור להשתמש ב-.sort().<br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">// מיון ספרות של מספר:
+let digits = String(n).split('').map(Number);
+
+for(let i = 0; i < digits.length; i++) {
+  for(let j = 0; j < digits.length - i - 1; j++) {
+    if(digits[j] > digits[j+1]) {
+      // Swap — ES6 destructuring:
+      [digits[j], digits[j+1]] = [digits[j+1], digits[j]];
+    }
+  }
+}
+return parseInt(digits.join(''));</pre>
+<b>מהו Bubble Sort?</b> כל סיבוב "בועה" הערך הגדול לסוף. O(n²).<br>
+<b>Inner loop</b>: עד length-i-1 (הסוף כבר ממוין).<br>
+<b>⚠ parseInt</b> ולא Number להמרה חזרה.`},
+
+{id:"express-number-query",cat:"express",q:"כיצד מקבלים מספרים מ-req.query? מה הבעיה עם ברירת המחדל?",
+ a:`<b>req.query</b> — כל ערך מגיע כ-<b>String</b> (לא מספר)!<br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">// GET /games?year=2020&price=50
+req.query.year        // "2020" ← String!
+req.query.year > 2019 // true (coercion)... אבל
+req.query.year === 2020 // false!
+
+// ✅ פתרון — המרה מפורשת:
+const year = Number(req.query.year);
+const price = parseFloat(req.query.price);
+
+// ✅ עם ברירת מחדל:
+const minPrice = req.query.min ? Number(req.query.min) : 0;</pre>
+<b>req.params</b> — גם String (מ-URL path).<br>
+<b>req.body</b> — כבר parsed ע"י express.json() (לפי מה שנשלח).`},
+
+{id:"react-spread-state",cat:"react",q:"מה pattern הוספה לרשימה ב-React state? למה לא .push()?",
+ a:`<b>אסור לשנות state ישירות</b> (mutation). React לא מזהה שינויים!<br><br>
+<pre style="background:#0f172a;color:#e2e8f0;padding:8px;border-radius:6px;font-size:12px">// ❌ שגוי — mutation:
+users.push(newUser);        // React לא מרנדר
+setUsers(users);            // state = אותו ref
+
+// ✅ נכון — spread operator:
+setUsers(prev => [...prev, newUser]);  // מערך חדש
+
+// ✅ עדכון item:
+setUsers(prev => prev.map(u =>
+  u.id === id ? {...u, name: newName} : u
+));
+
+// ✅ מחיקה:
+setUsers(prev => prev.filter(u => u.id !== id));</pre>
+<b>כלל:</b> state → תמיד <b>ערך חדש</b> (לא mutation). Spread + map + filter יוצרים ערך חדש.`}
 ];
 
 // ─── State ──────────────────────────────────────────────────────────────────
