@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="📋 דף רמז מבחן — כל 9 המבחנים בדף אחד — פורטל הכנה למבחן Fullstack">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📋 דף רמז מבחן — כל 9 המבחנים</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--brand:#7c3aed;--gold:#facc15;--green:#16a34a;--blue:#2563eb;--red:#dc2626;--orange:#f97316;--shadow:4px 4px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:22px 24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(20px,4vw,32px);margin:0}
+.hero p{color:#dbeafe;font-size:13px;margin:5px 0 0}
+
+/* Controls bar */
+.controls{background:#fff;border-bottom:3px solid #000;padding:12px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:50}
+.ctrl-select{padding:8px 14px;border:2.5px solid #000;border-radius:10px;font:inherit;font-weight:800;font-size:13px;background:#fff;box-shadow:2px 2px 0 #000;cursor:pointer}
+.ctrl-btn{padding:8px 16px;border:2.5px solid #000;border-radius:10px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;box-shadow:2px 2px 0 #000;transition:.15s;display:flex;align-items:center;gap:6px}
+.ctrl-btn:hover{transform:translateY(-1px);box-shadow:3px 3px 0 #000}
+.ctrl-btn.print{background:var(--brand);color:#fff}
+.ctrl-btn.all{background:var(--gold);color:#000}
+.ctrl-label{font-weight:800;font-size:13px;color:#475569}
+
+/* Main layout */
+.main{max-width:1200px;margin:0 auto;padding:20px 16px}
+
+/* Exam sheet */
+.exam-sheet{background:#fff;border:3px solid #000;border-radius:16px;margin-bottom:20px;overflow:hidden;box-shadow:var(--shadow)}
+.exam-sheet.hidden{display:none}
+.exam-head{padding:14px 20px;background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;display:flex;align-items:center;gap:12px;font-weight:900;font-size:18px;border-bottom:3px solid #000}
+.exam-head .pts{margin-right:auto;font-size:13px;color:var(--gold);font-weight:900}
+.exam-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0}
+
+/* Q columns */
+.q-col{padding:16px;border-right:2px solid #e2e8f0}
+.q-col:last-child{border-right:none}
+.q-type{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border:2px solid #000;border-radius:6px;font-weight:900;font-size:11px;margin-bottom:10px;box-shadow:1px 1px 0 #000}
+.q-type.react{background:#dbeafe;color:#1e40af}
+.q-type.js{background:#fef9c3;color:#854d0e}
+.q-type.express{background:#d1fae5;color:#065f46}
+.q-type.theory{background:#fce7f3;color:#9d174d}
+.q-title{font-weight:900;font-size:13px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px dashed #e2e8f0}
+
+/* Section label */
+.sec{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin:8px 0 4px;display:flex;align-items:center;gap:4px}
+.sec::after{content:'';flex:1;height:1px;background:#e2e8f0}
+
+/* Items */
+.item{font-size:12px;font-weight:600;padding:3px 0;display:flex;align-items:flex-start;gap:5px;line-height:1.45}
+.item::before{content:'·';font-weight:900;color:#94a3b8;margin-top:0;flex-shrink:0}
+.item.critical{color:var(--red)}
+.item.critical::before{content:'⚠';color:var(--red)}
+.item.good::before{content:'✦';color:var(--brand)}
+
+/* Regex chips */
+.regex{font-family:Consolas,'Courier New',monospace;font-size:10.5px;background:#f1f5f9;border:1.5px solid #cbd5e1;border-radius:4px;padding:1px 5px;color:#1e293b;word-break:break-all;cursor:copy;transition:.15s;display:inline-block}
+.regex:hover{background:#dbeafe;border-color:#93c5fd}
+
+/* Code snippet */
+.code-snip{font-family:Consolas,'Courier New',monospace;font-size:11px;background:#0f172a;color:#e2e8f0;border-radius:8px;padding:8px 10px;margin:4px 0;overflow-x:auto;border:2px solid #334155;line-height:1.5}
+.code-snip .hl{color:var(--gold)}
+.code-snip .cm{color:#64748b;font-style:italic}
+
+/* Bug box */
+.bug-box{background:#fef2f2;border:2px solid #fca5a5;border-radius:8px;padding:6px 8px;margin-top:8px}
+.bug-title{font-size:10px;font-weight:900;color:var(--red);margin-bottom:4px}
+
+/* Dark mode */
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--shadow:4px 4px 0 #000}
+  body{background:var(--bg)}
+  .controls{background:#1e293b;border-color:#334155}
+  .ctrl-select{background:#0f172a;color:#e2e8f0;border-color:#475569}
+  .exam-sheet{background:#1e293b;border-color:#334155}
+  .q-col{border-color:#334155}
+  .q-title{border-color:#334155}
+  .sec::after{background:#334155}
+  .regex{background:#334155;border-color:#475569;color:#e2e8f0}
+  .regex:hover{background:#1e3a5f;border-color:#3b82f6}
+  .code-snip{border-color:#334155}
+  .bug-box{background:#3b0a0a;border-color:#991b1b}
+}
+
+/* Print */
+@media print{
+  .hero,.controls{display:none}
+  body{background:#fff}
+  .exam-sheet.hidden{display:block}
+  .exam-sheet{break-inside:avoid;margin-bottom:12px;box-shadow:none;border:2px solid #000}
+  .main{padding:0;max-width:100%}
+}
+
+@media(max-width:700px){
+  .exam-body{grid-template-columns:1fr}
+  .q-col{border-right:none;border-bottom:2px solid #e2e8f0}
+  .q-col:last-child{border-bottom:none}
+}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>📋 דף רמז מבחן — כל 9 המבחנים</h1>
+  <p>כל דרישות המבחן בתצוגה מהירה: routes, state, ולידציות, אלגוריתם, endpoints. לחץ על regex להעתקה.</p>
+</div>
+
+<div class="controls">
+  <label class="ctrl-label">בחר מבחן:</label>
+  <select class="ctrl-select" id="exam-select" onchange="selectExam(this.value)">
+    <option value="all">📋 כל המבחנים</option>
+    <option value="football">⚽ Football Club</option>
+    <option value="parking">🅿️ SV Parking</option>
+    <option value="flights">✈️ בקרת טיסות</option>
+    <option value="helpme">🚨 HelpMe</option>
+    <option value="bank">🏦 SV Bank</option>
+    <option value="logistics">🚚 SV Logistics</option>
+    <option value="currency">💱 Currency Exchange</option>
+    <option value="willing">🤝 Willing</option>
+    <option value="travel">✈ Travel</option>
+  </select>
+  <button class="ctrl-btn all" onclick="selectExam('all')">📋 הכל</button>
+  <button class="ctrl-btn print" onclick="window.print()">🖨 הדפס</button>
+</div>
+
+<div class="main" id="main"></div>
+
+<script>
+function copyText(text) {
+  navigator.clipboard.writeText(text).catch(()=>{});
+}
+
+const EXAMS = [
+{
+  id:'football', icon:'⚽', title:'Football Club', totalPts:100,
+  q1:{
+    type:'react', pts:50, title:'React App — ניהול קבוצות כדורגל',
+    routes:[
+      {path:'/',label:'Login + Register (conditional)'},
+      {path:'/team/:teamName',label:'רשימת שחקנים + חיפוש + Add'},
+      {path:'/team/:name/edit/:id',label:'עריכת שחקן ספציפי'}
+    ],
+    state:['users[] — localStorage','currentUser — null / object','teams{} — {teamName:[players]} — localStorage','errors{} ב-RegisterForm'],
+    validations:[
+      {field:'teamName',rule:'אנגלית בלבד, Title Case',regex:'/^[A-Z][a-z]*(\\s[A-Z][a-z]*)*$/'},
+      {field:'password',rule:'8-20 תווים, UPPER+lower+digit+special',regex:'/^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,20}$/'},
+      {field:'confirm',rule:'חייב להיות שווה ל-password',regex:''}
+    ],
+    bugs:['ולידציה לא מנקה שגיאות ב-onChange','חסר key ב-map שחקנים','EditPlayer לא טוען ערכים מראש']
+  },
+  q2:{
+    type:'js', pts:25, title:'JS — סכום לפי אורך מספר',
+    steps:['Array.isArray validation','for...of loop','Math.abs(n) ← שלילי!','String(Math.abs(n)).length','result[len]=(result[len]||0)+n','return result'],
+    code:`const len = String(Math.abs(n)).length;
+result[len] = (result[len] || 0) + n;`,
+    bugs:['לא Math.abs ← שלילי נחשב 2 ספרות','לא || 0 ← NaN']
+  },
+  q3:{
+    type:'express', pts:25, title:'Express — שרת משחקי מחשב',
+    routes:['GET /games — הכל','GET /games/:id — בודד','POST /games → 201','POST /games/filter — AND logic'],
+    data:'games[] בזיכרון',
+    key:'filter: if(name!==undefined) → .filter()',
+    bugs:['חסר express.json()','חסר status 201 ב-POST','OR במקום AND בfiltter']
+  }
+},{
+  id:'parking', icon:'🅿️', title:'SV Parking', totalPts:100,
+  q1:{
+    type:'react', pts:50, title:'React App — מערכת חנייה',
+    routes:[
+      {path:'/',label:'Login'},
+      {path:'/signup',label:'הרשמה'},
+      {path:'/choose-parking',label:'בחירת עיר + מספר רכב'},
+      {path:'/active-parking',label:'טיימר פעיל + עלות'},
+      {path:'/history',label:'היסטוריית חנייות'}
+    ],
+    state:['users[] — localStorage','currentUser','cities[] — רשימת ערים','parkings[] — היסטוריה — localStorage','seconds — לsetInterval','isRunning'],
+    validations:[
+      {field:'carNumber',rule:'בדיוק 7 ספרות',regex:'/^\\d{7}$/'},
+      {field:'password',rule:'מינימום 6 תווים',regex:'/^.{6,}$/'},
+      {field:'confirmPassword',rule:'שווה ל-password',regex:''}
+    ],
+    bugs:['prev=>prev+1 ולא seconds+1 ב-setInterval','חסר clearInterval ב-useEffect cleanup']
+  },
+  q2:{
+    type:'js', pts:25, title:'JS — ספירת תת-רצפים עוקבים',
+    steps:['for i → outer loop','for j>i → inner loop עם sum','sum+=arr[j]','if(sum===target) count++','return count'],
+    code:`for(let i=0;i<arr.length;i++){
+  let sum=0;
+  for(let j=i;j<arr.length;j++){
+    sum+=arr[j];
+    if(sum===target) count++;
+  }
+}`,
+    bugs:['לא מתחיל sum=0 בכל i','j=i ולא j=i+1 (תת-רצף יכול להיות אורך 1)']
+  },
+  q3:{
+    type:'express', pts:25, title:'Express + MongoDB — שרת חנייה',
+    routes:['POST /add — הוסף עובד','GET /low-salary — שכר נמוך מ-8000','POST /add-or-update — upsert לפי id'],
+    data:'MongoDB (Mongoose) — Employee collection',
+    key:'findOneAndUpdate({_id}, update, {upsert:true, new:true})',
+    bugs:['חסר express.json()','upsert:true חסר','חסר mongoose.connect']
+  }
+},{
+  id:'flights', icon:'✈️', title:'בקרת טיסות', totalPts:100,
+  q1:{
+    type:'react', pts:50, title:'React App — בקרת טיסות',
+    routes:[
+      {path:'/',label:'Login (סיסמה קבועה: 12345)'},
+      {path:'/control-panel',label:'לוח בקרה — רשימת טיסות + add + מיון'},
+      {path:'/all-flights',label:'כל הטיסות (ציבורי)'},
+      {path:'/add-flight',label:'הוספת טיסה (מנהל בלבד)'}
+    ],
+    state:['isLoggedIn — boolean','flights[] — localStorage','sortOrder — asc/desc'],
+    validations:[
+      {field:'password',rule:'בדיוק "12345" (קבועה)',regex:'password === "12345"'}
+    ],
+    bugs:['password === "12345" ולא DB','חסר protected route ל-/add-flight','מיון לא שומר סדר ב-localStorage']
+  },
+  q2:{
+    type:'js', pts:25, title:'JS — ספירת ערכים במטריצה',
+    steps:['for i (שורות)','for j (עמודות)','if(matrix[i][j]===value) count++','return count'],
+    code:`function countInMatrix(matrix, value) {
+  let count = 0;
+  for(let i=0;i<matrix.length;i++)
+    for(let j=0;j<matrix[i].length;j++)
+      if(matrix[i][j]===value) count++;
+  return count;
+}`,
+    bugs:['=== ולא == (type coercion)','לא בודק if(Array.isArray(matrix))']
+  },
+  q3:{
+    type:'express', pts:25, title:'Express + MongoDB — שרת תלמידים',
+    routes:['GET /students','POST /students → 201','PUT /students/:id','DELETE /students/:id'],
+    data:'MongoDB — Student collection (name, grade, city)',
+    key:'CRUD מלא עם Mongoose: find, create, findByIdAndUpdate, findByIdAndDelete',
+    bugs:['חסר express.json()','findByIdAndUpdate בלי {new:true}','חסר 201 ב-create']
+  }
+},{
+  id:'helpme', icon:'🚨', title:'HelpMe', totalPts:125,
+  q1:{
+    type:'react', pts:75, title:'React App — מרכזי עזרה',
+    routes:[
+      {path:'/',label:'Register'},
+      {path:'/home',label:'Home — בחר מרכז עזרה'},
+      {path:'/centers',label:'Centers — רשימת מרכזים + toggle activation'}
+    ],
+    state:['user{name,phone,city,password}','selectedCenter','centersList[]','isActive — boolean'],
+    validations:[
+      {field:'name',rule:'מינימום 2 תווים',regex:'/^.{2,}$/'},
+      {field:'phone',rule:'בדיוק 10 ספרות, מתחיל ב-05',regex:'/^05\\d{8}$/'},
+      {field:'password',rule:'מינימום 6 תווים',regex:'/^.{6,}$/'}
+    ],
+    bugs:['toggle activation לא מתעדכן ב-state','חסר ניקוי שגיאות ב-onChange']
+  },
+  q2:{
+    type:'js', pts:25, title:'JS — זיהוי סדרה חשבונית / הנדסית',
+    steps:['חשב diff = arr[1]-arr[0] (חשבונית)','חשב ratio = arr[1]/arr[0] (הנדסית)','לולאה: אם כל ההפרשים שווים → "arithmetic"','אם כל היחסים שווים → "geometric"','אחרת → "none"'],
+    code:`const diff=arr[1]-arr[0];
+const ratio=arr[1]/arr[0];
+const isArith=arr.every((_,i)=>i===0||arr[i]-arr[i-1]===diff);
+const isGeo=arr.every((_,i)=>i===0||arr[i]/arr[i-1]===ratio);
+return isArith?"arithmetic":isGeo?"geometric":"none";`,
+    bugs:['floating point: 0.1+0.2!==0.3 → Math.abs(a-b)<0.001','arr.length<2 edge case']
+  },
+  q3:{
+    type:'theory', pts:25, title:'תאוריה — HTTP, MongoDB, React',
+    routes:['HTTP: GET/POST/PUT/DELETE + status codes','MongoDB: document, collection, $gt, $lt, upsert','React: Virtual DOM, useState, useEffect, controlled'],
+    data:'אין DB/קוד — תשובות מילוליות',
+    key:'200=OK, 201=Created, 400=Bad Request, 404=Not Found, 500=Server Error',
+    bugs:['PUT != PATCH (PUT מחליף כל המסמך)','201 ב-POST ולא 200']
+  }
+},{
+  id:'bank', icon:'🏦', title:'SV Bank', totalPts:100,
+  q1:{
+    type:'react', pts:65, title:'React App — בנק',
+    routes:[
+      {path:'/',label:'Login (admin password קבועה / user)'},
+      {path:'/register',label:'הרשמת לקוח'},
+      {path:'/client/:id',label:'דף לקוח — יתרה + פעולות'},
+      {path:'/manager',label:'דף מנהל — כל הלקוחות (protected)'}
+    ],
+    state:['users[] — localStorage','accounts{} — {userId:{balance, transactions[]}}','currentUser'],
+    validations:[
+      {field:'adminPassword',rule:'קבועה: "admin123"',regex:'password === "admin123"'},
+      {field:'amount',rule:'מספר חיובי',regex:'amount > 0'},
+      {field:'username',rule:'לא קיים כבר',regex:'!users.find(u=>u.username===input)'}
+    ],
+    bugs:['manager route לא מוגן','amount לא מומר ל-Number','חסר unique username check']
+  },
+  q2:{
+    type:'js', pts:20, title:'JS — מיון ספרות ללא .sort()',
+    steps:['המר מספר למחרוזת','המר לarray של ספרות','Bubble sort: for i, for j, swap','הצג כמספר עם parseInt'],
+    code:`let digits = String(n).split('').map(Number);
+for(let i=0;i<digits.length;i++)
+  for(let j=0;j<digits.length-i-1;j++)
+    if(digits[j]>digits[j+1])
+      [digits[j],digits[j+1]]=[digits[j+1],digits[j]];
+return parseInt(digits.join(''));`,
+    bugs:['שימוש ב-.sort() — לא מותר!','לא מחזיר מספר (parseInt)','מספרים שליליים']
+  },
+  q3:{
+    type:'express', pts:15, title:'Express + fs — שמירה לקובץ',
+    routes:['POST /save — הוסף שורה לfile.txt','GET /read — קרא כל הקובץ'],
+    data:'file.txt — שורות טקסט',
+    key:'fs.appendFile(path, data+"\\n", cb) — לא writeFile!',
+    bugs:['writeFile מוחק הכל! → appendFile','חסר \\n בסוף כל שורה','חסר error handling']
+  }
+},{
+  id:'logistics', icon:'🚚', title:'SV Logistics', totalPts:100,
+  q1:{
+    type:'react', pts:50, title:'React App — ניהול עובדים ומוצרים',
+    routes:[
+      {path:'/',label:'Auth — workerId (5 ספרות) + fullName (4+ תווים)'},
+      {path:'/welcome/:workerId',label:'ברוך הבא + nav'},
+      {path:'/products',label:'רשימת מוצרים + הוספה'}
+    ],
+    state:['workers[] — localStorage','products[] — localStorage','currentWorker'],
+    validations:[
+      {field:'workerId',rule:'בדיוק 5 ספרות',regex:'/^\\d{5}$/'},
+      {field:'fullName',rule:'מינימום 4 תווים',regex:'/^.{4,}$/'},
+      {field:'license',rule:'בדיקה אם workerId קיים ב-workers[]',regex:'workers.find(w=>w.id===id)'}
+    ],
+    bugs:['workerId לא ייחודי בהרשמה','products לא נשמרים ל-localStorage']
+  },
+  q2:{
+    type:'js', pts:25, title:'JS — בינארי לעשרוני + פלינדרום',
+    steps:['parseInt(binaryStr, 2) → decimal','String(decimal) → check palindrome','str === str.split("").reverse().join("")'],
+    code:`const decimal = parseInt(binaryStr, 2);
+const str = String(decimal);
+const isPalindrome = str === str.split('').reverse().join('');
+return { decimal, isPalindrome };`,
+    bugs:['parseInt בלי 2 → לא בינארי','חסר {decimal, isPalindrome} return']
+  },
+  q3:{
+    type:'express', pts:25, title:'Express + MongoDB — שרת חנייה (upsert)',
+    routes:['POST /add','GET /low-salary','POST /add-or-update (upsert)'],
+    data:'MongoDB — Employee collection',
+    key:'findOneAndUpdate(filter, update, {upsert:true, new:true})',
+    bugs:['upsert:true חסר','חסר new:true → מחזיר ישן']
+  }
+},{
+  id:'currency', icon:'💱', title:'Currency Exchange', totalPts:100,
+  q1:{
+    type:'react', pts:50, title:'React App — מחשבון המרה',
+    routes:[
+      {path:'/',label:'Calculator — בחר מטבע + כמות'},
+      {path:'/list',label:'Exchange List — היסטוריית המרות'},
+      {path:'/update',label:'Update Currency — ערכי מטבע (admin)'}
+    ],
+    state:['currencies[] — {type, value}','exchanges[] — היסטוריה'],
+    validations:[
+      {field:'type',rule:'אנגלית בלבד',regex:'/^[a-zA-Z]+$/'},
+      {field:'value',rule:'מספר חיובי',regex:'Number(value)>0'},
+      {field:'amount',rule:'כל השדות מלאים לפני המרה',regex:'amount && fromCurrency && toCurrency'}
+    ],
+    bugs:['חסר ולידציה שהשדות מלאים לפני המרה','חסר history של exchanges']
+  },
+  q2:{
+    type:'js', pts:25, title:'JS — מיקום בסדרת פיבונאצ׳י שינויים',
+    steps:['בנה סדרה עד שמוצא N','a=1,b=1 → sum=a+b, a=b, b=sum','ספור מיקום','החזר מיקום (0-based או 1-based לפי דרישה)'],
+    code:`function fibPosition(n) {
+  let a=1,b=1,pos=2;
+  while(b<n){ let s=a+b; a=b; b=s; pos++; }
+  return b===n ? pos : -1;
+}`,
+    bugs:['מיקום 0-based vs 1-based','n=1 edge case']
+  },
+  q3:{
+    type:'express', pts:25, title:'Express + MongoDB — currencies',
+    routes:['GET /currencies','POST /currencies → 201','PUT /currencies/:type','DELETE /currencies/:type'],
+    data:'MongoDB — Currency collection',
+    key:'CRUD עם findOne, create, findOneAndUpdate, findOneAndDelete',
+    bugs:['חסר express.json()','findOneAndUpdate בלי {new:true}']
+  }
+},{
+  id:'willing', icon:'🤝', title:'Willing', totalPts:100,
+  q1:{
+    type:'react', pts:50, title:'React App — פלטפורמת התנדבות',
+    routes:[
+      {path:'/',label:'Home — רשימת עיר + סינון + toggle'},
+      {path:'/add',label:'Add Volunteering — הוסף'},
+      {path:'/find',label:'Find — חיפוש לפי עיר'},
+      {path:'/all',label:'All — כל ההתנדבויות'}
+    ],
+    state:['volunteerings[] — localStorage','selectedCity — string'],
+    validations:[
+      {field:'city',rule:'select מרשימה קבועה',regex:''},
+      {field:'toggle',rule:'שינוי isActive של התנדבות',regex:'v.id===id?{...v,isActive:!v.isActive}:v'}
+    ],
+    bugs:['toggle לא עושה spread (מאבד שדות)','confirm לפני מחיקה חסר']
+  },
+  q2:{
+    type:'js', pts:25, title:'JS — ספירת ייחודיים זוגיים ואי-זוגיים',
+    steps:['Set לזוגיים: if(n%2===0) evens.add(n)','Set לאי-זוגיים: if(n%2!==0) odds.add(n)','return {evens:evens.size, odds:odds.size}'],
+    code:`function countUnique(arr) {
+  const evens = new Set(), odds = new Set();
+  for(const n of arr){
+    if(n%2===0) evens.add(n);
+    else odds.add(n);
+  }
+  return {evens:evens.size, odds:odds.size};
+}`,
+    bugs:['Set.size ולא Set.length','n%2===0 לזוגי (לא !==0)']
+  },
+  q3:{
+    type:'express', pts:25, title:'Express + MongoDB — Courses',
+    routes:['GET /courses','POST /courses → 201','PUT /courses/:id','DELETE /courses/:id'],
+    data:'MongoDB — Course collection',
+    key:'CRUD מלא. PUT: findByIdAndUpdate + {new:true}',
+    bugs:['חסר express.json()','חסר mongoose.connect']
+  }
+},{
+  id:'travel', icon:'✈', title:'Travel', totalPts:100,
+  q1:{
+    type:'react', pts:50, title:'React App — מסלולי טיול',
+    routes:[
+      {path:'/',label:'SignIn — פרטים קבועים: svcollege/abcde'},
+      {path:'/home',label:'Home — רשימת מסלולים'},
+      {path:'/add',label:'Add Travel — הוסף מסלול'},
+      {path:'/update',label:'Update Travel — עדכן'}
+    ],
+    state:['isLoggedIn','travels[] — localStorage','navDisabled — עד Login'],
+    validations:[
+      {field:'username',rule:'בדיוק "svcollege"',regex:'username === "svcollege"'},
+      {field:'password',rule:'בדיוק "abcde"',regex:'password === "abcde"'},
+      {field:'navLinks',rule:'disabled עד כניסה',regex:'style={{pointerEvents:isLoggedIn?"":"none"}}'}
+    ],
+    bugs:['nav links לא disabled לפני login','קבועים לא מוגדרים כ-const מחוץ לcomponent']
+  },
+  q2:{
+    type:'js', pts:25, title:'JS — בדיקה אם תת-מערך בסדר',
+    steps:['pointer=0','for...of על arr','if(item===subArr[pointer]) pointer++','if(pointer===subArr.length) return true','return false'],
+    code:`function isSubArrayInOrder(arr, subArr) {
+  let pointer = 0;
+  for(const item of arr) {
+    if(item === subArr[pointer]) pointer++;
+    if(pointer === subArr.length) return true;
+  }
+  return false;
+}`,
+    bugs:['pointer לא 0','השוואה עם == ולא ===','מחזיר true לפני שמצא הכל']
+  },
+  q3:{
+    type:'express', pts:25, title:'Node.js — class TextFilePackage',
+    routes:['class TextFilePackage { constructor(path) }','addItem(text)','getAllItems()','searchByText(keyword)'],
+    data:'fs.promises.appendFile / readFile / writeFile',
+    key:'class עם async methods + fs.promises (לא callback)',
+    bugs:['appendFile ולא writeFile ב-add','readFile צריך encoding "utf8"','חסר await לפני fs.promises']
+  }
+}
+];
+
+function renderExam(exam) {
+  function renderQ1() {
+    const q=exam.q1;
+    let html=`<div class="q-col">
+      <div class="q-type ${q.type}">⚛ React — ${q.pts} נק׳</div>
+      <div class="q-title">${q.title}</div>
+      <div class="sec">📍 Routes</div>`;
+    q.routes.forEach(r=>{
+      html+=`<div class="item"><code>${r.path}</code> — ${r.label}</div>`;
+    });
+    html+=`<div class="sec">📦 State</div>`;
+    q.state.forEach(s=>{
+      html+=`<div class="item">${s}</div>`;
+    });
+    html+=`<div class="sec">🛡 ולידציות</div>`;
+    q.validations.forEach(v=>{
+      html+=`<div class="item critical"><b>${v.field}</b>: ${v.rule}`;
+      if(v.regex){
+        html+=`<br><span class="regex" onclick="copyText(this.textContent)" title="לחץ להעתקה">${v.regex}</span>`;
+      }
+      html+=`</div>`;
+    });
+    if(q.bugs.length){
+      html+=`<div class="bug-box"><div class="bug-title">⚠ באגים נפוצים</div>`;
+      q.bugs.forEach(b=>{ html+=`<div class="item critical">${b}</div>`; });
+      html+=`</div>`;
+    }
+    html+=`</div>`;
+    return html;
+  }
+
+  function renderQ2() {
+    const q=exam.q2;
+    let html=`<div class="q-col">
+      <div class="q-type ${q.type}">🟨 JS — ${q.pts} נק׳</div>
+      <div class="q-title">${q.title}</div>
+      <div class="sec">🔢 שלבים</div>`;
+    q.steps.forEach((s,i)=>{
+      html+=`<div class="item"><b>${i+1}.</b> ${s}</div>`;
+    });
+    if(q.code){
+      html+=`<div class="sec">💻 קוד מפתח</div>
+      <div class="code-snip">${q.code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+    }
+    if(q.bugs&&q.bugs.length){
+      html+=`<div class="bug-box"><div class="bug-title">⚠ פח! לא לשכוח</div>`;
+      q.bugs.forEach(b=>{ html+=`<div class="item critical">${b}</div>`; });
+      html+=`</div>`;
+    }
+    html+=`</div>`;
+    return html;
+  }
+
+  function renderQ3() {
+    const q=exam.q3;
+    const typeLabel=q.type==='theory'?'📖 תאוריה':q.type==='express'?'🟢 Express':'Node.js';
+    let html=`<div class="q-col">
+      <div class="q-type ${q.type}">${typeLabel} — ${q.pts} נק׳</div>
+      <div class="q-title">${q.title}</div>
+      <div class="sec">🛣 Routes / דרישות</div>`;
+    q.routes.forEach(r=>{
+      html+=`<div class="item">${r}</div>`;
+    });
+    html+=`<div class="sec">📦 Data</div>
+      <div class="item">${q.data}</div>
+      <div class="sec good">✦ נקודה קריטית</div>
+      <div class="item good">${q.key}</div>`;
+    if(q.bugs&&q.bugs.length){
+      html+=`<div class="bug-box"><div class="bug-title">⚠ באגים נפוצים</div>`;
+      q.bugs.forEach(b=>{ html+=`<div class="item critical">${b}</div>`; });
+      html+=`</div>`;
+    }
+    html+=`</div>`;
+    return html;
+  }
+
+  return `<div class="exam-sheet" data-exam="${exam.id}" id="sheet-${exam.id}">
+    <div class="exam-head">
+      <span>${exam.icon} ${exam.title}</span>
+      <span class="pts">💯 סה״כ: ${exam.totalPts} נקודות</span>
+    </div>
+    <div class="exam-body">
+      ${renderQ1()}
+      ${renderQ2()}
+      ${renderQ3()}
+    </div>
+  </div>`;
+}
+
+function render() {
+  document.getElementById('main').innerHTML = EXAMS.map(renderExam).join('');
+}
+
+function selectExam(id) {
+  document.querySelectorAll('.exam-sheet').forEach(s=>{
+    s.classList.toggle('hidden', id!=='all' && s.dataset.exam!==id);
+  });
+  document.getElementById('exam-select').value = id;
+}
+
+render();
+</script>
+<script src="nav-tree.js"></script>
+</body>
+</html>
