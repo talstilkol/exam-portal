@@ -126,9 +126,9 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 75 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 77 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
-    <span class="stat" id="stat-solved">✅ נפתרו: 0/75</span>
+    <span class="stat" id="stat-solved">✅ נפתרו: 0/77</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
   </div>
 </header>
@@ -2958,6 +2958,179 @@ module.exports = TextFilePackage;`,
     return {ok:true};
   },
   explain:"class עם constructor ששומר filepath. כל method הוא async. readFromFile: try/catch כי הקובץ עלול לא להתקיים. unlink מוחק קובץ. path.join(__dirname, filename) לנתיב מלא."
+},
+
+// ===== EXERCISE 76 =====
+{
+  id:"react-full-app-football",cat:"react",diff:"hard",
+  title:"App.js מלא — Football Club Q1 (State + Routes + localStorage)",
+  prompt:`כתבו App.js מלא לFoootball Club:
+<ul style="margin:8px 0;padding-right:18px">
+<li><b>State:</b> users[], currentUser, teams{} — טעינה מlocalStorage</li>
+<li><b>Routes:</b> /, /team/:teamName, /team/:name/edit/:id</li>
+<li><b>useEffect:</b> שמור users + teams לlocalStorage</li>
+<li><b>Props:</b> כל component מקבל את ה-state וה-setters שלו</li>
+</ul>`,
+  starterCode:`import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+function App() {
+  // 1. State — טענו מlocalStorage
+  const [users, setUsers] = useState(/* ... */);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [teams, setTeams] = useState(/* ... */);
+
+  // 2. useEffect — שמרו לlocalStorage
+
+  // 3. Return עם Routes
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* ... */}
+      </Routes>
+    </BrowserRouter>
+  );
+}`,
+  solution:`import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+function App() {
+  const [users, setUsers] = useState(
+    () => JSON.parse(localStorage.getItem('users') || '[]')
+  );
+  const [currentUser, setCurrentUser] = useState(null);
+  const [teams, setTeams] = useState(
+    () => JSON.parse(localStorage.getItem('teams') || '{}')
+  );
+
+  useEffect(() => {
+    localStorage.setItem('users', JSON.stringify(users));
+  }, [users]);
+
+  useEffect(() => {
+    localStorage.setItem('teams', JSON.stringify(teams));
+  }, [teams]);
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={
+          <LoginPage users={users} setUsers={setUsers}
+            currentUser={currentUser} setCurrentUser={setCurrentUser}
+            teams={teams} setTeams={setTeams} />
+        } />
+        <Route path="/team/:teamName" element={
+          <TeamPage currentUser={currentUser} teams={teams} setTeams={setTeams} />
+        } />
+        <Route path="/team/:name/edit/:id" element={
+          <EditPlayer teams={teams} setTeams={setTeams} />
+        } />
+      </Routes>
+    </BrowserRouter>
+  );
+}`,
+  customTest(code){
+    const checks=[
+      {re:/useState\(\s*\(\)\s*=>/,msg:'חסר initializer function ל-useState (לקריאה פעם אחת מlocalStorage)'},
+      {re:/localStorage\.getItem\(['"]users['"]/,msg:'חסר טעינת users מlocalStorage'},
+      {re:/localStorage\.getItem\(['"]teams['"]/,msg:'חסר טעינת teams מlocalStorage'},
+      {re:/useEffect/g,msg:'חסר useEffect לשמירה לlocalStorage'},
+      {re:/localStorage\.setItem/,msg:'חסר localStorage.setItem בuseEffect'},
+      {re:/BrowserRouter|Routes/,msg:'חסר BrowserRouter/Routes'},
+      {re:/\/team\/:teamName/,msg:'חסר Route "/team/:teamName"'},
+      {re:/\/team\/.*\/edit\//,msg:'חסר Route "/team/:name/edit/:id"'},
+      {re:/setCurrentUser/,msg:'חסר setCurrentUser prop'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"דפוס App.js: useState עם initializer function (מלocalStorage). שני useEffects נפרדים — אחד לusers, אחד לteams. Routes עם props מלאים לכל component."
+},
+
+// ===== EXERCISE 77 =====
+{
+  id:"react-full-app-bank",cat:"react",diff:"hard",
+  title:"App.js מלא — SV Bank Q1 (Client vs Manager Routing)",
+  prompt:`כתבו App.js לBank:
+<ul style="margin:8px 0;padding-right:18px">
+<li><b>State:</b> users[], accounts[], currentUser — מlocalStorage</li>
+<li><b>Routes:</b> /, /client/:id, /manager</li>
+<li><b>Login logic:</b> admin@bank (password מוגדר) → /manager; אחרים → /client/:id</li>
+<li><b>Protected routes:</b> redirect לRootאם לא מחובר</li>
+</ul>`,
+  starterCode:`import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+
+function App() {
+  const [users, setUsers] = useState(/* ... */);
+  const [accounts, setAccounts] = useState(/* ... */);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // useEffect לlocalStorage
+
+  // handleLogin — ניווט לפי תפקיד
+
+  return (/* Routes */);
+}`,
+  solution:`function App() {
+  const [users, setUsers] = useState(
+    () => JSON.parse(localStorage.getItem('bank-users') || '[]')
+  );
+  const [accounts, setAccounts] = useState(
+    () => JSON.parse(localStorage.getItem('bank-accounts') || '[]')
+  );
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem('bank-users', JSON.stringify(users));
+  }, [users]);
+
+  useEffect(() => {
+    localStorage.setItem('bank-accounts', JSON.stringify(accounts));
+  }, [accounts]);
+
+  const handleLogin = (user, navigate) => {
+    setCurrentUser(user);
+    if (user.role === 'manager') {
+      navigate('/manager');
+    } else {
+      navigate('/client/' + user.id);
+    }
+  };
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={
+          <LoginPage users={users} setUsers={setUsers} onLogin={handleLogin} />
+        } />
+        <Route path="/client/:id" element={
+          currentUser && currentUser.role !== 'manager'
+            ? <ClientPage user={currentUser} accounts={accounts} setAccounts={setAccounts} />
+            : <Navigate to="/" />
+        } />
+        <Route path="/manager" element={
+          currentUser?.role === 'manager'
+            ? <ManagerPage users={users} accounts={accounts} />
+            : <Navigate to="/" />
+        } />
+      </Routes>
+    </BrowserRouter>
+  );
+}`,
+  customTest(code){
+    const checks=[
+      {re:/localStorage\.getItem.*bank|localStorage\.getItem.*users/,msg:'חסר טעינה מlocalStorage'},
+      {re:/role.*===.*manager|manager.*role/,msg:'חסר בדיקת role==="manager"'},
+      {re:/\/client\/.*id/,msg:'חסר Route /client/:id'},
+      {re:/\/manager/,msg:'חסר Route /manager'},
+      {re:/Navigate.*to=["']\//,msg:'חסר <Navigate to="/"> לprotected routes'},
+      {re:/onLogin|handleLogin/,msg:'חסר handleLogin callback'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"Bank מיוחד: יש role-based routing (manager vs client). Protected routes עם Navigate redirect. handleLogin מנווט לנתיב נכון לפי role."
 }
 ];
 
@@ -2971,7 +3144,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/75`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/77`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 
