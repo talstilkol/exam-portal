@@ -126,9 +126,9 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 74 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 75 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
-    <span class="stat" id="stat-solved">✅ נפתרו: 0/74</span>
+    <span class="stat" id="stat-solved">✅ נפתרו: 0/75</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
   </div>
 </header>
@@ -2875,6 +2875,89 @@ function PlayerEdit({ teams }) {
     return {ok:true};
   },
   explain:"Pre-fill: useState מאותחל עם existing?.name || ''. הסימן ? (optional chaining) בטוח אם existing הוא null. navigate לאחר שמירה = UX טוב."
+},
+
+// ===== EXERCISE 75 =====
+{
+  id:"node-class-file-package",cat:"express",diff:"hard",
+  title:"Node.js Class עם פעולות קובץ — TextFilePackage — Travel Q3",
+  prompt:`כתבו class <code>TextFilePackage</code> ב-Node.js שמנהל קובץ טקסט:
+<ul style="margin:8px 0;padding-right:18px">
+<li><code>appendToFile(text)</code> — מוסיף שורה לקובץ</li>
+<li><code>readFromFile()</code> — מחזיר Promise עם מערך שורות</li>
+<li><code>deleteFile()</code> — מוחק את הקובץ</li>
+</ul>
+<b>constructor</b> מקבל <code>filename</code>.`,
+  starterCode:`const fs = require('fs').promises;
+const path = require('path');
+
+class TextFilePackage {
+  constructor(filename) {
+    // כתבו כאן
+  }
+
+  async appendToFile(text) {
+    // כתבו כאן
+  }
+
+  async readFromFile() {
+    // כתבו כאן
+    // מחזיר מערך שורות, [] אם הקובץ לא קיים
+  }
+
+  async deleteFile() {
+    // כתבו כאן
+  }
+}
+
+module.exports = TextFilePackage;`,
+  solution:`const fs = require('fs').promises;
+const path = require('path');
+
+class TextFilePackage {
+  constructor(filename) {
+    this.filepath = path.join(__dirname, filename);
+  }
+
+  async appendToFile(text) {
+    await fs.appendFile(this.filepath, text + '\\n', 'utf8');
+  }
+
+  async readFromFile() {
+    try {
+      const content = await fs.readFile(this.filepath, 'utf8');
+      return content.trim().split('\\n').filter(Boolean);
+    } catch (err) {
+      return [];  // קובץ לא קיים
+    }
+  }
+
+  async deleteFile() {
+    try {
+      await fs.unlink(this.filepath);
+    } catch (err) {
+      // קובץ כבר לא קיים — OK
+    }
+  }
+}
+
+module.exports = TextFilePackage;`,
+  customTest(code){
+    const checks=[
+      {re:/class\s+TextFilePackage/,msg:'חסר class TextFilePackage'},
+      {re:/constructor\s*\(filename\)/,msg:'חסר constructor(filename)'},
+      {re:/this\.filepath|this\.filename|this\.path/,msg:'חסר שמירת נתיב הקובץ ב-this'},
+      {re:/appendFile/,msg:'חסר fs.appendFile ב-appendToFile()'},
+      {re:/readFile/,msg:'חסר fs.readFile ב-readFromFile()'},
+      {re:/unlink/,msg:'חסר fs.unlink ב-deleteFile()'},
+      {re:/split\(['"`]\\n['"`]\)/,msg:'חסר .split("\\n") ב-readFromFile()'},
+      {re:/catch|try/,msg:'חסר try/catch לטיפול בשגיאות (קובץ לא קיים)'},
+      {re:/module\.exports/,msg:'חסר module.exports'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"class עם constructor ששומר filepath. כל method הוא async. readFromFile: try/catch כי הקובץ עלול לא להתקיים. unlink מוחק קובץ. path.join(__dirname, filename) לנתיב מלא."
 }
 ];
 
@@ -2888,7 +2971,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/74`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/75`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 
