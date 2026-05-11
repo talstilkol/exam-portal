@@ -232,6 +232,22 @@ const TOOLS = [
       const done = Array.isArray(known) ? known.length : 0;
       return { done, total, items: null };
     }
+  },
+  {
+    id: 'exam-mock',
+    name: 'מדמה מבחן',
+    icon: '🎯',
+    color: '#ec4899',
+    link: 'exam-mock.html',
+    getProgress() {
+      const examIds = ['football','parking','flights','helpme','bank','logistics','currency','willing','travel'];
+      const total = 9;
+      const done = examIds.filter(id => {
+        const data = _lsGet('mock-checked-'+id, {});
+        return Object.keys(data).length > 0;
+      }).length;
+      return { done, total, items: null };
+    }
   }
 ];
 
@@ -293,7 +309,10 @@ function render() {
 
 function resetAll() {
   if (!confirm('האם אתה בטוח? כל ההתקדמות תימחק.')) return;
-  ['cm-checked', 'pb-solved', 'sim-progress', 'fc-visited', 'cb-viewed', 'fg-visited', 'sd-viewed', 'es-checklist', 'ek-viewed', 'dw-completed', 'df-viewed', 'tq-known', 'tq-dnk'].forEach(k => localStorage.removeItem(k));
+  ['cm-checked', 'pb-solved', 'sim-progress', 'fc-visited', 'cb-viewed', 'fg-visited', 'sd-viewed', 'es-checklist', 'ek-viewed', 'dw-completed', 'df-viewed', 'tq-known', 'tq-dnk',
+   'mock-checked-football','mock-checked-parking','mock-checked-flights','mock-checked-helpme','mock-checked-bank','mock-checked-logistics','mock-checked-currency','mock-checked-willing','mock-checked-travel',
+   'mock-note-football','mock-note-parking','mock-note-flights','mock-note-helpme','mock-note-bank','mock-note-logistics','mock-note-currency','mock-note-willing','mock-note-travel'
+  ].forEach(k => localStorage.removeItem(k));
   render();
 }
 

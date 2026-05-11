@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="🎯 מדמה מבחן — בחר מבחן, הפעל טיימר, בצע הערכה עצמית — פורטל הכנה למבחן Fullstack">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎯 מדמה מבחן — Mock Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--brand:#7c3aed;--gold:#facc15;--green:#16a34a;--red:#dc2626;--blue:#2563eb;--shadow:5px 5px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:22px 24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(20px,4vw,32px);margin:0}
+.hero p{color:#dbeafe;font-size:13px;margin:5px 0 0}
+
+.app{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 94px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--card);border-left:3px solid #000;padding:14px;overflow-y:auto;position:sticky;top:0;max-height:calc(100vh - 94px)}
+.sb-head{font-weight:900;font-size:13px;padding:6px 10px;background:#1e1b4b;color:var(--gold);border-radius:8px;margin-bottom:10px}
+.sb-btn{display:flex;align-items:center;gap:8px;width:100%;border:2px solid transparent;border-radius:10px;padding:10px 12px;background:none;cursor:pointer;font:inherit;font-size:13px;font-weight:700;text-align:right;transition:.15s;margin-bottom:4px}
+.sb-btn:hover{background:#f1f5f9;border-color:#cbd5e1}
+.sb-btn.active{background:var(--gold);border-color:#000;box-shadow:2px 2px 0 #000}
+.sb-pts{margin-right:auto;font-size:11px;color:#64748b;font-weight:800}
+.sb-btn.active .sb-pts{color:#555}
+
+/* TIMER BAR */
+.timer-bar{background:#1e1b4b;color:#fff;padding:10px 20px;display:flex;align-items:center;gap:16px;border-bottom:3px solid #000;flex-wrap:wrap}
+.timer-display{font-size:28px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:2px;color:var(--gold)}
+.timer-display.warning{color:#fca5a5}
+.timer-display.danger{color:#ef4444;animation:pulse .5s infinite alternate}
+@keyframes pulse{from{opacity:1}to{opacity:.5}}
+.timer-btn{padding:7px 16px;border:2px solid rgba(255,255,255,.4);border-radius:8px;background:transparent;color:#fff;font:inherit;font-weight:800;font-size:12px;cursor:pointer;transition:.15s}
+.timer-btn:hover{background:rgba(255,255,255,.1)}
+.timer-btn.active{background:rgba(255,255,255,.2);border-color:#fff}
+.timer-sep{opacity:.3;font-size:20px}
+.timer-right{margin-right:auto;font-size:12px;color:#94a3b8;font-weight:700}
+
+/* MAIN CANVAS */
+.main{padding:22px 28px;overflow-y:auto;max-height:calc(100vh - 94px - 53px)}
+
+/* EXAM HEADER */
+.exam-header{margin-bottom:20px}
+.exam-title{font-size:24px;font-weight:900;display:flex;align-items:center;gap:10px}
+.exam-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.badge{display:inline-block;padding:3px 10px;border:2px solid #000;border-radius:999px;font-size:12px;font-weight:800;box-shadow:1px 1px 0 #000}
+.badge-react{background:#dbeafe;color:#1e40af}
+.badge-js{background:#fef9c3;color:#854d0e}
+.badge-express{background:#d1fae5;color:#065f46}
+.badge-pts{background:var(--gold);color:#000}
+
+/* QUESTION SECTIONS */
+.q-section{background:var(--card);border:3px solid #000;border-radius:16px;margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow)}
+.q-head{padding:12px 18px;border-bottom:2.5px solid #000;display:flex;align-items:center;gap:10px;font-weight:900;font-size:16px}
+.q-pts-badge{margin-right:auto;font-size:12px;font-weight:800;padding:3px 9px;border:2px solid #000;border-radius:999px;background:var(--gold)}
+.q-body{padding:16px 18px}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:6px}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:8px;background:#f8fafc;border:2px solid transparent;cursor:pointer;transition:.15s;user-select:none}
+.check-item:hover{border-color:#e2e8f0;background:#f1f5f9}
+.check-item.checked{background:#dcfce7;border-color:#86efac}
+.check-item.critical.checked{background:#dcfce7}
+.check-item.critical{border-right:3px solid var(--red)}
+.check-icon{flex-shrink:0;width:20px;height:20px;border:2.5px solid #94a3b8;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;margin-top:1px;transition:.15s}
+.check-item.checked .check-icon{background:var(--green);border-color:var(--green);color:#fff}
+.check-text{font-size:13px;font-weight:700;flex:1}
+.check-pts{font-size:11px;font-weight:900;color:#64748b;margin-top:2px}
+.check-item.checked .check-pts{color:#065f46}
+
+/* SCORE */
+.score-bar{background:var(--card);border:3px solid #000;border-radius:16px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.score-bar h3{font-size:15px;font-weight:900;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.score-progress{height:24px;background:#e2e8f0;border-radius:8px;border:2.5px solid #000;overflow:hidden;margin-bottom:8px}
+.score-fill{height:100%;border-radius:6px;transition:width .4s ease;display:flex;align-items:center;justify-content:flex-end;padding-left:8px;font-size:12px;font-weight:900;color:#fff}
+.score-nums{display:flex;justify-content:space-between;font-size:13px;font-weight:700}
+.score-nums b{font-size:20px;font-weight:900}
+
+/* NOTES */
+.notes-area{width:100%;height:120px;border:2.5px solid #000;border-radius:10px;padding:10px;font:inherit;font-size:13px;background:#fff;resize:vertical;direction:rtl}
+.notes-area:focus{outline:none;border-color:var(--brand)}
+
+/* GRADE PANEL */
+.grade-panel{text-align:center;padding:30px 20px;background:var(--card);border:3px solid #000;border-radius:16px;box-shadow:var(--shadow);margin-bottom:16px}
+.grade-big{font-size:48px;font-weight:900;margin:8px 0}
+.grade-sub{color:#64748b;font-size:14px;font-weight:700}
+.grade-breakdown{display:flex;justify-content:center;gap:20px;margin:16px 0;flex-wrap:wrap}
+.gb{text-align:center}
+.gb-num{font-size:24px;font-weight:900}
+.gb-lbl{font-size:12px;color:#64748b;font-weight:700}
+.grade-msg{padding:12px 18px;border-radius:10px;border:2px solid #000;font-weight:800;font-size:14px;margin-top:12px;display:inline-block}
+
+/* PLACEHOLDER */
+.placeholder{text-align:center;padding:80px 20px;color:#94a3b8}
+.placeholder .ico{font-size:56px;display:block;margin-bottom:12px}
+
+/* HISTORY */
+.history-item{padding:10px 14px;background:#f8fafc;border:2px solid #e2e8f0;border-radius:10px;margin-bottom:8px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700}
+.history-score{font-weight:900;font-size:16px}
+
+@media(prefers-color-scheme:dark){
+  body{background:#0f172a;color:#e2e8f0}
+  .sidebar,.main,.q-section,.score-bar,.grade-panel{background:#1e293b;color:#e2e8f0}
+  .sidebar{border-color:#334155}
+  .sb-btn:hover{background:#0f172a}
+  .q-section{border-color:#334155}
+  .q-head{border-color:#334155}
+  .check-item{background:#0f172a;border-color:#1e293b}
+  .check-item.checked{background:#064e3b;border-color:#065f46}
+  .score-bar{background:#1e293b;border-color:#334155}
+  .score-progress{background:#334155;border-color:#475569}
+  .notes-area{background:#0f172a;color:#e2e8f0;border-color:#475569}
+  .history-item{background:#0f172a;border-color:#334155;color:#e2e8f0}
+  .grade-panel{background:#1e293b;border-color:#334155}
+  .grade-sub{color:#94a3b8}
+}
+@media(max-width:700px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:static;max-height:none;border-left:none;border-bottom:3px solid #000}
+  .main{max-height:none;padding:16px}
+}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>🎯 מדמה מבחן — Mock Exam</h1>
+  <p>בחר מבחן, הפעל טיימר, מלא צ'קליסט הערכה עצמית וקבל ציון משוער</p>
+</div>
+
+<div class="timer-bar" id="timer-bar">
+  <div class="timer-display" id="timer-display">3:00:00</div>
+  <button class="timer-btn" id="btn-start" onclick="timerStart()">▶ התחל</button>
+  <button class="timer-btn" id="btn-pause" onclick="timerPause()" style="display:none">⏸ השהה</button>
+  <button class="timer-btn" id="btn-reset" onclick="timerReset()">↩ אפס</button>
+  <span class="timer-sep">|</span>
+  <span style="font-size:12px;color:#94a3b8;font-weight:700">זמן מבחן:</span>
+  <button class="timer-btn" id="dur-3h" onclick="setDur(3)" >3h</button>
+  <button class="timer-btn" id="dur-2h" onclick="setDur(2)">2h</button>
+  <button class="timer-btn" id="dur-1h" onclick="setDur(1)">1h</button>
+  <span class="timer-right" id="timer-status">בחר מבחן מהסיידבאר ולחץ התחל</span>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-head">📋 בחר מבחן</div>
+    <div id="sb-list"></div>
+  </aside>
+  <main class="main" id="main-content">
+    <div class="placeholder">
+      <span class="ico">🎯</span>
+      <h2>בחר מבחן מהרשימה</h2>
+      <p>בחר מבחן, לחץ "התחל" ותתחיל לסמן צ'קליסט הערכה עצמית</p>
+    </div>
+  </main>
+</div>
+
+<script>
+// ─── EXAM DATA ────────────────────────────────────────────────────────────
+const EXAMS = [
+{
+  id:'football', icon:'⚽', title:'Football Club',
+  questions:[
+    {
+      id:'football-q1', type:'react', pts:50, label:'React App — ניהול קבוצות כדורגל',
+      items:[
+        {text:'Router: /, /team/:name, /team/:name/edit/:id', pts:6, critical:true},
+        {text:'Login: username + password, כניסה בלבד למשתמש רשום', pts:5, critical:true},
+        {text:'Register: teamName (אנגלית, Title Case), password (8-20, upper+lower+digit+special), confirm', pts:8, critical:true},
+        {text:'TeamPage: רשימת שחקנים + חיפוש + כפתור Add + Edit', pts:8},
+        {text:'AddPlayer: שם, גיל, עמדה — שמירה ל-state', pts:6},
+        {text:'EditPlayer: טופס מאוכלס עם ערכים קיימים', pts:7, critical:true},
+        {text:'localStorage: users[] + teams{} נשמרים ונטענים', pts:6, critical:true},
+        {text:'Logout: מנקה currentUser, חוזר ל-/', pts:4}
+      ]
+    },
+    {
+      id:'football-q2', type:'js', pts:25, label:'JS — סכום לפי אורך מספר',
+      items:[
+        {text:'Array.isArray + typeof number validation', pts:4},
+        {text:'Math.abs() לטיפול במספרים שליליים', pts:6, critical:true},
+        {text:'String(Math.abs(n)).length — חישוב אורך ספרות', pts:7, critical:true},
+        {text:'result[len] = (result[len] || 0) + n — צבירה', pts:5, critical:true},
+        {text:'return result object', pts:3}
+      ]
+    },
+    {
+      id:'football-q3', type:'express', pts:25, label:'Express — שרת משחקי מחשב',
+      items:[
+        {text:'express.json() + cors() middleware', pts:4, critical:true},
+        {text:'GET /games — מחזיר כל המשחקים', pts:4},
+        {text:'GET /games/:id — משחק ספציפי', pts:4},
+        {text:'POST /games — הוספה עם status 201', pts:5, critical:true},
+        {text:'POST /games/filter — AND logic על yearMin, name, priceMax', pts:8, critical:true}
+      ]
+    }
+  ]
+},
+{
+  id:'parking', icon:'🅿️', title:'SV Parking',
+  questions:[
+    {
+      id:'parking-q1', type:'react', pts:50, label:'React App — מערכת חנייה',
+      items:[
+        {text:'Router: /, /signup, /choose-parking, /active-parking, /history', pts:6, critical:true},
+        {text:'Signup: carNumber (7 ספרות), password (6+), confirm match', pts:8, critical:true},
+        {text:'ChooseParking: select עיר + מספר רכב + כפתור Start', pts:7},
+        {text:'ActiveParking: setInterval + timer display + עלות מחושבת', pts:10, critical:true},
+        {text:'useEffect cleanup: clearInterval כשעוצרים / unmount', pts:5, critical:true},
+        {text:'History: רשימת חנייות קודמות של המשתמש', pts:6},
+        {text:'localStorage: users + parkings persist', pts:5, critical:true},
+        {text:'prev => prev + 1 בsetInterval (לא seconds + 1)', pts:3, critical:true}
+      ]
+    },
+    {
+      id:'parking-q2', type:'js', pts:25, label:'JS — ספירת תת-רצפים עוקבים',
+      items:[
+        {text:'לולאה חיצונית i — נקודת התחלה', pts:5, critical:true},
+        {text:'לולאה פנימית j מ-i — הרחבת הרצף', pts:5, critical:true},
+        {text:'sum += arr[j] — סכום מצטבר', pts:6, critical:true},
+        {text:'if sum === target → count++', pts:5, critical:true},
+        {text:'return count', pts:4}
+      ]
+    },
+    {
+      id:'parking-q3', type:'express', pts:25, label:'Express + MongoDB — שרת חנייה',
+      items:[
+        {text:'Mongoose Schema + Model: Employee', pts:5},
+        {text:'POST /add — יצירת עובד חדש', pts:5},
+        {text:'GET /low-salary?max= — $lt query', pts:7, critical:true},
+        {text:'POST /add-or-update — findOneAndUpdate upsert:true, new:true', pts:8, critical:true}
+      ]
+    }
+  ]
+},
+{
+  id:'flights', icon:'✈️', title:'בקרת טיסות',
+  questions:[
+    {
+      id:'flights-q1', type:'react', pts:50, label:'React App — בקרת טיסות',
+      items:[
+        {text:'Router: /, /panel, /all, /add', pts:5, critical:true},
+        {text:'Login: password === "12345" בלבד (ללא username check)', pts:6, critical:true},
+        {text:'ControlPanel: טבלת טיסות + מיון לפי עמודה', pts:8},
+        {text:'AllFlights: כל הטיסות + sort dropdown', pts:7},
+        {text:'AddFlight: all fields required, destination !== origin', pts:8, critical:true},
+        {text:'sortOrder state — מיון בפועל על המוצג', pts:6, critical:true},
+        {text:'useState/localStorage לflights[]', pts:5},
+        {text:'Logout: חזרה לLogin', pts:5}
+      ]
+    },
+    {
+      id:'flights-q2', type:'js', pts:25, label:'JS — ספירת ערכים במטריצה',
+      items:[
+        {text:'קבלת matrix (מערך 2D) + numbers לחיפוש', pts:3},
+        {text:'אתחול result: numbers.forEach(n => result[n]=0)', pts:6, critical:true},
+        {text:'לולאה מקוננת: forEach row → forEach cell', pts:8, critical:true},
+        {text:'if result[cell] !== undefined → result[cell]++', pts:5, critical:true},
+        {text:'return result', pts:3}
+      ]
+    },
+    {
+      id:'flights-q3', type:'express', pts:25, label:'Express + MongoDB — שרת תלמידים',
+      items:[
+        {text:'Mongoose Schema: name, grade, class', pts:5},
+        {text:'GET /students — כל התלמידים', pts:4},
+        {text:'POST /students — יצירה + 201', pts:5, critical:true},
+        {text:'PUT /students/:id — עדכון עם {new:true, runValidators:true}', pts:6, critical:true},
+        {text:'DELETE /students/:id — מחיקה + 404 if not found', pts:5, critical:true}
+      ]
+    }
+  ]
+},
+{
+  id:'helpme', icon:'🚨', title:'HelpMe',
+  questions:[
+    {
+      id:'helpme-q1', type:'react', pts:75, label:'React App — מרכזי עזרה',
+      items:[
+        {text:'Router: /, /home, /centers', pts:6},
+        {text:'Register: name(2+), phone(10 digits, 05...), password(6+), confirm', pts:12, critical:true},
+        {text:'Home: ברכה + מידע על משתמש', pts:6},
+        {text:'Centers: רשימת מרכזים + toggle selection', pts:10, critical:true},
+        {text:'isActive toggle — כפתור שמחליף מצב פעיל/לא פעיל', pts:8},
+        {text:'selectedCenter — highlight על הנבחר', pts:7},
+        {text:'localStorage: user persist', pts:5},
+        {text:'Logout + protected routes', pts:6}
+      ]
+    },
+    {
+      id:'helpme-q2', type:'js', pts:25, label:'JS — זיהוי סדרה חשבונית/הנדסית',
+      items:[
+        {text:'בדיקה: arr.length >= 2', pts:3},
+        {text:'חישוב הפרש ראשון: diff = arr[1]-arr[0]', pts:5, critical:true},
+        {text:'every check לחשבונית: n-arr[i-1]===diff', pts:7, critical:true},
+        {text:'בדיקת arr[0]!==0 לפני הנדסית', pts:4, critical:true},
+        {text:'every check להנדסית: n/arr[i-1]===ratio', pts:6, critical:true}
+      ]
+    },
+    {
+      id:'helpme-q3', type:'theory', pts:25, label:'תאוריה — HTTP, MongoDB, React',
+      items:[
+        {text:'GET/POST/PUT/DELETE + Idempotency table', pts:7, critical:true},
+        {text:'MongoDB: 3 יתרונות + 2 חסרונות', pts:6, critical:true},
+        {text:'React vs Vanilla: components, reactivity, virtual DOM', pts:5, critical:true},
+        {text:'function vs arrow: this binding (דינמי vs לקסיקלי)', pts:4},
+        {text:'Recursion: base case + recursive case + דוגמה', pts:3}
+      ]
+    }
+  ]
+},
+{
+  id:'bank', icon:'🏦', title:'SV Bank',
+  questions:[
+    {
+      id:'bank-q1', type:'react', pts:65, label:'React App — בנק',
+      items:[
+        {text:'Router: /, /client/:id, /manager', pts:6, critical:true},
+        {text:'Login: Admin (קוד קבוע) vs Client (username/password)', pts:7, critical:true},
+        {text:'Register: username (ייחודי!), password (6+)', pts:7, critical:true},
+        {text:'ClientPage: הצגת יתרה, הפקדה, משיכה (amount>0)', pts:10, critical:true},
+        {text:'משיכה: בדיקת יתרה מספקת לפני ביצוע', pts:6, critical:true},
+        {text:'ManagerPage: כל הלקוחות + יתרות', pts:6},
+        {text:'protected route: /manager רק לAdmin', pts:6, critical:true},
+        {text:'localStorage: users + accounts', pts:6}
+      ]
+    },
+    {
+      id:'bank-q2', type:'js', pts:20, label:'JS — מיון ספרות ללא .sort()',
+      items:[
+        {text:'String(Math.abs(n)).split("").map(Number)', pts:5, critical:true},
+        {text:'Bubble Sort ידני — שתי לולאות for מקוננות', pts:8, critical:true},
+        {text:'swap: [a[j],a[j+1]] = [a[j+1],a[j]]', pts:5, critical:true},
+        {text:'Number(digits.join("")) — return', pts:2}
+      ]
+    },
+    {
+      id:'bank-q3', type:'express', pts:15, label:'Express + fs — שמירה לקובץ',
+      items:[
+        {text:'const fs = require("fs").promises', pts:3},
+        {text:'POST /save: appendFile (לא writeFile!)', pts:7, critical:true},
+        {text:'GET /read: readFile + res.send(content)', pts:5}
+      ]
+    }
+  ]
+},
+{
+  id:'logistics', icon:'📦', title:'מחסן לוגיסטי',
+  questions:[
+    {
+      id:'logistics-q1', type:'react', pts:75, label:'React App — מחסן',
+      items:[
+        {text:'Router: /, /welcome/:id, /products', pts:6},
+        {text:'Auth: workerId (5 ספרות), fullName (4+), licenseType enum', pts:10, critical:true},
+        {text:'Login: workerId + password check', pts:7, critical:true},
+        {text:'Welcome: ברכה אישית עם /welcome/:workerId', pts:6},
+        {text:'Products: רשימת מוצרים + filters', pts:8},
+        {text:'Add Product: כל השדות required', pts:7},
+        {text:'localStorage: workers + products', pts:6},
+        {text:'Protected routes: redirect לLogin אם לא מחובר', pts:6, critical:true}
+      ]
+    },
+    {
+      id:'logistics-q2', type:'js', pts:25, label:'JS — בינארי לעשרוני + פלינדרום',
+      items:[
+        {text:'המרה ידנית (ללא parseInt): decimal=decimal*2+Number(bit)', pts:8, critical:true},
+        {text:'לולאה על כל ביט בbinaryStr', pts:5},
+        {text:'isPalindrome: str === str.split("").reverse().join("")', pts:7, critical:true},
+        {text:'return {decimal, isPalindrome}', pts:5}
+      ]
+    },
+    {
+      id:'logistics-q3', type:'express', pts:25, label:'Express — API משלוחים',
+      items:[
+        {text:'GET /shipments — כל המשלוחים', pts:4},
+        {text:'POST /shipments — הוספה + 201', pts:5, critical:true},
+        {text:'GET /shipments/heavy?min= — Number(req.query.min)', pts:7, critical:true},
+        {text:'PUT /shipments/:id/status — enum validation [pending/shipped/delivered]', pts:9, critical:true}
+      ]
+    }
+  ]
+},
+{
+  id:'currency', icon:'💱', title:'מחשבון המרה',
+  questions:[
+    {
+      id:'currency-q1', type:'react', pts:80, label:'React App — המרת מטבע',
+      items:[
+        {text:'Router: /, /list, /update', pts:5},
+        {text:'Calculator: from/to/amount inputs + חישוב rate', pts:12, critical:true},
+        {text:'from !== to validation', pts:5, critical:true},
+        {text:'ExchangeList: כל המטבעות + שערים', pts:6},
+        {text:'UpdateCurrency: type (אנגלית), value (חיובי)', pts:8, critical:true},
+        {text:'currencies state — עדכון בזמן אמת', pts:8},
+        {text:'formula: amount * fromRate.value / toRate.value', pts:10, critical:true},
+        {text:'localStorage: currencies persist', pts:5}
+      ]
+    },
+    {
+      id:'currency-q2', type:'js', pts:20, label:'JS — מיקום בפיבונאצ׳י מוסחות',
+      items:[
+        {text:'בניית סדרה: a=1,b=2 (לא 0,1)', pts:5, critical:true},
+        {text:'לולאה while + counter', pts:6, critical:true},
+        {text:'בדיקה: if(n===a) return counter', pts:5, critical:true},
+        {text:'if(n<a) return -1 (לא בסדרה)', pts:4}
+      ]
+    },
+    {
+      id:'currency-q3', type:'express', pts:20, label:'Express — שרת תעריפי מטבע',
+      items:[
+        {text:'GET/POST/DELETE /rates — CRUD בסיסי', pts:8},
+        {text:'GET /convert?from=&to=&amount= — המרה', pts:6, critical:true},
+        {text:'Number(amount), rates.find() לפי type.toUpperCase()', pts:6, critical:true}
+      ]
+    }
+  ]
+},
+{
+  id:'willing', icon:'🤝', title:'Willing (התנדבות)',
+  questions:[
+    {
+      id:'willing-q1', type:'react', pts:40, label:'React App — פלטפורמת התנדבות',
+      items:[
+        {text:'Router: /, /add, /find, /all', pts:5},
+        {text:'Home: רשימת התנדבויות עם toggle favorites', pts:7, critical:true},
+        {text:'Add: title, city (select), description required', pts:8, critical:true},
+        {text:'Find: filter by city', pts:6},
+        {text:'All: כל ההתנדבויות + אפשרות מחיקה עם confirm', pts:7, critical:true},
+        {text:'localStorage: volunteerings persist', pts:4}
+      ]
+    },
+    {
+      id:'willing-q2', type:'js', pts:35, label:'JS — ספירת ייחודיים זוגיים/אי-זוגיים',
+      items:[
+        {text:'new Set(arr) — הסרת כפילויות', pts:8, critical:true},
+        {text:'[...unique].filter(n => n%2===0).length — זוגיים', pts:8, critical:true},
+        {text:'filter(n => n%2!==0).length — אי-זוגיים', pts:8, critical:true},
+        {text:'return {evens, odds}', pts:5},
+        {text:'טיפול במערך ריק', pts:6}
+      ]
+    },
+    {
+      id:'willing-q3', type:'express', pts:25, label:'Express + MongoDB — קורסים',
+      items:[
+        {text:'Mongoose Schema: name, instructor, duration', pts:5},
+        {text:'GET /courses — כולם', pts:4},
+        {text:'POST /courses — יצירה + 201', pts:5, critical:true},
+        {text:'PUT /courses/:id — עדכון + {new:true}', pts:6, critical:true},
+        {text:'DELETE /courses/:id — מחיקה + 404', pts:5, critical:true}
+      ]
+    }
+  ]
+},
+{
+  id:'travel', icon:'🧳', title:'Travel-SV',
+  questions:[
+    {
+      id:'travel-q1', type:'react', pts:50, label:'React App — ניהול טיולים',
+      items:[
+        {text:'Router: /, /home, /add, /update', pts:5},
+        {text:'SignIn: username==="svcollege" && password==="abcde"', pts:7, critical:true},
+        {text:'ניווט disabled לפני login (Nav buttons disabled)', pts:6, critical:true},
+        {text:'Home: רשימת טיולים', pts:6},
+        {text:'Add: destination, startDate, endDate (endDate >= startDate)', pts:8, critical:true},
+        {text:'Update: טופס עם ערכים קיימים', pts:7, critical:true},
+        {text:'localStorage: travels persist', pts:5},
+        {text:'Delete with confirm', pts:6}
+      ]
+    },
+    {
+      id:'travel-q2', type:'js', pts:25, label:'JS — בדיקת תת-מערך',
+      items:[
+        {text:'שתי מצביעים: i לarr, j לsubArr', pts:6, critical:true},
+        {text:'לולאה על arr, בדיקת arr[i]===subArr[j]', pts:7, critical:true},
+        {text:'j++ כשמצאנו התאמה', pts:5, critical:true},
+        {text:'if j===subArr.length → return true', pts:5, critical:true},
+        {text:'return false בסוף', pts:2}
+      ]
+    },
+    {
+      id:'travel-q3', type:'node', pts:25, label:'Node.js — Class TextFilePackage',
+      items:[
+        {text:'class TextFilePackage עם constructor(filename)', pts:5},
+        {text:'async read(): fs.promises.readFile — מחזיר תוכן', pts:6, critical:true},
+        {text:'async append(line): fs.promises.appendFile', pts:6, critical:true},
+        {text:'async getLines(): split("\\n"), filter empty', pts:5},
+        {text:'async clear(): fs.promises.writeFile(filename, "")', pts:3}
+      ]
+    }
+  ]
+}
+];
+
+// ─── Timer ──────────────────────────────────────────────────────────────────
+let timerTotal = 3 * 3600; // seconds
+let timerLeft = timerTotal;
+let timerInterval = null;
+let timerRunning = false;
+let timerDur = 3;
+
+function setDur(h) {
+  timerDur = h;
+  timerTotal = h * 3600;
+  timerLeft = timerTotal;
+  timerRunning = false;
+  clearInterval(timerInterval);
+  updateTimerDisplay();
+  document.querySelectorAll('[id^=dur-]').forEach(b => b.classList.remove('active'));
+  document.getElementById('dur-'+h+'h').classList.add('active');
+  document.getElementById('btn-start').style.display = '';
+  document.getElementById('btn-pause').style.display = 'none';
+}
+
+function timerStart() {
+  if (timerRunning) return;
+  timerRunning = true;
+  document.getElementById('btn-start').style.display = 'none';
+  document.getElementById('btn-pause').style.display = '';
+  document.getElementById('timer-status').textContent = '⏱ מבחן פעיל';
+  timerInterval = setInterval(() => {
+    timerLeft--;
+    updateTimerDisplay();
+    if (timerLeft <= 0) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('timer-display').textContent = '⏰ אזל הזמן!';
+      document.getElementById('btn-start').style.display = '';
+      document.getElementById('btn-pause').style.display = 'none';
+      alert('⏰ הזמן הסתיים! בצע הערכה עצמית ורשום את ציונך.');
+    }
+  }, 1000);
+}
+
+function timerPause() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  document.getElementById('btn-start').style.display = '';
+  document.getElementById('btn-pause').style.display = 'none';
+  document.getElementById('timer-status').textContent = '⏸ מושהה';
+}
+
+function timerReset() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerLeft = timerTotal;
+  updateTimerDisplay();
+  document.getElementById('btn-start').style.display = '';
+  document.getElementById('btn-pause').style.display = 'none';
+  document.getElementById('timer-status').textContent = 'לחץ התחל להפעלה';
+}
+
+function updateTimerDisplay() {
+  const h = Math.floor(timerLeft / 3600);
+  const m = Math.floor((timerLeft % 3600) / 60);
+  const s = timerLeft % 60;
+  const str = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const el = document.getElementById('timer-display');
+  el.textContent = str;
+  const pct = timerLeft / timerTotal;
+  el.className = 'timer-display' + (pct < 0.1 ? ' danger' : pct < 0.25 ? ' warning' : '');
+}
+
+// ─── Exam State ──────────────────────────────────────────────────────────────
+function _lsGet(k,fb){try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch(e){return fb}}
+function _lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+
+let currentExam = null;
+let checked = {}; // {qid+itemIndex: bool}
+
+function loadChecked(examId) {
+  checked = _lsGet('mock-checked-'+examId, {});
+}
+function saveChecked(examId) {
+  _lsSet('mock-checked-'+examId, checked);
+}
+
+function toggleCheck(key) {
+  checked[key] = !checked[key];
+  saveChecked(currentExam.id);
+  renderScore();
+  // Update visual
+  const el = document.querySelector(`[data-key="${key}"]`);
+  if (el) {
+    el.classList.toggle('checked', !!checked[key]);
+    el.querySelector('.check-icon').textContent = checked[key] ? '✓' : '';
+  }
+}
+
+// ─── Sidebar ─────────────────────────────────────────────────────────────────
+function buildSidebar() {
+  const sb = document.getElementById('sb-list');
+  sb.innerHTML = EXAMS.map(exam => `
+    <button class="sb-btn" data-eid="${exam.id}" onclick="selectExam('${exam.id}')">
+      <span>${exam.icon}</span>
+      <span>${exam.title}</span>
+      <span class="sb-pts">${exam.questions.reduce((s,q)=>s+q.pts,0)}נק׳</span>
+    </button>`).join('');
+}
+
+function selectExam(id) {
+  currentExam = EXAMS.find(e => e.id === id);
+  if (!currentExam) return;
+  loadChecked(id);
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.toggle('active', b.dataset.eid === id));
+  document.getElementById('timer-status').textContent = `📋 ${currentExam.title} — לחץ התחל`;
+  renderExam();
+}
+
+// ─── Render Exam ──────────────────────────────────────────────────────────────
+const TYPE_COLORS = {react:'#2563eb',js:'#ca8a04',express:'#059669',theory:'#7c3aed',node:'#0891b2'};
+const TYPE_LABELS = {react:'⚛️ React',js:'🟨 JS',express:'🟢 Express',theory:'📖 Theory',node:'💜 Node.js'};
+
+function renderExam() {
+  const exam = currentExam;
+  const totalPts = exam.questions.reduce((s,q) => s+q.pts, 0);
+
+  let html = `<div class="exam-header">
+    <div class="exam-title">${exam.icon} ${exam.title}</div>
+    <div class="exam-badges">
+      <span class="badge badge-pts">${totalPts} נקודות סה״כ</span>
+      ${exam.questions.map(q=>`<span class="badge badge-${q.type}">${TYPE_LABELS[q.type]} · ${q.pts}נק׳</span>`).join('')}
+    </div>
+  </div>`;
+
+  // Score bar
+  html += renderScoreHTML(exam);
+
+  // Questions
+  exam.questions.forEach(q => {
+    html += `<div class="q-section">
+      <div class="q-head" style="background:${TYPE_COLORS[q.type]}20;border-right:4px solid ${TYPE_COLORS[q.type]}">
+        <span>${TYPE_LABELS[q.type]}</span>
+        <span style="font-weight:700;font-size:14px">${q.label}</span>
+        <span class="q-pts-badge">${q.pts} נק׳</span>
+      </div>
+      <div class="q-body">
+        <div class="checklist">`;
+
+    q.items.forEach((item, idx) => {
+      const key = q.id + '_' + idx;
+      const done = !!checked[key];
+      html += `<div class="check-item${done?' checked':''}${item.critical?' critical':''}" data-key="${key}" onclick="toggleCheck('${key}')">
+        <div class="check-icon">${done?'✓':''}</div>
+        <div>
+          <div class="check-text">${item.text}</div>
+          <div class="check-pts">${item.pts} נק׳${item.critical?' · ⚠ קריטי!':''}</div>
+        </div>
+      </div>`;
+    });
+
+    html += `</div></div></div>`;
+  });
+
+  // Notes
+  const savedNote = _lsGet('mock-note-'+exam.id, '');
+  html += `<div class="q-section">
+    <div class="q-head">📝 הערות אישיות</div>
+    <div class="q-body">
+      <textarea class="notes-area" placeholder="רשום כאן מה עשית, מה נשאר, מה לשפר..." onchange="_lsSet('mock-note-${exam.id}',this.value)">${savedNote}</textarea>
+    </div>
+  </div>`;
+
+  document.getElementById('main-content').innerHTML = html;
+}
+
+function renderScoreHTML(exam) {
+  const totalPts = exam.questions.reduce((s,q) => s+q.pts, 0);
+  let earnedPts = 0;
+  exam.questions.forEach(q => {
+    q.items.forEach((item, idx) => {
+      if (checked[q.id+'_'+idx]) earnedPts += item.pts;
+    });
+  });
+  const pct = totalPts > 0 ? Math.round(earnedPts / totalPts * 100) : 0;
+  const color = pct >= 90 ? '#16a34a' : pct >= 70 ? '#ca8a04' : pct >= 50 ? '#2563eb' : '#dc2626';
+  const emoji = pct >= 90 ? '🏆' : pct >= 70 ? '💪' : pct >= 50 ? '📚' : '⚠️';
+
+  return `<div class="score-bar" id="score-bar">
+    <h3>📊 ציון משוער ${emoji}</h3>
+    <div class="score-progress">
+      <div class="score-fill" style="width:${pct}%;background:${color}">${pct > 15 ? pct+'%' : ''}</div>
+    </div>
+    <div class="score-nums">
+      <span>נצבר: <b style="color:${color}">${earnedPts}</b></span>
+      <span>מתוך: <b>${totalPts}</b></span>
+      <span>ציון: <b style="color:${color}">${pct}%</b></span>
+    </div>
+  </div>`;
+}
+
+function renderScore() {
+  const bar = document.getElementById('score-bar');
+  if (bar && currentExam) {
+    bar.outerHTML = renderScoreHTML(currentExam);
+  }
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+setDur(3);
+buildSidebar();
+</script>
+<script src="nav-tree.js"></script>
+</body>
+</html>
