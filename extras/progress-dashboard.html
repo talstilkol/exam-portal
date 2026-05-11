@@ -99,7 +99,7 @@ const TOOLS = [
     getProgress() {
       const data = _lsGet('pb-solved',{});
       const done = Object.keys(data).length;
-      const total = 68;
+      const total = 71;
       return { done, total, items: null };
     }
   },
@@ -228,7 +228,7 @@ const TOOLS = [
     link: 'theory-quiz.html',
     getProgress() {
       const known = _lsGet('tq-known',[]);
-      const total = 68;
+      const total = 71;
       const done = Array.isArray(known) ? known.length : 0;
       return { done, total, items: null };
     }

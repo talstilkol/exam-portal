@@ -126,9 +126,9 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 68 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 71 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
-    <span class="stat" id="stat-solved">✅ נפתרו: 0/68</span>
+    <span class="stat" id="stat-solved">✅ נפתרו: 0/71</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
   </div>
 </header>
@@ -2512,6 +2512,192 @@ app.post('/employees/add-or-update', async (req, res) => {
     return {ok:true};
   },
   explain:"findOneAndUpdate עם upsert:true: מחפש לפי filter. אם נמצא → מעדכן ($set). אם לא נמצא → יוצר חדש. new:true מחזיר את הדוקומנט לאחר העדכון."
+},
+
+// ===== EXERCISE 69 =====
+{
+  id:"react-role-based-routing",cat:"react",diff:"hard",
+  title:"Routing לפי תפקיד — Client vs Manager — Bank Q1",
+  prompt:`כתבו React App עם routing לפי תפקיד:
+<ul style="margin:8px 0;padding-right:18px">
+<li>משתמש רגיל → <code>/client/:id</code></li>
+<li>מנהל → <code>/manager</code></li>
+<li>לא מחובר → נשאר ב-<code>/</code></li>
+</ul>
+השתמשו ב-<code>currentUser.role === 'manager'</code> לבדיקה.`,
+  starterCode:`function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogin = (user) => {
+    // כתבו כאן — ניווט לפי תפקיד
+  };
+
+  return (
+    <Routes>
+      {/* כתבו Routes */}
+    </Routes>
+  );
+}`,
+  solution:`function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogin = (user) => {
+    setCurrentUser(user);
+    if (user.role === 'manager') {
+      navigate('/manager');
+    } else {
+      navigate('/client/' + user.id);
+    }
+  };
+
+  return (
+    <Routes>
+      <Route path="/" element={<LoginPage onLogin={handleLogin} />} />
+      <Route path="/client/:id" element={
+        currentUser ? <ClientPage user={currentUser} /> : <Navigate to="/" />
+      } />
+      <Route path="/manager" element={
+        currentUser?.role === 'manager' ? <ManagerPage /> : <Navigate to="/" />
+      } />
+    </Routes>
+  );
+}`,
+  customTest(code){
+    const checks=[
+      {re:/role\s*===\s*['"]manager['"]/,msg:'חסר בדיקת role === "manager"'},
+      {re:/navigate\(/,msg:'חסר navigate()'},
+      {re:/Navigate.*to=["']\//,msg:'חסר <Navigate to="/" /> לmissing auth'},
+      {re:/\/client\/.*id/,msg:'חסר route /client/:id'},
+      {re:/\/manager/,msg:'חסר route /manager'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"Role-based routing: לאחר login בודקים user.role. Manager → /manager, client → /client/:id. Protected routes: <Navigate to='/'/> אם לא מחובר."
+},
+
+// ===== EXERCISE 70 =====
+{
+  id:"react-sort-list",cat:"react",diff:"medium",
+  title:"מיון רשימה לפי קריטריונים שונים — Flights Q1",
+  prompt:`כתבו component שמציג רשימת טיסות ממוינת לפי בחירת המשתמש:
+<ul style="margin:8px 0;padding-right:18px">
+<li>מיון לפי <b>מספר טיסה</b> (עולה)</li>
+<li>מיון לפי <b>יעד</b> (א׳-ב׳)</li>
+<li>מיון לפי <b>שעה</b></li>
+</ul>
+שמרו את <code>sortBy</code> ב-state.`,
+  starterCode:`function FlightsList({ flights }) {
+  const [sortBy, setSortBy] = useState('number');
+
+  // כתבו כאן — sortedFlights
+  const sortedFlights = [];
+
+  return (
+    <div>
+      {/* Buttons + רשימה */}
+    </div>
+  );
+}`,
+  solution:`function FlightsList({ flights }) {
+  const [sortBy, setSortBy] = useState('number');
+
+  const sortedFlights = [...flights].sort((a, b) => {
+    if (sortBy === 'number') return a.flightNumber - b.flightNumber;
+    if (sortBy === 'destination') return a.destination.localeCompare(b.destination);
+    if (sortBy === 'time') return a.departureTime.localeCompare(b.departureTime);
+    return 0;
+  });
+
+  return (
+    <div>
+      <div>
+        <button onClick={() => setSortBy('number')}>לפי מספר</button>
+        <button onClick={() => setSortBy('destination')}>לפי יעד</button>
+        <button onClick={() => setSortBy('time')}>לפי שעה</button>
+      </div>
+      {sortedFlights.map(f => (
+        <div key={f.id}>{f.flightNumber} — {f.destination}</div>
+      ))}
+    </div>
+  );
+}`,
+  customTest(code){
+    const checks=[
+      {re:/sortBy/,msg:'חסר state: sortBy'},
+      {re:/\[\.\.\.flights\]\.sort|flights\s*\.\s*slice.*sort/,msg:'חסר [...flights].sort() — אסור למוטייט את המקור'},
+      {re:/localeCompare/,msg:'מומלץ: localeCompare() למיון strings'},
+      {re:/\.map\(/,msg:'חסר .map() לרנדור'},
+      {re:/key=/,msg:'חסר key= ב-map'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"spread [...flights] לפני sort חשוב — sort מוטייט! localeCompare למיון strings בצורה נכונה (תומך בעברית). sortBy ב-state → re-render אוטומטי."
+},
+
+// ===== EXERCISE 71 =====
+{
+  id:"react-exchange-calculator",cat:"react",diff:"medium",
+  title:"מחשבון המרת מטבע — Currency Q1",
+  prompt:`כתבו component מחשבון המרה:
+<ul style="margin:8px 0;padding-right:18px">
+<li>בחירת מטבע מקור + יעד (מ-state)</li>
+<li>הזנת סכום</li>
+<li>חישוב: <code>result = amount × (targetRate / sourceRate)</code></li>
+<li>הצגת תוצאה מעוגלת ל-2 ספרות</li>
+</ul>`,
+  starterCode:`function ExchangeCalculator({ currencies }) {
+  // currencies = [{type:'USD',value:3.7},{type:'EUR',value:4.1},...]
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [amount, setAmount] = useState('');
+
+  // כתבו כאן — calculate + render
+}`,
+  solution:`function ExchangeCalculator({ currencies }) {
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [amount, setAmount] = useState('');
+
+  const calculate = () => {
+    const fromCur = currencies.find(c => c.type === from);
+    const toCur = currencies.find(c => c.type === to);
+    if (!fromCur || !toCur || !amount) return null;
+    const result = Number(amount) * (toCur.value / fromCur.value);
+    return result.toFixed(2);
+  };
+
+  const result = calculate();
+
+  return (
+    <div>
+      <select value={from} onChange={e => setFrom(e.target.value)}>
+        {currencies.map(c => <option key={c.type} value={c.type}>{c.type}</option>)}
+      </select>
+      <select value={to} onChange={e => setTo(e.target.value)}>
+        {currencies.map(c => <option key={c.type} value={c.type}>{c.type}</option>)}
+      </select>
+      <input value={amount} onChange={e => setAmount(e.target.value)} type="number" />
+      {result && <p>תוצאה: {result}</p>}
+    </div>
+  );
+}`,
+  customTest(code){
+    const checks=[
+      {re:/from.*useState|useState.*from/,msg:'חסר state: from (מטבע מקור)'},
+      {re:/to.*useState|useState.*to/,msg:'חסר state: to (מטבע יעד)'},
+      {re:/amount.*useState|useState.*amount/,msg:'חסר state: amount'},
+      {re:/find\(/,msg:'חסר .find() למציאת מטבע'},
+      {re:/toCur\.value\s*\/\s*fromCur\.value|value\s*\/\s*value/,msg:'חסר חישוב: targetRate / sourceRate'},
+      {re:/toFixed\(2\)/,msg:'חסר .toFixed(2) לעיגול'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"החישוב: amount × (toRate / fromRate). find() למציאת הRate. toFixed(2) לדיוק 2 ספרות. בדיקת null לפני הצגה."
 }
 ];
 
@@ -2525,7 +2711,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/68`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/71`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 
