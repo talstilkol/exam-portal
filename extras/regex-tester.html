@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="🔬 Regex Tester — בדיקת ביטויים רגולריים — פורטל הכנה למבחן Fullstack">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🔬 Regex Tester — בדיקת Regex</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7fb;--ink:#0f172a;--card:#fff;--brand:#7c3aed;--gold:#facc15;--green:#16a34a;--blue:#2563eb;--red:#dc2626;--orange:#f97316;--shadow:4px 4px 0 #0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+
+.hero{background:linear-gradient(135deg,#020617,#1e1b4b 50%,#7c3aed);color:#fff;padding:22px 24px;border-bottom:4px solid #000;text-align:center}
+.hero h1{font-size:clamp(20px,4vw,30px);margin:0}
+.hero p{color:#dbeafe;font-size:13px;margin:5px 0 0}
+
+.main{max-width:900px;margin:0 auto;padding:20px 16px}
+
+/* TESTER CARD */
+.tester{background:var(--card);border:3px solid #000;border-radius:16px;padding:20px;box-shadow:var(--shadow);margin-bottom:20px}
+
+.regex-row{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.regex-wrap{flex:1;min-width:200px;display:flex;align-items:center;border:3px solid #000;border-radius:10px;overflow:hidden;background:#fff;box-shadow:2px 2px 0 #000}
+.regex-slash{font-size:20px;font-weight:900;padding:8px 10px;background:#f1f5f9;color:#64748b;user-select:none;border-left:2px solid #000}
+.regex-slash.right{border-left:none;border-right:2px solid #000}
+.regex-input{flex:1;border:none;outline:none;font-family:Consolas,'Courier New',monospace;font-size:15px;font-weight:700;padding:10px;color:var(--ink);background:transparent;direction:ltr}
+.flag-input{width:50px;border:none;outline:none;font-family:monospace;font-size:14px;padding:8px;color:#7c3aed;font-weight:900;background:#f5f3ff;border-left:2px solid #000}
+
+.test-row{margin-bottom:14px}
+.test-label{font-size:12px;font-weight:900;color:#64748b;margin-bottom:6px;display:block}
+.test-input{width:100%;border:3px solid #000;border-radius:10px;padding:10px 14px;font-size:15px;font-family:inherit;font-weight:700;outline:none;box-shadow:2px 2px 0 #000;transition:.15s;direction:ltr;text-align:left}
+.test-input:focus{border-color:var(--brand);box-shadow:2px 2px 0 var(--brand)}
+
+/* RESULT */
+.result{padding:14px 16px;border-radius:10px;font-size:15px;font-weight:900;border:3px solid #000;margin-bottom:14px;display:flex;align-items:center;gap:10px;min-height:52px}
+.result.match{background:#dcfce7;border-color:#16a34a;color:#166534}
+.result.no-match{background:#fee2e2;border-color:#dc2626;color:#991b1b}
+.result.empty{background:#f8fafc;border-color:#e2e8f0;color:#64748b}
+.result.error{background:#fef3c7;border-color:#f97316;color:#92400e}
+.result-icon{font-size:24px}
+.result-text{flex:1}
+.result-groups{margin-top:6px;font-size:12px;font-weight:700;color:#475569}
+.group-chip{display:inline-block;padding:2px 8px;border:1.5px solid #cbd5e1;border-radius:4px;margin:2px;font-family:monospace;background:#fff}
+
+/* HIGHLIGHT */
+.highlight-box{padding:10px 14px;background:#f8fafc;border:2px solid #e2e8f0;border-radius:8px;font-family:monospace;font-size:14px;word-break:break-all;direction:ltr;text-align:left;min-height:38px}
+.hl-match{background:#fef08a;padding:1px 0;border-radius:2px;font-weight:900;color:#1a1a1a}
+
+/* PRESETS */
+.presets{margin-bottom:20px}
+.presets-title{font-weight:900;font-size:13px;color:#475569;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.presets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
+.preset{background:#fff;border:2.5px solid #000;border-radius:10px;padding:10px 12px;cursor:pointer;box-shadow:2px 2px 0 #000;transition:.15s;text-align:right}
+.preset:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 #000;background:#f5f3ff}
+.preset-name{font-weight:900;font-size:13px;color:var(--ink)}
+.preset-regex{font-family:Consolas,monospace;font-size:11px;color:#7c3aed;margin-top:2px;word-break:break-all}
+.preset-exam{font-size:10px;font-weight:800;color:#64748b;margin-top:3px}
+.preset-cat{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:900;border:1.5px solid;margin-bottom:4px}
+.cat-format{background:#dbeafe;color:#1e40af;border-color:#93c5fd}
+.cat-length{background:#dcfce7;color:#166534;border-color:#86efac}
+.cat-match{background:#fef9c3;color:#854d0e;border-color:#fde047}
+.cat-pattern{background:#f3e8ff;color:#6b21a8;border-color:#d8b4fe}
+.cat-fixed{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+
+/* Tests batch */
+.batch{background:var(--card);border:3px solid #000;border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.batch-title{font-weight:900;font-size:16px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.batch-inputs{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.batch-row{display:flex;align-items:center;gap:8px}
+.batch-test-input{flex:1;border:2px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-family:monospace;font-size:13px;direction:ltr;text-align:left;outline:none}
+.batch-test-input:focus{border-color:var(--brand)}
+.batch-result{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;border:2px solid #e2e8f0;background:#f8fafc;flex-shrink:0}
+.batch-result.pass{background:#dcfce7;border-color:#16a34a;color:#166534}
+.batch-result.fail{background:#fee2e2;border-color:#dc2626;color:#991b1b}
+.batch-add{padding:6px 14px;border:2px solid #000;border-radius:8px;background:#f1f5f9;font:inherit;font-weight:800;font-size:12px;cursor:pointer;box-shadow:1px 1px 0 #000;transition:.15s}
+.batch-add:hover{background:#e2e8f0}
+.batch-clear{padding:6px 14px;border:2px solid #000;border-radius:8px;background:#fee2e2;color:#991b1b;font:inherit;font-weight:800;font-size:12px;cursor:pointer;box-shadow:1px 1px 0 #000}
+
+/* Dark mode */
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--ink:#e2e8f0;--card:#1e293b;--shadow:4px 4px 0 #000}
+  body{background:var(--bg)}
+  .tester,.batch{background:#1e293b;border-color:#334155}
+  .regex-wrap{background:#0f172a;border-color:#475569}
+  .regex-slash{background:#334155;border-color:#475569;color:#94a3b8}
+  .flag-input{background:#4c1d95;color:#ddd6fe;border-color:#475569}
+  .test-input{background:#0f172a;color:#e2e8f0;border-color:#475569}
+  .test-input:focus{border-color:#7c3aed}
+  .highlight-box{background:#0f172a;border-color:#334155;color:#e2e8f0}
+  .hl-match{background:#3b2c00;color:#fef08a}
+  .preset{background:#1e293b;border-color:#334155}
+  .preset:hover{background:#2d1b69}
+  .preset-name{color:#e2e8f0}
+  .preset-exam{color:#94a3b8}
+  .result.empty{background:#1e293b;border-color:#334155}
+  .group-chip{background:#334155;border-color:#475569}
+  .batch-test-input{background:#0f172a;color:#e2e8f0;border-color:#475569}
+}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>🔬 Regex Tester — בדיקת ביטויים רגולריים</h1>
+  <p>בדקו regex ב-real time. לחצו על Preset לטעינת הביטויים הנפוצים מהמבחנות.</p>
+</div>
+
+<div class="main">
+
+  <!-- TESTER -->
+  <div class="tester">
+    <div class="regex-row">
+      <div class="regex-wrap">
+        <span class="regex-slash right">/</span>
+        <input class="regex-input" id="regex-input" type="text" dir="ltr" placeholder="^\d{7}$" oninput="run()" value="^\d{7}$">
+        <span class="regex-slash">/</span>
+        <input class="flag-input" id="flag-input" type="text" dir="ltr" placeholder="gi" oninput="run()" value="">
+      </div>
+    </div>
+
+    <div class="test-row">
+      <label class="test-label">מחרוזת לבדיקה:</label>
+      <input class="test-input" id="test-input" type="text" dir="ltr" placeholder="הקלידו כאן..." oninput="run()" value="1234567">
+    </div>
+
+    <div class="result empty" id="result">
+      <span class="result-icon">⏳</span>
+      <span class="result-text">הקלידו regex ומחרוזת לבדיקה</span>
+    </div>
+
+    <label class="test-label">הדגשת התאמות:</label>
+    <div class="highlight-box" id="highlight-box">—</div>
+  </div>
+
+  <!-- PRESETS -->
+  <div class="presets">
+    <div class="presets-title">🎯 Presets — ביטויים מהמבחנות (לחץ לטעינה)</div>
+    <div class="presets-grid" id="presets-grid"></div>
+  </div>
+
+  <!-- BATCH TESTER -->
+  <div class="batch">
+    <div class="batch-title">🧪 בדיקת מקרי קצה — Batch Tester</div>
+    <p style="font-size:13px;color:#64748b;margin-bottom:12px">הוסיפו כמה מחרוזות לבדיקה בו-זמנית עם הRegex הנוכחי.</p>
+    <div class="batch-inputs" id="batch-inputs">
+      <div class="batch-row"><input class="batch-test-input" type="text" dir="ltr" placeholder="1234567" oninput="runBatch()"><div class="batch-result" id="br-0">?</div></div>
+      <div class="batch-row"><input class="batch-test-input" type="text" dir="ltr" placeholder="123456" oninput="runBatch()"><div class="batch-result" id="br-1">?</div></div>
+      <div class="batch-row"><input class="batch-test-input" type="text" dir="ltr" placeholder="12345678" oninput="runBatch()"><div class="batch-result" id="br-2">?</div></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="batch-add" onclick="addBatchRow()">+ הוסף שורה</button>
+      <button class="batch-clear" onclick="clearBatch()">🗑 נקה</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PRESETS = [
+  // ─── Parking ───
+  {name:'carNumber — 7 ספרות בדיוק',regex:'^\\d{7}$',flags:'',exam:'🅿️ Parking Q1',cat:'format',test:'1234567'},
+  // ─── HelpMe ───
+  {name:'phone — מתחיל ב-05, 10 ספרות',regex:'^05\\d{8}$',flags:'',exam:'🚨 HelpMe Q1',cat:'format',test:'0512345678'},
+  // ─── Football ───
+  {name:'teamName — Title Case אנגלית',regex:'^[A-Z][a-z]*(\\s[A-Z][a-z]*)*$',flags:'',exam:'⚽ Football Q1',cat:'pattern',test:'Manchester City'},
+  {name:'password — 8-20 + UPPER+lower+digit+special',regex:'^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,20}$',flags:'',exam:'⚽ Football Q1',cat:'format',test:'Passw0rd!'},
+  // ─── Logistics ───
+  {name:'workerId — 5 ספרות בדיוק',regex:'^\\d{5}$',flags:'',exam:'🚚 Logistics Q1',cat:'format',test:'12345'},
+  {name:'fullName — מינימום 4 תווים',regex:'^.{4,}$',flags:'',exam:'🚚 Logistics Q1',cat:'length',test:'ישראל'},
+  // ─── General ───
+  {name:'password — מינימום 6 תווים',regex:'^.{6,}$',flags:'',exam:'כללי',cat:'length',test:'pass1234'},
+  {name:'email — כתובת אימייל',regex:'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$',flags:'i',exam:'כללי',cat:'format',test:'user@example.com'},
+  {name:'number — מספר חיובי בלבד',regex:'^\\d+(\\.\\d+)?$',flags:'',exam:'כללי',cat:'format',test:'42.5'},
+  {name:'Hebrew — אותיות עבריות בלבד',regex:'^[\\u05D0-\\u05EA]+$',flags:'',exam:'כללי',cat:'pattern',test:'שלום'},
+  {name:'English — אותיות לטיניות בלבד',regex:'^[a-zA-Z]+$',flags:'',exam:'כללי',cat:'pattern',test:'Hello'},
+  {name:'מינימום 2 תווים',regex:'^.{2,}$',flags:'',exam:'🚨 HelpMe / כללי',cat:'length',test:'שי'},
+  // ─── Travel/Flights ───
+  {name:'Flights password קבועה',regex:'^12345$',flags:'',exam:'✈️ Flights Q1',cat:'fixed',test:'12345'},
+  {name:'Travel username קבוע',regex:'^svcollege$',flags:'',exam:'✈ Travel Q1',cat:'fixed',test:'svcollege'},
+  {name:'Travel password קבועה',regex:'^abcde$',flags:'',exam:'✈ Travel Q1',cat:'fixed',test:'abcde'},
+  // ─── Binary ───
+  {name:'Binary string — רק 0 ו-1',regex:'^[01]+$',flags:'',exam:'🚚 Logistics Q2',cat:'format',test:'10101'},
+];
+
+function getColor(cat) {
+  return {format:'cat-format',length:'cat-length',match:'cat-match',pattern:'cat-pattern',fixed:'cat-fixed'}[cat]||'cat-format';
+}
+
+document.getElementById('presets-grid').innerHTML = PRESETS.map(p=>`
+  <div class="preset" onclick="loadPreset('${p.regex.replace(/'/g,"\\'")}','${p.flags}','${p.test.replace(/'/g,"\\'")}')">
+    <span class="preset-cat ${getColor(p.cat)}">${p.cat}</span>
+    <div class="preset-name">${p.name}</div>
+    <div class="preset-regex">/${p.regex}/${p.flags}</div>
+    <div class="preset-exam">${p.exam}</div>
+  </div>
+`).join('');
+
+function loadPreset(regex, flags, test) {
+  document.getElementById('regex-input').value = regex;
+  document.getElementById('flag-input').value = flags;
+  document.getElementById('test-input').value = test;
+  run();
+  runBatch();
+  document.getElementById('regex-input').focus();
+}
+
+function run() {
+  const pattern = document.getElementById('regex-input').value;
+  const flags = document.getElementById('flag-input').value.replace(/[^gimsuy]/g,'');
+  const testStr = document.getElementById('test-input').value;
+  const resultEl = document.getElementById('result');
+  const hlEl = document.getElementById('highlight-box');
+
+  if(!pattern) {
+    resultEl.className='result empty';
+    resultEl.innerHTML='<span class="result-icon">⏳</span><span class="result-text">הקלידו ביטוי רגולרי</span>';
+    hlEl.textContent='—';
+    return;
+  }
+
+  let re;
+  try { re = new RegExp(pattern, flags || undefined); }
+  catch(e) {
+    resultEl.className='result error';
+    resultEl.innerHTML=`<span class="result-icon">⚠</span><span class="result-text">Regex לא חוקי: ${e.message}</span>`;
+    hlEl.textContent='—';
+    return;
+  }
+
+  const match = testStr.match(re);
+  const hasMatch = !!match;
+
+  if(hasMatch) {
+    resultEl.className='result match';
+    let html = `<span class="result-icon">✅</span><span class="result-text"><b>התאמה נמצאה</b> — test() = true`;
+    if(match[1] !== undefined) {
+      html += `<div class="result-groups">קבוצות: `;
+      match.slice(1).forEach((g,i)=>{
+        html += `<span class="group-chip">$${i+1}: ${g||'undefined'}</span>`;
+      });
+      html += `</div>`;
+    }
+    html += `</span>`;
+    resultEl.innerHTML = html;
+  } else {
+    resultEl.className='result no-match';
+    resultEl.innerHTML=`<span class="result-icon">❌</span><span class="result-text"><b>אין התאמה</b> — test() = false</span>`;
+  }
+
+  // Highlight matches
+  const globalRe = new RegExp(pattern, (flags||'').includes('g') ? flags : (flags||'')+'g');
+  const escaped = testStr.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const highlighted = escaped.replace(globalRe, m=>`<span class="hl-match">${m.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`);
+  hlEl.innerHTML = highlighted || '(מחרוזת ריקה)';
+
+  runBatch();
+}
+
+function runBatch() {
+  const pattern = document.getElementById('regex-input').value;
+  const flags = document.getElementById('flag-input').value.replace(/[^gimsuy]/g,'');
+  let re;
+  try { re = new RegExp(pattern, flags || undefined); } catch(e) { return; }
+
+  document.querySelectorAll('.batch-row').forEach((row, i) => {
+    const input = row.querySelector('.batch-test-input');
+    const result = row.querySelector('.batch-result');
+    if(!input || !result) return;
+    const val = input.value;
+    if(!val) { result.className='batch-result'; result.textContent='?'; return; }
+    const ok = re.test(val);
+    result.className = 'batch-result ' + (ok?'pass':'fail');
+    result.textContent = ok?'✓':'✗';
+  });
+}
+
+let batchCount = 3;
+function addBatchRow() {
+  const container = document.getElementById('batch-inputs');
+  const id = 'br-' + batchCount;
+  const row = document.createElement('div');
+  row.className = 'batch-row';
+  row.innerHTML = `<input class="batch-test-input" type="text" dir="ltr" placeholder="" oninput="runBatch()"><div class="batch-result" id="${id}">?</div>`;
+  container.appendChild(row);
+  batchCount++;
+}
+
+function clearBatch() {
+  document.querySelectorAll('.batch-test-input').forEach(i=>{ i.value=''; });
+  document.querySelectorAll('.batch-result').forEach(r=>{ r.className='batch-result'; r.textContent='?'; });
+}
+
+// Initial run
+run();
+</script>
+<script src="nav-tree.js"></script>
+</body>
+</html>

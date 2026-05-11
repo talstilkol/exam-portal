@@ -35,6 +35,7 @@ const SITE_MAP = {
         { id: "debug-walkthrough", label: "Debug צעד-אחר-צעד", icon: "🔍", href: "debug-walkthrough.html", meta: "6 שאלות" },
         { id: "theory-quiz", label: "Theory Quiz", icon: "🧠", href: "theory-quiz.html", meta: "58 כרטיסים" },
         { id: "validation-atlas", label: "אטלס ולידציות", icon: "🛡", href: "validation-atlas.html", meta: "9 מבחנים" },
+        { id: "regex-tester", label: "Regex Tester", icon: "🔬", href: "regex-tester.html", meta: "16 presets" },
         { id: "exam-cheatsheet", label: "דף רמז מבחן", icon: "📋", href: "exam-cheatsheet.html", meta: "9 מבחנים" },
         { id: "exam-mock", label: "מדמה מבחן", icon: "🎯", href: "exam-mock.html", meta: "9 מבחנים" },
         { id: "data-flow", label: "Data Flow", icon: "📦", href: "data-flow.html", meta: "5 תרחישים" },
