@@ -126,7 +126,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 85 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 90 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
     <span class="stat" id="stat-solved">✅ נפתרו: 0/77</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
@@ -3436,6 +3436,211 @@ function addPlayer(teamName, player) {
     return {ok:true};
   },
   explain:"window.confirm() חוסמת עד לתשובה. false = ביטל, צא מהפונקציה. .filter(item => item.id !== id) = מחזיר כל הפריטים חוץ מהנמחק."
+},
+
+// ══════════════════════════════════════════════
+// 86 — react-update-item-in-list  ⚛ MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"react-update-item-in-list",cat:"react",diff:"medium",
+  title:"עדכון פריט ברשימה (map + spread)",
+  desc:"כתוב updateItem(id, newData) שמעדכנת פריט ספציפי ברשימה ב-state.",
+  hint:"השתמש ב-.map(): עבור כל פריט — אם id תואם, החזר עותק עם שינוי. אחרת, החזר כמו שהוא.",
+  solution:`function updateItem(id, newData) {
+  setItems(prev => prev.map(item =>
+    item.id === id
+      ? { ...item, ...newData }  // ← עותק עם עדכון
+      : item                      // ← ללא שינוי
+  ));
+}
+
+// שימוש:
+updateItem(5, { name: 'שם חדש', price: 99 });
+
+// עדכון שדה אחד בלבד:
+const toggleActive = (id) => {
+  setItems(prev => prev.map(item =>
+    item.id === id
+      ? { ...item, isActive: !item.isActive }
+      : item
+  ));
+};`,
+  customTest(code){
+    const checks=[
+      {re:/\.map\s*\(/,msg:'חסרת .map() לעדכון'},
+      {re:/item\.id\s*===\s*id|id\s*===\s*item\.id/,msg:'חסרת השוואת id'},
+      {re:/\{\s*\.\.\.\s*item/,msg:'חסר spread (...item) לשמירת שאר השדות'},
+      {re:/setItems\s*\(/,msg:'חסר setItems'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"map = עובר על כל פריט. id תואם? החזר עותק מעודכן ({ ...item, ...newData }). אחרת? החזר כמו שהוא. אף פעם אל תשנה state ישירות!"
+},
+
+// ══════════════════════════════════════════════
+// 87 — react-form-submit-reset  ⚛ EASY
+// ══════════════════════════════════════════════
+{
+  id:"react-form-submit-reset",cat:"react",diff:"easy",
+  title:"שמירת טופס ואיפוס שדות",
+  desc:"כתוב handleSubmit שמוסיף פריט ל-state ומנקה את הטופס.",
+  hint:"לאחר שמירת הנתונים ל-state, עדכן state הטופס לערכים ריקים.",
+  solution:`const [form, setForm] = useState({ name: '', price: '' });
+
+function handleSubmit(e) {
+  e.preventDefault();
+
+  // ולידציה
+  if (!form.name || !form.price) return;
+
+  // הוספה ל-state
+  setItems(prev => [
+    ...prev,
+    { id: Date.now(), name: form.name, price: Number(form.price) }
+  ]);
+
+  // איפוס הטופס
+  setForm({ name: '', price: '' });
+}
+
+return (
+  <form onSubmit={handleSubmit}>
+    <input value={form.name} onChange={e => setForm(p => ({...p, name: e.target.value}))} />
+    <input value={form.price} onChange={e => setForm(p => ({...p, price: e.target.value}))} />
+    <button type="submit">הוסף</button>
+  </form>
+);`,
+  customTest(code){
+    const checks=[
+      {re:/e\.preventDefault\s*\(\)/,msg:'חסר e.preventDefault()'},
+      {re:/setItems|setFlights|setPlayers/,msg:'חסרת הוספה ל-state הרשימה'},
+      {re:/Date\.now\s*\(\)/,msg:'חסר Date.now() ל-id ייחודי'},
+      {re:/setForm\s*\(\s*\{/,msg:'חסר איפוס הטופס אחרי שמירה'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"e.preventDefault() — מונע reload. Date.now() — id ייחודי. לאחר הוספה — איפוס הטופס לערכים ריקים (controlled inputs נתמכים)."
+},
+
+// ══════════════════════════════════════════════
+// 88 — express-get-by-id  🟢 EASY
+// ══════════════════════════════════════════════
+{
+  id:"express-get-by-id",cat:"express",diff:"easy",
+  title:"GET /items/:id עם 404 handling",
+  desc:"כתוב route שמחזיר פריט אחד לפי id. אם לא נמצא — 404.",
+  hint:"השתמש ב-.find() עם req.params.id. המר ל-Number אם ה-id ב-array הוא מספר.",
+  solution:`app.get('/items/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const item = items.find(i => i.id === id);
+
+  if (!item) {
+    return res.status(404).json({ error: 'Item not found' });
+  }
+
+  res.json(item);
+});`,
+  customTest(code){
+    const checks=[
+      {re:/req\.params\.id/,msg:'חסר req.params.id'},
+      {re:/Number\s*\(|parseInt\s*\(/,msg:'חסר המרה ל-Number (req.params תמיד string)'},
+      {re:/\.find\s*\(/,msg:'חסרת .find() לחיפוש הפריט'},
+      {re:/404/,msg:'חסר status 404 כשפריט לא נמצא'},
+      {re:/return.*res\.status\(404\)/,msg:'חסר return לפני res.status(404)'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"req.params.id הוא תמיד string — חייב Number() לפני השוואה. return לפני 404 כדי לעצור. שגיאה נפוצה: שכחת return — Response sent twice!"
+},
+
+// ══════════════════════════════════════════════
+// 89 — js-count-in-matrix  🟨 MEDIUM
+// ══════════════════════════════════════════════
+{
+  id:"js-count-in-matrix",cat:"js",diff:"medium",
+  title:"ספירת הופעות מספר במטריצה 2D",
+  desc:"כתוב פונקציה countInMatrix(matrix, num) שסופרת כמה פעמים num מופיע בכל שורות המטריצה.",
+  hint:"לולאה כפולה: for על שורות, for על תאים בכל שורה. בדוק גם קלט.",
+  solution:`function countInMatrix(matrix, num) {
+  if (!Array.isArray(matrix)) throw new Error('matrix must be an array');
+  if (typeof num !== 'number') throw new Error('num must be a number');
+
+  let count = 0;
+
+  for (const row of matrix) {
+    for (const cell of row) {
+      if (cell === num) count++;
+    }
+  }
+
+  return count;
+}
+
+// דוגמה:
+// [[1,2,3],[2,5,2],[4,2,1]] , num=2 → 4`,
+  customTest(code){
+    const checks=[
+      {re:/let count\s*=\s*0|var count\s*=\s*0/,msg:'חסר counter (count = 0)'},
+      {re:/for.*of|for\s*\(let [a-z].*=\s*0/,msg:'חסרת לולאה על שורות'},
+      {re:/for.*cell|for.*col|for.*inner/,msg:'חסרת לולאה פנימית על תאים'},
+      {re:/cell\s*===?\s*num|=== cell/,msg:'חסרת השוואת cell === num'},
+      {re:/return count/,msg:'חסר return count'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"לולאה כפולה: for row of matrix → for cell of row. בדוק cell === num (===, לא ==). Flights Q2 בדיוק."
+},
+
+// ══════════════════════════════════════════════
+// 90 — react-empty-state  ⚛ EASY
+// ══════════════════════════════════════════════
+{
+  id:"react-empty-state",cat:"react",diff:"easy",
+  title:"Conditional Render — הצגת הודעה כשרשימה ריקה",
+  desc:"כתוב component שמציג רשימת פריטים. כשהרשימה ריקה — הצג הודעה. כשיש פריטים — הצג <ul>.",
+  hint:"בדוק items.length === 0 לפני הרנדור. השתמש בternaryt או early return.",
+  solution:`function ItemList({ items }) {
+  // אופציה 1: ternary
+  return (
+    <div>
+      {items.length === 0
+        ? <p>אין פריטים להצגה</p>
+        : <ul>
+            {items.map(item => (
+              <li key={item.id}>{item.name}</li>
+            ))}
+          </ul>
+      }
+    </div>
+  );
+}
+
+// אופציה 2: early return
+function ItemList({ items }) {
+  if (items.length === 0) {
+    return <p>אין פריטים להצגה</p>;
+  }
+  return (
+    <ul>
+      {items.map(item => <li key={item.id}>{item.name}</li>)}
+    </ul>
+  );
+}`,
+  customTest(code){
+    const checks=[
+      {re:/items\.length\s*===?\s*0|\.length\s*===?\s*0/,msg:'חסרת בדיקת items.length === 0'},
+      {re:/<p>|<div>|<span>/,msg:'חסרת הודעה כשהרשימה ריקה'},
+      {re:/\.map\s*\(/,msg:'חסרת .map() לרנדור הרשימה'},
+      {re:/key=/,msg:'חסר key prop ב-map'}
+    ];
+    for(const c of checks) if(!c.re.test(code)) return {ok:false,msg:c.msg};
+    return {ok:true};
+  },
+  explain:"items.length === 0 → הצג הודעה. אחרת → map. Key prop חובה בכל .map()! אופציה 2 (early return) לרוב קריאה יותר."
 }
 ];
 
@@ -3449,7 +3654,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/85`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/90`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 

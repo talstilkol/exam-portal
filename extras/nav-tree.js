@@ -16,7 +16,7 @@ const SITE_MAP = {
       label: "כלים אינטראקטיביים",
       icon: "🛠",
       children: [
-        { id: "practice-bank", label: "בנק תרגול", icon: "💪", href: "practice-bank.html", meta: "85 תרגילים" },
+        { id: "practice-bank", label: "בנק תרגול", icon: "💪", href: "practice-bank.html", meta: "90 תרגילים" },
         { id: "simulations", label: "סימולציות", icon: "🎮", href: "simulations.html", meta: "9 סימולציות" },
         { id: "flow-canvas", label: "מפת זרימה", icon: "🗺", href: "flow-canvas.html", meta: "27 שאלות" },
         { id: "exam-master", label: "Exam Master", icon: "🏆", href: "exam-master-v3.html", meta: "20 פרקים" },
