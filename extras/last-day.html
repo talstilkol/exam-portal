@@ -500,7 +500,7 @@ const filtered = items.filter(item => {
   const nameOk  = !searchName || item.name
     .toLowerCase().includes(searchName.toLowerCase());
   const yearOk  = !minYear || item.year >= Number(minYear);
-  const priceOk = !maxPrice || item.price <= Number(priceMax);
+  const priceOk = !maxPrice || item.price <= Number(maxPrice);
   return nameOk && yearOk && priceOk;
 });
 
