@@ -117,7 +117,7 @@ body{font-family:'Heebo',Arial,sans-serif;background:var(--bg);color:var(--ink);
 <body>
 <div class="hero">
   <h1>🧠 Theory Quiz — שאלות תאוריה</h1>
-  <p>80 פלאש-קארד לחזרה על תאוריה ועל פרטי המבחנות — HTTP, MongoDB, React, JS, Express, Node, מבחנות. לחץ על הכרטיס לגלות תשובה.</p>
+  <p>90 פלאש-קארד לחזרה על תאוריה ועל פרטי המבחנות — HTTP, MongoDB, React, JS, Express, Node, מבחנות. לחץ על הכרטיס לגלות תשובה.</p>
 </div>
 
 <div class="toolbar">
@@ -1224,7 +1224,222 @@ null || 'default' // 'default'
 0 ?? 'default'    // 0  ← שונה מ-||!
 '' ?? 'empty'     // '' ← שונה מ-||!
 null ?? 'default' // 'default'
-// שימוש: const count = data.count ?? 0;</pre>`}
+// שימוש: const count = data.count ?? 0;</pre>`},
+
+// ─── 81–90: Advanced Patterns ───────────────────────────────────────────────
+
+{id:"tq-react-fragment",cat:"react",q:"מה זה React.Fragment ומתי משתמשים בו?",
+ a:`<b>Fragment</b> — מאפשר החזרת מספר elements ללא wrapper div
+<pre>// ❌ בלי Fragment — גורם ל-div מיותר:
+return &lt;div&gt;&lt;h1&gt;שלום&lt;/h1&gt;&lt;p&gt;טקסט&lt;/p&gt;&lt;/div&gt;;
+
+// ✅ עם Fragment:
+return (
+  &lt;&gt;
+    &lt;h1&gt;שלום&lt;/h1&gt;
+    &lt;p&gt;טקסט&lt;/p&gt;
+  &lt;/&gt;
+);
+
+// עם key (ב-map):
+items.map(item =&gt; (
+  &lt;React.Fragment key={item.id}&gt;
+    &lt;dt&gt;{item.name}&lt;/dt&gt;
+    &lt;dd&gt;{item.value}&lt;/dd&gt;
+  &lt;/React.Fragment&gt;
+))</pre>
+<b>למבחן</b>: &lt;&gt;&lt;/&gt; (Shorthand Fragment) נפוץ בReturn של component.`},
+
+{id:"tq-state-lifting",cat:"react",q:"מה זה Lifting State Up ואיך מיישמים?",
+ a:`<b>Lifting state up</b> — מעבירים state לcomponent אב משותף
+<pre>// App.jsx — הstate והsetter נשמרים ב-App
+function App() {
+  const [teams, setTeams] = useState({});
+
+  // מעביר גם state וגם setter לילדים:
+  return (
+    &lt;EditPlayer teams={teams} setTeams={setTeams} /&gt;
+  );
+}
+
+// EditPlayer.jsx — מקבל setter כ-prop
+function EditPlayer({ teams, setTeams }) {
+  function handleSave(teamName, updatedPlayer) {
+    setTeams(prev =&gt; ({
+      ...prev,
+      [teamName]: prev[teamName].map(p =&gt;
+        p.id === updatedPlayer.id ? updatedPlayer : p
+      )
+    }));
+  }
+}</pre>
+<b>למבחן</b>: Football — setTeams עובר מApp לEditPlayer. Bank — setAccounts עובר לClientPage.`},
+
+{id:"tq-express-json-critical",cat:"express",q:"מדוע express.json() כה קריטי? מה קורה בלעדיו?",
+ a:`<b>express.json()</b> — Middleware שמפרסר JSON body מה-request
+<pre>// ✅ עם express.json():
+app.use(express.json()); // חובה לפני routes!
+app.post('/users', (req, res) =&gt; {
+  console.log(req.body); // → { name: "Tal", age: 25 }
+});
+
+// ❌ בלי express.json():
+app.post('/users', (req, res) =&gt; {
+  console.log(req.body); // → undefined !!
+});</pre>
+<b>מה זה עושה:</b> קורא את request body כ-Buffer, מפרסר כ-JSON, שם ב-req.body<br>
+<b>טעות נפוצה</b>: לשים אחרי routes — body יהיה undefined בroutes שלפניו<br>
+<b>+ cors()</b>: שניהם חייבים לפני כל routes`},
+
+{id:"tq-conditional-render-patterns",cat:"react",q:"מה 3 הדפוסים לרנדור מותנה ב-React?",
+ a:`<pre>// 1. &&  — הצג רק אם true
+{user && &lt;Profile user={user} /&gt;}
+// ⚠️ 0 && ... מציג "0"! השתמש ב: {count > 0 && ...}
+
+// 2. ternary ? :  — אחד מהשניים
+{isLoggedIn ? &lt;Dashboard /&gt; : &lt;Login /&gt;}
+
+// 3. Early return — לפני JSX
+function Page({ user }) {
+  if (!user) return &lt;p&gt;טוען...&lt;/p&gt;;
+  return &lt;div&gt;{user.name}&lt;/div&gt;;
+}
+
+// 4. Object map (פחות נפוץ):
+const pages = { home: &lt;Home /&gt;, about: &lt;About /&gt; };
+return pages[currentPage] || null;</pre>
+<b>למבחן</b>: && להצגה/הסתרה, ternary לCTA/שגיאה, early return לloading.`},
+
+{id:"tq-mongoose-id-types",cat:"mongo",q:"מה ההבדל בין _id, id ו-Number id ב-Mongoose?",
+ a:`<pre>// 1. _id — אוטומטי מMongoDB (ObjectId)
+user._id // ObjectId("64abc...") — object, לא string
+user._id.toString() // "64abc123..." — להשוואה
+
+// 2. id — virtual ב-Mongoose (string של _id)
+user.id // "64abc123..." — Mongoose מוסיף אוטומטי
+
+// 3. Number id — custom field
+const schema = new Schema({
+  id: { type: Number, required: true }
+}); // בעיה: בנוסף ל-_id, לא אוטומטי!
+
+// השוואה:
+User.findOne({ _id: "64abc123" }) // works - auto converts
+User.findOne({ id: 42 }) // works - custom Number field</pre>
+<b>למבחן</b>: Parking upsert משתמש ב-custom id (workerId). findById משתמש ב-_id.`},
+
+{id:"tq-usestate-array-ops",cat:"react",q:"מה 3 פעולות המערך הבסיסיות עם useState?",
+ a:`<pre>// 1. ADD — append לסוף:
+setItems(prev =&gt; [...prev, newItem]);
+
+// 2. DELETE — לפי id:
+setItems(prev =&gt; prev.filter(item =&gt; item.id !== id));
+
+// 3. UPDATE — שינוי פריט ספציפי:
+setItems(prev =&gt; prev.map(item =&gt;
+  item.id === id ? {...item, ...changes} : item
+));
+
+// 4. TOGGLE — הפיכת boolean:
+setItems(prev =&gt; prev.map(item =&gt;
+  item.id === id
+    ? {...item, isActive: !item.isActive}
+    : item
+));
+
+// ⚠️ אסור:
+items.push(newItem); // mutation ישירה!</pre>
+<b>חוק זהב</b>: תמיד spread (...prev), אף פעם לא מוטציה ישירה.`},
+
+{id:"tq-express-next-chain",cat:"express",q:"איך next() עובד בשרשרת middleware ב-Express?",
+ a:`<pre>// Middleware = פונקציה שמקבלת req, res, next
+app.use((req, res, next) =&gt; {
+  console.log('Request:', req.method, req.url);
+  next(); // ← קורא לmiddleware הבא!
+});
+
+// בלי next() — request "תקוע"!
+app.use((req, res, next) =&gt; {
+  // אם לא קוראים לnext() ולא לres — לא ממשיכים
+  // בדרך כלל זה באג
+  next(); // חובה!
+});
+
+// next(err) — מדלג לerror middleware:
+app.use(async (req, res, next) =&gt; {
+  try { ... }
+  catch(err) { next(err); } // ← לerror handler
+});
+
+// Error middleware (4 params):
+app.use((err, req, res, next) =&gt; {
+  res.status(500).json({error: err.message});
+});</pre>`},
+
+{id:"tq-react-props-pattern",cat:"react",q:"מהם דפוסי העברת Props הנפוצים ב-React?",
+ a:`<pre>// 1. Prop רגיל:
+&lt;Component name="Tal" age={25} /&gt;
+
+// 2. Callback prop — פונקציה מהורה:
+&lt;LoginForm onLogin={handleLogin} onError={setError} /&gt;
+
+// 3. Object spread prop:
+const user = { name: 'Tal', role: 'admin' };
+&lt;UserCard {...user} /&gt; // = &lt;UserCard name="Tal" role="admin" /&gt;
+
+// 4. children prop:
+&lt;Card&gt;&lt;p&gt;תוכן כלשהו&lt;/p&gt;&lt;/Card&gt;
+function Card({ children }) {
+  return &lt;div className="card"&gt;{children}&lt;/div&gt;;
+}
+
+// 5. Conditional prop:
+&lt;Button disabled={isLoading} /&gt;</pre>
+<b>למבחן</b>: onLogin, onRegister, setCurrentUser — כולם callback props מApp.`},
+
+{id:"tq-js-number-conversions",cat:"js",q:"מה ההבדלות בין Number(), parseInt(), parseFloat(), isNaN()?",
+ a:`<pre>// Number() — המרה קפדנית
+Number("42")     // 42
+Number("42.5")   // 42.5
+Number("42px")   // NaN — לא ספרה טהורה!
+Number("")       // 0
+Number(null)     // 0
+Number(undefined) // NaN
+
+// parseInt() — קורא ספרות מהתחלה
+parseInt("42px")   // 42 — קורא עד לאות
+parseInt("42.9")   // 42 — מספר שלם בלבד
+parseInt("10", 2)  // 2 — בסיס 2 (binary!)
+
+// parseFloat() — כולל נקודה עשרונית
+parseFloat("3.14px") // 3.14
+
+// isNaN() — בדיקה
+isNaN("42")     // false — ממיר קודם
+isNaN("hello")  // true
+Number.isNaN("hello") // false — קפדני יותר!</pre>
+<b>למבחן</b>: parseInt(str, 2) לbinary → decimal. Number() לreq.query.`},
+
+{id:"tq-express-res-methods",cat:"express",q:"מה ההבדל בין res.json(), res.send(), res.status()?",
+ a:`<pre>// res.json(data) — שולח JSON (מגדיר Content-Type אוטומטי)
+res.json({ name: 'Tal', age: 25 });
+
+// res.send(data) — שולח כל דבר (string, Buffer, etc.)
+res.send('Hello World'); // text/html
+res.send({ name: 'Tal' }); // ≈ res.json() (בExpress חדש)
+
+// res.status(code) — קובע status בלבד (לא שולח!)
+res.status(201); // לא מסיים את הbקשה!
+res.status(404).json({ error: 'Not found' }); // ✅ שרשור
+
+// res.sendStatus(code) — שולח status + text
+res.sendStatus(204); // "No Content"
+
+// ✅ דפוסים נכונים:
+res.json(data);                           // 200 OK
+res.status(201).json(newItem);            // 201 Created
+res.status(404).json({ error: '...' });   // 404 Not Found
+return res.status(400).json({ error: '' }); // עם return לעצירה</pre>`}
 ];
 
 // ─── State ──────────────────────────────────────────────────────────────────
