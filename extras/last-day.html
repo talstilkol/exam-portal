@@ -763,7 +763,17 @@ const DRILL_QS = [
   {q:'איך מעדכנים שדה אחד ב-useState object?',a:'const [form, setForm] = useState({ name: "", email: "" });\n\n// עדכון שדה אחד בלבד:\nsetForm(prev => ({ ...prev, name: "Tal" }));\n// spread prev + override שדה ספציפי',cat:'react'},
   {q:'מה ה-schema ל-workerId (5 ספרות) ב-Mongoose?',a:'workerId: {\n  type: String,\n  required: true,\n  match: /^\\d{5}$/  // בדיוק 5 ספרות\n  // או validate: v => /^\\d{5}$/.test(v)\n}',cat:'mongo'},
   {q:'מה Fibonacci position algorithm?',a:'function fibPosition(target) {\n  let a=1, b=1, pos=1;\n  while (a <= target) {\n    if (a === target) return pos;\n    [a, b, pos] = [b, a+b, pos+1]; // או next = a+b\n  }\n  return -1; // לא ב-Fibonacci\n}',cat:'js'},
-  {q:'איך מגדירים enum ב-Mongoose Schema?',a:'type: {\n  type: String,\n  required: true,\n  enum: ["USD","EUR","GBP","ILS"] // ערכים חוקיים בלבד\n}\n// שמירה עם ערך לא ברשימה → ValidationError 400',cat:'mongo'}
+  {q:'איך מגדירים enum ב-Mongoose Schema?',a:'type: {\n  type: String,\n  required: true,\n  enum: ["USD","EUR","GBP","ILS"] // ערכים חוקיים בלבד\n}\n// שמירה עם ערך לא ברשימה → ValidationError 400',cat:'mongo'},
+  {q:'מה ה-routes ב-Parking Q1?',a:'"/" — Login\n"/signup" — הרשמה\n"/choose-parking" — בחירת עיר+חנייה\n"/active-parking" — חנייה פעילה\n"/history" — היסטוריה',cat:'react'},
+  {q:'מה ה-routes ב-Bank Q1?',a:'"/" — Login\n"/client/:id" — דף לקוח\n"/manager" — דף מנהל\nProtected עם Navigate!',cat:'react'},
+  {q:'מה ה-routes ב-HelpMe Q1?',a:'"/" — Register\n"/home" — דף בית\n"/centers" — מרכזי עזרה\n3 routes בלבד',cat:'react'},
+  {q:'מה ה-routes ב-Currency Q1?',a:'"/" — Calculator (מחשבון)\n"/list" — רשימת מטבעות\n"/update" — עדכון שער\n3 routes, לא צריך Login!',cat:'react'},
+  {q:'מה ה-routes ב-Willing Q1?',a:'"/" — עמוד ראשי\n"/add" — הוספת התנדבות\n"/find" — חיפוש לפי עיר\n"/all" — כל ההתנדבויות',cat:'react'},
+  {q:'מה ה-routes ב-Travel Q1?',a:'"/" — Sign In (קבוע: svcollege/abcde)\n"/home" — רשימת נסיעות\n"/add" — הוספת נסיעה\n"/update" — עדכון נסיעה\nNav disabled עד Login!',cat:'react'},
+  {q:'מה ה-routes ב-Flights Q1?',a:'"/" — Login (סיסמה "12345")\n"/panel" — ControlPanel\n"/all" — AllFlights (עם מיון)\n"/add" — AddFlight\nאין Register!',cat:'react'},
+  {q:'מה ה-routes ב-Logistics Q1?',a:'"/" — Auth (Login+Register dual-mode)\n"/welcome/:id" — ברוך הבא\n"/products" — מוצרים\nworkerId חייב להיות 5 ספרות!',cat:'react'},
+  {q:'מה הולידציות ב-Parking Q1 Signup?',a:'carNumber: /^\\d{7}$/ — 7 ספרות\npassword: /^\\d{6,}$/ — ספרות בלבד 6+\nconfirmPassword: חייב להתאים\n// Login: רק carNumber + password',cat:'regex'},
+  {q:'כיצד מוסיפים פריט לרשימה ב-Express Array API?',a:'// בלי MongoDB:\nconst games = [];\napp.post("/games", (req,res) => {\n  const game = { id: games.length + 1, ...req.body };\n  games.push(game);\n  res.status(201).json(game);\n});',cat:'express'}
 ];
 
 let _drillFilter='all', _drillQueue=[], _drillIdx=0, _drillYes=0, _drillNo=0, _drillShown=false;
