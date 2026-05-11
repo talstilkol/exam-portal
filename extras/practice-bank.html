@@ -126,9 +126,9 @@ button:focus-visible,a:focus-visible{outline:3px solid #facc15;outline-offset:2p
 <a href="#main-content" class="skip-link">דלג לתוכן</a>
 <header class="hero">
   <h1>🏋️ Practice Bank — תרגול אינטראקטיבי</h1>
-  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 55 תרגילים בדרגות קושי משתנות.</p>
+  <p>כתבו קוד, הריצו, קבלו פידבק מיידי. 60 תרגילים בדרגות קושי משתנות.</p>
   <div class="stats">
-    <span class="stat" id="stat-solved">✅ נפתרו: 0/55</span>
+    <span class="stat" id="stat-solved">✅ נפתרו: 0/60</span>
     <span class="stat" id="stat-streak">🔥 רצף: 0</span>
   </div>
 </header>
@@ -1814,6 +1814,373 @@ function LoginFixed({ onLogin }) {
   );
 }`,
   explain:"פריט קריטי שנמצא כבאג בכמה מבחנות: שגיאות שלא נמחקות בזמן הקלדה. הפתרון: setErrors(prev=>({...prev,[field]:''})) ב-onChange. ה-spread ...prev שומר שגיאות של שדות אחרים, ו-[field] (computed key) מנקה רק את השדה שהשתנה."
+},
+
+// ─── EXERCISE 56 ────────────────────────────────────────────────────────────
+{
+  id:"react-two-mode-auth",cat:"react",diff:"hard",
+  title:"כניסה/הרשמה בשדה ID אחד — Logistics Q1",
+  prompt:`<b>Logistics Q1</b>: כניסה ורישום משתמשים לפי workerId יחיד — מצב כפול!
+<ul>
+  <li>State: <code>workers[]</code> (localStorage), <code>workerId</code>, <code>fullName</code>, <code>error</code></li>
+  <li>בSubmit בדקו: האם <code>workerId</code> <b>קיים</b> ב-workers[]?</li>
+  <li>אם <b>קיים</b> → Login: בדקו fullName תואם, setCurrentWorker, navigate</li>
+  <li>אם <b>לא קיים</b> → Register: הוסיפו לworkers[], setCurrentWorker, navigate</li>
+</ul>
+<b>ולידציה:</b> workerId = /^\\d{5}$/, fullName = 4+ תווים`,
+  tests:[
+    {label:"שימוש ב-workers.find",     fn:c=>/\.find\s*\(/.test(c)},
+    {label:"localStorage לworkers",   fn:c=>/localStorage/.test(c)&&/workers/.test(c)},
+    {label:"navigate אחרי כניסה",     fn:c=>/navigate\s*\(|useNavigate/.test(c)},
+    {label:"ולידציה לworkerId",       fn:c=>/\d{5}|\^\\d/.test(c)||/workerId.*length|length.*5/.test(c)}
+  ],
+  customTest:code=>{
+    const hasFind=/workers\.find\s*\(|workers\.some\s*\(/.test(code);
+    const hasLS=/localStorage/.test(code)&&/workers/.test(code);
+    const hasNav=/navigate\s*\(/.test(code)||/useNavigate/.test(code);
+    const hasBothModes=/login|register|existing|קיים/i.test(code)||(hasFind&&hasNav);
+    if(!hasFind)return{ok:false,msg:"חסר workers.find() לבדיקה אם workerId קיים"};
+    if(!hasLS)return{ok:false,msg:"חסר localStorage לשמירת workers[]"};
+    if(!hasNav)return{ok:false,msg:"חסר navigate() אחרי כניסה/הרשמה"};
+    if(!hasBothModes)return{ok:false,msg:"חסרה לוגיקה כפולה: אם קיים→login, אם לא→register"};
+    return{ok:true,msg:"✅ find + localStorage + navigate + dual-mode logic"};
+  },
+  hint:`const existing = workers.find(w => w.id === workerId);
+if(existing) {
+  if(existing.name !== fullName) { setError('שגיאה'); return; }
+  setCurrentWorker(existing); navigate('/welcome/'+workerId);
+} else {
+  const newWorker = {id:workerId, name:fullName};
+  const updated = [...workers, newWorker];
+  setWorkers(updated); localStorage.setItem('workers', JSON.stringify(updated));
+  setCurrentWorker(newWorker); navigate('/welcome/'+workerId);
+}`,
+  solution:`function Auth() {
+  const [workers, setWorkers] = useState(() =>
+    JSON.parse(localStorage.getItem('workers') || '[]')
+  );
+  const [workerId, setWorkerId] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [error, setError] = useState('');
+  const [currentWorker, setCurrentWorker] = useState(null);
+  const navigate = useNavigate();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if(!/^\\d{5}$/.test(workerId)) { setError('workerId: 5 ספרות בדיוק'); return; }
+    if(fullName.length < 4) { setError('שם: מינימום 4 תווים'); return; }
+
+    const existing = workers.find(w => w.id === workerId);
+    if(existing) {
+      // Login — workerId קיים
+      if(existing.name !== fullName) { setError('שם לא תואם'); return; }
+      setCurrentWorker(existing);
+    } else {
+      // Register — workerId חדש
+      const newWorker = { id: workerId, name: fullName };
+      const updated = [...workers, newWorker];
+      setWorkers(updated);
+      localStorage.setItem('workers', JSON.stringify(updated));
+      setCurrentWorker(newWorker);
+    }
+    navigate('/welcome/' + workerId);
+  }
+  // ... render form
+}`,
+  explain:"זה logistics-q1 — הפטנט הייחודי: workers.find() מחזיר אובייקט אם קיים, undefined אם לא. על בסיס זה קובעים login vs register. שני מצבים, טופס אחד, לוגיקה בsubmit."
+},
+
+// ─── EXERCISE 57 ────────────────────────────────────────────────────────────
+{
+  id:"react-toggle-active",cat:"react",diff:"medium",
+  title:"Toggle isActive ברשימה — Willing Q1",
+  prompt:`<b>Willing Q1</b>: רשימת התנדבויות עם אפשרות להפעיל/להשבית כל אחת.
+<ul>
+  <li>State: <code>volunteerings[]</code> — כל אחת עם שדה <code>isActive</code></li>
+  <li>פונקציה <b>toggleActive(id)</b>: הפוך את <code>isActive</code> של האלמנט עם ה-id</li>
+  <li>שמירה ל-localStorage אחרי כל שינוי</li>
+  <li>הצגה: כפתור "הפעל/השבת" לכל התנדבות, עם סגנון שונה לפי isActive</li>
+</ul>
+<b>חובה:</b> שמרו את שאר שדות האובייקט עם spread (<code>...v</code>)!`,
+  tests:[
+    {label:"שימוש ב-.map() לedit",    fn:c=>/.map\s*\(/.test(c)&&/isActive/.test(c)},
+    {label:"spread operator לobject", fn:c=>/\.\.\.\s*v|\.\.\.\s*item|\.\.\.\s*vol/.test(c)},
+    {label:"!v.isActive — flip",      fn:c=>/!v\.isActive|!item\.isActive|!vol\.isActive|!prev\.isActive/.test(c)},
+    {label:"localStorage save",       fn:c=>/localStorage\.setItem/.test(c)}
+  ],
+  customTest:code=>{
+    const hasMap=/.map\s*\(/.test(code)&&/isActive/.test(code);
+    const hasSpread=/\.\.\.\s*\w+[,}]/.test(code);
+    const hasNot=/!\w+\.isActive/.test(code)||/isActive:\s*!/.test(code);
+    const hasLS=/localStorage/.test(code);
+    if(!hasMap)return{ok:false,msg:"חסר .map() לעדכון isActive של אלמנט ספציפי"};
+    if(!hasSpread)return{ok:false,msg:"חסר spread {...v} — שאר שדות האובייקט יאבדו ללא spread"};
+    if(!hasNot)return{ok:false,msg:"חסר !isActive לhflip — השתמשו ב-isActive: !v.isActive"};
+    if(!hasLS)return{ok:false,msg:"חסר localStorage.setItem לשמירה אחרי שינוי"};
+    return{ok:true,msg:"✅ .map() + spread + !isActive + localStorage"};
+  },
+  hint:`function toggleActive(id) {
+  const updated = volunteerings.map(v =>
+    v.id === id ? {...v, isActive: !v.isActive} : v
+  );
+  setVolunteerings(updated);
+  localStorage.setItem('volunteerings', JSON.stringify(updated));
+}`,
+  solution:`const [volunteerings, setVolunteerings] = useState(() =>
+  JSON.parse(localStorage.getItem('volunteerings') || '[]')
+);
+
+function toggleActive(id) {
+  const updated = volunteerings.map(v =>
+    v.id === id
+      ? { ...v, isActive: !v.isActive }  // ← spread + flip
+      : v
+  );
+  setVolunteerings(updated);
+  localStorage.setItem('volunteerings', JSON.stringify(updated));
+}
+
+// Render:
+return (
+  <ul>
+    {volunteerings.map(v => (
+      <li key={v.id} style={{opacity: v.isActive ? 1 : 0.5}}>
+        {v.name} — {v.city}
+        <button onClick={() => toggleActive(v.id)}>
+          {v.isActive ? '🔴 השבת' : '🟢 הפעל'}
+        </button>
+      </li>
+    ))}
+  </ul>
+);`,
+  explain:"זה willing-q1. הנקודות: (1) .map() לעדכון item ספציפי — לא splice/mutation. (2) {...v, isActive: !v.isActive} — spread שומר שאר שדות (name, city, id). (3) localStorage.setItem אחרי כל שינוי. בלי spread, האובייקט יהיה {isActive:true} בלבד!"
+},
+
+// ─── EXERCISE 58 ────────────────────────────────────────────────────────────
+{
+  id:"react-nav-disabled",cat:"react",diff:"medium",
+  title:"Nav Links מושבתים לפני Login — Travel Q1",
+  prompt:`<b>Travel Q1</b>: ה-Nav bar גלוי תמיד, אבל הלינקים <b>מושבתים</b> עד שהמשתמש מתחבר.
+<ul>
+  <li>State: <code>isLoggedIn</code> (boolean)</li>
+  <li>ה-Nav מציג: Home, Add Travel, Update Travel</li>
+  <li>כשלא מחובר: <code>pointerEvents: 'none'</code> + אופסיטי נמוכה</li>
+  <li>כשמחובר: ניווט רגיל</li>
+</ul>
+<b>גישה 1 — style ישיר על nav:</b><br>
+<code>style={{pointerEvents: isLoggedIn ? 'auto' : 'none', opacity: isLoggedIn ? 1 : 0.4}}</code><br><br>
+<b>גישה 2 — Link עם onClick שמונע:</b><br>
+<code>onClick={(e) => { if(!isLoggedIn) e.preventDefault(); }}</code>`,
+  tests:[
+    {label:"isLoggedIn state",           fn:c=>/isLoggedIn/.test(c)&&/useState/.test(c)},
+    {label:"pointerEvents או onClick-guard", fn:c=>/pointerEvents|e\.preventDefault/.test(c)},
+    {label:"הבדל בגישה כשמחובר/לא", fn:c=>/isLoggedIn\s*\?/.test(c)},
+    {label:"Link מ-react-router-dom",     fn:c=>/Link|NavLink/.test(c)}
+  ],
+  customTest:code=>{
+    const hasState=/isLoggedIn/.test(code)&&/useState/.test(code);
+    const hasDisable=/pointerEvents.*none|e\.preventDefault/.test(code);
+    const hasTernary=/isLoggedIn\s*\?/.test(code);
+    const hasLink=/Link|NavLink/.test(code);
+    if(!hasState)return{ok:false,msg:"חסר useState לisLoggedIn"};
+    if(!hasDisable)return{ok:false,msg:"חסרה השבתה: pointerEvents:'none' או e.preventDefault()"};
+    if(!hasTernary)return{ok:false,msg:"חסרה לוגיקה תנאית לפי isLoggedIn"};
+    if(!hasLink)return{ok:false,msg:"חסר Link/NavLink מ-react-router-dom"};
+    return{ok:true,msg:"✅ isLoggedIn + pointerEvents/preventDefault + Link"};
+  },
+  hint:`<nav style={{pointerEvents: isLoggedIn ? 'auto' : 'none', opacity: isLoggedIn ? 1 : 0.4}}>
+  <Link to="/home">Home</Link>
+  <Link to="/add">Add Travel</Link>
+  <Link to="/update">Update</Link>
+</nav>`,
+  solution:`function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [travels, setTravels] = useState(() =>
+    JSON.parse(localStorage.getItem('travels') || '[]')
+  );
+
+  return (
+    <BrowserRouter>
+      {/* Nav — גלוי תמיד, אבל disabled לפני login */}
+      <nav style={{
+        pointerEvents: isLoggedIn ? 'auto' : 'none',
+        opacity: isLoggedIn ? 1 : 0.4
+      }}>
+        <Link to="/home">🏠 Home</Link>
+        <Link to="/add">➕ Add Travel</Link>
+        <Link to="/update">✏️ Update</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<SignIn onLogin={() => setIsLoggedIn(true)} />} />
+        <Route path="/home" element={<Home travels={travels} />} />
+        <Route path="/add" element={<Add setTravels={setTravels} />} />
+        <Route path="/update" element={<Update travels={travels} setTravels={setTravels} />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}`,
+  explain:"זה travel-q1. pointerEvents:'none' מונע כל אינטראקציה עם ה-nav (click, hover) כשהמשתמש לא מחובר. opacity:0.4 נותן visual feedback שהlinks לא פעילים. זה פשוט יותר מ-onClick-guard על כל Link בנפרד."
+},
+
+// ─── EXERCISE 59 ────────────────────────────────────────────────────────────
+{
+  id:"express-mongoose-full-crud",cat:"express",diff:"hard",
+  title:"Express + MongoDB — CRUD מלא עם Mongoose — Flights Q3",
+  prompt:`<b>Flights Q3</b>: כתבו שרת Express עם CRUD מלא ל-Student collection ב-MongoDB.
+<ul>
+  <li><code>GET /students</code> — כל התלמידים</li>
+  <li><code>POST /students</code> → status <b>201</b> + validation</li>
+  <li><code>PUT /students/:id</code> — עדכון עם <code>{new: true}</code></li>
+  <li><code>DELETE /students/:id</code> — מחיקה</li>
+</ul>
+<b>Schema:</b> name (String, required), grade (Number, required), city (String)<br>
+<b>חובה:</b> express.json() + mongoose.connect() + try/catch בכל route`,
+  tests:[
+    {label:"express.json() middleware",     fn:c=>/express\.json\s*\(\)/.test(c)},
+    {label:"mongoose.connect()",           fn:c=>/mongoose\.connect/.test(c)},
+    {label:"Schema + Model",              fn:c=>/mongoose\.Schema|new Schema/.test(c)&&/mongoose\.model/.test(c)},
+    {label:"Status 201 ב-POST",           fn:c=>/status\s*\(\s*201/.test(c)},
+    {label:"{new: true} ב-PUT",           fn:c=>/new\s*:\s*true/.test(c)}
+  ],
+  customTest:code=>{
+    const hasJson=/express\.json\s*\(\)/.test(code);
+    const hasConnect=/mongoose\.connect/.test(code);
+    const hasSchema=/mongoose\.Schema|new Schema/.test(code)&&/mongoose\.model/.test(code);
+    const has201=/status\s*\(\s*201/.test(code);
+    const hasNew=/new\s*:\s*true/.test(code);
+    if(!hasJson)return{ok:false,msg:"חסר express.json() — body של POST יהיה ריק!"};
+    if(!hasConnect)return{ok:false,msg:"חסר mongoose.connect() לחיבור ל-MongoDB"};
+    if(!hasSchema)return{ok:false,msg:"חסר Schema + Model (mongoose.Schema + mongoose.model)"};
+    if(!has201)return{ok:false,msg:"חסר status(201) ב-POST! יצירה צריכה להחזיר 201"};
+    if(!hasNew)return{ok:false,msg:"חסר {new:true} ב-PUT — בלי זה יחזיר הישן ולא החדש"};
+    return{ok:true,msg:"✅ express.json + connect + Schema + 201 + {new:true}"};
+  },
+  hint:`const studentSchema = new mongoose.Schema({ name:{type:String,required:true}, grade:{type:Number,required:true}, city:String });
+const Student = mongoose.model('Student', studentSchema);
+// PUT: Student.findByIdAndUpdate(id, body, {new:true, runValidators:true})`,
+  solution:`const express = require('express');
+const mongoose = require('mongoose');
+const app = express();
+app.use(express.json());  // ← חובה!
+
+mongoose.connect('mongodb://localhost/studentsDB');
+
+const studentSchema = new mongoose.Schema({
+  name:  { type: String, required: true },
+  grade: { type: Number, required: true },
+  city:  String
+});
+const Student = mongoose.model('Student', studentSchema);
+
+// GET all
+app.get('/students', async (req, res) => {
+  try {
+    const students = await Student.find();
+    res.json(students);
+  } catch(err) { res.status(500).json({error: err.message}); }
+});
+
+// POST create → 201!
+app.post('/students', async (req, res) => {
+  try {
+    const student = await Student.create(req.body);
+    res.status(201).json(student);  // ← 201 ולא 200!
+  } catch(err) { res.status(400).json({error: err.message}); }
+});
+
+// PUT update
+app.put('/students/:id', async (req, res) => {
+  try {
+    const student = await Student.findByIdAndUpdate(
+      req.params.id, req.body,
+      { new: true, runValidators: true }  // ← new:true חשוב!
+    );
+    if(!student) return res.status(404).json({error: 'Not found'});
+    res.json(student);
+  } catch(err) { res.status(400).json({error: err.message}); }
+});
+
+// DELETE
+app.delete('/students/:id', async (req, res) => {
+  try {
+    const student = await Student.findByIdAndDelete(req.params.id);
+    if(!student) return res.status(404).json({error: 'Not found'});
+    res.json({message: 'Deleted'});
+  } catch(err) { res.status(500).json({error: err.message}); }
+});
+
+app.listen(3000);`,
+  explain:"זה flights-q3. הנקודות: (1) express.json() ← חובה לפני routes. (2) Schema + model לפני routes. (3) status(201) ב-POST ← הבוחן בודק. (4) {new:true} ב-PUT ← בלי זה Mongoose מחזיר הישן. (5) try/catch בכל route async."
+},
+
+// ─── EXERCISE 60 ────────────────────────────────────────────────────────────
+{
+  id:"express-mongoose-schema-validation",cat:"express",diff:"medium",
+  title:"Mongoose — Schema עם ולידציה מובנית",
+  prompt:`כתבו Mongoose Schema עבור Employee עם ולידציה מובנית:
+<ul>
+  <li><code>name</code>: String, required, minLength 2</li>
+  <li><code>salary</code>: Number, required, min 0</li>
+  <li><code>department</code>: String, enum: ['HR', 'Dev', 'Sales', 'Finance']</li>
+  <li><code>createdAt</code>: Date, default: Date.now</li>
+</ul>
+גם: route <b>POST /employees</b> שמשתמש ב-Schema הזה עם try/catch לתפיסת ולידציה שגויה (status 400).`,
+  tests:[
+    {label:"required: true בname/salary", fn:c=>/required\s*:\s*true/.test(c)},
+    {label:"min ב-salary",               fn:c=>/min\s*:\s*0/.test(c)||/min:\s*0/.test(c)},
+    {label:"enum עם מערך",              fn:c=>/enum\s*:\s*\[/.test(c)},
+    {label:"default: Date.now",          fn:c=>/default\s*:\s*Date\.now/.test(c)},
+    {label:"status(400) בשגיאת ולידציה", fn:c=>/status\s*\(\s*400/.test(c)}
+  ],
+  customTest:code=>{
+    const hasRequired=/required\s*:\s*true/.test(code);
+    const hasMin=/min\s*:\s*0/.test(code);
+    const hasEnum=/enum\s*:\s*\[/.test(code);
+    const hasDefault=/default\s*:\s*Date\.now/.test(code);
+    const has400=/status\s*\(\s*400/.test(code);
+    if(!hasRequired)return{ok:false,msg:"חסר required:true — ולידציה לא תפעל בלי זה"};
+    if(!hasMin)return{ok:false,msg:"חסר min:0 ב-salary (Number validation)"};
+    if(!hasEnum)return{ok:false,msg:"חסר enum:['HR','Dev',...] ל-department"};
+    if(!hasDefault)return{ok:false,msg:"חסר default:Date.now — הערה: Date.now ולא Date.now()"};
+    if(!has400)return{ok:false,msg:"חסר status(400) בשגיאת ולידציה — לא 500!"};
+    return{ok:true,msg:"✅ required + min + enum + default + status(400)"};
+  },
+  hint:`const empSchema = new mongoose.Schema({
+  name: { type: String, required: true, minLength: 2 },
+  salary: { type: Number, required: true, min: 0 },
+  department: { type: String, enum: ['HR','Dev','Sales','Finance'] },
+  createdAt: { type: Date, default: Date.now }  // ← Date.now ולא Date.now()!
+});`,
+  solution:`const mongoose = require('mongoose');
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+const employeeSchema = new mongoose.Schema({
+  name:       { type: String, required: true, minLength: 2 },
+  salary:     { type: Number, required: true, min: 0 },
+  department: {
+    type: String,
+    enum: ['HR', 'Dev', 'Sales', 'Finance']  // ← רשימת ערכים מותרים
+  },
+  createdAt: { type: Date, default: Date.now }  // ← Date.now (לא Date.now()!)
+});
+const Employee = mongoose.model('Employee', employeeSchema);
+
+app.post('/employees', async (req, res) => {
+  try {
+    const emp = await Employee.create(req.body);
+    res.status(201).json(emp);
+  } catch(err) {
+    // Mongoose ולידציה נכשלה → 400 Bad Request
+    res.status(400).json({ error: err.message });
+  }
+});
+
+mongoose.connect('mongodb://localhost/empDB');
+app.listen(3001);`,
+  explain:"שני patterns: (1) Schema validation — Mongoose בודק required, min, enum לפני שמירה. שגיאה זורקת ValidationError שה-catch תופס. (2) default:Date.now (ולא Date.now() עם סוגריים!) — עם סוגריים = ערך קבוע שנקרא פעם אחת, בלי = פונקציה שנקראת לכל מסמך."
 }
 ];
 
@@ -1827,7 +2194,7 @@ let streak = 0;
 
 function updateStats() {
   const count = Object.keys(solved).length;
-  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/55`;
+  document.getElementById('stat-solved').textContent = `✅ נפתרו: ${count}/60`;
   document.getElementById('stat-streak').textContent = `🔥 רצף: ${streak}`;
 }
 
