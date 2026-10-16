@@ -160,7 +160,6 @@ const SITE_MAP = {
         { id: "progress-dashboard", label: "דשבורד התקדמות", icon: "📊", href: "progress-dashboard.html", meta: "11 כלים" },
         { id: "master-plan", label: "Master Plan", icon: "🗺", href: "master-plan.html" },
         { id: "round4-report", label: "דוח QA Round 4", icon: "📋", href: "round4-grade-report.html" },
-        { id: "print-all-r3", label: "הדפסה — Round 3", icon: "🖨", href: "print-all-r3.html" },
         { id: "print-all-r4", label: "הדפסה — Round 4", icon: "🖨", href: "print-all-r4.html" }
       ]
     }
